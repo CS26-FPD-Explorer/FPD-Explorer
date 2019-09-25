@@ -1,3 +1,3 @@
-# 2019 TEAM cs39 Project
+# Team CS39 Main Project - Team Project 3 Course
 
 
