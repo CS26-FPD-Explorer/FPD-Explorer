@@ -80,8 +80,8 @@ class ApplicationWindow(QMainWindow):
         #compute summed real space image
         self.sum_dif = fpdp.sum_dif(self.ds_sel, 16, 16)
 
-
-        b = DataBrowserNew(self.ds_sel, nav_im=self.sum_im)
+        b = DataBrowserNew(self.ds_sel, nav_im=self.sum_im,
+                           fig_1=self.ui.widget_3.get_fig(),fig_2=self.ui.widget_4.get_fig())
         #QApplication.quit()
     def fileQuit(self):
         self.close()

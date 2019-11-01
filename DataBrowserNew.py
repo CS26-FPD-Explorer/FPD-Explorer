@@ -31,6 +31,9 @@ import numpy as np
 import h5py
 import mmap
 _min_version = '0.1.0'
+
+#from . import _p3
+# python version
 _p3 = False
 if sys.version_info > (3, 0):
     _p3 = True
@@ -58,9 +61,10 @@ if LooseVersion(_mplv) >= LooseVersion('2.2.0'):
     _mpl_non_adjust = True
 
 
+
 class DataBrowserNew:
     def __init__(self, fpgn, nav_im=None, cmap=None, colour_index=None,
-                 nav_im_dict=None, fpd_check=True):
+                 nav_im_dict=None, fpd_check=True, fig_1 = None, fig_2 = None):
         '''
         Navigate fpd data set.
         
@@ -92,6 +96,8 @@ class DataBrowserNew:
         '''
 
         import fpd
+        self.fig_1 = fig_1
+        self.fig_2 = fig_2
         numpy_array = isinstance(fpgn, np.ndarray) or isinstance(
             fpgn, fpd.fpd_file.MerlinBinary)
         dask_array = "dask.array.core.Array" in str(type(fpgn))
@@ -187,9 +193,14 @@ class DataBrowserNew:
         kwd = dict(adjustable='box-forced', aspect='equal')
         if _mpl_non_adjust:
             _ = kwd.pop('adjustable')
+        if self.fig_1:
+            plt = self.fig_1            
+            ax = plt.subplots(subplot_kw=kwd)
+            self.f_nav = plt.canvas
+        else:
+            self.f_nav, ax = plt.subplots(subplot_kw=kwd)
+            self.f_nav.canvas.set_window_title('nav')
 
-        self.f_nav, ax = plt.subplots(subplot_kw=kwd)
-        self.f_nav.canvas.set_window_title('nav')
 
         d = {'cmap': 'gray'}
         if self.nav_im_dict is not None:
@@ -208,15 +219,19 @@ class DataBrowserNew:
                                           fc='none', lw=2, picker=4)
         ax.add_patch(self.rect)
         plt.tight_layout()
-        plt.draw()
+        #plt.draw()
 
     def plot_dif(self):
         kwd = dict(adjustable='box-forced', aspect='equal')
         if _mpl_non_adjust:
             _ = kwd.pop('adjustable')
-
-        self.f_dif, ax = plt.subplots(subplot_kw=kwd)
-        self.f_dif.canvas.set_window_title('dif')
+        if self.fig_2:
+            plt = self.fig_2
+            ax = plt.subplots(subplot_kw=kwd)
+            self.f_dif = plt.canvas
+        else:
+            self.f_dif, ax = plt.subplots(subplot_kw=kwd)
+            self.f_dif.canvas.set_window_title('dif')
 
         if self.plot_data.max() < 1:
             norm = None
@@ -232,7 +247,7 @@ class DataBrowserNew:
         self.update_dif_plot()
 
         plt.tight_layout()
-        plt.draw()
+        #plt.draw()
 
     def connect(self):
         'connect to all the events we need'
@@ -243,10 +258,10 @@ class DataBrowserNew:
         self.cidmotion = self.rect.figure.canvas.mpl_connect(
             'motion_notify_event', self.on_motion)
 
-        self.cid_f_nav = self.f_nav.canvas.mpl_connect(
-            'close_event', self.handle_close)
-        self.cid_f_dif = self.f_dif.canvas.mpl_connect(
-            'close_event', self.handle_close)
+        # self.cid_f_nav = self.f_nav.canvas.mpl_connect(
+        #     'close_event', self.handle_close)
+        # self.cid_f_dif = self.f_dif.canvas.mpl_connect(
+        #     'close_event', self.handle_close)
 
     def handle_close(self, e):
         if self.closef == True:
@@ -382,5 +397,5 @@ class DataBrowserNew:
         self.rect.figure.canvas.mpl_disconnect(self.cidrelease)
         self.rect.figure.canvas.mpl_disconnect(self.cidmotion)
 
-        self.f_nav.canvas.mpl_disconnect(self.cid_f_nav)
-        self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
+        # self.f_nav.canvas.mpl_disconnect(self.cid_f_nav)
+        # self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
