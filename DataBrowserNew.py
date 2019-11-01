@@ -219,7 +219,8 @@ class DataBrowserNew:
                                           fc='none', lw=2, picker=4)
         ax.add_patch(self.rect)
         plt.tight_layout()
-        #plt.draw()
+        if not self.fig_1:
+            plt.draw()
 
     def plot_dif(self):
         kwd = dict(adjustable='box-forced', aspect='equal')
@@ -247,7 +248,8 @@ class DataBrowserNew:
         self.update_dif_plot()
 
         plt.tight_layout()
-        #plt.draw()
+        if not self.fig_2:
+            plt.draw()
 
     def connect(self):
         'connect to all the events we need'
@@ -257,11 +259,12 @@ class DataBrowserNew:
             'button_release_event', self.on_release)
         self.cidmotion = self.rect.figure.canvas.mpl_connect(
             'motion_notify_event', self.on_motion)
-
-        # self.cid_f_nav = self.f_nav.canvas.mpl_connect(
-        #     'close_event', self.handle_close)
-        # self.cid_f_dif = self.f_dif.canvas.mpl_connect(
-        #     'close_event', self.handle_close)
+        if not self.fig_1:
+            self.cid_f_nav = self.f_nav.canvas.mpl_connect(
+                'close_event', self.handle_close)
+        if not self.fig_2:
+            self.cid_f_dif = self.f_dif.canvas.mpl_connect(
+                'close_event', self.handle_close)
 
     def handle_close(self, e):
         if self.closef == True:
@@ -397,5 +400,7 @@ class DataBrowserNew:
         self.rect.figure.canvas.mpl_disconnect(self.cidrelease)
         self.rect.figure.canvas.mpl_disconnect(self.cidmotion)
 
-        # self.f_nav.canvas.mpl_disconnect(self.cid_f_nav)
-        # self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
+        if not self.fig_1:
+            self.f_nav.canvas.mpl_disconnect(self.cid_f_nav)
+        if not self.fig_2:
+            self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
