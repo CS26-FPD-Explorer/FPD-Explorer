@@ -5,7 +5,7 @@ os.environ["OMP_NUM_THREADS"] = "1"
 
 import random
 import matplotlib
-
+from DataBrowserNew import DataBrowserNew
 import scipy as sp
 import numpy as np
 # Make sure that we are using QT5
@@ -33,7 +33,7 @@ class ApplicationWindow(QMainWindow):
         self.ui.setupUi(self)
         self.ui.action_dm3.triggered.connect(self.function_dm3)
         self.ui.action_mib.triggered.connect(self.function_mib)
-        self.last_path = "d:\\"
+        self.last_path = "D:/Personal/PTSD/Chemestry_data"
 
     @Slot()
     def function_dm3(self):
@@ -42,6 +42,7 @@ class ApplicationWindow(QMainWindow):
             self, 'Open file', self.last_path, "Digital Micrograph files (*.dm3)")
         self.last_path = fname
         self.dm3_path = fname
+        self.ui.DM3.clear()
         self.ui.DM3.insert(fname)
 
 
@@ -52,6 +53,7 @@ class ApplicationWindow(QMainWindow):
             self, 'Open file', self.last_path, "MERLIN binary files (*.mib)")
         self.last_path = fname
         self.mib_path = fname
+        self.ui.MIB.clear()
         self.ui.MIB.insert(fname)
 
     @Slot()
@@ -59,13 +61,14 @@ class ApplicationWindow(QMainWindow):
         self.mb = MerlinBinary(self.mib_path, self.mib_path[:-4]+".hdr",
                                self.dm3_path, row_end_skip=1)
         self.ds = self.mb.get_memmap()
-        real_skip = 4
-        recip_skip = 4
+        real_skip = 8
+        recip_skip = 8
         #real_skip, an integer, real_skip=1 loads all pixels, real_skip=n an even integer downsamples
         #Obvious values are 1 (no down-sample), 2, 4
 
         #Assign the down-sampled dataset
-        ds_sel = ds[::real_skip, ::real_skip, ::recip_skip, ::recip_skip]
+        self.ds_sel = self.ds[::real_skip,
+                                ::real_skip, ::recip_skip, ::recip_skip]
         #remove # above to reduce total file loading - last indice is amount to skip by.
         #Coordinate order is y,x,ky,kx
         #i.e. reduce real and recip space pixel count in memory
@@ -73,13 +76,12 @@ class ApplicationWindow(QMainWindow):
 
         #Calulate some useful summed images for use in the DataBrowser (real space)
         # or in the VADF browser (recip space)
-        sum_im = fpdp.sum_im(ds_sel, 16, 16)
+        self.sum_im = fpdp.sum_im(self.ds_sel, 16, 16)
         #compute summed real space image
-        sum_dif = fpdp.sum_dif(ds_sel, 16, 16)
+        self.sum_dif = fpdp.sum_dif(self.ds_sel, 16, 16)
 
 
-        b = DataBrowser(ds_sel, nav_im=sum_im)
-
+        b = DataBrowserNew(self.ds_sel, nav_im=self.sum_im)
         #QApplication.quit()
     def fileQuit(self):
         self.close()
