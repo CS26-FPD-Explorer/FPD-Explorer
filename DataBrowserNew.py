@@ -86,7 +86,14 @@ class DataBrowserNew:
             Keyword arguments passed to the navigation imshow call.
         fpd_check : bool
             If True, the file format version is checked.
-
+        fig_1 : Figure
+            Figure of the place where the navigation image is plotted
+            If set it will used the given figure to draw the data.
+            otherwise it will draw normally
+        fig_2 : Figure
+            Figure of the place where the difference image is plotted
+            If set it will used the given figure to draw the data.
+            otherwise it will draw normally
         TODO
         ----
         log / linear norms
@@ -96,8 +103,6 @@ class DataBrowserNew:
         '''
 
         import fpd
-        self.fig_1 = fig_1
-        self.fig_2 = fig_2
         numpy_array = isinstance(fpgn, np.ndarray) or isinstance(
             fpgn, fpd.fpd_file.MerlinBinary)
         dask_array = "dask.array.core.Array" in str(type(fpgn))
@@ -123,6 +128,9 @@ class DataBrowserNew:
             self.h5f_ds = fpgn
 
         self.nav_im_dict = nav_im_dict
+
+        self.fig_1 = fig_1
+        self.fig_2 = fig_2
 
         # get data shape info
         self.scanY, self.scanX = self.h5f_ds.shape[:2]
@@ -193,6 +201,7 @@ class DataBrowserNew:
         kwd = dict(adjustable='box-forced', aspect='equal')
         if _mpl_non_adjust:
             _ = kwd.pop('adjustable')
+        
         if self.fig_1:
             plt = self.fig_1            
             ax = plt.subplots(subplot_kw=kwd)
