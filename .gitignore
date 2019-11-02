@@ -1,5 +1,16 @@
-# Python Files
-*.pyc
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VS Code
+.vscode/
+
+# Eclipse Core
+.project
+
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
 
 # Compiled Documents
 *.pdf
