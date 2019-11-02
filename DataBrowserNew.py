@@ -183,7 +183,7 @@ class DataBrowserNew:
         self.press = None
         self.background = None
         self.plot_nav_im()
-
+        
         # cmap
         if cmap is None:
             try:
@@ -230,6 +230,10 @@ class DataBrowserNew:
         plt.tight_layout()
         if not self.fig_1:
             plt.draw()
+        # redraw the full figure
+        # fixes navigation image not showing until clicked
+        # also works in __init__ below self.plot_nav_im()
+        self.rect.figure.canvas.draw()
 
     def plot_dif(self):
         kwd = dict(adjustable='box-forced', aspect='equal')
