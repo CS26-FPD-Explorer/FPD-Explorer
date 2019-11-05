@@ -37,7 +37,7 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def function_dm3(self):
-        print("HELOO")
+        print("print from function_dm3")
         fname, fother = QFileDialog.getOpenFileName(
             self, 'Open file', self.last_path, "Digital Micrograph files (*.dm3)")
         self.last_path = fname
@@ -48,7 +48,7 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def function_mib(self):
-        print("HELOO")
+        print("print from function_mib")
         fname, fother = QFileDialog.getOpenFileName(
             self, 'Open file', self.last_path, "MERLIN binary files (*.mib)")
         self.last_path = fname
@@ -58,8 +58,23 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def LoadFiles(self):
-        self.mb = MerlinBinary(self.mib_path, self.mib_path[:-4]+".hdr",
-                               self.dm3_path, row_end_skip=1)
+        # QUICK FIX FOR NO DM3 SUPPLIED, MORE THOROUGH FILE CHECKING TO-DO
+        try:
+            dm3 = self.dm3_path
+        except AttributeError:
+            dm3 = []
+        mib = self.mib_path
+        hdr = self.mib_path[:-4]+".hdr"
+        if dm3:
+            # with dm3
+            print("working with dm3")
+            self.mb = MerlinBinary(mib, hdr, dm3, row_end_skip=1)
+        else:
+            # without dm3
+            print("working without dm3")
+            self.mb = MerlinBinary(mib, hdr, dm3, scanYalu=(256, 'y', 'na'),
+                                   scanXalu=(256, 'x', 'na'), row_end_skip=1)
+        
         self.ds = self.mb.get_memmap()
         real_skip = 8
         recip_skip = 8

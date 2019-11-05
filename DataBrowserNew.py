@@ -91,7 +91,7 @@ class DataBrowserNew:
             If set it will used the given figure to draw the data.
             otherwise it will draw normally
         fig_2 : Figure
-            Figure of the place where the difference image is plotted
+            Figure of the place where the diffraction image is plotted
             If set it will used the given figure to draw the data.
             otherwise it will draw normally
         TODO
