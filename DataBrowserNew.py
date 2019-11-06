@@ -64,7 +64,7 @@ if LooseVersion(_mplv) >= LooseVersion('2.2.0'):
 
 class DataBrowserNew:
     def __init__(self, fpgn, nav_im=None, cmap=None, colour_index=None,
-                 nav_im_dict=None, fpd_check=True, fig_1 = None, fig_2 = None):
+                 nav_im_dict=None, fpd_check=True, widget_1 = None, widget_2 = None):
         '''
         Navigate fpd data set.
         
@@ -86,11 +86,11 @@ class DataBrowserNew:
             Keyword arguments passed to the navigation imshow call.
         fpd_check : bool
             If True, the file format version is checked.
-        fig_1 : Figure
+        widget_1 : Figure
             Figure of the place where the navigation image is plotted
             If set it will used the given figure to draw the data.
             otherwise it will draw normally
-        fig_2 : Figure
+        widget_2 : Figure
             Figure of the place where the diffraction image is plotted
             If set it will used the given figure to draw the data.
             otherwise it will draw normally
@@ -129,8 +129,8 @@ class DataBrowserNew:
 
         self.nav_im_dict = nav_im_dict
 
-        self.fig_1 = fig_1
-        self.fig_2 = fig_2
+        self.widget_1 = widget_1
+        self.widget_2 = widget_2
 
         # get data shape info
         self.scanY, self.scanX = self.h5f_ds.shape[:2]
@@ -202,8 +202,9 @@ class DataBrowserNew:
         if _mpl_non_adjust:
             _ = kwd.pop('adjustable')
         
-        if self.fig_1:
-            plt = self.fig_1            
+        if self.widget_1:
+            plt = self.widget_1.get_fig()
+            plt.clf()
             ax = plt.subplots(subplot_kw=kwd)
             self.f_nav = plt.canvas
         else:
@@ -228,7 +229,7 @@ class DataBrowserNew:
                                           fc='none', lw=2, picker=4)
         ax.add_patch(self.rect)
         plt.tight_layout()
-        if not self.fig_1:
+        if not self.widget_1:
             plt.draw()
         # redraw the full figure
         # fixes navigation image not showing until clicked
@@ -239,8 +240,9 @@ class DataBrowserNew:
         kwd = dict(adjustable='box-forced', aspect='equal')
         if _mpl_non_adjust:
             _ = kwd.pop('adjustable')
-        if self.fig_2:
-            plt = self.fig_2
+        if self.widget_2:
+            plt = self.widget_2.get_fig()
+            plt.clf()
             ax = plt.subplots(subplot_kw=kwd)
             self.f_dif = plt.canvas
         else:
@@ -261,7 +263,7 @@ class DataBrowserNew:
         self.update_dif_plot()
 
         plt.tight_layout()
-        if not self.fig_2:
+        if not self.widget_2:
             plt.draw()
 
     def connect(self):
@@ -272,10 +274,10 @@ class DataBrowserNew:
             'button_release_event', self.on_release)
         self.cidmotion = self.rect.figure.canvas.mpl_connect(
             'motion_notify_event', self.on_motion)
-        if not self.fig_1:
+        if not self.widget_1:
             self.cid_f_nav = self.f_nav.canvas.mpl_connect(
                 'close_event', self.handle_close)
-        if not self.fig_2:
+        if not self.widget_2:
             self.cid_f_dif = self.f_dif.canvas.mpl_connect(
                 'close_event', self.handle_close)
 
@@ -413,7 +415,7 @@ class DataBrowserNew:
         self.rect.figure.canvas.mpl_disconnect(self.cidrelease)
         self.rect.figure.canvas.mpl_disconnect(self.cidmotion)
 
-        if not self.fig_1:
+        if not self.widget_1:
             self.f_nav.canvas.mpl_disconnect(self.cid_f_nav)
-        if not self.fig_2:
+        if not self.widget_2:
             self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
