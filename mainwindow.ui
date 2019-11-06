@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1087</width>
+    <width>1088</width>
     <height>635</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>FpdExplorer</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -41,8 +41,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1087</width>
-     <height>26</height>
+     <width>1088</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -71,7 +71,7 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QDockWidget" name="dockWidget_8">
+  <widget class="QDockWidget" name="navigationWidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
      <horstretch>2</horstretch>
@@ -98,14 +98,14 @@
      <item row="0" column="0">
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
-        <widget class="MyStaticMplCanvas" name="widget_3" native="true"/>
+        <widget class="MyMplCanvas" name="widget_3" native="true"/>
        </item>
       </layout>
      </item>
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget_9">
+  <widget class="QDockWidget" name="diffractionWidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
      <horstretch>2</horstretch>
@@ -129,7 +129,7 @@
      <item row="0" column="0">
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="MyDynamicMplCanvas" name="widget_4" native="true"/>
+        <widget class="MyMplCanvas" name="widget_4" native="true"/>
        </item>
       </layout>
      </item>
@@ -150,13 +150,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>MyStaticMplCanvas</class>
-   <extends>QWidget</extends>
-   <header>figurecanvas</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>MyDynamicMplCanvas</class>
+   <class>MyMplCanvas</class>
    <extends>QWidget</extends>
    <header>figurecanvas</header>
    <container>1</container>

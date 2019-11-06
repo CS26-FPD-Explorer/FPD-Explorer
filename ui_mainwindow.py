@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\Personal\FirstApp\mainwindow.ui',
-# licensing of 'd:\Personal\FirstApp\mainwindow.ui' applies.
+# Form implementation generated from reading ui file '/home/ubb/Documents/cs26-main/mainwindow.ui',
+# licensing of '/home/ubb/Documents/cs26-main/mainwindow.ui' applies.
 #
-# Created: Sun Oct 27 21:41:05 2019
-#      by: pyside2-uic  running on PySide2 5.13.0
+# Created: Wed Nov  6 12:26:46 2019
+#      by: pyside2-uic  running on PySide2 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1087, 635)
+        MainWindow.resize(1088, 635)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -34,7 +34,7 @@ class Ui_MainWindow(object):
         self.gridLayout_5.addWidget(self.MIB, 0, 1, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1087, 26))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1088, 21))
         self.menuBar.setObjectName("menuBar")
         self.menu_file = QtWidgets.QMenu(self.menuBar)
         self.menu_file.setObjectName("menu_file")
@@ -44,49 +44,49 @@ class Ui_MainWindow(object):
         self.toolBar = QtWidgets.QToolBar(MainWindow)
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
-        self.dockWidget_8 = QtWidgets.QDockWidget(MainWindow)
+        self.navigationWidget = QtWidgets.QDockWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(2)
         sizePolicy.setVerticalStretch(2)
-        sizePolicy.setHeightForWidth(self.dockWidget_8.sizePolicy().hasHeightForWidth())
-        self.dockWidget_8.setSizePolicy(sizePolicy)
-        self.dockWidget_8.setMinimumSize(QtCore.QSize(541, 541))
-        self.dockWidget_8.setFloating(False)
-        self.dockWidget_8.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
-        self.dockWidget_8.setObjectName("dockWidget_8")
+        sizePolicy.setHeightForWidth(self.navigationWidget.sizePolicy().hasHeightForWidth())
+        self.navigationWidget.setSizePolicy(sizePolicy)
+        self.navigationWidget.setMinimumSize(QtCore.QSize(541, 541))
+        self.navigationWidget.setFloating(False)
+        self.navigationWidget.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
+        self.navigationWidget.setObjectName("navigationWidget")
         self.dockWidgetContents_8 = QtWidgets.QWidget()
         self.dockWidgetContents_8.setObjectName("dockWidgetContents_8")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.dockWidgetContents_8)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
-        self.widget_3 = MyStaticMplCanvas(self.dockWidgetContents_8)
+        self.widget_3 = MyMplCanvas(self.dockWidgetContents_8)
         self.widget_3.setObjectName("widget_3")
         self.gridLayout.addWidget(self.widget_3, 0, 0, 1, 1)
         self.gridLayout_4.addLayout(self.gridLayout, 0, 0, 1, 1)
-        self.dockWidget_8.setWidget(self.dockWidgetContents_8)
-        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(4), self.dockWidget_8)
-        self.dockWidget_9 = QtWidgets.QDockWidget(MainWindow)
+        self.navigationWidget.setWidget(self.dockWidgetContents_8)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(4), self.navigationWidget)
+        self.diffractionWidget = QtWidgets.QDockWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(2)
         sizePolicy.setVerticalStretch(2)
-        sizePolicy.setHeightForWidth(self.dockWidget_9.sizePolicy().hasHeightForWidth())
-        self.dockWidget_9.setSizePolicy(sizePolicy)
-        self.dockWidget_9.setMinimumSize(QtCore.QSize(541, 541))
-        self.dockWidget_9.setFloating(False)
-        self.dockWidget_9.setObjectName("dockWidget_9")
+        sizePolicy.setHeightForWidth(self.diffractionWidget.sizePolicy().hasHeightForWidth())
+        self.diffractionWidget.setSizePolicy(sizePolicy)
+        self.diffractionWidget.setMinimumSize(QtCore.QSize(541, 541))
+        self.diffractionWidget.setFloating(False)
+        self.diffractionWidget.setObjectName("diffractionWidget")
         self.dockWidgetContents_9 = QtWidgets.QWidget()
         self.dockWidgetContents_9.setObjectName("dockWidgetContents_9")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.dockWidgetContents_9)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.widget_4 = MyDynamicMplCanvas(self.dockWidgetContents_9)
+        self.widget_4 = MyMplCanvas(self.dockWidgetContents_9)
         self.widget_4.setObjectName("widget_4")
         self.gridLayout_2.addWidget(self.widget_4, 0, 0, 1, 1)
         self.gridLayout_3.addLayout(self.gridLayout_2, 0, 0, 1, 1)
-        self.dockWidget_9.setWidget(self.dockWidgetContents_9)
-        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(4), self.dockWidget_9)
+        self.diffractionWidget.setWidget(self.dockWidgetContents_9)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(4), self.diffractionWidget)
         self.action_dm3 = QtWidgets.QAction(MainWindow)
         self.action_dm3.setObjectName("action_dm3")
         self.action_mib = QtWidgets.QAction(MainWindow)
@@ -94,14 +94,14 @@ class Ui_MainWindow(object):
         self.menu_Open.addAction(self.action_dm3)
         self.menu_Open.addAction(self.action_mib)
         self.menu_file.addAction(self.menu_Open.menuAction())
-
         self.menuBar.addAction(self.menu_file.menuAction())
+
         self.retranslateUi(MainWindow)
         QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), MainWindow.LoadFiles)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "MainWindow", None, -1))
+        MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "FpdExplorer", None, -1))
         self.pushButton.setText(QtWidgets.QApplication.translate("MainWindow", "PushButton", None, -1))
         self.menu_file.setTitle(QtWidgets.QApplication.translate("MainWindow", "&File", None, -1))
         self.menu_Open.setTitle(QtWidgets.QApplication.translate("MainWindow", "&Open", None, -1))
@@ -109,4 +109,4 @@ class Ui_MainWindow(object):
         self.action_dm3.setText(QtWidgets.QApplication.translate("MainWindow", "&.dm3", None, -1))
         self.action_mib.setText(QtWidgets.QApplication.translate("MainWindow", "&.mib", None, -1))
 
-from figurecanvas import MyStaticMplCanvas, MyDynamicMplCanvas
+from figurecanvas import MyMplCanvas
