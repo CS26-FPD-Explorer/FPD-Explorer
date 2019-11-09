@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1088</width>
-    <height>635</height>
+    <height>636</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,10 +29,42 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="QLineEdit" name="DM3"/>
+     <widget class="QLineEdit" name="DM3">
+      <property name="inputMask">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="placeholderText">
+       <string>DM3 Path</string>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="MIB"/>
+     <widget class="QLineEdit" name="MIB">
+      <property name="inputMask">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="placeholderText">
+       <string>Merlin Binary Path</string>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -42,7 +74,7 @@
      <x>0</x>
      <y>0</y>
      <width>1088</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -55,10 +87,18 @@
      </property>
      <addaction name="action_dm3"/>
      <addaction name="action_mib"/>
+     <addaction name="action_hdf5"/>
     </widget>
     <addaction name="menu_Open"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="action_about"/>
+   </widget>
    <addaction name="menu_file"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -89,6 +129,9 @@
    </property>
    <property name="features">
     <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="windowTitle">
+    <string>Navigation</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>4</number>
@@ -121,6 +164,9 @@
    <property name="floating">
     <bool>false</bool>
    </property>
+   <property name="windowTitle">
+    <string>Diffraction</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>4</number>
    </attribute>
@@ -144,6 +190,16 @@
   <action name="action_mib">
    <property name="text">
     <string>&amp;.mib</string>
+   </property>
+  </action>
+  <action name="action_hdf5">
+   <property name="text">
+    <string>&amp;.hdf5</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>&amp;About</string>
    </property>
   </action>
  </widget>
@@ -170,12 +226,46 @@
     </hint>
     <hint type="destinationlabel">
      <x>1021</x>
-     <y>708</y>
+     <y>635</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>DM3</sender>
+   <signal>cursorPositionChanged(int,int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>function_dm3()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>611</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>290</x>
+     <y>676</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MIB</sender>
+   <signal>cursorPositionChanged(int,int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>function_mib()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>611</x>
+     <y>609</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>617</x>
+     <y>679</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
   <slot>LoadFiles()</slot>
+  <slot>function_dm3()</slot>
+  <slot>function_mib()</slot>
  </slots>
 </ui>

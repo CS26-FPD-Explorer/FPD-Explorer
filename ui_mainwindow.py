@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ubb/Documents/cs26-main/mainwindow.ui',
-# licensing of '/home/ubb/Documents/cs26-main/mainwindow.ui' applies.
+# Form implementation generated from reading ui file 'd:\Personal\PTSD\cs26-main\mainwindow.ui',
+# licensing of 'd:\Personal\PTSD\cs26-main\mainwindow.ui' applies.
 #
-# Created: Wed Nov  6 12:26:46 2019
-#      by: pyside2-uic  running on PySide2 5.13.1
+# Created: Sat Nov  9 22:37:31 2019
+#      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1088, 635)
+        MainWindow.resize(1088, 636)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -27,19 +27,29 @@ class Ui_MainWindow(object):
         self.pushButton.setObjectName("pushButton")
         self.gridLayout_5.addWidget(self.pushButton, 0, 2, 1, 1)
         self.DM3 = QtWidgets.QLineEdit(self.centralWidget)
+        self.DM3.setInputMask("")
+        self.DM3.setText("")
+        self.DM3.setReadOnly(True)
+        self.DM3.setClearButtonEnabled(True)
         self.DM3.setObjectName("DM3")
         self.gridLayout_5.addWidget(self.DM3, 0, 0, 1, 1)
         self.MIB = QtWidgets.QLineEdit(self.centralWidget)
+        self.MIB.setInputMask("")
+        self.MIB.setText("")
+        self.MIB.setReadOnly(True)
+        self.MIB.setClearButtonEnabled(True)
         self.MIB.setObjectName("MIB")
         self.gridLayout_5.addWidget(self.MIB, 0, 1, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1088, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1088, 26))
         self.menuBar.setObjectName("menuBar")
         self.menu_file = QtWidgets.QMenu(self.menuBar)
         self.menu_file.setObjectName("menu_file")
         self.menu_Open = QtWidgets.QMenu(self.menu_file)
         self.menu_Open.setObjectName("menu_Open")
+        self.menuHelp = QtWidgets.QMenu(self.menuBar)
+        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menuBar)
         self.toolBar = QtWidgets.QToolBar(MainWindow)
         self.toolBar.setObjectName("toolBar")
@@ -91,22 +101,38 @@ class Ui_MainWindow(object):
         self.action_dm3.setObjectName("action_dm3")
         self.action_mib = QtWidgets.QAction(MainWindow)
         self.action_mib.setObjectName("action_mib")
+        self.action_hdf5 = QtWidgets.QAction(MainWindow)
+        self.action_hdf5.setObjectName("action_hdf5")
+        self.action_about = QtWidgets.QAction(MainWindow)
+        self.action_about.setObjectName("action_about")
         self.menu_Open.addAction(self.action_dm3)
         self.menu_Open.addAction(self.action_mib)
+        self.menu_Open.addAction(self.action_hdf5)
         self.menu_file.addAction(self.menu_Open.menuAction())
+        self.menuHelp.addAction(self.action_about)
         self.menuBar.addAction(self.menu_file.menuAction())
+        self.menuBar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), MainWindow.LoadFiles)
+        QtCore.QObject.connect(self.DM3, QtCore.SIGNAL("cursorPositionChanged(int,int)"), MainWindow.function_dm3)
+        QtCore.QObject.connect(self.MIB, QtCore.SIGNAL("cursorPositionChanged(int,int)"), MainWindow.function_mib)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "FpdExplorer", None, -1))
         self.pushButton.setText(QtWidgets.QApplication.translate("MainWindow", "PushButton", None, -1))
+        self.DM3.setPlaceholderText(QtWidgets.QApplication.translate("MainWindow", "DM3 Path", None, -1))
+        self.MIB.setPlaceholderText(QtWidgets.QApplication.translate("MainWindow", "Merlin Binary Path", None, -1))
         self.menu_file.setTitle(QtWidgets.QApplication.translate("MainWindow", "&File", None, -1))
         self.menu_Open.setTitle(QtWidgets.QApplication.translate("MainWindow", "&Open", None, -1))
+        self.menuHelp.setTitle(QtWidgets.QApplication.translate("MainWindow", "Help", None, -1))
         self.toolBar.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "toolBar", None, -1))
+        self.navigationWidget.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Navigation", None, -1))
+        self.diffractionWidget.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Diffraction", None, -1))
         self.action_dm3.setText(QtWidgets.QApplication.translate("MainWindow", "&.dm3", None, -1))
         self.action_mib.setText(QtWidgets.QApplication.translate("MainWindow", "&.mib", None, -1))
+        self.action_hdf5.setText(QtWidgets.QApplication.translate("MainWindow", "&.hdf5", None, -1))
+        self.action_about.setText(QtWidgets.QApplication.translate("MainWindow", "&About", None, -1))
 
 from figurecanvas import MyMplCanvas
