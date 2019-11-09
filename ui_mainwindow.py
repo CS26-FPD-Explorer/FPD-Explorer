@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'd:\Personal\PTSD\cs26-main\mainwindow.ui',
 # licensing of 'd:\Personal\PTSD\cs26-main\mainwindow.ui' applies.
 #
-# Created: Sat Nov  9 22:37:31 2019
+# Created: Sat Nov  9 22:51:48 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -115,8 +115,6 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), MainWindow.LoadFiles)
-        QtCore.QObject.connect(self.DM3, QtCore.SIGNAL("cursorPositionChanged(int,int)"), MainWindow.function_dm3)
-        QtCore.QObject.connect(self.MIB, QtCore.SIGNAL("cursorPositionChanged(int,int)"), MainWindow.function_mib)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
