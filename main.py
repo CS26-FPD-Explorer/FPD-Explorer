@@ -41,11 +41,10 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def function_hdf5(self):
-        print("print from function_dm3")
         fname, fother = QFileDialog.getOpenFileName(
-            self, 'Open file', self.last_path, "Digital Micrograph files (*.dm3)")
+            self, 'Open file', self.last_path, "HDF5 (*.hdf5)")
         self.last_path = fname
-        self.f = h5py.File(hdf5_fn, 'r')
+        self.f = h5py.File(fname, 'r')
         self.ds = self.f['fpd_expt/fpd_data/data']
         self.sum_im = self.f['fpd_expt/fpd_sum_im/data'].value
         self.sum_dif = self.f['fpd_expt/fpd_sum_dif/data'].value
