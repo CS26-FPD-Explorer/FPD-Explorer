@@ -230,38 +230,6 @@
     </hint>
    </hints>
   </connection>
-  <connection>
-   <sender>DM3</sender>
-   <signal>cursorPositionChanged(int,int)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>function_dm3()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>293</x>
-     <y>611</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>290</x>
-     <y>676</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MIB</sender>
-   <signal>cursorPositionChanged(int,int)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>function_mib()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>611</x>
-     <y>609</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>617</x>
-     <y>679</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
  <slots>
   <slot>LoadFiles()</slot>

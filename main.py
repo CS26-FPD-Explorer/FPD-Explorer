@@ -44,11 +44,14 @@ class ApplicationWindow(QMainWindow):
         fname, fother = QFileDialog.getOpenFileName(
             self, 'Open file', self.last_path, "HDF5 (*.hdf5)")
         self.last_path = fname
+        #ask whats the point of doing that 
         self.f = h5py.File(fname, 'r')
         self.ds = self.f['fpd_expt/fpd_data/data']
         self.sum_im = self.f['fpd_expt/fpd_sum_im/data'].value
         self.sum_dif = self.f['fpd_expt/fpd_sum_dif/data'].value
-        self._data_browsing(sum_im, sum_dif)
+        # since it is never used
+        b = DataBrowserNew(fname, widget_1=self.ui.widget_3,
+                        widget_2=self.ui.widget_4)
 
 
 
@@ -110,11 +113,9 @@ class ApplicationWindow(QMainWindow):
         # or in the VADF browser (recip space)
         self.sum_im = fpdp.sum_im(self.ds_sel, 16, 16)
         #compute summed real space image
+        #ask what the point of this one
         self.sum_dif = fpdp.sum_dif(self.ds_sel, 16, 16)
-        self._data_browsing(sum_im, sum_dif)
-
-    def _data_browsing(self, sum_im, sum_dif):
-        b = DataBrowserNew(self.ds_sel, nav_im=self.sum_im,
+        b = DataBrowserNew(self.ds_sel, nav_im=sum_im,
                            widget_1=self.ui.widget_3, widget_2=self.ui.widget_4)
 
 
