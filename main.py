@@ -63,25 +63,30 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def function_dm3(self):
         print("print from function_dm3")
-        fname, fother = QFileDialog.getOpenFileName(
-            self, 'Open file', self.last_path, "Digital Micrograph files (*.dm3)")
-        if fname:
-            self.last_path = fname
-            self.dm3_path = fname
-            self.ui.DM3.clear()
-            self.ui.DM3.insert(fname)
+        while True:
+            fname, fother = QFileDialog.getOpenFileName(
+                self, 'Open file', self.last_path, "Digital Micrograph files (*.dm3)")
+            if fname:
+                if fname[-3, :] == "dm3":
+                    self.last_path = fname
+                    self.dm3_path = fname
+                    self.ui.DM3.clear()
+                    self.ui.DM3.insert(fname)
+                    break
 
 
     @Slot()
     def function_mib(self):
         print("print from function_mib")
-        fname, fother = QFileDialog.getOpenFileName(
+        while True:
+            fname, fother = QFileDialog.getOpenFileName(
             self, 'Open file', self.last_path, "MERLIN binary files (*.mib)")
-        if fname:
-            self.last_path = fname
-            self.mib_path = fname
-            self.ui.MIB.clear()
-            self.ui.MIB.insert(fname)
+            if fname and fname[-3,:] == "mib":
+                self.last_path = fname
+                self.mib_path = fname
+                self.ui.MIB.clear()
+                self.ui.MIB.insert(fname)
+                break
 
     @Slot()
     def LoadFiles(self):
