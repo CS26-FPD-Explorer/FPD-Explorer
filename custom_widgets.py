@@ -67,9 +67,15 @@ class CustomInputForm(QtWidgets.QDialog):
 
     @Slot()
     def restore_default(self):
+        print("restoring to default")
         self.ui.Xsize.setValue(self.default_x)
         self.ui.Ysize.setValue(self.default_y)
 
+    @Slot()
+    def accept(self):
+        print("Accepted")
+        return super().accept()
+        
     @Slot()
     def reject(self):
         self.restore_default()
