@@ -208,7 +208,7 @@
   <customwidget>
    <class>MyMplCanvas</class>
    <extends>QWidget</extends>
-   <header>figurecanvas</header>
+   <header>custom_widgets</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
