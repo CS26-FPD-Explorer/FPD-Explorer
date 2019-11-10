@@ -185,7 +185,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>251</x>
-     <y>147</y>
+     <y>113</y>
     </hint>
    </hints>
   </connection>
@@ -201,7 +201,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>338</x>
-     <y>146</y>
+     <y>113</y>
     </hint>
    </hints>
   </connection>
@@ -212,12 +212,12 @@
    <slot>update_value(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>204</x>
+     <x>304</x>
      <y>22</y>
     </hint>
     <hint type="destinationlabel">
      <x>231</x>
-     <y>-4</y>
+     <y>0</y>
     </hint>
    </hints>
   </connection>
@@ -228,12 +228,28 @@
    <slot>update_value(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>172</x>
-     <y>56</y>
+     <x>272</x>
+     <y>57</y>
     </hint>
     <hint type="destinationlabel">
-     <x>401</x>
+     <x>399</x>
      <y>67</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>InputBox</receiver>
+   <slot>restore_default()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>131</y>
     </hint>
    </hints>
   </connection>
@@ -243,5 +259,6 @@
   <slot>cancel()</slot>
   <slot>update_value(int)</slot>
   <slot>receive_value()</slot>
+  <slot>restore_default()</slot>
  </slots>
 </ui>
