@@ -211,22 +211,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>restoreButton</sender>
-   <signal>clicked()</signal>
-   <receiver>InputBox</receiver>
-   <slot>restore_default()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>82</x>
-     <y>94</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>82</x>
-     <y>164</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
    <receiver>InputBox</receiver>
@@ -255,6 +239,22 @@
     <hint type="destinationlabel">
      <x>342</x>
      <y>136</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>restoreButton</sender>
+   <signal>clicked()</signal>
+   <receiver>InputBox</receiver>
+   <slot>restore_default()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>82</x>
+     <y>94</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>82</x>
+     <y>164</y>
     </hint>
    </hints>
   </connection>
