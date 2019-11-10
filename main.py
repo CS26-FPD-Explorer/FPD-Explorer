@@ -88,6 +88,21 @@ class ApplicationWindow(QMainWindow):
         # QUICK FIX FOR NO DM3 SUPPLIED, MORE THOROUGH FILE CHECKING TO-DO
         x_value = None
         y_value = None
+        #Cherk if Mib exist
+        try:
+            mib = self.mib_path
+        except AttributeError:
+            response = QtWidgets.QMessageBox.warning(
+                self, "Warning", "<strong>We noticed you don't have a Merlin Binary File</strong> <br> Do you want to select one ?",
+                QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                QtWidgets.QMessageBox.Yes)
+            if response == QtWidgets.QMessageBox.Yes:
+                self.function_mib()  # load a .DM3 file and use it
+            else:
+                return
+
+        mib = self.mib_path
+        #Check if dm3 exist
         try:
             dm3 = self.dm3_path
         except AttributeError:
@@ -104,12 +119,11 @@ class ApplicationWindow(QMainWindow):
             else:  # load the data using custum parameter
                 widget = CustomInputForm()
                 widget.exec()
-                x = widget.ui.Xsize.value()
-                y = widget.ui.Ysize.value()
+                x = pow(2,widget.ui.Xsize.value())
+                y = pow(2, widget.ui.Ysize.value())
                 x_value = (x, 'x', 'na')
                 y_value = (y, 'y', 'na')
 
-        mib = self.mib_path
         hdr = self.mib_path[:-4]+".hdr"
         self.mb = MerlinBinary(mib, hdr, dm3, scanYalu=y_value,
                                    scanXalu=x_value, row_end_skip=1)
