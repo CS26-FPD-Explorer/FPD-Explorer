@@ -117,20 +117,21 @@ class ApplicationWindow(QMainWindow):
                 self.function_dm3()  # load a .DM3 file and use it
                 dm3 = self.dm3_path
             else:  # load the data using custum parameter
-                widget = CustomInputForm()
-                widget.exec()
-                x = pow(2,widget.ui.Xsize.value())
-                y = pow(2, widget.ui.Ysize.value())
+                x, y = self.input_form(minimum = 2)
                 x_value = (x, 'x', 'na')
                 y_value = (y, 'y', 'na')
+
+
 
         hdr = self.mib_path[:-4]+".hdr"
         self.mb = MerlinBinary(mib, hdr, dm3, scanYalu=y_value,
                                    scanXalu=x_value, row_end_skip=1)
         
         self.ds = self.mb.get_memmap()
-        real_skip = 8
-        recip_skip = 8
+        x, y = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
+                               text_y="Amount to skip for Diffraction Image")  # Check what i sthe maximum value
+        real_skip = x
+        recip_skip = y
         #real_skip, an integer, real_skip=1 loads all pixels, real_skip=n an even integer downsamples
         #Obvious values are 1 (no down-sample), 2, 4
 
@@ -151,6 +152,13 @@ class ApplicationWindow(QMainWindow):
         b = DataBrowserNew(self.ds_sel, nav_im=self.sum_im,
                            widget_1=self.ui.widget_3, widget_2=self.ui.widget_4)
 
+    def input_form(self, initial_x = 2, initial_y = 2, minimum = 0, maximum = 13, text_x = None, text_y = None):
+        widget = CustomInputForm()
+        widget.update_form(initial_x, initial_y, minimum, maximum, text_x, text_y)
+        widget.exec()
+        x = pow(2,widget.ui.Xsize.value())
+        y = pow(2, widget.ui.Ysize.value())
+        return x,y
 
     def function_about(self):
         self.about = QtWidgets.QMessageBox()

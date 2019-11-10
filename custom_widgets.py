@@ -39,11 +39,39 @@ class CustomInputForm(QtWidgets.QDialog):
         super(CustomInputForm,self).__init__()
         self.ui = Ui_InputBox()
         self.ui.setupUi(self)
+        self.default_x = self.ui.Xsize.value()
+        self.default_y = self.ui.Ysize.value()
+
+    def update_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
+        self.ui.Xsize.setRange(minimum, maximum)
+        self.ui.Ysize.setRange(minimum, maximum)
+        self.ui.Xsize.setValue(initial_x)
+        self.ui.Ysize.setValue(initial_y)
+        self.default_x = initial_x
+        self.default_y = initial_y
+
+        if text_x:
+            self.ui.Xtext.clear()
+            self.ui.Xtext.insert(text_x)
+        if text_y:
+            self.ui.Ytext.clear()
+            self.ui.Ytext.insert(text_y)
 
     @Slot(int)
     def update_value(self):
-        self.ui.xValue.clear()
-        self.ui.yValue.clear()
+        self.ui.Xvalue.clear()
+        self.ui.Yvalue.clear()
 
-        self.ui.xValue.insert("= " + str(pow(2,self.ui.Xsize.value())))
-        self.ui.yValue.insert("= " + str(pow(2,self.ui.Ysize.value())))
+        self.ui.Xvalue.insert("= " + str(pow(2,self.ui.Xsize.value())))
+        self.ui.Yvalue.insert("= " + str(pow(2,self.ui.Ysize.value())))
+
+    @Slot()
+    def restore_default(self):
+        self.ui.Xsize.setValue(self.default_x)
+        self.ui.Ysize.setValue(self.default_y)
+
+    @Slot()
+    def reject(self):
+        self.restore_default()
+        return super().reject()
+

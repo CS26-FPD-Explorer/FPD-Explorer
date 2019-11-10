@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>112</height>
+    <height>114</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>400</width>
-    <height>100</height>
+    <height>114</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>400</width>
-    <height>112</height>
+    <height>114</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
       <widget class="QSpinBox" name="Ysize">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>5</horstretch>
+         <horstretch>4</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
@@ -60,7 +60,7 @@
       <widget class="QSpinBox" name="Xsize">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>8</horstretch>
+         <horstretch>3</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
@@ -93,31 +93,12 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLineEdit" name="lineEdit_4">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="cursor">
-        <cursorShape>ArrowCursor</cursorShape>
-       </property>
-       <property name="text">
-        <string>X read size</string>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="0">
-      <widget class="QLineEdit" name="lineEdit_3">
+      <widget class="QLineEdit" name="Ytext">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>4</horstretch>
+         <verstretch>1</verstretch>
         </sizepolicy>
        </property>
        <property name="cursor">
@@ -134,13 +115,16 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QLineEdit" name="yValue">
+     <item row="0" column="2">
+      <widget class="QLineEdit" name="Xvalue">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>1</horstretch>
+         <verstretch>1</verstretch>
         </sizepolicy>
+       </property>
+       <property name="cursor">
+        <cursorShape>ArrowCursor</cursorShape>
        </property>
        <property name="text">
         <string>= 256</string>
@@ -150,19 +134,23 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QLineEdit" name="xValue">
+     <item row="0" column="0">
+      <widget class="QLineEdit" name="Xtext">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>8</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>= 256</string>
+        <string>X read size</string>
        </property>
-       <property name="readOnly">
-        <bool>true</bool>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLineEdit" name="Yvalue">
+       <property name="text">
+        <string>= 256</string>
        </property>
       </widget>
      </item>
@@ -170,8 +158,14 @@
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="locale">
+      <locale language="English" country="UnitedStates"/>
+     </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::RestoreDefaults</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
