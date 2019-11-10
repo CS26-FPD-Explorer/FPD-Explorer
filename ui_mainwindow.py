@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainwindow.ui',
 # licensing of 'mainwindow.ui' applies.
 #
-# Created: Sun Nov 10 21:26:34 2019
+# Created: Sun Nov 10 22:02:21 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -42,7 +42,7 @@ class Ui_MainWindow(object):
         self.gridLayout_5.addWidget(self.MIB, 0, 1, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1088, 26))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1088, 21))
         self.menuBar.setObjectName("menuBar")
         self.menu_file = QtWidgets.QMenu(self.menuBar)
         self.menu_file.setObjectName("menu_file")
@@ -62,7 +62,7 @@ class Ui_MainWindow(object):
         self.navigationWidget.setSizePolicy(sizePolicy)
         self.navigationWidget.setMinimumSize(QtCore.QSize(541, 541))
         self.navigationWidget.setFloating(False)
-        self.navigationWidget.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
+        self.navigationWidget.setFeatures(QtWidgets.QDockWidget.DockWidgetFloatable|QtWidgets.QDockWidget.DockWidgetMovable)
         self.navigationWidget.setObjectName("navigationWidget")
         self.dockWidgetContents_8 = QtWidgets.QWidget()
         self.dockWidgetContents_8.setObjectName("dockWidgetContents_8")
@@ -89,6 +89,7 @@ class Ui_MainWindow(object):
         self.diffractionWidget.setSizePolicy(sizePolicy)
         self.diffractionWidget.setMinimumSize(QtCore.QSize(541, 541))
         self.diffractionWidget.setFloating(False)
+        self.diffractionWidget.setFeatures(QtWidgets.QDockWidget.DockWidgetFloatable|QtWidgets.QDockWidget.DockWidgetMovable)
         self.diffractionWidget.setObjectName("diffractionWidget")
         self.dockWidgetContents_9 = QtWidgets.QWidget()
         self.dockWidgetContents_9.setObjectName("dockWidgetContents_9")
@@ -125,8 +126,6 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), MainWindow.LoadFiles)
-        QtCore.QObject.connect(self.navigationWidget, QtCore.SIGNAL("destroyed()"), self.widget_3.clear_figure)
-        QtCore.QObject.connect(self.diffractionWidget, QtCore.SIGNAL("destroyed()"), self.widget_4.clear_figure)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

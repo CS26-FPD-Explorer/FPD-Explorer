@@ -134,7 +134,7 @@ class ApplicationWindow(QMainWindow):
                                text_y="Amount to skip for Diffraction Image")  # Check what i sthe maximum value
         real_skip = x
         recip_skip = y
-        print("skipping : " + x, y)
+        print("skipping : " + str(x) + " "+  str(y))
         #real_skip, an integer, real_skip=1 loads all pixels, real_skip=n an even integer downsamples
         #Obvious values are 1 (no down-sample), 2, 4
 
