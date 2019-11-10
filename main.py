@@ -1,5 +1,8 @@
 from __future__ import unicode_literals
-from fpd.fpd_file import MerlinBinary, DataBrowser
+from custom_widgets import CustomInputForm
+from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog
+from ui_inputbox import Ui_InputBox
+from fpd.fpd_file import MerlinBinary
 import h5py
 import sys
 import os
@@ -18,9 +21,8 @@ from fpd.ransac_tools import ransac_1D_fit, ransac_im_fit
 
 # Uncomment this line before running, it breaks sphinx-gallery builds
 # from PyQt5 import QtCore, QtWidgets
-from PySide2 import QtWidgets, QtCore
+from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog
 from ui_mainwindow import Ui_MainWindow
 matplotlib.use('Qt5Agg')
 progname = os.path.basename(sys.argv[0])
@@ -33,6 +35,7 @@ class ApplicationWindow(QMainWindow):
         super(ApplicationWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
         self.ui.action_dm3.triggered.connect(self.function_dm3)
         self.ui.action_mib.triggered.connect(self.function_mib)
         self.ui.action_hdf5.triggered.connect(self.function_hdf5)
@@ -93,15 +96,16 @@ class ApplicationWindow(QMainWindow):
                 self, "Warning", "<strong>We noticed you don't have a Digital Micrograph files</strong> <br> Do you want to select one ?",
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
-            if response == QtWidgets.QMessageBox.Cancel:
+            if response == QtWidgets.QMessageBox.Cancel:#do nothing
                 return
             elif response == QtWidgets.QMessageBox.Yes:
                 self.function_dm3()  # load a .DM3 file and use it
                 dm3 = self.dm3_path
             else:  # load the data using custum parameter
-                print("No")
-                x = 256
-                y = 256
+                widget = CustomInputForm()
+                widget.exec()
+                x = widget.ui.Xsize.value()
+                y = widget.ui.Ysize.value()
                 x_value = (x, 'x', 'na')
                 y_value = (y, 'y', 'na')
 
@@ -139,7 +143,7 @@ class ApplicationWindow(QMainWindow):
         self.about.setText("This is an about box that should be filed")
         self.about.exec()
 
-qApp = QtWidgets.QApplication(sys.argv)
+qApp = QtWidgets.QApplication()
 
 aw = ApplicationWindow()
 aw.setWindowTitle("%s" % progname)

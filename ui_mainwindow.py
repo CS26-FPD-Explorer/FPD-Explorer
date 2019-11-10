@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\Personal\PTSD\cs26-main\mainwindow.ui',
-# licensing of 'd:\Personal\PTSD\cs26-main\mainwindow.ui' applies.
+# Form implementation generated from reading ui file 'mainwindow.ui',
+# licensing of 'mainwindow.ui' applies.
 #
-# Created: Sat Nov  9 22:51:48 2019
+# Created: Sun Nov 10 01:20:14 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -133,4 +133,4 @@ class Ui_MainWindow(object):
         self.action_hdf5.setText(QtWidgets.QApplication.translate("MainWindow", "&.hdf5", None, -1))
         self.action_about.setText(QtWidgets.QApplication.translate("MainWindow", "&About", None, -1))
 
-from figurecanvas import MyMplCanvas
+from custom_widgets import MyMplCanvas

@@ -9,6 +9,7 @@ import fpd
 import fpd.fpd_processing as fpdp
 import fpd.fpd_file as fpdf
 from fpd.ransac_tools import ransac_1D_fit, ransac_im_fit
+from ui_inputbox import Ui_InputBox
 
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
@@ -31,3 +32,9 @@ class MyMplCanvas(FigureCanvas):
     def get_axes(self):
         return self.axes
 
+
+class CustomInputForm(QtWidgets.QDialog):
+    def __init__(self):
+        super(CustomInputForm,self).__init__()
+        self.ui = Ui_InputBox()
+        self.ui.setupUi(self)
