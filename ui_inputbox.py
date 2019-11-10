@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'inputbox.ui',
 # licensing of 'inputbox.ui' applies.
 #
-# Created: Sun Nov 10 01:20:13 2019
+# Created: Sun Nov 10 01:24:33 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,6 +26,7 @@ class Ui_InputBox(object):
         self.lineEdit_3.setSizePolicy(sizePolicy)
         self.lineEdit_3.setCursor(QtCore.Qt.ArrowCursor)
         self.lineEdit_3.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.lineEdit_3.setReadOnly(True)
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.gridLayout_2.addWidget(self.lineEdit_3, 0, 0, 1, 1)
         self.lineEdit_4 = QtWidgets.QLineEdit(InputBox)
