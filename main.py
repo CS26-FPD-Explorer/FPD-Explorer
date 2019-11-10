@@ -128,10 +128,13 @@ class ApplicationWindow(QMainWindow):
                                    scanXalu=x_value, row_end_skip=1)
         
         self.ds = self.mb.get_memmap()
+
+
         x, y = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
                                text_y="Amount to skip for Diffraction Image")  # Check what i sthe maximum value
         real_skip = x
         recip_skip = y
+        print("skipping : " + x, y)
         #real_skip, an integer, real_skip=1 loads all pixels, real_skip=n an even integer downsamples
         #Obvious values are 1 (no down-sample), 2, 4
 
