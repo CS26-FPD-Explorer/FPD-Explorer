@@ -150,7 +150,7 @@ class ApplicationWindow(QMainWindow):
         # or in the VADF browser (recip space)
         self.sum_im = fpdp.sum_im(self.ds_sel, 16, 16)
         #compute summed real space image
-        #ask what the point of this one
+        #ask if you should be able to choose Sum_im  or sum_dif
         self.sum_dif = fpdp.sum_dif(self.ds_sel, 16, 16)
         b = DataBrowserNew(self.ds_sel, nav_im=self.sum_im,
                            widget_1=self.ui.widget_3, widget_2=self.ui.widget_4)

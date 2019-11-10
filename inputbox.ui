@@ -25,8 +25,8 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout_6">
      <item row="1" column="1">
       <widget class="QSpinBox" name="Ysize">
@@ -156,55 +156,28 @@
      </item>
     </layout>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="locale">
-      <locale language="English" country="UnitedStates"/>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::RestoreDefaults</set>
-     </property>
-     <property name="centerButtons">
-      <bool>false</bool>
-     </property>
-    </widget>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="restoreButton">
+       <property name="text">
+        <string>Restore Default</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>InputBox</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>246</x>
-     <y>91</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>251</x>
-     <y>113</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>InputBox</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>340</x>
-     <y>88</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>338</x>
-     <y>113</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>Xsize</sender>
    <signal>valueChanged(int)</signal>
@@ -238,18 +211,50 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>clicked(QAbstractButton*)</signal>
+   <sender>restoreButton</sender>
+   <signal>clicked()</signal>
    <receiver>InputBox</receiver>
    <slot>restore_default()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>103</x>
-     <y>86</y>
+     <x>82</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
-     <x>99</x>
-     <y>131</y>
+     <x>82</x>
+     <y>164</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>InputBox</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>232</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>232</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>InputBox</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>84</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>136</y>
     </hint>
    </hints>
   </connection>

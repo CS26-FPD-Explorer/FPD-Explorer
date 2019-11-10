@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'inputbox.ui',
 # licensing of 'inputbox.ui' applies.
 #
-# Created: Sun Nov 10 22:02:21 2019
+# Created: Sun Nov 10 22:39:22 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -16,8 +16,8 @@ class Ui_InputBox(object):
         InputBox.resize(400, 114)
         InputBox.setMinimumSize(QtCore.QSize(400, 114))
         InputBox.setMaximumSize(QtCore.QSize(400, 114))
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(InputBox)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.gridLayout = QtWidgets.QGridLayout(InputBox)
+        self.gridLayout.setObjectName("gridLayout")
         self.gridLayout_6 = QtWidgets.QGridLayout()
         self.gridLayout_6.setObjectName("gridLayout_6")
         self.Ysize = QtWidgets.QSpinBox(InputBox)
@@ -81,20 +81,24 @@ class Ui_InputBox(object):
         self.Yvalue = QtWidgets.QLineEdit(InputBox)
         self.Yvalue.setObjectName("Yvalue")
         self.gridLayout_6.addWidget(self.Yvalue, 1, 2, 1, 1)
-        self.verticalLayout_2.addLayout(self.gridLayout_6)
+        self.gridLayout.addLayout(self.gridLayout_6, 0, 0, 1, 1)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.restoreButton = QtWidgets.QPushButton(InputBox)
+        self.restoreButton.setObjectName("restoreButton")
+        self.horizontalLayout.addWidget(self.restoreButton)
         self.buttonBox = QtWidgets.QDialogButtonBox(InputBox)
-        self.buttonBox.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok|QtWidgets.QDialogButtonBox.RestoreDefaults)
-        self.buttonBox.setCenterButtons(False)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
-        self.verticalLayout_2.addWidget(self.buttonBox)
+        self.horizontalLayout.addWidget(self.buttonBox)
+        self.gridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
 
         self.retranslateUi(InputBox)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), InputBox.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), InputBox.reject)
         QtCore.QObject.connect(self.Xsize, QtCore.SIGNAL("valueChanged(int)"), InputBox.update_value)
         QtCore.QObject.connect(self.Ysize, QtCore.SIGNAL("valueChanged(int)"), InputBox.update_value)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("clicked(QAbstractButton*)"), InputBox.restore_default)
+        QtCore.QObject.connect(self.restoreButton, QtCore.SIGNAL("clicked()"), InputBox.restore_default)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), InputBox.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), InputBox.reject)
         QtCore.QMetaObject.connectSlotsByName(InputBox)
 
     def retranslateUi(self, InputBox):
@@ -105,4 +109,5 @@ class Ui_InputBox(object):
         self.Xvalue.setText(QtWidgets.QApplication.translate("InputBox", "= 256", None, -1))
         self.Xtext.setText(QtWidgets.QApplication.translate("InputBox", "X read size", None, -1))
         self.Yvalue.setText(QtWidgets.QApplication.translate("InputBox", "= 256", None, -1))
+        self.restoreButton.setText(QtWidgets.QApplication.translate("InputBox", "Restore Default", None, -1))
 
