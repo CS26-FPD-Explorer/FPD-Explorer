@@ -4,6 +4,7 @@ from PySide2 import QtWidgets, QtCore
 from numpy import arange, sin, pi
 import numpy as np
 import random
+from PySide2.QtCore import Signal, Slot
 
 import fpd
 import fpd.fpd_processing as fpdp
@@ -38,3 +39,11 @@ class CustomInputForm(QtWidgets.QDialog):
         super(CustomInputForm,self).__init__()
         self.ui = Ui_InputBox()
         self.ui.setupUi(self)
+
+    @Slot(int)
+    def update_value(self):
+        self.ui.xValue.clear()
+        self.ui.yValue.clear()
+
+        self.ui.xValue.insert("= " + str(pow(2,self.ui.Xsize.value())))
+        self.ui.yValue.insert("= " + str(pow(2,self.ui.Ysize.value())))

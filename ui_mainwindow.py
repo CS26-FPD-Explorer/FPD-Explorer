@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainwindow.ui',
 # licensing of 'mainwindow.ui' applies.
 #
-# Created: Sun Nov 10 01:24:33 2019
+# Created: Sun Nov 10 19:04:36 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,7 +15,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1088, 636)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
@@ -55,9 +55,9 @@ class Ui_MainWindow(object):
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.navigationWidget = QtWidgets.QDockWidget(MainWindow)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(2)
-        sizePolicy.setVerticalStretch(2)
+        sizePolicy.setVerticalStretch(50)
         sizePolicy.setHeightForWidth(self.navigationWidget.sizePolicy().hasHeightForWidth())
         self.navigationWidget.setSizePolicy(sizePolicy)
         self.navigationWidget.setMinimumSize(QtCore.QSize(541, 541))
@@ -71,15 +71,20 @@ class Ui_MainWindow(object):
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
         self.widget_3 = MyMplCanvas(self.dockWidgetContents_8)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.widget_3.sizePolicy().hasHeightForWidth())
+        self.widget_3.setSizePolicy(sizePolicy)
         self.widget_3.setObjectName("widget_3")
         self.gridLayout.addWidget(self.widget_3, 0, 0, 1, 1)
         self.gridLayout_4.addLayout(self.gridLayout, 0, 0, 1, 1)
         self.navigationWidget.setWidget(self.dockWidgetContents_8)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(4), self.navigationWidget)
         self.diffractionWidget = QtWidgets.QDockWidget(MainWindow)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(2)
-        sizePolicy.setVerticalStretch(2)
+        sizePolicy.setVerticalStretch(50)
         sizePolicy.setHeightForWidth(self.diffractionWidget.sizePolicy().hasHeightForWidth())
         self.diffractionWidget.setSizePolicy(sizePolicy)
         self.diffractionWidget.setMinimumSize(QtCore.QSize(541, 541))
@@ -92,6 +97,11 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.widget_4 = MyMplCanvas(self.dockWidgetContents_9)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.widget_4.sizePolicy().hasHeightForWidth())
+        self.widget_4.setSizePolicy(sizePolicy)
         self.widget_4.setObjectName("widget_4")
         self.gridLayout_2.addWidget(self.widget_4, 0, 0, 1, 1)
         self.gridLayout_3.addLayout(self.gridLayout_2, 0, 0, 1, 1)
