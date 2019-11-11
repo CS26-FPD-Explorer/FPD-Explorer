@@ -67,7 +67,7 @@ class ApplicationWindow(QMainWindow):
             fname, fother = QFileDialog.getOpenFileName(
                 self, 'Open file', self.last_path, "Digital Micrograph files (*.dm3)")
             if fname:
-                if fname[-3, :] == "dm3":
+                if fname[slice(-3, None)] == "dm3":
                     self.last_path = fname
                     self.dm3_path = fname
                     self.ui.DM3.clear()
@@ -81,7 +81,7 @@ class ApplicationWindow(QMainWindow):
         while True:
             fname, fother = QFileDialog.getOpenFileName(
             self, 'Open file', self.last_path, "MERLIN binary files (*.mib)")
-            if fname and fname[-3,:] == "mib":
+            if fname and fname[slice(-3, None)] == "mib":
                 self.last_path = fname
                 self.mib_path = fname
                 self.ui.MIB.clear()
