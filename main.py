@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from custom_widgets import CustomInputForm
+from custom_widgets import *
 from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog
 from ui_inputbox import Ui_InputBox
 from fpd.fpd_file import MerlinBinary
@@ -122,7 +122,7 @@ class ApplicationWindow(QMainWindow):
                 self.function_dm3()  # load a .DM3 file and use it
                 dm3 = self.dm3_path
             else:  # load the data using custum parameter
-                x, y = self.input_form(minimum = 2)
+                x, y = self.input_form(initial_x = 8, initial_y = 8, minimum = 2)
                 x_value = (x, 'x', 'na')
                 y_value = (y, 'y', 'na')
 
@@ -150,19 +150,14 @@ class ApplicationWindow(QMainWindow):
         #Coordinate order is y,x,ky,kx
         #i.e. reduce real and recip space pixel count in memory
 
-
-        #Calulate some useful summed images for use in the DataBrowser (real space)
-        # or in the VADF browser (recip space)
-        self.sum_im = fpdp.sum_im(self.ds_sel, 16, 16)
-        #compute summed real space image
-        #ask if you should be able to choose Sum_im  or sum_dif
-        self.sum_dif = fpdp.sum_dif(self.ds_sel, 16, 16)
-        b = DataBrowserNew(self.ds_sel, nav_im=self.sum_im,
+        widget = CustomLoadingForm()
+        widget.set_ds_sel(self.ds_sel)
+        widget.exec()
+        b = DataBrowserNew(self.ds_sel, nav_im=widget.sum_im,
                            widget_1=self.ui.widget_3, widget_2=self.ui.widget_4)
 
     def input_form(self, initial_x = 2, initial_y = 2, minimum = 0, maximum = 13, text_x = None, text_y = None):
-        widget = CustomInputForm()
-        widget.update_form(initial_x, initial_y, minimum, maximum, text_x, text_y)
+        widget = CustomInputForm(initial_x, initial_y, minimum, maximum, text_x, text_y)
         widget.exec()
         x = pow(2,widget.ui.Xsize.value())
         y = pow(2, widget.ui.Ysize.value())
