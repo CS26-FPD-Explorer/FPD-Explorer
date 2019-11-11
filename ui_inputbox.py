@@ -3,8 +3,8 @@
 # Form implementation generated from reading ui file 'inputbox.ui',
 # licensing of 'inputbox.ui' applies.
 #
-# Created: Sun Nov 10 22:39:22 2019
-#      by: pyside2-uic  running on PySide2 5.13.2
+# Created: Mon Nov 11 18:30:18 2019
+#      by: pyside2-uic  running on PySide2 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -96,9 +96,9 @@ class Ui_InputBox(object):
         self.retranslateUi(InputBox)
         QtCore.QObject.connect(self.Xsize, QtCore.SIGNAL("valueChanged(int)"), InputBox.update_value)
         QtCore.QObject.connect(self.Ysize, QtCore.SIGNAL("valueChanged(int)"), InputBox.update_value)
-        QtCore.QObject.connect(self.restoreButton, QtCore.SIGNAL("clicked()"), InputBox.restore_default)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), InputBox.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), InputBox.reject)
+        QtCore.QObject.connect(self.restoreButton, QtCore.SIGNAL("clicked()"), InputBox.restore_default)
         QtCore.QMetaObject.connectSlotsByName(InputBox)
 
     def retranslateUi(self, InputBox):

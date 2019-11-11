@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoadingBox</class>
+ <widget class="QDialog" name="LoadingBox">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>114</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>114</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>400</width>
+    <height>114</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout_6">
+     <item row="1" column="1">
+      <widget class="QProgressBar" name="recipProgress">
+       <property name="value">
+        <number>24</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QProgressBar" name="realProgress">
+       <property name="value">
+        <number>24</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QRadioButton" name="recipButton">
+       <property name="text">
+        <string>Sum Recip Space</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">spaceGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QRadioButton" name="realButton">
+       <property name="text">
+        <string>Sum Real Space</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">spaceGroup</string>
+       </attribute>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="restoreButton">
+       <property name="text">
+        <string>Restore Default</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>LoadingBox</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>232</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>232</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>LoadingBox</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>84</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>136</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>restoreButton</sender>
+   <signal>clicked()</signal>
+   <receiver>realButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>14</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>41</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>realButton</sender>
+   <signal>clicked()</signal>
+   <receiver>LoadingBox</receiver>
+   <slot>change_button()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>124</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>139</x>
+     <y>41</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>recipButton</sender>
+   <signal>clicked()</signal>
+   <receiver>LoadingBox</receiver>
+   <slot>change_button()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>55</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>95</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>check_if_valid()</slot>
+  <slot>cancel()</slot>
+  <slot>update_value(int)</slot>
+  <slot>receive_value()</slot>
+  <slot>restore_default()</slot>
+  <slot>change_button()</slot>
+ </slots>
+ <buttongroups>
+  <buttongroup name="spaceGroup"/>
+ </buttongroups>
+</ui>
