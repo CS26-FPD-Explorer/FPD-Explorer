@@ -153,10 +153,11 @@ class ApplicationWindow(QMainWindow):
         #Coordinate order is y,x,ky,kx
         #i.e. reduce real and recip space pixel count in memory
 
-        widget = CustomLoadingForm()
-        widget.set_ds_sel(self.ds_sel)
+        widget = CustomLoadingForm(self.ds_sel)
         widget.exec()
-        b = DataBrowserNew(self.ds_sel, nav_im=widget.sum_im,
+        self.sum_diff = widget.sum_diff
+        self.sum_im = widget.sum_im
+        b = DataBrowserNew(self.ds_sel, nav_im=self.sum_im,
                            widget_1=self.ui.widget_3, widget_2=self.ui.widget_4)
 
     def input_form(self, initial_x = 2, initial_y = 2, minimum = 0, maximum = 13, text_x = None, text_y = None):

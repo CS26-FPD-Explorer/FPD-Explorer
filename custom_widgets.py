@@ -1,18 +1,22 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PySide2 import QtWidgets, QtCore
+from PySide2.QtCore import QRunnable, QThreadPool, QObject
 from numpy import arange, sin, pi
 import numpy as np
 import random
 from PySide2.QtCore import Signal, Slot
 from enum import Enum
 import fpd
+from ui_loadingbox import Ui_LoadingBox
 import fpd.fpd_processing as fpdp
 import fpd.fpd_file as fpdf
 from fpd.ransac_tools import ransac_1D_fit, ransac_im_fit
 from ui_inputbox import Ui_InputBox
 import fpd_processing_new as fpdp_new
-from ui_loadingbox import Ui_LoadingBox
+from PySide2.QtWidgets import QProgressBar
+
+
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
@@ -82,7 +86,6 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         self.ui.Xvalue.clear()
         self.ui.Yvalue.clear()
-
         self.ui.Xvalue.insert("= " + str(pow(2,self.ui.Xsize.value())))
         self.ui.Yvalue.insert("= " + str(pow(2,self.ui.Ysize.value())))
 
@@ -99,69 +102,117 @@ class CustomInputForm(QtWidgets.QDialog):
     def reject(self):
         """
         Overload of the reject function
-        Reset the value to its default to not mess up the loading
-        """
+        Reset the value to its default to not mess up the loading"""
         self.restore_default()
         return super().reject()
 
-class Space_Buttons(Enum):
-    REAL_SPACE = 0
-    RECIP_SPACE = 1
-
-
 class CustomLoadingForm(QtWidgets.QDialog):
-    def __init__(self):
+    def __init__(self, ds_sel):
         """
-        Set up a new loading form with 2 radio button and 2 progress bar
+        Set up a new loading form with 2 progress bar
+        Parameters
+        ----------
+        ds_sel : MerlinBinary Memory Map
+
         """
         super(CustomLoadingForm, self).__init__()
         self.ui = Ui_LoadingBox()
         self.ui.setupUi(self)
-        self.checked_value = Space_Buttons.REAL_SPACE
-        self.sum_im = None
-        self.ui.spaceGroup.setId(self.ui.realButton, 0)
-        self.ui.spaceGroup.setId(self.ui.recipButton, 1)
-        self.ui.realProgress.setValue(0)
-        self.ui.recipProgress.setValue(0)
-    
-    def set_ds_sel(self, ds_sel):
-        """
-        Input the memory mapped MerlinBinary with skip
-        
-        Parameters
-        ----------
-        ds_sel : MerlinBinary Memory Map
-        """
         self.ds_sel = ds_sel
+        self.sum_im = None
+        self.sum_diff = None
+        self.ui.realProgress.setValue(0)
+        self.ui.realProgress.setMinimum(0)
+        self.ui.realProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
+        print(np.prod(self.ds_sel.shape[:-2]))
+        self.ui.recipProgress.setValue(0)
+        self.ui.recipProgress.setMinimum(0)
+        self.ui.recipProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
 
-    @Slot()
-    def change_button(self):
+        self.nb_thread = 2
+        self.threadpool = QThreadPool()
         """
-        Update the actual checked button
-        """
-        button = self.ui.spaceGroup.checkedId()
-        self.checked_value = Space_Buttons(button).name  
-
-    @Slot()
-    def accept(self):
-        """
-        Overload of the accept function
         Update the progress bar with the loading of image based on which button has been clicked
         """
-        if self.checked_value == Space_Buttons.REAL_SPACE:
-            self.sum_im = fpdp_new.sum_im(
-                self.ds_sel, 16, 16, widget = self.ui.realProgress)
+        worker = GuiUpdater(self.sum_im, fpdp_new.sum_im, self.ds_sel, 16, 16)
+        worker.signals.finished.connect(self.thread_complete)
+        worker.signals.progress.connect(self.progress_fn)
+        self.threadpool.start(worker)
+
+        worker2 = GuiUpdater(self.sum_diff, fpdp_new.sum_dif, self.ds_sel, 16,
+                               16)
+        worker2.signals.finished.connect(self.thread_complete)
+        worker2.signals.progress.connect(self.progress_fn)
+
+        self.threadpool.start(worker2)
+        print("test")
+    
+    @Slot(tuple)
+    def progress_fn(self,value):
+        print("Updating Bar, " + str(value))
+        if value[1] == "sum_diff":
+            self.ui.recipProgress.setValue(self.ui.recipProgress.value()+value[0])
         else:
-            self.sum_im = fpdp_new.sum_dif(
-                self.ds_sel, 16, 16, widget = self.ui.recipProgress)
-        return super().accept()  
+            self.ui.realProgress.setValue(
+                self.ui.realProgress.value()+value[0])
 
     @Slot()
-    def reject(self):
-        """
-        Overload of the reject function
-        Make sure to use sum_im in case the user cancel
-        and then close the widget
-        """
-        self.sum_im = fpdp_new.sum_im(self.ds_sel, 16, 16)
-        return super().reject()
+    def thread_complete(self):
+        self.nb_thread-=1
+        if self.nb_thread == 0: #Make sure both thread are done
+            return super().done(True)
+
+class CustomSignals(QObject):
+    '''
+    Defines the signals available from a running worker thread.
+
+    Supported signals are:
+
+    finished
+        No data
+    
+    error
+        `tuple` (exctype, value, traceback.format_exc() )
+    
+    result
+        `object` data returned from processing, anything
+
+    progress
+        `tuple` (int : indicating % progress, caller) 
+
+    '''
+    finished = Signal()
+    error = Signal(tuple)
+    result = Signal(object)
+    progress = Signal(tuple)
+
+class GuiUpdater(QRunnable):
+    '''
+    Worker thread
+    '''
+
+    def __init__(self, return_value, fn, *args, **kwargs):
+        super(GuiUpdater, self).__init__()
+        # Store constructor arguments (re-used for processing)
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = CustomSignals()
+
+        # Add the callback to our kwargs
+        self.kwargs['progress_callback'] = self.signals.progress
+
+
+    @Slot()  # QtCore.Slot
+    def run(self):
+        # Retrieve args/kwargs here; and fire processing using them
+        try:
+            return_value = self.fn(
+                *self.args, **self.kwargs
+            )
+        except:
+            traceback.print_exc()
+            exctype, value = sys.exc_info()[:2]
+            self.signals.error.emit((exctype, value, traceback.format_exc()))
+        finally:
+            self.signals.finished.emit()  # Done
