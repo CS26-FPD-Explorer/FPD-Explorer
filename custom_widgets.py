@@ -121,6 +121,7 @@ class CustomLoadingForm(QtWidgets.QDialog):
         self.ds_sel = ds_sel
         self.sum_im = None
         self.sum_diff = None
+        #set min and max value (Based on their code)
         self.ui.realProgress.setValue(0)
         self.ui.realProgress.setMinimum(0)
         self.ui.realProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
@@ -128,24 +129,23 @@ class CustomLoadingForm(QtWidgets.QDialog):
         self.ui.recipProgress.setValue(0)
         self.ui.recipProgress.setMinimum(0)
         self.ui.recipProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
-
+        
+        #create 2 thread and assign them signals based on the custum signals classes
+        # First paramenter is the return value and second the fnct to call
+        # Other are argument to pass to the function
         self.nb_thread = 2
         self.threadpool = QThreadPool()
-        """
-        Update the progress bar with the loading of image based on which button has been clicked
-        """
         worker = GuiUpdater(self.sum_im, fpdp_new.sum_im, self.ds_sel, 16, 16)
         worker.signals.finished.connect(self.thread_complete)
         worker.signals.progress.connect(self.progress_fn)
         self.threadpool.start(worker)
 
+
         worker2 = GuiUpdater(self.sum_diff, fpdp_new.sum_dif, self.ds_sel, 16,
                                16)
         worker2.signals.finished.connect(self.thread_complete)
         worker2.signals.progress.connect(self.progress_fn)
-
         self.threadpool.start(worker2)
-        print("test")
     
     @Slot(tuple)
     def progress_fn(self,value):
