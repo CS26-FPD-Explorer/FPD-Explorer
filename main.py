@@ -63,34 +63,33 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def function_dm3(self):
         print("print from function_dm3")
-        while True:
-            fname, fother = QFileDialog.getOpenFileName(
-                self, 'Open file', self.last_path, "Digital Micrograph files (*.dm3)")
-            if fname:
-                if fname[slice(-3, None)] == "dm3":
-                    self.last_path = fname
-                    self.dm3_path = fname
-                    self.ui.DM3.clear()
-                    self.ui.DM3.insert(fname)
-                    break
-
-
+        fname, fother = QFileDialog.getOpenFileName(
+            self, 'Open file', self.last_path, "Digital Micrograph files (*.dm3)")
+        if fname:
+            if fname[-3:] == "dm3":
+                self.last_path = fname
+                self.dm3_path = fname
+                self.ui.DM3.clear()
+                self.ui.DM3.insert(fname)
+                return True
+        else: 
+            return False
     @Slot()
     def function_mib(self):
         print("print from function_mib")
-        while True:
-            fname, fother = QFileDialog.getOpenFileName(
-            self, 'Open file', self.last_path, "MERLIN binary files (*.mib)")
-            if fname and fname[slice(-3, None)] == "mib":
+        fname, fother = QFileDialog.getOpenFileName(
+        self, 'Open file', self.last_path, "MERLIN binary files (*.mib)")
+        print(fname, fother)
+        if fname: 
+            if fname[-3:] == "mib": # empty string means user canceled
                 self.last_path = fname
                 self.mib_path = fname
                 self.ui.MIB.clear()
                 self.ui.MIB.insert(fname)
-                break
-
+                return True
+        return False
     @Slot()
     def LoadFiles(self):
-        # QUICK FIX FOR NO DM3 SUPPLIED, MORE THOROUGH FILE CHECKING TO-DO
         x_value = None
         y_value = None
         #Cherk if Mib exist
@@ -102,7 +101,9 @@ class ApplicationWindow(QMainWindow):
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Yes:
-                self.function_mib()  # load a .DM3 file and use it
+                valid = self.function_mib()  # load a .mib file and use it
+                if not valid: #user canceled
+                    return 
             else:
                 return
 
@@ -119,7 +120,9 @@ class ApplicationWindow(QMainWindow):
             if response == QtWidgets.QMessageBox.Cancel:#do nothing
                 return
             elif response == QtWidgets.QMessageBox.Yes:
-                self.function_dm3()  # load a .DM3 file and use it
+                valid = self.function_dm3()  # load a .DM3 file and use it
+                if not valid:  # user canceled
+                    return 
                 dm3 = self.dm3_path
             else:  # load the data using custum parameter
                 x, y = self.input_form(initial_x = 8, initial_y = 8, minimum = 2)
