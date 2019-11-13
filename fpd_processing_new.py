@@ -1,9 +1,9 @@
-from PySide2.QtWidgets import QProgressBar
 import fpd.fpd_processing as fpdp
 import numpy as np
 from tqdm import tqdm
 
-def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, widget: QProgressBar = None):
+
+def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback = None):
     '''
     Return a real-space sum image from data. 
     
@@ -22,7 +22,7 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, widget: QProgressBar 
         If True, `nr` and `nc` are interpreted as the number of chunks to
         process at once. If `data` is not chunked, `nr` and `nc` are used
         directly.
-    widget : QProgressBar
+    progress_callback : CustomSignals
         If set, show the progress on the widget bar instead
         
     Returns
@@ -53,11 +53,8 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, widget: QProgressBar 
             # == mask = mask[None,None,None,...]
 
     sum_im = np.empty(nondet)
-    print('Calculating real-space sum images.')
     total_ims = np.prod(nondet)
-    if widget: # If the widget is set set the min and max and then update the graph
-        widget.setMinimum(0)
-        widget.setMaximum(total_ims)
+    with tqdm(total=total_ims, mininterval=0, leave=True, unit='images') as pbar:
         for i, (ri, rf) in enumerate(r_if):
             for j, (ci, cf) in enumerate(c_if):
                 if mask is None:
@@ -65,24 +62,17 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, widget: QProgressBar 
                 else:
                     d = (data[ri:rf, ci:cf, ...]*mask)
                 sum_im[ri:rf, ci:cf, ...] = d.sum((-2, -1))
-                widget.setValue(np.prod(d.shape[:-2]))
-
-    else:# go as intended
-        with tqdm(total=total_ims, mininterval=0, leave=True, unit='images') as pbar:
-            for i, (ri, rf) in enumerate(r_if):
-                for j, (ci, cf) in enumerate(c_if):
-                    if mask is None:
-                        d = data[ri:rf, ci:cf, ...]
-                    else:
-                        d = (data[ri:rf, ci:cf, ...]*mask)
-                    sum_im[ri:rf, ci:cf, ...] = d.sum((-2, -1))
+                if progress_callback:
+                    progress_callback.emit((np.prod(d.shape[:-2]), "sum_im"))
+                else:
                     pbar.update(np.prod(d.shape[:-2]))
+
     print('\n')
     return sum_im
 
 
 #--------------------------------------------------
-def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, widget: QProgressBar = None):
+def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=None):
     '''
     Return a summed diffraction image from data. 
     
@@ -101,7 +91,7 @@ def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, widget: QProgressBar
         If True, `nr` and `nc` are interpreted as the number of chunks to
         process at once. If `data` is not chunked, `nr` and `nc` are used
         directly.
-    widget : QProgressBar
+    progress_callback : CustomSignals
         If set, show the progress on the widget bar instead
 
     Returns
@@ -133,9 +123,7 @@ def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, widget: QProgressBar
     sum_dif = np.zeros(nonscan)
     print('Calculating diffraction sum images.')
     total_ims = np.prod(nondet)
-    if widget:  # If the widget is set set the min and max and then update the graph
-        widget.setMinimum(0)
-        widget.setMaximum(total_ims)
+    with tqdm(total=total_ims, mininterval=0, leave=True, unit='images') as pbar:
         for i, (ri, rf) in enumerate(r_if):
             for j, (ci, cf) in enumerate(c_if):
                 d = data[ri:rf, ci:cf, ...]
@@ -143,16 +131,10 @@ def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, widget: QProgressBar
                 if mask is not None:
                     d = d*mask
                 sum_dif += d.sum((0, 1))
-                widget.setValue(np.prod(d.shape[:-2]))
-    else: #Proceed as before
-        with tqdm(total=total_ims, mininterval=0, leave=True, unit='images') as pbar:
-            for i, (ri, rf) in enumerate(r_if):
-                for j, (ci, cf) in enumerate(c_if):
-                    d = data[ri:rf, ci:cf, ...]
-                    d = np.ascontiguousarray(d)
-                    if mask is not None:
-                        d = d*mask
-                    sum_dif += d.sum((0, 1))
+                if progress_callback:
+                    progress_callback.emit((np.prod(d.shape[:-2]), "sum_diff"))
+                else:
                     pbar.update(np.prod(d.shape[:-2]))
+
     print('\n')
     return sum_dif

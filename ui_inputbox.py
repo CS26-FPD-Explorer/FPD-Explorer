@@ -3,8 +3,8 @@
 # Form implementation generated from reading ui file 'inputbox.ui',
 # licensing of 'inputbox.ui' applies.
 #
-# Created: Mon Nov 11 18:30:18 2019
-#      by: pyside2-uic  running on PySide2 5.13.1
+# Created: Wed Nov 13 17:57:01 2019
+#      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
 
