@@ -157,17 +157,13 @@ class ApplicationWindow(QMainWindow):
 
         widget = CustomLoadingForm(self.ds_sel)
         widget.exec()
-        print("setting default")
         #Set the value to default 
         self.scanY, self.scanX = self.ds_sel.shape[:2]
-        print(self.scanX//64)
-        print(self.scanX//64 if self.scanX//64 != 0 else 2)
         self.ui.navX.setValue(self.scanX//64 if self.scanX//64 != 0 else 2)
         self.ui.navY.setValue(self.scanY//64 if self.scanY//64 != 0 else 2)
         self.ui.navX.setMaximum(self.scanX)
         self.ui.navY.setMaximum(self.scanY)
 
-        print("getting value")
 
         self.sum_diff = widget.sum_diff
         self.sum_im = widget.sum_im

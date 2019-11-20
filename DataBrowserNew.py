@@ -330,7 +330,7 @@ class DataBrowserNew:
         x0, y0, xpress, ypress = self.press
         dx = int(event.xdata - xpress)
         dy = int(event.ydata - ypress)
-        print(x0, y0, xpress, ypress, dx, dy, event.xdata, event.ydata)
+        #print(x0, y0, xpress, ypress, dx, dy, event.xdata, event.ydata)
         if abs(dy) > 0 or abs(dx) > 0:
             #print('x0=%f, xpress=%f, event.xdata=%f, dx=%f, x0+dx=%f'%(x0, xpress, event.xdata, dx, x0+dx))
             self.rect.set_x(x0+dx)

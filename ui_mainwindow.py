@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainwindow.ui',
 # licensing of 'mainwindow.ui' applies.
 #
-# Created: Wed Nov 20 19:52:01 2019
+# Created: Wed Nov 20 20:55:21 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -89,6 +89,7 @@ class Ui_MainWindow(object):
         self.navX.setSizePolicy(sizePolicy)
         self.navX.setWrapping(True)
         self.navX.setMinimum(1)
+        self.navX.setProperty("value", 2)
         self.navX.setObjectName("navX")
         self.gridLayout_6.addWidget(self.navX, 0, 1, 1, 1)
         self.navY = QtWidgets.QSpinBox(self.dockWidgetContents_8)
@@ -100,6 +101,7 @@ class Ui_MainWindow(object):
         self.navY.setWrapping(True)
         self.navY.setFrame(True)
         self.navY.setMinimum(1)
+        self.navY.setProperty("value", 2)
         self.navY.setObjectName("navY")
         self.gridLayout_6.addWidget(self.navY, 0, 3, 1, 1)
         self.lineEdit = QtWidgets.QLineEdit(self.dockWidgetContents_8)
