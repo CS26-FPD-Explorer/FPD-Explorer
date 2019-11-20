@@ -13,10 +13,6 @@ variables:
 #
 # If you want to also cache the installed packages, you have to install
 # them in a virtualenv and cache it as well.
-cache:
-  paths:
-    - .cache/pip
-    - venv/
 
 before_script:
   - sudo apt-get -qq update && sudo apt-get -qq install -y python
@@ -27,29 +23,8 @@ before_script:
 
 test:
   script:
-    #- apt-get install -y python-dev python-pip
     - pip install -r requirements.txt
-    # - python setup.py test
-    # - pip install tox flake8  # you can also use tox
-    # - tox -e py36,flake8
 
 run:
   script:
     - python compile_ui.py
-    # an alternative approach is to install and run:
-    - pip install dist/*
-    # run the command here
-  artifacts:
-    paths:
-      - dist/*.whl
-
-pages:
-  script:
-    - pip install sphinx sphinx-rtd-theme
-    - cd doc ; make html
-    - mv build/html/ ../public/
-  artifacts:
-    paths:
-      - public
-  only:
-    - master
