@@ -419,3 +419,20 @@ class DataBrowserNew:
             self.f_nav.canvas.mpl_disconnect(self.cid_f_nav)
         if not self.widget_2:
             self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
+    
+
+    def update_rect(self, value, button):
+        if button[:-1] == "nav":
+            if button[-1] == "X":
+                self.rect.set_width(value)
+            elif button[-1] == "Y":
+                self.rect.set_height(value)
+            
+            canvas = self.rect.figure.canvas
+            axes = self.rect.axes
+            self.rect.set_animated(True)
+            canvas.draw()
+            self.background = canvas.copy_from_bbox(self.rect.axes.bbox)
+
+            axes.draw_artist(self.rect)     # now redraw just the rectangle
+            canvas.blit(axes.bbox)          # and blit just the redrawn area
