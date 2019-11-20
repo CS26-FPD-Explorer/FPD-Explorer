@@ -149,7 +149,6 @@ class CustomLoadingForm(QtWidgets.QDialog):
     
     @Slot(tuple)
     def progress_fn(self,value):
-        print(value)
         if value[1] == "sum_diff":
             self.ui.recipProgress.setValue(self.ui.recipProgress.value()+value[0])
         else:
