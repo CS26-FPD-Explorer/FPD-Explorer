@@ -15,16 +15,16 @@ variables:
 # them in a virtualenv and cache it as well.
 
 before_script:
-  - sudo apt-get -qq update && sudo apt-get -qq install -y python
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install -y python python-virtualenv python-pip
+  - sudo apt update
+  - sudo apt upgrade
+  - sudo apt install python3.7 python3-virtualenv python3-pip
   - sudo virtualenv venv
   - sudo venv/bin/activate
 
 test:
   script:
-    - pip install -r requirements.txt
+    - pip3 install -r requirements.txt
 
 run:
   script:
-    - python compile_ui.py
+    - python3 compile_ui.py
