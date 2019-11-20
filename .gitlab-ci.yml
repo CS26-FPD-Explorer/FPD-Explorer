@@ -23,8 +23,7 @@ before_script:
   - sudo apt-get -qq update
   - sudo apt-get -qq install -y python python-virtualenv python-pip
   - sudo virtualenv venv
-  - sudo . venv/bin/activate
-  - sudo python -V
+  - sudo venv/bin/activate
 
 test:
   script:
