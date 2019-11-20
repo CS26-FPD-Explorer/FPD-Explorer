@@ -400,16 +400,15 @@ class DataBrowserNew:
     def update_dif_plot(self):
         if self.colour_index is not None:
             print("color index")
+            #TODO implement meaning for color index
             self.plot_data = self.h5f_ds[self.scanYind,
                                          self.scanXind, self.colour_index, :, :]
         else:
             if self.rect.get_height() > 1 and self.rect.get_width() > 1:
-                print("Meaning")
-                self.plot_data = np.mean(self.h5f_ds[self.scanYind:self.scanYind+self.rect.get_height()-1,
-                                         self.scanXind:self.scanYind+self.rect.get_width()-1, :, :],axis = (0,1))
-                self.plot_data[self.plot_data<=0] = 0.01
+                self.plot_data = self.h5f_ds[self.scanYind:self.scanYind+self.rect.get_height(),
+                                         self.scanXind:self.scanXind+self.rect.get_width(), :, :]
+                self.plot_data = np.mean(self.plot_data, axis=(0, 1))
             else:
-                print("not mean")
                 self.plot_data = self.h5f_ds[self.scanYind,self.scanXind, :, :]
         self.plot_data = np.ascontiguousarray(self.plot_data)
         self.im.set_data(self.plot_data)
