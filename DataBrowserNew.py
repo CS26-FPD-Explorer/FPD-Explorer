@@ -252,11 +252,12 @@ class DataBrowserNew:
         if self.plot_data.max() < 1:
             norm = None
         else:
-            norm = mpl.colors.LogNorm()
+            norm = mpl.colors.LogNorm(vmin=0.01)
         self.im = ax.matshow(self.plot_data,
                              interpolation='nearest',
                              cmap=self.cmap,
-                             norm=norm)
+                             norm=norm,
+                             vmin=0.01)
         plt.sca(ax)
         self.cbar = plt.colorbar(self.im)
         ax.format_coord = self.format_coord
@@ -329,6 +330,7 @@ class DataBrowserNew:
         x0, y0, xpress, ypress = self.press
         dx = int(event.xdata - xpress)
         dy = int(event.ydata - ypress)
+        print(x0, y0, xpress, ypress, dx, dy, event.xdata, event.ydata)
         if abs(dy) > 0 or abs(dx) > 0:
             #print('x0=%f, xpress=%f, event.xdata=%f, dx=%f, x0+dx=%f'%(x0, xpress, event.xdata, dx, x0+dx))
             self.rect.set_x(x0+dx)
@@ -397,10 +399,18 @@ class DataBrowserNew:
 
     def update_dif_plot(self):
         if self.colour_index is not None:
+            print("color index")
             self.plot_data = self.h5f_ds[self.scanYind,
                                          self.scanXind, self.colour_index, :, :]
         else:
-            self.plot_data = self.h5f_ds[self.scanYind, self.scanXind, :, :]
+            if self.rect.get_height() > 1 and self.rect.get_width() > 1:
+                print("Meaning")
+                self.plot_data = np.mean(self.h5f_ds[self.scanYind:self.scanYind+self.rect.get_height()-1,
+                                         self.scanXind:self.scanYind+self.rect.get_width()-1, :, :],axis = (0,1))
+                self.plot_data[self.plot_data<=0] = 0.01
+            else:
+                print("not mean")
+                self.plot_data = self.h5f_ds[self.scanYind,self.scanXind, :, :]
         self.plot_data = np.ascontiguousarray(self.plot_data)
         self.im.set_data(self.plot_data)
         self.im.autoscale()
@@ -436,3 +446,4 @@ class DataBrowserNew:
 
             axes.draw_artist(self.rect)     # now redraw just the rectangle
             canvas.blit(axes.bbox)          # and blit just the redrawn area
+            self.update_dif_plot()
