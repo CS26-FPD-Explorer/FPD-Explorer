@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from custom_widgets import *
-from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog
+from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog, QSpinBox
 from ui_inputbox import Ui_InputBox
 from fpd.fpd_file import MerlinBinary
 import h5py
@@ -41,6 +41,8 @@ class ApplicationWindow(QMainWindow):
         self.ui.action_hdf5.triggered.connect(self.function_hdf5)
         self.ui.action_about.triggered.connect(self.function_about)
 
+
+        self.data_browser = None
         self.last_path = "D:/Personal/PTSD/Chemestry_data"
 
     @Slot()
@@ -155,9 +157,20 @@ class ApplicationWindow(QMainWindow):
 
         widget = CustomLoadingForm(self.ds_sel)
         widget.exec()
+        print("setting default")
+        #Set the value to default 
+        self.scanY, self.scanX = self.ds_sel.shape[:2]
+        print(self.scanX//64)
+        self.ui.navX.setValue(self.scanX//64 if self.scanX//64 != 0 else 2)
+        self.ui.navY.setValue(self.scanY//64 if self.scanY//64 != 0 else 2)
+        self.ui.navX.setMaximum(self.scanX)
+        self.ui.navY.setMaximum(self.scanY)
+
+        print("getting value")
+
         self.sum_diff = widget.sum_diff
         self.sum_im = widget.sum_im
-        b = DataBrowserNew(self.ds_sel, nav_im=self.sum_im,
+        self.data_browser = DataBrowserNew(self.ds_sel, nav_im=self.sum_im,
                            widget_1=self.ui.widget_3, widget_2=self.ui.widget_4)
 
     def input_form(self, initial_x = 2, initial_y = 2, minimum = 0, maximum = 13, text_x = None, text_y = None):
@@ -172,6 +185,12 @@ class ApplicationWindow(QMainWindow):
         self.about.setText("<p><u>Help</u></p><p>This software allows users to process electron microscopy images, you can import 3 different types of files: .dm3,.mib and .hdf5 by Clicking  'File-&gt;Open-&gt;Filetype'.</p><p>Once the files have been loaded in, click the Pushbutton in the bottom right, the next window displayed will have defaultvalue for downsampling which is 2^3 by default, but can be modified to change the downsampling rate. After the downsampling rate has been selected, press OK and this will bring you to a window in which a selection can be made, if sum real image is selected then the real image will be shown on the left. if sum recip space is selected then an inverted image will be shown.</p><p>Once 'OK' is clicked the images will load in to the window docks and a progress bar is present to show the progress of this process. The dm3. image on the left can be navigated around byclicking on a certain pixel within the image and this will show the diffraction Image on the right at this point.</p><p><u>About</u></p><p>This software was created using QT,PySide 2, and the FPD library.</p><p>The creators are Florent Audonnet, Michal Broos, Bruce Kerr, Ruize Shen and Ewan Pandelus.</p><p> <br></p>")
         self.about.exec()
 
+    @Slot(int)
+    def update_rect(self,value:int):
+        if self.data_browser:
+            return self.data_browser.update_rect(value, self.sender().objectName())
+        else:
+            self.sender().setValue(1)
 qApp = QtWidgets.QApplication()
 
 aw = ApplicationWindow()
