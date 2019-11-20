@@ -19,7 +19,7 @@ cache:
     - venv/
 
 before_script:
-  - sudo apt-get -qq update && apt-get -qq install -y python
+  - sudo apt-get -qq update && sudo apt-get -qq install -y python
   - sudo apt-get -qq update
   - sudo apt-get -qq install -y python python-virtualenv python-pip
   - sudo virtualenv venv
