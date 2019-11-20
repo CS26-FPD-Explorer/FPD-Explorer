@@ -19,7 +19,7 @@ cache:
     - venv/
 
 before_script:
-  - apt-get install -y python-dev python-pip
+  - sudo apt-get install python3.7
   - python -V  # Print out python version for debugging
   - pip install virtualenv
   - virtualenv venv
