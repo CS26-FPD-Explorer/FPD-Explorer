@@ -15,11 +15,12 @@ variables:
 # them in a virtualenv and cache it as well.
 
 before_script:
+  - sudo rm -f -r ~/venv
   - sudo apt update
   - sudo apt upgrade
   - sudo apt install python3.7 python3-virtualenv python3-pip
-  - sudo virtualenv venv
-  - sudo venv/bin/activate
+  - python3 -m virtualenv venv --python=python3.7
+  - source venv/bin/activate
 
 test:
   script:
