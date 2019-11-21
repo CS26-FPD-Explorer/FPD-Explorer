@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1110</width>
+    <height>1068</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>fpd gui</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="minimumSize">
+       <size>
+        <width>1088</width>
+        <height>995</height>
+       </size>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="welcome_tab">
+       <attribute name="title">
+        <string>Welcome</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="2" column="1">
+         <widget class="QGroupBox" name="groupBox_4">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+            <underline>false</underline>
+           </font>
+          </property>
+          <property name="title">
+           <string>Resource monitor</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+            <underline>false</underline>
+           </font>
+          </property>
+          <property name="title">
+           <string>Functions</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+            <underline>false</underline>
+           </font>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="title">
+           <string>Workflow help</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>30</y>
+             <width>128</width>
+             <height>331</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QPushButton" name="pushButton">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_2">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_4">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_3">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_5">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QFrame" name="frame">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+            <underline>false</underline>
+           </font>
+          </property>
+          <widget class="QWidget" name="layoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>170</width>
+             <height>329</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>File opening</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::AutoText</enum>
+              </property>
+              <property name="scaledContents">
+               <bool>false</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>168</width>
+                <height>108</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_6">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_7">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_8">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_9">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_10">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Tab 2</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1110</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuOpen">
+     <property name="title">
+      <string>Open</string>
+     </property>
+     <addaction name="action_dm3"/>
+     <addaction name="action_mib"/>
+     <addaction name="action_hdf5"/>
+    </widget>
+    <addaction name="menuOpen"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="action_about"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_dm3">
+   <property name="text">
+    <string>.dm3</string>
+   </property>
+  </action>
+  <action name="action_mib">
+   <property name="text">
+    <string>.mib</string>
+   </property>
+  </action>
+  <action name="action_hdf5">
+   <property name="text">
+    <string>.hdf5</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
