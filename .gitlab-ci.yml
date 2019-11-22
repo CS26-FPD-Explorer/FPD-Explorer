@@ -19,7 +19,7 @@ before_script:
   - sudo apt update
   - sudo apt upgrade
   - sudo apt install python3.7-dev python3-virtualenv python3-pip
-  - python3 -m virtualenv venv --python=python3.7-dev
+  - python3 -m virtualenv venv --python=python3.7
   - source venv/bin/activate
 
 run:
