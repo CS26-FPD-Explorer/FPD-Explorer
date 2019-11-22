@@ -1,5 +1,5 @@
 # This file may be used to create an environment using:
-# $ conda create --name <env> --file <this file>
+# $ pip3 install -r requirements.txt
 # platform: win-64
 fpd==0.1.7
 h5py==2.10.0
