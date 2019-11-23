@@ -15,7 +15,7 @@ variables:
 # them in a virtualenv and cache it as well.
 
 before_script:
-  - sudo rm -f -r ~/venv
+- sudo rm -f -r ~/venv
   - sudo apt update
   - sudo apt upgrade
   - sudo apt install python3.7-dev python3-virtualenv python3-pip
@@ -23,14 +23,16 @@ before_script:
   - source venv/bin/activate
   - pip3 install -r requirements.txt
 
-  stages:
-  - Static Analysis
+stages:
+ - Static Analysis
+ - run
 
-  flake8:
-    stage: Static Analysis
-    script:
-     - flake8 --max-line-length=120 bild/*.py
+flake8:
+ stage: Static Analysis
+ script:
+  - flake8 --max-line-length=120 bild/*.py
 
 run:
-  script:
-    - python3 compile_ui.py
+ stage: run
+ script:
+  - python3 compile_ui.py
