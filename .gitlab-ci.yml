@@ -15,7 +15,7 @@ variables:
 # them in a virtualenv and cache it as well.
 
 before_script:
-- sudo rm -f -r ~/venv
+  - sudo rm -f -r ~/venv
   - sudo apt update
   - sudo apt upgrade
   - sudo apt install python3.7-dev python3-virtualenv python3-pip
