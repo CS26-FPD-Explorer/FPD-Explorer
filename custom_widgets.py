@@ -40,10 +40,10 @@ class MyMplCanvas(FigureCanvas):
 
 
 class CustomInputForm(QtWidgets.QDialog):
-    def __init__(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x :str =None, text_y:str=None):
+    def __init__(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x: str = None, text_y: str = None):
         """
         Create a new form with 2 input value x and Y and their output as power of 2         
-        
+
         Parameters
         ----------
         initial_x : int
@@ -59,8 +59,8 @@ class CustomInputForm(QtWidgets.QDialog):
         text_y : str
         text to show on the Y form
         """
-        
-        super(CustomInputForm,self).__init__()
+
+        super(CustomInputForm, self).__init__()
         self._ui = Ui_InputBox()
         self._ui.setupUi(self)
         self._default_x = self._ui.Xsize.value()
@@ -86,8 +86,8 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         self._ui.Xvalue.clear()
         self._ui.Yvalue.clear()
-        self._ui.Xvalue.insert("= " + str(pow(2,self._ui.Xsize.value())))
-        self._ui.Yvalue.insert("= " + str(pow(2,self._ui.Ysize.value())))
+        self._ui.Xvalue.insert("= " + str(pow(2, self._ui.Xsize.value())))
+        self._ui.Yvalue.insert("= " + str(pow(2, self._ui.Ysize.value())))
 
     @Slot()
     def restore_default(self):
@@ -97,7 +97,7 @@ class CustomInputForm(QtWidgets.QDialog):
         print("restoring to default")
         self._ui.Xsize.setValue(self._default_x)
         self._ui.Ysize.setValue(self._default_y)
-        
+
     @Slot()
     def reject(self):
         """
@@ -107,6 +107,7 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
+
 
 class CustomLoadingForm(QtWidgets.QDialog):
     def __init__(self, ds_sel):
@@ -123,15 +124,15 @@ class CustomLoadingForm(QtWidgets.QDialog):
         self.ds_sel = ds_sel
         self._sum_im = None
         self._sum_dif = None
-        #set min and max value (Based on their code)
+        # set min and max value (Based on their code)
         self._ui.realProgress.setValue(0)
         self._ui.realProgress.setMinimum(0)
         self._ui.realProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
         self._ui.recipProgress.setValue(0)
         self._ui.recipProgress.setMinimum(0)
         self._ui.recipProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
-        
-        #create 2 thread and assign them signals based on the custum signals classes
+
+        # create 2 thread and assign them signals based on the custum signals classes
         # First paramenter is the return value and second the fnct to call
         # Other are argument to pass to the function
         self._nb_thread = 2
@@ -149,14 +150,14 @@ class CustomLoadingForm(QtWidgets.QDialog):
         worker2.signals.result.connect(self.sum_dif)
 
         self.threadpool.start(worker2)
-    
+
     @property
     def sum_im(self):
         return self._sum_im
 
     @Slot()
     @sum_im.setter
-    def sum_im(self,value):
+    def sum_im(self, value):
         self._sum_im = value
 
     @property
@@ -168,11 +169,14 @@ class CustomLoadingForm(QtWidgets.QDialog):
     def sum_dif(self, value):
         self._sum_dif = value
 
-
     @Slot(tuple)
-    def progress_fn(self,value):
+    def progress_fn(self, value):
+        """
+        Update the progress on the bar depending on which function called it 
+        """
         if value[1] == "sum_diff":
-            self._ui.recipProgress.setValue(self._ui.recipProgress.value()+value[0])
+            self._ui.recipProgress.setValue(
+                self._ui.recipProgress.value()+value[0])
         else:
             self._ui.realProgress.setValue(
                 self._ui.realProgress.value()+value[0])
@@ -183,37 +187,38 @@ class CustomLoadingForm(QtWidgets.QDialog):
         if self._nb_thread == 0:  # Make sure both thread are done
             return super().done(True)
 
+
 class CustomSignals(QObject):
-    '''
+    """
     Defines the signals available from a running worker thread.
 
     Supported signals are:
 
     finished
         No data
-    
+
     error
         `tuple` (exctype, value, traceback.format_exc() )
-    
+
     result
         `object` data returned from processing, anything
 
     progress
         `tuple` (int : indicating % progress, caller) 
 
-    '''
+    """
     finished = Signal()
     error = Signal(tuple)
     result = Signal(object)
     progress = Signal(tuple)
 
-class GuiUpdater(QRunnable):
-    '''
-    Worker thread
-    TODO: Update return value to be updated by signals instead of passing by reference
-    '''
 
-    def __init__(self,fn, *args, **kwargs):
+class GuiUpdater(QRunnable):
+    """
+    Worker thread
+    """
+
+    def __init__(self, fn, *args, **kwargs):
         super(GuiUpdater, self).__init__()
         # Store constructor arguments (re-used for processing)
         self._fn = fn
@@ -224,9 +229,11 @@ class GuiUpdater(QRunnable):
         # Add the callback to our kwargs
         self._kwargs['progress_callback'] = self.signals.progress
 
-
     @Slot()  # QtCore.Slot
     def run(self):
+        """
+        run the function and return different signals based on the success or failure of the function
+        """
         # Retrieve args/kwargs here; and fire processing using them
         try:
             result_val = self._fn(
