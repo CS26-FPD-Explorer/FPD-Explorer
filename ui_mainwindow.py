@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainwindow.ui',
 # licensing of 'mainwindow.ui' applies.
 #
-# Created: Wed Nov 20 20:55:21 2019
+# Created: Mon Nov 25 15:30:36 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -208,7 +208,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
-        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), MainWindow.LoadFiles)
+        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), MainWindow.load_files)
         QtCore.QObject.connect(self.navY, QtCore.SIGNAL("valueChanged(int)"), MainWindow.update_rect)
         QtCore.QObject.connect(self.navX, QtCore.SIGNAL("valueChanged(int)"), MainWindow.update_rect)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)

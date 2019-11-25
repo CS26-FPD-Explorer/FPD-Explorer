@@ -1,8 +1,5 @@
 from __future__ import print_function
-
-'''
-'''
-
+from fpd.fpd_file import _check_fpd_file, _get_hdf5_file_from_obj
 
 # file module version (separate from fpd version)
 __version__ = '0.1.1'
