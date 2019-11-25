@@ -178,7 +178,7 @@ class DataBrowserNew:
 
         self.rwh = max(self.scanY, self.scanX)//64
         if self.rwh == 0:
-            self.rwh = 2
+            self.rwh = 1
         self.rect = None
         self.press = None
         self.background = None
