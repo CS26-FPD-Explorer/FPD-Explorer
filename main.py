@@ -159,8 +159,8 @@ class ApplicationWindow(QMainWindow):
         widget.exec()
         #Set the value to default 
         self.scanY, self.scanX = self.ds_sel.shape[:2]
-        self.ui.navX.setValue(self.scanX//64 if self.scanX//64 != 0 else 2)
-        self.ui.navY.setValue(self.scanY//64 if self.scanY//64 != 0 else 2)
+        self.ui.navX.setValue(self.scanX//64 if self.scanX//64 != 0 else 1)
+        self.ui.navY.setValue(self.scanY//64 if self.scanY//64 != 0 else 1)
         self.ui.navX.setMaximum(self.scanX)
         self.ui.navY.setMaximum(self.scanY)
 
