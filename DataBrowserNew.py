@@ -174,7 +174,7 @@ class DataBrowserNew:
 
         self.rwh = max(self.scanY, self.scanX)//64
         if self.rwh == 0:
-            self.rwh = 2
+            self.rwh = 1
         self.rect = None
         self.press = None
         self.background = None
@@ -400,8 +400,10 @@ class DataBrowserNew:
                                          self.scanXind, self.colour_index, :, :]
         else:
             if self.rect.get_height() > 1 and self.rect.get_width() > 1:
-                self.plot_data = self.h5f_ds[self.scanYind:self.scanYind+self.rect.get_height(),
-                                             self.scanXind:self.scanXind+self.rect.get_width(), :, :]
+                y_slice = self.scanYind if self.scanYind >= 0 else 0
+                x_slice = self.scanXind if self.scanXind >= 0 else 0
+                self.plot_data = self.h5f_ds[y_slice:y_slice+self.rect.get_height(),
+                                                x_slice:x_slice+self.rect.get_width(), :, :]
                 self.plot_data = np.mean(self.plot_data, axis=(0, 1))
             else:
                 self.plot_data = self.h5f_ds[self.scanYind,
