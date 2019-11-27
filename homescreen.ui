@@ -26,9 +26,9 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="welcome_tab">
+      <widget class="QWidget" name="home_tab">
        <attribute name="title">
-        <string>Welcome</string>
+        <string>Home</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
         <item row="1" column="2">
@@ -426,7 +426,7 @@
             <rect>
              <x>170</x>
              <y>190</y>
-             <width>271</width>
+             <width>295</width>
              <height>71</height>
             </rect>
            </property>
@@ -778,7 +778,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
-              <widget class="QPushButton" name="pushButton_6">
+              <widget class="QPushButton" name="mib_button">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
@@ -799,7 +799,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_7">
+              <widget class="QPushButton" name="dm3_button">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
@@ -820,7 +820,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_8">
+              <widget class="QPushButton" name="hdf5_button">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
@@ -845,25 +845,6 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>
-              <widget class="QLineEdit" name="dm3_line">
-               <property name="inputMask">
-                <string/>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="placeholderText">
-                <string>.dmr filename</string>
-               </property>
-               <property name="clearButtonEnabled">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QLineEdit" name="mib_line">
                <property name="inputMask">
                 <string/>
@@ -876,6 +857,25 @@
                </property>
                <property name="placeholderText">
                 <string>.mib filename</string>
+               </property>
+               <property name="clearButtonEnabled">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="dm3_line">
+               <property name="inputMask">
+                <string/>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+               <property name="placeholderText">
+                <string>.dmr filename</string>
                </property>
                <property name="clearButtonEnabled">
                 <bool>true</bool>
@@ -909,7 +909,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
-              <widget class="QPushButton" name="pushButton_11">
+              <widget class="QPushButton" name="load_button">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
@@ -930,7 +930,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_12">
+              <widget class="QPushButton" name="clear_button">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
