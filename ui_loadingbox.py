@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'loadingbox.ui',
 # licensing of 'loadingbox.ui' applies.
 #
-# Created: Wed Nov 13 17:57:01 2019
+# Created: Mon Nov 25 15:30:36 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
