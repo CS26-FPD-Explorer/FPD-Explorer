@@ -386,7 +386,7 @@
    <sender>pushButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>LoadFiles()</slot>
+   <slot>load_files()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1059</x>
@@ -432,7 +432,7 @@
   </connection>
  </connections>
  <slots>
-  <slot>LoadFiles()</slot>
+  <slot>load_files()</slot>
   <slot>function_dm3()</slot>
   <slot>function_mib()</slot>
   <slot>update_rect(int)</slot>

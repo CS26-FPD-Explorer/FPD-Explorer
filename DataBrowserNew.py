@@ -1,8 +1,5 @@
 from __future__ import print_function
-
-'''
-'''
-
+from fpd.fpd_file import _check_fpd_file, _get_hdf5_file_from_obj
 
 # file module version (separate from fpd version)
 __version__ = '0.1.1'
@@ -42,7 +39,7 @@ if sys.version_info > (3, 0):
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)
 _handler = logging.StreamHandler()
-#_handler.setFormatter(logging.Formatter(fmt='%(levelname)s:%(name)s:%(message)s'))
+# _handler.setFormatter(logging.Formatter(fmt='%(levelname)s:%(name)s:%(message)s'))
 _handler.setFormatter(logging.Formatter(fmt='%(levelname)s: %(message)s'))
 _logger.addHandler(_handler)
 
@@ -61,13 +58,12 @@ if LooseVersion(_mplv) >= LooseVersion('2.2.0'):
     _mpl_non_adjust = True
 
 
-
 class DataBrowserNew:
     def __init__(self, fpgn, nav_im=None, cmap=None, colour_index=None,
-                 nav_im_dict=None, fpd_check=True, widget_1 = None, widget_2 = None):
+                 nav_im_dict=None, fpd_check=True, widget_1=None, widget_2=None):
         '''
         Navigate fpd data set.
-        
+
         Parameters
         ----------
         fpgn : hdf5 str, file, group, dataset, ndarray, or dask array.
@@ -99,7 +95,7 @@ class DataBrowserNew:
         log / linear norms
         nav_im list input and switch between images?
         display with axis units rather than pixels?
-            
+
         '''
 
         import fpd
@@ -183,7 +179,7 @@ class DataBrowserNew:
         self.press = None
         self.background = None
         self.plot_nav_im()
-        
+
         # cmap
         if cmap is None:
             try:
@@ -201,7 +197,7 @@ class DataBrowserNew:
         kwd = dict(adjustable='box-forced', aspect='equal')
         if _mpl_non_adjust:
             _ = kwd.pop('adjustable')
-        
+
         if self.widget_1:
             plt = self.widget_1.get_fig()
             plt.clf()
@@ -210,7 +206,6 @@ class DataBrowserNew:
         else:
             self.f_nav, ax = plt.subplots(subplot_kw=kwd)
             self.f_nav.canvas.set_window_title('nav')
-
 
         d = {'cmap': 'gray'}
         if self.nav_im_dict is not None:
@@ -312,7 +307,7 @@ class DataBrowserNew:
             canvas.blit(axes.bbox)          # and blit just the redrawn area
         else:
             # in axis but not rectangle
-            #print event.xdata, event.ydata
+            # print event.xdata, event.ydata
             x0, y0 = (None,)*2
 
         self.press = x0, y0, event.xdata, event.ydata
@@ -348,7 +343,7 @@ class DataBrowserNew:
             # blit just the redrawn area
             canvas.blit(axes.bbox)
 
-            #self.rect.figure.canvas.draw()
+            # self.rect.figure.canvas.draw()
             self.update_dif_plot()
 
     def on_release(self, event):
@@ -364,7 +359,7 @@ class DataBrowserNew:
             self.scanYind = int(y)
             self.scanXind = int(x)
 
-            #self.rect.figure.canvas.draw()
+            # self.rect.figure.canvas.draw()
             self.update_dif_plot()
         elif self.background is not None:
             canvas = self.rect.figure.canvas
@@ -400,7 +395,7 @@ class DataBrowserNew:
     def update_dif_plot(self):
         if self.colour_index is not None:
             print("color index")
-            #TODO implement meaning for color index
+            # TODO implement meaning for color index
             self.plot_data = self.h5f_ds[self.scanYind,
                                          self.scanXind, self.colour_index, :, :]
         else:
@@ -411,7 +406,8 @@ class DataBrowserNew:
                                                 x_slice:x_slice+self.rect.get_width(), :, :]
                 self.plot_data = np.mean(self.plot_data, axis=(0, 1))
             else:
-                self.plot_data = self.h5f_ds[self.scanYind,self.scanXind, :, :]
+                self.plot_data = self.h5f_ds[self.scanYind,
+                                             self.scanXind, :, :]
         self.plot_data = np.ascontiguousarray(self.plot_data)
         self.im.set_data(self.plot_data)
         self.im.autoscale()
@@ -430,7 +426,6 @@ class DataBrowserNew:
             self.f_nav.canvas.mpl_disconnect(self.cid_f_nav)
         if not self.widget_2:
             self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
-    
 
     def update_rect(self, value, button):
         if button[:-1] == "nav":
@@ -438,7 +433,7 @@ class DataBrowserNew:
                 self.rect.set_width(value)
             elif button[-1] == "Y":
                 self.rect.set_height(value)
-            
+
             canvas = self.rect.figure.canvas
             axes = self.rect.axes
             self.rect.set_animated(True)

@@ -3,10 +3,10 @@ import numpy as np
 from tqdm import tqdm
 
 
-def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback = None):
+def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=None):
     '''
     Return a real-space sum image from data. 
-    
+
     Parameters
     ----------
     data : array_like
@@ -24,18 +24,18 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback = N
         directly.
     progress_callback : CustomSignals
         If set, show the progress on the widget bar instead
-        
+
     Returns
     -------
     Array of shape (scanY, scanX, ...).
-    
+
     Notes
     -----
     If `nr` or `nc` are None, the entire dimension is processed at once.
     For chunked data, setting `nrnc_are_chunks` to True, and `nr` and `nc`
     to a suitable values can improve performance.
-    
-    
+
+
     '''
 
     if nrnc_are_chunks:
@@ -71,11 +71,11 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback = N
     return sum_im
 
 
-#--------------------------------------------------
+# --------------------------------------------------
 def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=None):
     '''
     Return a summed diffraction image from data. 
-    
+
     Parameters
     ----------
     data : array_like
@@ -97,13 +97,13 @@ def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=No
     Returns
     -------
     Array of shape (..., detY, detX).
-    
+
     Notes
     -----
     If `nr` or `nc` are None, the entire dimension is processed at once.
     For chunked data, setting `nrnc_are_chunks` to True, and `nr` and `nc`
     to a suitable values can improve performance.
-    
+
     '''
 
     if nrnc_are_chunks:
