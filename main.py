@@ -168,10 +168,11 @@ class ApplicationWindow(QMainWindow):
 
         widget = CustomLoadingForm(self.ds_sel)
         widget.exec()
+
         # Set the value to default
         scanY, scanX = self.ds_sel.shape[:2]
-        self._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 2)
-        self._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 2)
+        self._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
+        self._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 1)
         self._ui.navX.setMaximum(scanX)
         self._ui.navY.setMaximum(scanY)
 
