@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'homescreen.ui',
 # licensing of 'homescreen.ui' applies.
 #
-# Created: Wed Nov 27 10:25:38 2019
+# Created: Wed Nov 27 11:03:15 2019
 #      by: pyside2-uic  running on PySide2 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -495,6 +495,8 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
+        QtCore.QObject.connect(self.load_button, QtCore.SIGNAL("clicked()"), MainWindow.LoadFiles)
+        QtCore.QObject.connect(self.mib_button, QtCore.SIGNAL("clicked()"), MainWindow.function_mib)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

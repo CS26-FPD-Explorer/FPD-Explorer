@@ -1053,5 +1053,42 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>load_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>LoadFiles()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>247</x>
+     <y>296</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>181</x>
+     <y>966</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mib_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>function_mib()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>190</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>214</x>
+     <y>933</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>LoadFiles()</slot>
+  <slot>function_mib()</slot>
+ </slots>
 </ui>
