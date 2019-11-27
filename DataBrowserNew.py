@@ -178,7 +178,7 @@ class DataBrowserNew:
 
         self.rwh = max(self.scanY, self.scanX)//64
         if self.rwh == 0:
-            self.rwh = 2
+            self.rwh = 1
         self.rect = None
         self.press = None
         self.background = None
@@ -252,11 +252,12 @@ class DataBrowserNew:
         if self.plot_data.max() < 1:
             norm = None
         else:
-            norm = mpl.colors.LogNorm()
+            norm = mpl.colors.LogNorm(vmin=0.01)
         self.im = ax.matshow(self.plot_data,
                              interpolation='nearest',
                              cmap=self.cmap,
-                             norm=norm)
+                             norm=norm,
+                             vmin=0.01)
         plt.sca(ax)
         self.cbar = plt.colorbar(self.im)
         ax.format_coord = self.format_coord
@@ -329,6 +330,7 @@ class DataBrowserNew:
         x0, y0, xpress, ypress = self.press
         dx = int(event.xdata - xpress)
         dy = int(event.ydata - ypress)
+        #print(x0, y0, xpress, ypress, dx, dy, event.xdata, event.ydata)
         if abs(dy) > 0 or abs(dx) > 0:
             #print('x0=%f, xpress=%f, event.xdata=%f, dx=%f, x0+dx=%f'%(x0, xpress, event.xdata, dx, x0+dx))
             self.rect.set_x(x0+dx)
@@ -397,10 +399,19 @@ class DataBrowserNew:
 
     def update_dif_plot(self):
         if self.colour_index is not None:
+            print("color index")
+            #TODO implement meaning for color index
             self.plot_data = self.h5f_ds[self.scanYind,
                                          self.scanXind, self.colour_index, :, :]
         else:
-            self.plot_data = self.h5f_ds[self.scanYind, self.scanXind, :, :]
+            if self.rect.get_height() > 1 and self.rect.get_width() > 1:
+                y_slice = self.scanYind if self.scanYind >= 0 else 0
+                x_slice = self.scanXind if self.scanXind >= 0 else 0
+                self.plot_data = self.h5f_ds[y_slice:y_slice+self.rect.get_height(),
+                                                x_slice:x_slice+self.rect.get_width(), :, :]
+                self.plot_data = np.mean(self.plot_data, axis=(0, 1))
+            else:
+                self.plot_data = self.h5f_ds[self.scanYind,self.scanXind, :, :]
         self.plot_data = np.ascontiguousarray(self.plot_data)
         self.im.set_data(self.plot_data)
         self.im.autoscale()
@@ -419,3 +430,21 @@ class DataBrowserNew:
             self.f_nav.canvas.mpl_disconnect(self.cid_f_nav)
         if not self.widget_2:
             self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
+    
+
+    def update_rect(self, value, button):
+        if button[:-1] == "nav":
+            if button[-1] == "X":
+                self.rect.set_width(value)
+            elif button[-1] == "Y":
+                self.rect.set_height(value)
+            
+            canvas = self.rect.figure.canvas
+            axes = self.rect.axes
+            self.rect.set_animated(True)
+            canvas.draw()
+            self.background = canvas.copy_from_bbox(self.rect.axes.bbox)
+
+            axes.draw_artist(self.rect)     # now redraw just the rectangle
+            canvas.blit(axes.bbox)          # and blit just the redrawn area
+            self.update_dif_plot()
