@@ -1021,8 +1021,8 @@
      <property name="title">
       <string>Open</string>
      </property>
-     <addaction name="action_dm3"/>
      <addaction name="action_mib"/>
+     <addaction name="action_dm3"/>
      <addaction name="action_hdf5"/>
     </widget>
     <addaction name="menuOpen"/>
@@ -1064,7 +1064,7 @@
    <sender>load_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>LoadFiles()</slot>
+   <slot>function_mib()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>247</x>

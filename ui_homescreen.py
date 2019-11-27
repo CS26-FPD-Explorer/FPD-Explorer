@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'homescreen.ui',
 # licensing of 'homescreen.ui' applies.
 #
-# Created: Wed Nov 27 22:44:48 2019
+# Created: Wed Nov 27 23:16:54 2019
 #      by: pyside2-uic  running on PySide2 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -486,8 +486,8 @@ class Ui_MainWindow(object):
         self.action_hdf5.setObjectName("action_hdf5")
         self.action_about = QtWidgets.QAction(MainWindow)
         self.action_about.setObjectName("action_about")
-        self.menuOpen.addAction(self.action_dm3)
         self.menuOpen.addAction(self.action_mib)
+        self.menuOpen.addAction(self.action_dm3)
         self.menuOpen.addAction(self.action_hdf5)
         self.menuFile.addAction(self.menuOpen.menuAction())
         self.menuHelp.addAction(self.action_about)
@@ -496,7 +496,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(self.load_button, QtCore.SIGNAL("clicked()"), MainWindow.LoadFiles)
+        QtCore.QObject.connect(self.load_button, QtCore.SIGNAL("clicked()"), MainWindow.function_mib)
         QtCore.QObject.connect(self.mib_button, QtCore.SIGNAL("clicked()"), MainWindow.function_mib)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
