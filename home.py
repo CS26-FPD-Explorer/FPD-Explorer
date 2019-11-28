@@ -54,7 +54,6 @@ class ApplicationWindow(QMainWindow):
         """
         Spawn a file dialog to open an mib file
         """
-        print("print from function_mib")
         fname, _ = QFileDialog.getOpenFileName(
             self, 'Open file', self._last_path, "MERLIN binary files (*.mib)")
         if fname:
@@ -62,7 +61,7 @@ class ApplicationWindow(QMainWindow):
                 self._last_path = fname
                 self._mib_path = fname
                 self._ui.mib_line.clear()
-                self._ui.mib_line.insert(fname)
+                self._ui.mib_line.insert(fname[fname.rfind('/') + 1 :])
                 return True
         return False
 
