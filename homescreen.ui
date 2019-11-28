@@ -1061,18 +1061,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>load_button</sender>
+   <sender>dm3_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>function_mib()</slot>
+   <slot>function_dm3()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>296</y>
+     <x>302</x>
+     <y>147</y>
     </hint>
     <hint type="destinationlabel">
-     <x>181</x>
-     <y>966</y>
+     <x>312</x>
+     <y>33</y>
     </hint>
    </hints>
   </connection>
@@ -1083,12 +1083,12 @@
    <slot>function_mib()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>190</x>
-     <y>149</y>
+     <x>174</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
-     <x>214</x>
-     <y>933</y>
+     <x>202</x>
+     <y>36</y>
     </hint>
    </hints>
   </connection>
@@ -1096,5 +1096,6 @@
  <slots>
   <slot>LoadFiles()</slot>
   <slot>function_mib()</slot>
+  <slot>function_dm3()</slot>
  </slots>
 </ui>

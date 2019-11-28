@@ -42,7 +42,7 @@ class ApplicationWindow(QMainWindow):
         self._ui.setupUi(self)
 
         self._ui.action_mib.triggered.connect(self.function_mib)
-        # self._ui.action_dm3.triggered.connect(self.function_dm3)
+        self._ui.action_dm3.triggered.connect(self.function_dm3)
         # self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         # self._ui.action_about.triggered.connect(self.function_about)
 
@@ -62,6 +62,22 @@ class ApplicationWindow(QMainWindow):
                 self._mib_path = fname
                 self._ui.mib_line.clear()
                 self._ui.mib_line.insert(fname[fname.rfind('/') + 1 :])
+                return True
+        return False
+    
+    @Slot()
+    def function_dm3(self):
+        """
+        Spawn a file dialog to open a dm3 file
+        """
+        fname, _ = QFileDialog.getOpenFileName(
+            self, 'Open file', self._last_path, "Digital Micrograph files (*.dm3)")
+        if fname:
+            if fname[-3:] == "dm3":
+                self._last_path = fname
+                self._dm3_path = fname
+                self._ui.dm3_line.clear()
+                self._ui.dm3_line.insert(fname[fname.rfind('/') + 1 :])
                 return True
         return False
 
