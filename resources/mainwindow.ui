@@ -366,9 +366,6 @@
    <extends>QWidget</extends>
    <header>custom_widgets</header>
    <container>1</container>
-   <slots>
-    <slot>clear_figure()</slot>
-   </slots>
   </customwidget>
  </customwidgets>
  <tabstops>

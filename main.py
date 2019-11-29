@@ -13,8 +13,9 @@ from PySide2.QtCore import Slot
 
 from fpd.fpd_file import MerlinBinary
 
-from ui_inputbox import Ui_InputBox
-from ui_mainwindow import Ui_MainWindow
+from resources.ui_inputbox import Ui_InputBox
+from resources.ui_mainwindow import Ui_MainWindow
+
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
 
