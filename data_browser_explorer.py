@@ -1,6 +1,5 @@
-from PySide2 import QtWidgets, QtCore, QtGui
-from PySide2.QtWidgets import QMainWindow, QFileDialog
-from PySide2.QtCore import Slot
+from PySide2 import QtWidgets
+from PySide2.QtWidgets import QFileDialog
 
 from fpd.fpd_file import MerlinBinary
 from custom_widgets import CustomInputForm, CustomLoadingForm

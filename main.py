@@ -1,17 +1,12 @@
-from __future__ import unicode_literals
 import sys
 import os
 import matplotlib
-import random
-import numpy as np
-import scipy as sp
 import h5py
 
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
 
-from resources.ui_inputbox import Ui_InputBox
 from resources.ui_mainwindow import Ui_MainWindow
 
 from data_browser_new import DataBrowserNew
@@ -22,11 +17,7 @@ os.environ["OMP_NUM_THREADS"] = "1"
 
 # Make sure that we are using QT5
 
-# Uncomment this line before running, it breaks sphinx-gallery builds
-# from PyQt5 import QtCore, QtWidgets
 matplotlib.use('Qt5Agg')
-progname = os.path.basename(sys.argv[0])
-progversion = "0.1"
 os.environ["OMP_NUM_THREADS"] = "1"
 
 
@@ -139,7 +130,6 @@ class ApplicationWindow(QMainWindow):
 fpd_app = QtWidgets.QApplication()
 
 window = ApplicationWindow()
-window.setWindowTitle("%s" % progname)
 window.show()
 sys.exit(fpd_app.exec_())
 # qApp.exec_()

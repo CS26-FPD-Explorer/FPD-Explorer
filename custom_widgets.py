@@ -2,17 +2,12 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtCore import QRunnable, QThreadPool, QObject
-from numpy import arange, sin, pi
 import numpy as np
-import random
+
 from PySide2.QtCore import Signal, Slot
-from enum import Enum
 import fpd
 import fpd.fpd_processing as fpdp
-import fpd.fpd_file as fpdf
-from fpd.ransac_tools import ransac_1D_fit, ransac_im_fit
 import fpd_processing_new as fpdp_new
-from PySide2.QtWidgets import QProgressBar
 
 from resources.ui_loadingbox import Ui_LoadingBox
 from resources.ui_inputbox import Ui_InputBox
