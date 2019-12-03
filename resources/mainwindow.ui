@@ -74,7 +74,7 @@
      <x>0</x>
      <y>0</y>
      <width>1087</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -250,19 +250,6 @@
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="0" column="0">
       <layout class="QGridLayout" name="gridLayout_7">
-       <item row="0" column="1">
-        <widget class="QComboBox" name="colorMap">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>4</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="currentText">
-          <string/>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLineEdit" name="lineEdit_4">
          <property name="sizePolicy">
@@ -282,6 +269,19 @@
          </property>
          <property name="readOnly">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="colorMap">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>4</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="currentText">
+          <string/>
          </property>
         </widget>
        </item>
@@ -368,8 +368,8 @@
    <slot>update_rect(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>514</x>
-     <y>94</y>
+     <x>528</x>
+     <y>87</y>
     </hint>
     <hint type="destinationlabel">
      <x>543</x>
@@ -384,8 +384,8 @@
    <slot>update_rect(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>250</x>
-     <y>94</y>
+     <x>266</x>
+     <y>87</y>
     </hint>
     <hint type="destinationlabel">
      <x>0</x>
