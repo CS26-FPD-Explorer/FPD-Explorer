@@ -1,16 +1,17 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from PySide2 import QtWidgets, QtCore
-from PySide2.QtCore import QRunnable, QThreadPool, QObject
+from PySide2.QtCore import QRunnable, QThreadPool, QObject, Signal, Slot
 import numpy as np
 
-from PySide2.QtCore import Signal, Slot
 import fpd
 import fpd.fpd_processing as fpdp
 import fpd_processing_new as fpdp_new
 
 from resources.ui_loadingbox import Ui_LoadingBox
 from resources.ui_inputbox import Ui_InputBox
+
 
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
@@ -26,6 +27,8 @@ class MyMplCanvas(FigureCanvas):
                                    QtWidgets.QSizePolicy.Expanding,
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+        # add plot toolbar from matplotlib
+        self.toolbar = NavigationToolbar(self, self)
 
     def get_fig(self):
         return self._fig

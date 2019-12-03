@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1087</width>
-    <height>636</height>
+    <height>645</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -295,6 +295,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>Zoom</string>
          </property>
@@ -307,9 +313,15 @@
         <widget class="QLineEdit" name="lineEdit_4">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>1</horstretch>
+           <horstretch>2</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>0</height>
+          </size>
          </property>
          <property name="text">
           <string>Color Map</string>
@@ -427,11 +439,45 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>zoomSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>update_zoom(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>636</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>544</x>
+     <y>330</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>colorMap</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>update_color_map(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1007</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1086</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>load_files()</slot>
   <slot>function_dm3()</slot>
   <slot>function_mib()</slot>
   <slot>update_rect(int)</slot>
+  <slot>update_zoom(int)</slot>
+  <slot>update_color_map(QString)</slot>
  </slots>
 </ui>
