@@ -131,12 +131,24 @@ class ApplicationWindow(QMainWindow):
 
     @Slot(str)
     def update_color_map(self, value: str):
+        """
+        Update the rectangle based on the value selected by the user
+        Parameters
+        ----------
+        value : str name of the color map
+
+        """
+
         if self._data_browser:
             return self._data_browser.update_color_map(value)
         else:
             self.sender().setCurrentIndex(-1)
 
     def _init_color_map(self):
+        """
+        Create the dictionnary to fill the color map index
+        Value given by matplotlib wiki
+        """
         cmaps = OrderedDict()
         cmaps['Perceptually Uniform Sequential'] = [
             'viridis', 'plasma', 'inferno', 'magma', 'cividis']
