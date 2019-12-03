@@ -28,13 +28,13 @@ class MyMplCanvas(FigureCanvas):
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
         # add plot toolbar from matplotlib
-        self.toolbar = NavigationToolbar(self, self)
+        # self.toolbar = NavigationToolbar(self, self)
 
     def get_fig(self):
         return self._fig
 
-    def get_axes(self):
-        return self.axes
+    def get_canvas(self):
+        return self
 
 
 class CustomInputForm(QtWidgets.QDialog):

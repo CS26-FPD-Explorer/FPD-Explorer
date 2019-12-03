@@ -128,6 +128,10 @@ class ApplicationWindow(QMainWindow):
     @Slot(int)
     def update_zoom(self, value:int):
         print(value)
+        if self._data_browser:
+            return self._data_browser.update_zoom(value)
+        else:
+            self.sender().setValue(0)
     
     @Slot(str)
     def update_color_map(self, value: str):

@@ -226,10 +226,12 @@ class DataBrowserNew:
         plt.tight_layout()
         if not self.widget_1:
             plt.draw()
+        else:
+            self.widget_1.get_canvas().draw()
         # redraw the full figure
         # fixes navigation image not showing until clicked
         # also works in __init__ below self.plot_nav_im()
-        self.rect.figure.canvas.draw()
+        # self.rect.figure.canvas.draw()
 
     def plot_dif(self):
         kwd = dict(adjustable='box-forced', aspect='equal')
@@ -261,6 +263,8 @@ class DataBrowserNew:
         plt.tight_layout()
         if not self.widget_2:
             plt.draw()
+        else:
+            self.widget_2.get_canvas().draw()
 
     def connect(self):
         'connect to all the events we need'
@@ -393,6 +397,7 @@ class DataBrowserNew:
             return 'x=%d, y=%d' % (x, y)
 
     def update_dif_plot(self):
+        zooming = False
         if self.colour_index is not None:
             print("color index")
             # TODO implement meaning for color index
@@ -402,6 +407,7 @@ class DataBrowserNew:
             if self.rect.get_height() > 1 and self.rect.get_width() > 1:
                 y_slice = self.scanYind if self.scanYind >= 0 else 0
                 x_slice = self.scanXind if self.scanXind >= 0 else 0
+                zooming = True
                 self.plot_data = self.h5f_ds[y_slice:y_slice+self.rect.get_height(),
                                                 x_slice:x_slice+self.rect.get_width(), :, :]
                 self.plot_data = np.mean(self.plot_data, axis=(0, 1))
@@ -412,8 +418,14 @@ class DataBrowserNew:
         self.im.set_data(self.plot_data)
         self.im.autoscale()
         self.im.changed()
-        self.im.axes.set_xlabel('scanX %s' % self.scanXind)
-        self.im.axes.set_ylabel('scanY %s' % self.scanYind)
+        if zooming:
+            self.im.axes.set_xlabel(
+                f"scanX {x_slice} to {self.rect.get_width()}")
+            self.im.axes.set_ylabel(
+                f"scanX {x_slice} to {self.rect.get_height()}")
+        else:
+            self.im.axes.set_xlabel('scanX %s' % self.scanXind)
+            self.im.axes.set_ylabel('scanY %s' % self.scanYind)
         self.im.axes.figure.canvas.draw()
 
     def disconnect(self):
@@ -443,3 +455,35 @@ class DataBrowserNew:
             axes.draw_artist(self.rect)     # now redraw just the rectangle
             canvas.blit(axes.bbox)          # and blit just the redrawn area
             self.update_dif_plot()
+
+    def update_zoom(self, value:int):
+        def zoom_fun(event):
+            cur_xlim = self.im.axes.get_xlim()
+            cur_ylim = self.im.axes.get_ylim()
+            print(cur_xlim, cur_ylim)
+            cur_xrange = (cur_xlim[1] - cur_xlim[0])*.5
+            cur_yrange = (cur_ylim[1] - cur_ylim[0])*.5
+            xdata = event.xdata  # get event x location
+            ydata = event.ydata  # get event y location
+            if event.button == 'up':
+                # deal with zoom in
+                scale_factor = 1/base_scale
+            elif event.button == 'down':
+                # deal with zoom out
+                scale_factor = base_scale
+            else:
+                # deal with something that should never happen
+                scale_factor = 1
+                print(event.button)
+            # set new limits
+            self.im.axes.set_xlim([xdata - cur_xrange*scale_factor,
+                        xdata + cur_xrange*scale_factor])
+            self.im.axes.set_ylim([ydata - cur_yrange*scale_factor,
+                        ydata + cur_yrange*scale_factor])
+            self.im.axes.figure.canvas.draw()
+
+        base_scale = 2.0
+        fig = self.im.axes.figure  # get the figure of interest
+        # attach the call back
+        fig.canvas.mpl_connect('scroll_event', zoom_fun)
+        #self.im.axes.figure.canvas.draw()
