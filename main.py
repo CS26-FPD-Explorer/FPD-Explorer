@@ -125,6 +125,14 @@ class ApplicationWindow(QMainWindow):
             return self._data_browser.update_rect(value, self.sender().objectName())
         else:
             self.sender().setValue(1)
+    @Slot(int)
+    def update_zoom(self, value:int):
+        print(value)
+    
+    @Slot(str)
+    def update_color_map(self, value: str):
+        print(value)
+
 
 
 fpd_app = QtWidgets.QApplication()
