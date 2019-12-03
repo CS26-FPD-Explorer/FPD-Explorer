@@ -54,6 +54,7 @@ else:
 
 _mpl_non_adjust = False
 _mplv = mpl.__version__
+print(_mplv)
 if LooseVersion(_mplv) >= LooseVersion('2.2.0'):
     _mpl_non_adjust = True
 
@@ -255,7 +256,7 @@ class DataBrowserNew:
                              cmap=self.cmap,
                              norm=norm,
                              vmin=0.01)
-        plt.sca(ax)
+        #plt.sca(ax)
         self.cbar = plt.colorbar(self.im)
         ax.format_coord = self.format_coord
         self.update_dif_plot()
@@ -354,6 +355,12 @@ class DataBrowserNew:
             self.im.axes.set_ylabel('scanY %s' % self.scanYind)
         self.im.axes.figure.canvas.draw()
 
+    def update_color_map(self, value: str):
+        self.cmap = mpl.cm.get_cmap(value)
+        self.im.set_cmap(self.cmap)
+        self.update_dif_plot()
+
+
     def nav_move_factory(self):
 
         def on_press(event):
@@ -419,7 +426,8 @@ class DataBrowserNew:
         def on_release(event):
             if event.inaxes != self.rect.axes:
                 return
-
+            if not self.press:
+                return
             x, y = self.press[2:]
             if np.round(event.xdata-x) == 0 and np.round(event.ydata-y) == 0:
                 # mouse didn't move
