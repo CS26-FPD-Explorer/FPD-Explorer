@@ -84,6 +84,8 @@ def load_files(ApplicationWindow):
     ApplicationWindow._sum_im = widget.sum_im
     ApplicationWindow._data_browser = DataBrowserNew(ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
                                         widget_1=ApplicationWindow._ui.widget_3, widget_2=ApplicationWindow._ui.widget_4)
+    ApplicationWindow._ui.colorMap.setCurrentIndex(0)
+
 
 def input_form(initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
     """

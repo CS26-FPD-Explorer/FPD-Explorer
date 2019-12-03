@@ -131,7 +131,6 @@ class ApplicationWindow(QMainWindow):
 
     @Slot(str)
     def update_color_map(self, value: str):
-        print(value)
         if self._data_browser:
             return self._data_browser.update_color_map(value)
         else:
@@ -165,7 +164,6 @@ class ApplicationWindow(QMainWindow):
         for el in cmaps.values():
             for cmaps in el:
                 self._ui.colorMap.addItem(cmaps)
-        self._ui.colorMap.setCurrentIndex(0)
 
 
 
