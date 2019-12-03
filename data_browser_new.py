@@ -296,7 +296,15 @@ class DataBrowserNew:
         if not self.widget_2:
             self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
 
-    def update_rect(self, value, button):
+    def update_rect(self, value:int, button):
+        """
+        Update the rectangle in navigation image based on the value in the spinbox
+
+        Parameters
+        ----------
+        value int value of the spinbox
+        button QSpinBox spinbox widget which called this function
+        """
         if button[:-1] == "nav":
             if button[-1] == "X":
                 self.rect.set_width(value)
@@ -355,9 +363,16 @@ class DataBrowserNew:
         self.im.axes.figure.canvas.draw()
 
     def update_color_map(self, value: str):
+        """
+        Update the color map based on the value
+
+        Parameters
+        value str name of color_map 
+        """
         self.cmap = mpl.cm.get_cmap(value)
-        self.im.set_cmap(self.cmap)
-        self.update_dif_plot()
+        if self.cmap:
+            self.im.set_cmap(self.cmap)
+            self.update_dif_plot()
 
 
     def nav_move_factory(self):
@@ -469,6 +484,10 @@ class DataBrowserNew:
         return self.cidmotion, self.cidpress, self.cidrelease
 
     def im_zoom_factory(self):
+        """
+        Factory to handle all zooming related to the diffraction image
+        TODO : maybe change that to go to the other factory
+        """
         def on_zoom(event):
             cur_xlim = self.im.axes.get_xlim()
             cur_ylim = self.im.axes.get_ylim()
@@ -503,6 +522,9 @@ class DataBrowserNew:
         return self.cigzoom
 
     def im_move_factory(self):
+        """
+        Factory to handle all movement related to the diffraction image
+        """
         def im_on_press(event):
             if event.inaxes != self.im.axes:
                 return
