@@ -54,7 +54,6 @@ else:
 
 _mpl_non_adjust = False
 _mplv = mpl.__version__
-print(_mplv)
 if LooseVersion(_mplv) >= LooseVersion('2.2.0'):
     _mpl_non_adjust = True
 
