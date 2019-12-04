@@ -21,6 +21,25 @@
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout_5">
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="MIB">
+      <property name="inputMask">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="placeholderText">
+       <string>Merlin Binary Path</string>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QLineEdit" name="DM3">
       <property name="inputMask">
@@ -44,25 +63,6 @@
      <widget class="QPushButton" name="pushButton">
       <property name="text">
        <string>PushButton</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="MIB">
-      <property name="inputMask">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-      <property name="placeholderText">
-       <string>Merlin Binary Path</string>
-      </property>
-      <property name="clearButtonEnabled">
-       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -99,17 +99,6 @@
    </widget>
    <addaction name="menu_file"/>
    <addaction name="menuHelp"/>
-  </widget>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QDockWidget" name="navigationWidget">
    <property name="sizePolicy">
@@ -261,7 +250,29 @@
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="0" column="0">
       <layout class="QGridLayout" name="gridLayout_7">
-       <item row="0" column="3">
+       <item row="0" column="0">
+        <widget class="QLineEdit" name="lineEdit_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>2</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Color Map</string>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
         <widget class="QComboBox" name="colorMap">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -271,51 +282,6 @@
          </property>
          <property name="currentText">
           <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QSlider" name="zoomSlider">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>4</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLineEdit" name="lineEdit_3">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Zoom</string>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLineEdit" name="lineEdit_4">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Color Map</string>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -402,8 +368,8 @@
    <slot>update_rect(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>514</x>
-     <y>94</y>
+     <x>528</x>
+     <y>87</y>
     </hint>
     <hint type="destinationlabel">
      <x>543</x>
@@ -418,12 +384,28 @@
    <slot>update_rect(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>250</x>
-     <y>94</y>
+     <x>266</x>
+     <y>87</y>
     </hint>
     <hint type="destinationlabel">
      <x>0</x>
      <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>colorMap</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>update_color_map(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1007</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1086</x>
+     <y>140</y>
     </hint>
    </hints>
   </connection>
@@ -433,5 +415,7 @@
   <slot>function_dm3()</slot>
   <slot>function_mib()</slot>
   <slot>update_rect(int)</slot>
+  <slot>update_zoom(int)</slot>
+  <slot>update_color_map(QString)</slot>
  </slots>
 </ui>

@@ -226,10 +226,12 @@ class DataBrowserNew:
         plt.tight_layout()
         if not self.widget_1:
             plt.draw()
+        else:
+            self.widget_1.get_canvas().draw()
         # redraw the full figure
         # fixes navigation image not showing until clicked
         # also works in __init__ below self.plot_nav_im()
-        self.rect.figure.canvas.draw()
+        # self.rect.figure.canvas.draw()
 
     def plot_dif(self):
         kwd = dict(adjustable='box-forced', aspect='equal')
@@ -253,7 +255,7 @@ class DataBrowserNew:
                              cmap=self.cmap,
                              norm=norm,
                              vmin=0.01)
-        plt.sca(ax)
+        #plt.sca(ax)
         self.cbar = plt.colorbar(self.im)
         ax.format_coord = self.format_coord
         self.update_dif_plot()
@@ -261,15 +263,15 @@ class DataBrowserNew:
         plt.tight_layout()
         if not self.widget_2:
             plt.draw()
+        else:
+            self.widget_2.get_canvas().draw()
 
     def connect(self):
         'connect to all the events we need'
-        self.cidpress = self.rect.figure.canvas.mpl_connect(
-            'button_press_event', self.on_press)
-        self.cidrelease = self.rect.figure.canvas.mpl_connect(
-            'button_release_event', self.on_release)
-        self.cidmotion = self.rect.figure.canvas.mpl_connect(
-            'motion_notify_event', self.on_motion)
+        self.nav_move = self.nav_move_factory()
+        self.im_move = self.im_move_factory()
+        self.im_zoom = self.im_zoom_factory()
+
         if not self.widget_1:
             self.cid_f_nav = self.f_nav.canvas.mpl_connect(
                 'close_event', self.handle_close)
@@ -287,147 +289,22 @@ class DataBrowserNew:
         else:
             plt.close(self.f_nav)
 
-    def on_press(self, event):
-        if event.inaxes != self.rect.axes:
-            return
-
-        contains, attrd = self.rect.contains(event)
-        if contains:
-            #print('event contains', self.rect.xy)
-            x0, y0 = self.rect.xy   # xy is lower left
-
-            # draw everything but the selected rectangle and store the pixel buffer
-            canvas = self.rect.figure.canvas
-            axes = self.rect.axes
-            self.rect.set_animated(True)
-            canvas.draw()
-            self.background = canvas.copy_from_bbox(self.rect.axes.bbox)
-
-            axes.draw_artist(self.rect)     # now redraw just the rectangle
-            canvas.blit(axes.bbox)          # and blit just the redrawn area
-        else:
-            # in axis but not rectangle
-            # print event.xdata, event.ydata
-            x0, y0 = (None,)*2
-
-        self.press = x0, y0, event.xdata, event.ydata
-        self.yind_temp = self.scanYind
-        self.xind_temp = self.scanXind
-
-    def on_motion(self, event):
-        if self.press is None:
-            return
-        if event.inaxes != self.rect.axes:
-            return
-        if self.background is None:
-            return
-
-        x0, y0, xpress, ypress = self.press
-        dx = int(event.xdata - xpress)
-        dy = int(event.ydata - ypress)
-        #print(x0, y0, xpress, ypress, dx, dy, event.xdata, event.ydata)
-        if abs(dy) > 0 or abs(dx) > 0:
-            #print('x0=%f, xpress=%f, event.xdata=%f, dx=%f, x0+dx=%f'%(x0, xpress, event.xdata, dx, x0+dx))
-            self.rect.set_x(x0+dx)
-            self.rect.set_y(y0+dy)
-            self.scanYind = self.yind_temp+dy
-            self.scanXind = self.xind_temp+dx
-            #print(dy, dx)
-
-            canvas = self.rect.figure.canvas
-            axes = self.rect.axes
-            # restore the background region
-            canvas.restore_region(self.background)
-            # redraw just the current rectangle
-            axes.draw_artist(self.rect)
-            # blit just the redrawn area
-            canvas.blit(axes.bbox)
-
-            # self.rect.figure.canvas.draw()
-            self.update_dif_plot()
-
-    def on_release(self, event):
-        if event.inaxes != self.rect.axes:
-            return
-
-        x, y = self.press[2:]
-        if np.round(event.xdata-x) == 0 and np.round(event.ydata-y) == 0:
-            # mouse didn't move
-            x, y = np.round(x), np.round(y)
-            self.rect.set_x(x-self.rwh/2)
-            self.rect.set_y(y-self.rwh/2)
-            self.scanYind = int(y)
-            self.scanXind = int(x)
-
-            # self.rect.figure.canvas.draw()
-            self.update_dif_plot()
-        elif self.background is not None:
-            canvas = self.rect.figure.canvas
-            axes = self.rect.axes
-            # restore the background region
-            canvas.restore_region(self.background)
-            # redraw just the current rectangle
-            axes.draw_artist(self.rect)
-            # blit just the redrawn area
-            canvas.blit(axes.bbox)
-
-        'on release we reset the press data'
-        self.press = None
-        self.yind_temp = None
-        self.yind_temp = None
-
-        # turn off the rect animation property and reset the background
-        self.rect.set_animated(False)
-        self.background = None
-
-        # redraw the full figure
-        self.rect.figure.canvas.draw()
-
-    def format_coord(self, x, y):
-        col = np.ceil(x-0.5).astype(int)
-        row = np.ceil(y-0.5).astype(int)
-        if col >= 0 and col < self.detX and row >= 0 and row < self.detY:
-            z = self.plot_data[row, col]
-            return 'x=%d, y=%d, z=%d' % (x, y, z)
-        else:
-            return 'x=%d, y=%d' % (x, y)
-
-    def update_dif_plot(self):
-        if self.colour_index is not None:
-            print("color index")
-            # TODO implement meaning for color index
-            self.plot_data = self.h5f_ds[self.scanYind,
-                                         self.scanXind, self.colour_index, :, :]
-        else:
-            if self.rect.get_height() > 1 and self.rect.get_width() > 1:
-                y_slice = self.scanYind if self.scanYind >= 0 else 0
-                x_slice = self.scanXind if self.scanXind >= 0 else 0
-                self.plot_data = self.h5f_ds[y_slice:y_slice+self.rect.get_height(),
-                                                x_slice:x_slice+self.rect.get_width(), :, :]
-                self.plot_data = np.mean(self.plot_data, axis=(0, 1))
-            else:
-                self.plot_data = self.h5f_ds[self.scanYind,
-                                             self.scanXind, :, :]
-        self.plot_data = np.ascontiguousarray(self.plot_data)
-        self.im.set_data(self.plot_data)
-        self.im.autoscale()
-        self.im.changed()
-        self.im.axes.set_xlabel('scanX %s' % self.scanXind)
-        self.im.axes.set_ylabel('scanY %s' % self.scanYind)
-        self.im.axes.figure.canvas.draw()
-
     def disconnect(self):
         'disconnect all the stored connection ids'
-        self.rect.figure.canvas.mpl_disconnect(self.cidpress)
-        self.rect.figure.canvas.mpl_disconnect(self.cidrelease)
-        self.rect.figure.canvas.mpl_disconnect(self.cidmotion)
-
         if not self.widget_1:
             self.f_nav.canvas.mpl_disconnect(self.cid_f_nav)
         if not self.widget_2:
             self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
 
-    def update_rect(self, value, button):
+    def update_rect(self, value:int, button):
+        """
+        Update the rectangle in navigation image based on the value in the spinbox
+
+        Parameters
+        ----------
+        value int value of the spinbox
+        button QSpinBox spinbox widget which called this function
+        """
         if button[:-1] == "nav":
             if button[-1] == "X":
                 self.rect.set_width(value)
@@ -443,3 +320,245 @@ class DataBrowserNew:
             axes.draw_artist(self.rect)     # now redraw just the rectangle
             canvas.blit(axes.bbox)          # and blit just the redrawn area
             self.update_dif_plot()
+
+    def format_coord(self, x, y):
+        col = np.ceil(x-0.5).astype(int)
+        row = np.ceil(y-0.5).astype(int)
+        if col >= 0 and col < self.detX and row >= 0 and row < self.detY:
+            z = self.plot_data[row, col]
+            return 'x=%d, y=%d, z=%d' % (x, y, z)
+        else:
+            return 'x=%d, y=%d' % (x, y)
+
+    def update_dif_plot(self):
+        zooming = False
+        if self.colour_index is not None:
+            print("color index")
+            # TODO implement meaning for color index
+            self.plot_data = self.h5f_ds[self.scanYind,
+                                         self.scanXind, self.colour_index, :, :]
+        else:
+            if self.rect.get_height() > 1 and self.rect.get_width() > 1:
+                y_slice = self.scanYind if self.scanYind >= 0 else 0
+                x_slice = self.scanXind if self.scanXind >= 0 else 0
+                zooming = True
+                self.plot_data = self.h5f_ds[y_slice:y_slice+self.rect.get_height(),
+                                             x_slice:x_slice+self.rect.get_width(), :, :]
+                self.plot_data = np.mean(self.plot_data, axis=(0, 1))
+            else:
+                self.plot_data = self.h5f_ds[self.scanYind,
+                                             self.scanXind, :, :]
+        self.plot_data = np.ascontiguousarray(self.plot_data)
+        self.im.set_data(self.plot_data)
+        self.im.autoscale()
+        self.im.changed()
+        if zooming:
+            self.im.axes.set_xlabel(
+                f"scanX {x_slice} to {x_slice + self.rect.get_width()}")
+            self.im.axes.set_ylabel(
+                f"scanX {x_slice} to {y_slice + self.rect.get_height()}")
+        else:
+            self.im.axes.set_xlabel('scanX %s' % self.scanXind)
+            self.im.axes.set_ylabel('scanY %s' % self.scanYind)
+        self.im.axes.figure.canvas.draw()
+
+    def update_color_map(self, value: str):
+        """
+        Update the color map based on the value
+
+        Parameters
+        value str name of color_map 
+        """
+        self.cmap = mpl.cm.get_cmap(value)
+        if self.cmap:
+            self.im.set_cmap(self.cmap)
+            self.update_dif_plot()
+
+
+    def nav_move_factory(self):
+
+        def on_press(event):
+            if event.inaxes != self.rect.axes:
+                return
+
+            contains, attrd = self.rect.contains(event)
+            if contains:
+                #print('event contains', self.rect.xy)
+                x0, y0 = self.rect.xy   # xy is lower left
+
+                # draw everything but the selected rectangle and store the pixel buffer
+                canvas = self.rect.figure.canvas
+                axes = self.rect.axes
+                self.rect.set_animated(True)
+                canvas.draw()
+                self.background = canvas.copy_from_bbox(self.rect.axes.bbox)
+
+                axes.draw_artist(self.rect)     # now redraw just the rectangle
+                # and blit just the redrawn area
+                canvas.blit(axes.bbox)
+            else:
+                # in axis but not rectangle
+                # print event.xdata, event.ydata
+                x0, y0 = (None,)*2
+
+            self.press = x0, y0, event.xdata, event.ydata
+            self.yind_temp = self.scanYind
+            self.xind_temp = self.scanXind
+
+        def on_motion(event):
+            if self.press is None:
+                return
+            if event.inaxes != self.rect.axes:
+                return
+            if self.background is None:
+                return
+
+            x0, y0, xpress, ypress = self.press
+            dx = int(event.xdata - xpress)
+            dy = int(event.ydata - ypress)
+            #print(x0, y0, xpress, ypress, dx, dy, event.xdata, event.ydata)
+            if abs(dy) > 0 or abs(dx) > 0:
+                #print('x0=%f, xpress=%f, event.xdata=%f, dx=%f, x0+dx=%f'%(x0, xpress, event.xdata, dx, x0+dx))
+                self.rect.set_x(x0+dx)
+                self.rect.set_y(y0+dy)
+                self.scanYind = self.yind_temp+dy
+                self.scanXind = self.xind_temp+dx
+                #print(dy, dx)
+
+                canvas = self.rect.figure.canvas
+                axes = self.rect.axes
+                # restore the background region
+                canvas.restore_region(self.background)
+                # redraw just the current rectangle
+                axes.draw_artist(self.rect)
+                # blit just the redrawn area
+                canvas.blit(axes.bbox)
+
+                # self.rect.figure.canvas.draw()
+                self.update_dif_plot()
+
+        def on_release(event):
+            if event.inaxes != self.rect.axes:
+                return
+            if not self.press:
+                return
+            x, y = self.press[2:]
+            if np.round(event.xdata-x) == 0 and np.round(event.ydata-y) == 0:
+                # mouse didn't move
+                x, y = np.round(x), np.round(y)
+                self.rect.set_x(x-self.rwh/2)
+                self.rect.set_y(y-self.rwh/2)
+                self.scanYind = int(y)
+                self.scanXind = int(x)
+
+                # self.rect.figure.canvas.draw()
+                self.update_dif_plot()
+            elif self.background is not None:
+                canvas = self.rect.figure.canvas
+                axes = self.rect.axes
+                # restore the background region
+                canvas.restore_region(self.background)
+                # redraw just the current rectangle
+                axes.draw_artist(self.rect)
+                # blit just the redrawn area
+                canvas.blit(axes.bbox)
+
+            'on release we reset the press data'
+            self.press = None
+            self.yind_temp = None
+            self.yind_temp = None
+
+            # turn off the rect animation property and reset the background
+            self.rect.set_animated(False)
+            self.background = None
+
+            # redraw the full figure
+            self.rect.figure.canvas.draw()
+
+        self.cidpress = self.rect.figure.canvas.mpl_connect(
+            'button_press_event', on_press)
+        self.cidrelease = self.rect.figure.canvas.mpl_connect(
+            'button_release_event', on_release)
+        self.cidmotion = self.rect.figure.canvas.mpl_connect(
+            'motion_notify_event', on_motion)
+        return self.cidmotion, self.cidpress, self.cidrelease
+
+    def im_zoom_factory(self):
+        """
+        Factory to handle all zooming related to the diffraction image
+        TODO : maybe change that to go to the other factory
+        """
+        def on_zoom(event):
+            cur_xlim = self.im.axes.get_xlim()
+            cur_ylim = self.im.axes.get_ylim()
+            #print(cur_xlim, cur_ylim)
+            cur_xrange = (cur_xlim[1] - cur_xlim[0])*.5
+            cur_yrange = (cur_ylim[1] - cur_ylim[0])*.5
+            xdata = event.xdata  # get event x location
+            ydata = event.ydata  # get event y location
+            if xdata and ydata:
+                if event.button == 'down':
+                    # deal with zoom in
+                    scale_factor = 1/base_scale
+                elif event.button == 'up':
+                    # deal with zoom out
+                    scale_factor = base_scale
+                else:
+                    # deal with something that should never happen
+                    scale_factor = 1
+                    print(event.button)
+                # set new limits
+                self.im.axes.set_xlim(
+                    [xdata - (xdata-cur_xlim[0]) / scale_factor, xdata + (cur_xlim[1]-xdata) / scale_factor])
+                self.im.axes.set_ylim(
+                    [ydata - (ydata-cur_ylim[0]) / scale_factor, ydata + (cur_ylim[1]-ydata) / scale_factor])
+                self.im.axes.figure.canvas.draw()
+
+        base_scale = 1.5
+        # attach the call back
+        self.cigzoom = self.im.axes.figure.canvas.mpl_connect(
+            'scroll_event', on_zoom)
+        # self.im.axes.figure.canvas.draw()
+        return self.cigzoom
+
+    def im_move_factory(self):
+        """
+        Factory to handle all movement related to the diffraction image
+        """
+        def im_on_press(event):
+            if event.inaxes != self.im.axes:
+                return
+            self.cur_xlim = self.im.axes.get_xlim()
+            self.cur_ylim = self.im.axes.get_ylim()
+            self.xpress, self.ypress = event.xdata, event.ydata
+            self.press = True
+
+        def im_on_release(event):
+            self.press = None
+            self.im.axes.figure.canvas.draw()
+
+        def im_on_motion(event):
+            if self.press is None:
+                return
+            if event.inaxes != self.im.axes:
+                return
+            dx = event.xdata - self.xpress
+            dy = event.ydata - self.ypress
+            self.cur_xlim -= dx
+            self.cur_ylim -= dy
+            self.im.axes.set_xlim(self.cur_xlim)
+            self.im.axes.set_ylim(self.cur_ylim)
+
+            self.im.axes.figure.canvas.draw()
+
+        fig = self.im.axes.figure  # get the figure of interest
+        # attach the call back
+        self.cimdpress = fig.canvas.mpl_connect(
+            'button_press_event', im_on_press)
+        self.cimdrelease = fig.canvas.mpl_connect(
+            'button_release_event', im_on_release)
+        self.cimdmotion = fig.canvas.mpl_connect(
+            'motion_notify_event', im_on_motion)
+
+        # return the function
+        return self.cimdmotion, self.cimdpress, self.cimdrelease
