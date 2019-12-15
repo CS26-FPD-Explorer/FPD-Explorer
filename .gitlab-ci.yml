@@ -34,7 +34,6 @@ stages:
 
 flake8:
  stage: Static Analysis
-  artifacts:
   paths:
     - .cache/pip
     - venv/
