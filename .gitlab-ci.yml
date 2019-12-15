@@ -34,7 +34,7 @@ stages:
 
 flake8:
  stage: Static Analysis
-  paths:
+ paths:
     - .cache/pip
     - venv/
  script:
