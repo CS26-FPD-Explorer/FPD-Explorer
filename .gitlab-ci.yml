@@ -34,14 +34,14 @@ stages:
 
 flake8:
  stage: Static Analysis
+  artifacts:
+  paths:
+    - .cache/pip
+    - venv/
  script:
   - flake8 --max-line-length=120 bild/*.py
 
 run:
  stage: run
- artifacts:
-  paths:
-    - .cache/pip
-    - venv/
  script:
   - python3 compile_ui.py
