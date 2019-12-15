@@ -39,5 +39,9 @@ flake8:
 
 run:
  stage: run
+ artifacts:
+  paths:
+    - .cache/pip
+    - venv/
  script:
   - python3 compile_ui.py
