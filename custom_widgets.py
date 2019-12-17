@@ -1,20 +1,16 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from PySide2 import QtWidgets, QtCore
-from PySide2.QtCore import QRunnable, QThreadPool, QObject
-from numpy import arange, sin, pi
+from PySide2.QtCore import QRunnable, QThreadPool, QObject, Signal, Slot
 import numpy as np
-import random
-from PySide2.QtCore import Signal, Slot
-from enum import Enum
+
 import fpd
-from ui_loadingbox import Ui_LoadingBox
 import fpd.fpd_processing as fpdp
-import fpd.fpd_file as fpdf
-from fpd.ransac_tools import ransac_1D_fit, ransac_im_fit
-from ui_inputbox import Ui_InputBox
 import fpd_processing_new as fpdp_new
-from PySide2.QtWidgets import QProgressBar
+
+from resources.ui_loadingbox import Ui_LoadingBox
+from resources.ui_inputbox import Ui_InputBox
 
 
 class MyMplCanvas(FigureCanvas):
@@ -31,12 +27,14 @@ class MyMplCanvas(FigureCanvas):
                                    QtWidgets.QSizePolicy.Expanding,
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+        # add plot toolbar from matplotlib
+        # self.toolbar = NavigationToolbar(self, self)
 
     def get_fig(self):
         return self._fig
 
-    def get_axes(self):
-        return self.axes
+    def get_canvas(self):
+        return self
 
 
 class CustomInputForm(QtWidgets.QDialog):
