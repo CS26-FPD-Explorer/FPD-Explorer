@@ -50,7 +50,7 @@ class ApplicationWindow(QMainWindow):
             self, 'Open file', self._last_path, "MERLIN binary files (*.mib)")
         if fname:
             if fname[-3:] == "mib":  # empty string means user cancelled
-                self._last_path = fname
+                self._update_last_path(fname)
                 self._mib_path = fname
                 self._ui.mib_line.clear()
                 self._ui.mib_line.insert(fname[fname.rfind('/') + 1 :])
@@ -66,12 +66,15 @@ class ApplicationWindow(QMainWindow):
             self, 'Open file', self._last_path, "Digital Micrograph files (*.dm3)")
         if fname:
             if fname[-3:] == "dm3":
-                self._last_path = fname
+                self._update_last_path(fname)
                 self._dm3_path = fname
                 self._ui.dm3_line.clear()
                 self._ui.dm3_line.insert(fname[fname.rfind('/') + 1 :])
                 return True
         return False
+    
+    def _update_last_path(self, new_path):
+        self._last_path = "".join(new_path.split(".")[:-1])+"/"
 
     @Slot()
     def load_files(self):
