@@ -41,6 +41,11 @@ class ApplicationWindow(QMainWindow):
         self._data_browser = None
         self._last_path = ""
 
+        # # makes all tabs except Home closable
+        # self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
+        # # PySide2.QtWidgets.QTabBar.ButtonPosition for 2nd argument, LeftSide doesn't work
+        # self._ui.tabWidget.tabBar().setTabButton(0, QtWidgets.QTabBar.RightSide, None)
+
     @Slot()
     def function_mib(self):
         """
@@ -78,6 +83,19 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def load_files(self):
+        """
+        setp up the databrowser and open the file if not present
+        """
+        return data_browser_explorer.load_files(self)
+
+    # @Slot()
+    # def db(self):
+    #     db_tab = QtWidgets.QWidget() #or QTabBar?
+    #     db_tab.setObjectName("db_tab")
+    #     self._ui.tabWidget.addTab(db_tab, "DataBrowser")
+
+    @Slot()
+    def load_files_old(self):
         """
         setp up the databrowser and open the file if not present
         """
@@ -158,25 +176,25 @@ class ApplicationWindow(QMainWindow):
         #                                     widget_1=self._ui.widget_3, widget_2=self._ui.widget_4)
         print("end")
         
-    def _input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
-        """
-        create an input form with the given value
-        Parameters
-        ----------
-        initial_x int value the top value should start from
-        initial_y int value the bottom value should start from
-        minimum int minimum value the spin box should be allowed to go
-        maximum int maximum value the spin box should be allowed to go
-        text_x str Text to set in the top screen
-        text_y str Text to set in the bottom screen
+    # def _input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
+    #     """
+    #     create an input form with the given value
+    #     Parameters
+    #     ----------
+    #     initial_x int value the top value should start from
+    #     initial_y int value the bottom value should start from
+    #     minimum int minimum value the spin box should be allowed to go
+    #     maximum int maximum value the spin box should be allowed to go
+    #     text_x str Text to set in the top screen
+    #     text_y str Text to set in the bottom screen
 
-        """
+    #     """
 
-        widget = CustomInputForm(initial_x, initial_y, minimum, maximum, text_x, text_y)
-        widget.exec()
-        x = pow(2, widget._ui.Xsize.value())
-        y = pow(2, widget._ui.Ysize.value())
-        return x, y
+    #     widget = CustomInputForm(initial_x, initial_y, minimum, maximum, text_x, text_y)
+    #     widget.exec()
+    #     x = pow(2, widget._ui.Xsize.value())
+    #     y = pow(2, widget._ui.Ysize.value())
+    #     return x, y
 
 
 

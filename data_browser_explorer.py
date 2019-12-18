@@ -48,6 +48,7 @@ def load_files(ApplicationWindow):
             x, y = input_form(initial_x=8, initial_y=8, minimum=2)
             x_value = (x, 'x', 'na')
             y_value = (y, 'y', 'na')
+            print("*****\nelse*\n*****")
 
     hdr = ApplicationWindow._mib_path[:-4]+".hdr"
     ApplicationWindow._mb = MerlinBinary(mib, hdr, dm3, scanYalu=y_value,
@@ -74,18 +75,18 @@ def load_files(ApplicationWindow):
     widget.exec()
 
     # Set the value to default
-    scanY, scanX = ApplicationWindow.ds_sel.shape[:2]
-    ApplicationWindow._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
-    ApplicationWindow._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 1)
-    ApplicationWindow._ui.navX.setMaximum(scanX)
-    ApplicationWindow._ui.navY.setMaximum(scanY)
+    # scanY, scanX = ApplicationWindow.ds_sel.shape[:2]
+    # ApplicationWindow._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
+    # ApplicationWindow._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 1)
+    # ApplicationWindow._ui.navX.setMaximum(scanX)
+    # ApplicationWindow._ui.navY.setMaximum(scanY)
 
-    ApplicationWindow._sum_dif = widget.sum_dif
-    ApplicationWindow._sum_im = widget.sum_im
-    ApplicationWindow._data_browser = DataBrowserNew(ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
-                                        widget_1=ApplicationWindow._ui.widget_3, widget_2=ApplicationWindow._ui.widget_4)
-    ApplicationWindow._ui.colorMap.setCurrentIndex(0)
-
+    # ApplicationWindow._sum_dif = widget.sum_dif
+    # ApplicationWindow._sum_im = widget.sum_im
+    # ApplicationWindow._data_browser = DataBrowserNew(ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
+    #                                     widget_1=ApplicationWindow._ui.widget_3, widget_2=ApplicationWindow._ui.widget_4)
+    # ApplicationWindow._ui.colorMap.setCurrentIndex(0)
+    print("*****\nend*\n*****")
 
 def input_form(initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
     """
