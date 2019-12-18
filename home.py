@@ -41,10 +41,10 @@ class ApplicationWindow(QMainWindow):
         self._data_browser = None
         self._last_path = ""
 
-        # # makes all tabs except Home closable
-        # self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
-        # # PySide2.QtWidgets.QTabBar.ButtonPosition for 2nd argument, LeftSide doesn't work
-        # self._ui.tabWidget.tabBar().setTabButton(0, QtWidgets.QTabBar.RightSide, None)
+        # makes all tabs except Home closable
+        self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
+        # PySide2.QtWidgets.QTabBar.ButtonPosition for 2nd argument, LeftSide doesn't work
+        self._ui.tabWidget.tabBar().setTabButton(0, QtWidgets.QTabBar.RightSide, None)
 
     @Slot()
     def function_mib(self):
@@ -89,10 +89,10 @@ class ApplicationWindow(QMainWindow):
         return data_browser_explorer.load_files(self)
 
     # @Slot()
-    # def db(self):
-    #     db_tab = QtWidgets.QWidget() #or QTabBar?
-    #     db_tab.setObjectName("db_tab")
-    #     self._ui.tabWidget.addTab(db_tab, "DataBrowser")
+    # def start_dbrowser(self):
+    #     dbrowser_tab = QtWidgets.QWidget() #or QTabBar?
+    #     dbrowser_tab.setObjectName("db_tab")
+    #     self._ui.tabWidget.addTab(dbrowser_tab, "DataBrowser")
 
     @Slot()
     def load_files_old(self):
