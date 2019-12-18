@@ -88,11 +88,11 @@ class ApplicationWindow(QMainWindow):
         """
         return data_browser_explorer.load_files(self)
 
-    # @Slot()
-    # def start_dbrowser(self):
-    #     dbrowser_tab = QtWidgets.QWidget() #or QTabBar?
-    #     dbrowser_tab.setObjectName("db_tab")
-    #     self._ui.tabWidget.addTab(dbrowser_tab, "DataBrowser")
+    @Slot()
+    def start_dbrowser(self):
+        dbrowser_tab = QtWidgets.QWidget() #or QTabBar?
+        dbrowser_tab.setObjectName("dbrowser_tab")
+        self._ui.tabWidget.addTab(dbrowser_tab, "DataBrowser")
 
     @Slot()
     def load_files_old(self):
