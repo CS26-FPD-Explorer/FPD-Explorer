@@ -26,6 +26,9 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
       <widget class="QWidget" name="home_tab">
        <attribute name="title">
         <string>Home</string>
@@ -594,7 +597,7 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QPushButton" name="pushButton_40">
+            <widget class="QPushButton" name="dbrowser_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -1108,10 +1111,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>dbrowser_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>start_dbrowser()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>689</x>
+     <y>156</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>771</x>
+     <y>34</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>load_files()</slot>
   <slot>function_mib()</slot>
   <slot>function_dm3()</slot>
+  <slot>start_dbrowser()</slot>
  </slots>
 </ui>
