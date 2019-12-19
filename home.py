@@ -92,7 +92,8 @@ class ApplicationWindow(QMainWindow):
     def start_dbrowser(self):
         dbrowser_tab = QtWidgets.QWidget() #or QTabBar?
         dbrowser_tab.setObjectName("dbrowser_tab")
-        self._ui.tabWidget.addTab(dbrowser_tab, "DataBrowser")
+        tab_index = self._ui.tabWidget.addTab(dbrowser_tab, "DataBrowser")
+        self._ui.tabWidget.setCurrentIndex(tab_index)
 
     @Slot()
     def load_files_old(self):
