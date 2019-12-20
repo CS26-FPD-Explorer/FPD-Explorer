@@ -149,22 +149,16 @@ class CustomLoadingForm(QtWidgets.QDialog):
 
         self.threadpool.start(worker2)
 
-    @property
-    def sum_im(self):
-        return self._sum_im
+    
 
     @Slot()
-    @sum_im.setter
     def sum_im(self, value):
+        print("self._sum_im")
         self._sum_im = value
 
-    @property
-    def sum_dif(self):
-        return self._sum_dif
-
     @Slot()
-    @sum_dif.setter
     def sum_dif(self, value):
+        print("self._sum_dif")
         self._sum_dif = value
 
     @Slot(tuple)
@@ -237,7 +231,7 @@ class GuiUpdater(QRunnable):
             result_val = self._fn(
                 *self._args, **self._kwargs
             )
-
+            print(result_val)
         except:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
