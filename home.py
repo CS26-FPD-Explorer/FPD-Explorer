@@ -9,6 +9,7 @@ from PySide2.QtCore import Slot
 
 from resources.ui_homescreen import Ui_MainWindow
 # from resources.ui_mainwindow import Ui_MainWindow
+from resources.ui_test_intab import Ui_Form
 
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
@@ -22,6 +23,11 @@ os.environ["OMP_NUM_THREADS"] = "1"
 matplotlib.use('Qt5Agg')
 os.environ["OMP_NUM_THREADS"] = "1"
 
+class TestDBWidget(QMainWindow):
+    def __init__(self):
+        super(TestDBWidget, self).__init__()
+        self._ui = Ui_Form()
+        self._ui.setupUi(self)
 
 class ApplicationWindow(QMainWindow):
     """
@@ -90,10 +96,15 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def start_dbrowser(self):
-        dbrowser_tab = QtWidgets.QWidget() #or QTabBar?
+        dbrowser_tab = TestDBWidget()#QtWidgets.QWidget()
         dbrowser_tab.setObjectName("dbrowser_tab")
-        tab_index = self._ui.tabWidget.addTab(dbrowser_tab, "DataBrowser")
+        # dbrowser_tab.layout = QtWidgets.QGridLayout()
+        tab_index = self._ui.tabWidget.addTab(dbrowser_tab._ui.tabWidget.widget(0), "DataBrowser")
         self._ui.tabWidget.setCurrentIndex(tab_index)
+        # t = self._ui.tabWidget.widget(2)
+        # self._ui.tabWidget.setAllowedAreas(Qt.LeftDockWidgetArea)
+        QtWidgets.QMainWindow.setDockNestingEnabled(self, True)
+        print("isDockNestingEnabled=" + str(QtWidgets.QMainWindow.isDockNestingEnabled(self)))
 
     @Slot()
     def load_files_old(self):
