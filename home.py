@@ -9,7 +9,7 @@ from PySide2.QtCore import Slot
 
 from resources.ui_homescreen import Ui_MainWindow
 # from resources.ui_mainwindow import Ui_MainWindow
-from resources.ui_test_intab import Ui_Form
+from resources.ui_test_widget import Ui_Form
 
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
@@ -99,12 +99,12 @@ class ApplicationWindow(QMainWindow):
         dbrowser_tab = TestDBWidget()#QtWidgets.QWidget()
         dbrowser_tab.setObjectName("dbrowser_tab")
         # dbrowser_tab.layout = QtWidgets.QGridLayout()
-        tab_index = self._ui.tabWidget.addTab(dbrowser_tab._ui.tabWidget.widget(0), "DataBrowser")
+        tab_index = self._ui.tabWidget.addTab(dbrowser_tab, "DataBrowser")
         self._ui.tabWidget.setCurrentIndex(tab_index)
         # t = self._ui.tabWidget.widget(2)
         # self._ui.tabWidget.setAllowedAreas(Qt.LeftDockWidgetArea)
-        QtWidgets.QMainWindow.setDockNestingEnabled(self, True)
-        print("isDockNestingEnabled=" + str(QtWidgets.QMainWindow.isDockNestingEnabled(self)))
+        # QtWidgets.QMainWindow.setDockNestingEnabled(self, False)
+        # print("isDockNestingEnabled=" + str(QtWidgets.QMainWindow.isDockNestingEnabled(self)))
 
     @Slot()
     def load_files_old(self):
