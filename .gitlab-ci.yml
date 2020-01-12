@@ -21,7 +21,7 @@ cache:
 
 stages:
  - build
- - Static Analysis
+ - static analysis
  - run
 
 setup:
@@ -36,9 +36,9 @@ setup:
   - pip3 install -r requirements.txt
 
 flake8:
- stage: Static Analysis
+ stage: static analysis
  script:
-  - flake8 --max-line-length=120 bild/*.py
+  - flake8 --max-line-length=120 builds/*.py
 
 run:
  stage: run
