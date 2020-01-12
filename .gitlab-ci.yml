@@ -19,7 +19,14 @@ cache:
     - .cache/pip
     - venv/
 
-before_script:
+stages:
+ - build
+ - Static Analysis
+ - run
+
+setup:
+ stage: build
+ script:
   - sudo rm -f -r ~/venv
   - sudo apt update
   - sudo apt upgrade
@@ -27,10 +34,6 @@ before_script:
   - python3 -m virtualenv venv --python=python3.7
   - source venv/bin/activate
   - pip3 install -r requirements.txt
-
-stages:
- - Static Analysis
- - run
 
 flake8:
  stage: Static Analysis
