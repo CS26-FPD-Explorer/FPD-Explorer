@@ -1,8 +1,8 @@
 import sys
 import os
-import matplotlib
+import matplotlib as plt
 import h5py
-
+import qdarkgraystyle
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
@@ -13,12 +13,12 @@ from data_browser_new import DataBrowserNew
 from custom_widgets import *
 import data_browser_explorer
 from collections import OrderedDict
-
+plt.style.use('dark_background')
 os.environ["OMP_NUM_THREADS"] = "1"
 
 # Make sure that we are using QT5
 
-matplotlib.use('Qt5Agg')
+plt.use('Qt5Agg')
 os.environ["OMP_NUM_THREADS"] = "1"
 
 
@@ -180,7 +180,7 @@ class ApplicationWindow(QMainWindow):
 
 
 fpd_app = QtWidgets.QApplication()
-
+fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
 window = ApplicationWindow()
 window.show()
 sys.exit(fpd_app.exec_())
