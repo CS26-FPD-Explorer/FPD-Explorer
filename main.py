@@ -12,8 +12,8 @@ from resources.ui_mainwindow import Ui_MainWindow
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
 import data_browser_explorer
+import config_handler as config
 from collections import OrderedDict
-plt.style.use('dark_background')
 os.environ["OMP_NUM_THREADS"] = "1"
 
 # Make sure that we are using QT5
@@ -38,7 +38,7 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_about.triggered.connect(self.function_about)
 
         self._data_browser = None
-        self._last_path = "D:/Personal/PTSD/Chemestry_data"
+        self._last_path = config.get_config("file_path")
         self._init_color_map()
 
     @Slot()
@@ -111,7 +111,8 @@ class ApplicationWindow(QMainWindow):
         about.exec()
 
     def _update_last_path(self, new_path):
-        self._last_path = "".join(new_path.split(".")[:-1])+"/"
+        self._last_path = "/".join(new_path.split("/")[:-1])+"/"
+        config.add_config({"file_path":self._last_path})
 
     @Slot(int)
     def update_rect(self, value: int):
@@ -177,10 +178,17 @@ class ApplicationWindow(QMainWindow):
             for cmaps in el:
                 self._ui.colorMap.addItem(cmaps)
 
+    def closeEvent(self, event):
+        config.save_config()
+        event.accept()
 
-
+config.load_config()
 fpd_app = QtWidgets.QApplication()
-fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+print(config.get_config("dark_mode"))
+if config.get_config("dark_mode") == "True":
+    print("Using dark Theme")
+    plt.style.use('dark_background')
+    fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
 window = ApplicationWindow()
 window.show()
 sys.exit(fpd_app.exec_())
