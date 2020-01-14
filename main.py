@@ -36,6 +36,7 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         self._ui.action_about.triggered.connect(self.function_about)
+        self._ui.action_Find_Circular_Center.triggered.connect(self.function_find_circular_center)
 
         self._data_browser = None
         self._last_path = "D:/Personal/PTSD/Chemestry_data"
@@ -127,6 +128,35 @@ class ApplicationWindow(QMainWindow):
             return self._data_browser.update_rect(value, self.sender().objectName())
         else:
             self.sender().setValue(1)
+    
+   ## def funct
+   ##ion_synthetic_aperture(self):
+   ##    rio = np.linspace(0, 12, 4)
+   ##     print('rio:', rio)
+   ##     aps = fpdp.synthetic_aperture(shape=data_4d.shape[-2:], cyx=cyx, rio=rio, sigma=1)
+   ##     f, axs = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(9, 3))
+   ##     for imagei, ax in zip(aps, axs):
+   ##         ax.matshow(imagei)
+    
+    def function_find_circular_center(self):
+        widget=CustomInputFormCircularCenter()
+        widget.exec()
+        sigma=widget._ui.sigma_value.value()
+        rmms_1=widget._ui.rmms1st.value()
+        rmms_2=widget._ui.rmms2nd.value()
+        rmms_3=widget._ui.rmms3rd.value()
+        print(sigma,rmms_1,rmms_2,rmms_3)
+        """
+        Calculate the circular center for the current data
+        """
+        ##lowest_input_radius,max_radius,number_of_circles
+        if self._data_browser:
+            self.cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,rmms=(rmms_1, rmms_2, rmms_3))
+            print("desired code reached")
+        else:
+            QtWidgets.QMessageBox.warning(self,"Warning","The files must be loaded before the circular center can be calculated.")
+        
+        
 
 
     @Slot(str)

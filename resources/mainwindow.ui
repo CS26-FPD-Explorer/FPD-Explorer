@@ -74,7 +74,7 @@
      <x>0</x>
      <y>0</y>
      <width>1087</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -89,7 +89,14 @@
      <addaction name="action_mib"/>
      <addaction name="action_hdf5"/>
     </widget>
+    <widget class="QMenu" name="menuFunctions">
+     <property name="title">
+      <string>Functions </string>
+     </property>
+     <addaction name="action_Find_Circular_Center"/>
+    </widget>
     <addaction name="menu_Open"/>
+    <addaction name="menuFunctions"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -322,6 +329,11 @@
   <action name="action_about">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_Find_Circular_Center">
+   <property name="text">
+    <string>Find Circular Center</string>
    </property>
   </action>
  </widget>

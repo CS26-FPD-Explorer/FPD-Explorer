@@ -79,9 +79,10 @@ def load_files(ApplicationWindow):
     ApplicationWindow._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 1)
     ApplicationWindow._ui.navX.setMaximum(scanX)
     ApplicationWindow._ui.navY.setMaximum(scanY)
-
+    
     ApplicationWindow._sum_dif = widget._sum_dif
     ApplicationWindow._sum_im = widget._sum_im
+ 
 
     ApplicationWindow._data_browser = DataBrowserNew(ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
                                         widget_1=ApplicationWindow._ui.widget_3, widget_2=ApplicationWindow._ui.widget_4)
