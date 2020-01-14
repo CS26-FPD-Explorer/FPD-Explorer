@@ -32,8 +32,8 @@ setup:
   - sudo apt-get upgrade -y
   - sudo apt-get autoremove && sudo apt-get autoclean
   - sudo apt-get install python3.7-dev python3-virtualenv python3-pip
-  - python3 -m virtualenv venv --python=python3.7
-  - source venv/bin/activate
+  - python3 -m virtualenv ~/venv --python=python3.7
+  - source ~/venv/bin/activate
   - pip3 install -r requirements.txt
 
 flake8:
