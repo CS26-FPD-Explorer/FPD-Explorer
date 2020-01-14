@@ -154,8 +154,8 @@ class ApplicationWindow(QMainWindow):
             self.cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,rmms=(rmms_1, rmms_2, rmms_3))
             print("desired code reached")
         else:
-            print("sum_dif has not been defined")
-        return 
+            QtWidgets.QMessageBox.warning(self,"Warning","The files must be loaded before the circular center can be calculated.")
+        
         
 
 

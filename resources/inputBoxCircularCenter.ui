@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
-    <height>185</height>
+    <width>429</width>
+    <height>155</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Circular Center</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -125,7 +125,7 @@
      <item row="2" column="0">
       <widget class="QLineEdit" name="Ytext_2">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>4</horstretch>
          <verstretch>1</verstretch>
         </sizepolicy>
@@ -147,7 +147,7 @@
      <item row="1" column="0">
       <widget class="QLineEdit" name="Ytext">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>4</horstretch>
          <verstretch>1</verstretch>
         </sizepolicy>
@@ -255,6 +255,22 @@
     <hint type="destinationlabel">
      <x>508</x>
      <y>197</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CircularCenterInput</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>517</x>
+     <y>172</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>512</x>
+     <y>243</y>
     </hint>
    </hints>
   </connection>
