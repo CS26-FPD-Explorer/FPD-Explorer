@@ -14,4 +14,5 @@ for el in f:
     new_file = os.path.join(*file[:-1], "ui_" + file[-1] +".py")
     if ext == ".ui":
         print(f"Compiling {el} to {new_file} ... ")
-        subprocess.run("pyside2-uic -o " + new_file + " " + el,shell=True, check=True)
+        subprocess.run("pyside2-uic -o " + new_file + " " + el,
+        shell=True, check=True)

@@ -35,7 +35,8 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         self._ui.action_about.triggered.connect(self.function_about)
-        self._ui.action_Find_Circular_Center.triggered.connect(self.function_find_circular_center)
+        self._ui.action_Find_Circular_Center.triggered.connect(
+            self.function_find_circular_center)
 
         self._ui.darkModeButton.setChecked(dark_mode_config)
 
@@ -46,7 +47,8 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def function_hdf5(self):
         """
-        Open an file select dialog to choose a hdf5 file and open the data browser for it
+        Open an file select dialog to choose a hdf5 file 
+        and open the data browser for it
         """
         fname, _ = QFileDialog.getOpenFileName(
             self, 'Open file', self._last_path, "HDF5 (*.hdf5)")
@@ -58,18 +60,18 @@ class ApplicationWindow(QMainWindow):
             self._sum_im = self._file['fpd_expt/fpd_sum_im/data'].value
             self._sum_dif = self._file['fpd_expt/fpd_sum_dif/data'].value
             # since it is never used
-            self._data_browser = DataBrowserNew(fname, widget_1=self._ui.widget_3,
-                                                widget_2=self._ui.widget_4)
+            self._data_browser = DataBrowserNew(fname, 
+            widget_1=self._ui.widget_3, widget_2=self._ui.widget_4)
 
     @Slot()
     def function_dm3(self):
         """
         Open an file select dialog to choose a dm3 file
         """
-
         print("print from function_dm3")
         fname, _ = QFileDialog.getOpenFileName(
-            self, 'Open file', self._last_path, "Digital Micrograph files (*.dm3)")
+            self, 'Open file', self._last_path,
+            "Digital Micrograph files (*.dm3)")
         if fname:
             if fname[-3:] == "dm3":
                 self._update_last_path(fname)
@@ -109,7 +111,20 @@ class ApplicationWindow(QMainWindow):
         Create the main windows and connect the slots
         """
         about = QtWidgets.QMessageBox()
-        about.setText("<p><u>Help</u></p><p>This software allows users to process electron microscopy images, you can import 3 different types of files: .dm3,.mib and .hdf5 by Clicking  'File-&gt;Open-&gt;Filetype'.</p><p>Once the files have been loaded in, click the Pushbutton in the bottom right, the next window displayed will have defaultvalue for downsampling which is 2^3 by default, but can be modified to change the downsampling rate. After the downsampling rate has been selected, press OK and this will bring you to a window in which a selection can be made, if sum real image is selected then the real image will be shown on the left. if sum recip space is selected then an inverted image will be shown.</p><p>Once 'OK' is clicked the images will load in to the window docks and a progress bar is present to show the progress of this process. The dm3. image on the left can be navigated around byclicking on a certain pixel within the image and this will show the diffraction Image on the right at this point.</p><p><u>About</u></p><p>This software was created using QT,PySide 2, and the FPD library.</p><p>The creators are Florent Audonnet, Michal Broos, Bruce Kerr, Ruize Shen and Ewan Pandelus.</p><p> <br></p>")
+        about.setText("""<p><u>Help</u></p><p>This software allows users to process electron 
+        microscopy images, you can import 3 different types of files: .dm3,.mib and .hdf5 by Clicking 
+         'File-&gt;Open-&gt;Filetype'.</p><p>Once the files have been loaded in, click the Pushbutton 
+         in the bottom right, the next window displayed will have defaultvalue for downsampling which 
+         is 2^3 by default, but can be modified to change the downsampling rate. After the 
+         downsampling rate has been selected, press OK and this will bring you to a window in which a 
+         selection can be made, if sum real image is selected then the real image will be shown on 
+         the left. if sum recip space is selected then an inverted image will be shown.</p><p>Once 
+         'OK' is clicked the images will load in to the window docks and a progress bar is present to 
+         show the progress of this process. The dm3. image on the left can be navigated around 
+         byclicking on a certain pixel within the image and this will show the diffraction Image on 
+         the right at this point.</p><p><u>About</u></p><p>This software was created using QT,PySide 
+         2, and the FPD library.</p><p>The creators are Florent Audonnet, Michal Broos, Bruce Kerr, 
+         Ruize Shen and Ewan Pandelus.</p><p> <br></p>""")
         about.exec()
 
     def _update_last_path(self, new_path):
@@ -140,7 +155,8 @@ class ApplicationWindow(QMainWindow):
         else:
             fpd_app.setStyleSheet("")
         
-        QtWidgets.QMessageBox.information(self, "Information","""Your settings have correctly been applied
+        QtWidgets.QMessageBox.information(self, "Information",
+        """Your settings have correctly been applied
         Note that some changes will need a restart""")
         config.add_config({"Appearence":{"dark_mode": dark_mode_config}})
 
@@ -159,10 +175,12 @@ class ApplicationWindow(QMainWindow):
         print(sigma,rmms_1,rmms_2,rmms_3)
         ##lowest_input_radius,max_radius,number_of_circles
         if self._data_browser:
-            self.cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,rmms=(rmms_1, rmms_2, rmms_3))
+            self.cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,
+            rmms=(rmms_1, rmms_2, rmms_3))
             print("desired code reached")
         else:
-            QtWidgets.QMessageBox.warning(self,"Warning","The files must be loaded before the circular center can be calculated.")
+            QtWidgets.QMessageBox.warning(self,"Warning",
+            "The files must be loaded before the circular center can be calculated.")
         
         
 
