@@ -16,4 +16,3 @@ sympy==1.4
 flake8==3.7.9
 configparser==4.0.2
 deprecated==1.2.7
-git+git://github.com/09ubberboy90/qdarkgraystyle.git#egg=qdarkgraystyle
