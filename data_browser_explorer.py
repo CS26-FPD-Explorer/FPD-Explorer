@@ -17,7 +17,9 @@ def load_files(ApplicationWindow):
         mib = ApplicationWindow._mib_path
     except AttributeError:
         response = QtWidgets.QMessageBox.warning(
-            ApplicationWindow, "Warning", "<strong>We noticed you don't have a Merlin Binary File</strong> <br> Do you want to select one ?",
+            ApplicationWindow, "Warning", 
+            """<strong>We noticed you don't have a Merlin Binary File</strong>
+            <br> Do you want to select one ?""",
             QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
             QtWidgets.QMessageBox.Yes)
         if response == QtWidgets.QMessageBox.Yes:
@@ -34,7 +36,9 @@ def load_files(ApplicationWindow):
     except AttributeError:
         dm3 = []
         response = QtWidgets.QMessageBox.warning(
-            ApplicationWindow, "Warning", "<strong>We noticed you don't have a Digital Micrograph files</strong> <br> Do you want to select one ?",
+            ApplicationWindow, "Warning", 
+            """<strong>We noticed you don't have a Digital Micrograph files</strong> 
+            <br> Do you want to select one ?""",
             QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
             QtWidgets.QMessageBox.Yes)
         if response == QtWidgets.QMessageBox.Cancel:  # do nothing
@@ -84,8 +88,9 @@ def load_files(ApplicationWindow):
     ApplicationWindow._sum_im = widget._sum_im
  
 
-    ApplicationWindow._data_browser = DataBrowserNew(ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
-                                        widget_1=ApplicationWindow._ui.widget_3, widget_2=ApplicationWindow._ui.widget_4)
+    ApplicationWindow._data_browser = DataBrowserNew(
+        ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
+        widget_1=ApplicationWindow._ui.navCanvas, widget_2=ApplicationWindow._ui.diffCanvas)
 
     ApplicationWindow._ui.colorMap.setCurrentIndex(0)
 
