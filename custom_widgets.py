@@ -11,6 +11,7 @@ import fpd_processing_new as fpdp_new
 
 from resources.ui_loadingbox import Ui_LoadingBox
 from resources.ui_inputbox import Ui_InputBox
+from resources.ui_inputBoxCircularCenter import Ui_CircularCenterInput
 
 
 class MyMplCanvas(FigureCanvas):
@@ -105,6 +106,32 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
+class CustomInputFormCircularCenter(QtWidgets.QDialog):
+    def __init__(self):
+        super(CustomInputFormCircularCenter, self).__init__()
+        self._ui = Ui_CircularCenterInput()
+        self._ui.setupUi(self)
+    @Slot()
+    def restore_default(self):
+        """
+        Restore X and Y to their default value
+        """
+        print("restoring to default")
+        self._ui.rmms1st.setValue(10)
+        self._ui.rmms2nd.setValue(60)
+        self._ui.rmms3rd.setValue(1)
+        self._ui.sigma_value.setValue(2)
+    @Slot()
+    def reject(self):
+        """
+        Overload of the reject function
+        Reset the value to its default to not mess up the loading
+        DO NOT RENAME: Overloading function
+        """
+        self.restore_default()
+        return super().reject()
+        
+
 
 
 class CustomLoadingForm(QtWidgets.QDialog):
