@@ -35,6 +35,7 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         self._ui.action_about.triggered.connect(self.function_about)
+        self._ui.action_Find_Circular_Center.triggered.connect(self.function_find_circular_center)
 
         self._ui.darkModeButton.setChecked(dark_mode_config)
 
@@ -142,6 +143,28 @@ class ApplicationWindow(QMainWindow):
         QtWidgets.QMessageBox.information(self, "Information","""Your settings have correctly been applied
         Note that some changes will need a restart""")
         config.add_config({"Appearence":{"dark_mode": dark_mode_config}})
+
+    @Slot()
+    def function_find_circular_center(self):
+        """
+        Calculate the circular center for the current data
+        """
+        
+        widget=CustomInputFormCircularCenter()
+        widget.exec()
+        sigma=widget._ui.sigma_value.value()
+        rmms_1=widget._ui.rmms1st.value()
+        rmms_2=widget._ui.rmms2nd.value()
+        rmms_3=widget._ui.rmms3rd.value()
+        print(sigma,rmms_1,rmms_2,rmms_3)
+        ##lowest_input_radius,max_radius,number_of_circles
+        if self._data_browser:
+            self.cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,rmms=(rmms_1, rmms_2, rmms_3))
+            print("desired code reached")
+        else:
+            QtWidgets.QMessageBox.warning(self,"Warning","The files must be loaded before the circular center can be calculated.")
+        
+        
 
     @Slot(str)
     def update_color_map(self, value: str):
