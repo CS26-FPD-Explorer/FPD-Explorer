@@ -84,7 +84,7 @@ def load_files(ApplicationWindow):
     ApplicationWindow._sum_im = widget._sum_im
 
     ApplicationWindow._data_browser = DataBrowserNew(ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
-                                        widget_1=ApplicationWindow._ui.widget_3, widget_2=ApplicationWindow._ui.widget_4)
+                                        widget_1=ApplicationWindow._ui.navCanvas, widget_2=ApplicationWindow._ui.diffCanvas)
 
     ApplicationWindow._ui.colorMap.setCurrentIndex(0)
 

@@ -52,7 +52,6 @@ def add_config(config: dict):
     """
     print("Saving new value")
     if isinstance(list(config.values())[0], dict):
-        print("its a dict")
         # already have a section so we can just update
         _data_to_save.update(config)
     else:
@@ -76,6 +75,10 @@ def load_config():
         for section in config.sections():
             the_dict[section] = {}
             for key, val in config.items(section):
+                if val.lower() in ["true","yes"]:
+                    val = True
+                elif val.lower() in ["false","no"]:
+                    val = False
                 the_dict[section][key] = val
         return the_dict
 

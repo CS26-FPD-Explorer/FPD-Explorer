@@ -14,7 +14,6 @@ from custom_widgets import *
 import data_browser_explorer
 import config_handler as config
 from collections import OrderedDict
-os.environ["OMP_NUM_THREADS"] = "1"
 
 # Make sure that we are using QT5
 
@@ -36,6 +35,8 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         self._ui.action_about.triggered.connect(self.function_about)
+
+        self._ui.darkModeButton.setChecked(dark_mode_config)
 
         self._data_browser = None
         self._last_path = config.get_config("file_path")
@@ -128,7 +129,19 @@ class ApplicationWindow(QMainWindow):
             return self._data_browser.update_rect(value, self.sender().objectName())
         else:
             self.sender().setValue(1)
-
+    
+    @Slot()
+    def change_color_mode(self):
+        dark_mode_config = self._ui.darkModeButton.isChecked()
+        print(f"Changing theme to {dark_mode_config}")
+        if dark_mode_config:
+            fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+        else:
+            fpd_app.setStyleSheet("")
+        
+        QtWidgets.QMessageBox.information(self, "Information","""Your settings have correctly been applied
+        Note that some changes will need a restart""")
+        config.add_config({"Appearence":{"dark_mode": dark_mode_config}})
 
     @Slot(str)
     def update_color_map(self, value: str):
@@ -182,11 +195,11 @@ class ApplicationWindow(QMainWindow):
         config.save_config()
         event.accept()
 
+
 config.load_config()
 fpd_app = QtWidgets.QApplication()
-print(config.get_config("dark_mode"))
-if config.get_config("dark_mode") == "True":
-    print("Using dark Theme")
+dark_mode_config = config.get_config("dark_mode")
+if dark_mode_config:
     plt.style.use('dark_background')
     fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
 window = ApplicationWindow()
