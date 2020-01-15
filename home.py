@@ -256,6 +256,11 @@ class ApplicationWindow(QMainWindow):
     #                 return 
     #         else:
     #             return
+    
+    def closeEvent(self, event):
+        config.save_config()
+        event.accept()
+
 
 config.load_config()
 fpd_app = QtWidgets.QApplication()
