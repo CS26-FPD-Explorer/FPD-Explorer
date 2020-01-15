@@ -25,21 +25,21 @@ plt.use('Qt5Agg')
 os.environ["OMP_NUM_THREADS"] = "1"
 
 
-class DBWidget(QtWidgets.QWidget):
+class DataBrowserWidget(QtWidgets.QWidget):
     def __init__(self):
-        super(DBWidget, self).__init__()
+        super(DataBrowserWidget, self).__init__()
         self._ui = Ui_DataBrowser()
         self._ui.setupUi(self)
 
     def get_nav(self):
         """
-        Returns the layout that is inside the widget normally
+        Returns the navigation widget of DataBrowser
         """
         return self._ui.navigationWidget
 
     def get_diff(self):
         """
-        Returns the layout that is inside the widget normally
+        Returns the diffraction widget of DataBrowser
         """
         return self._ui.diffractionWidget
 
@@ -113,7 +113,7 @@ class ApplicationWindow(QMainWindow):
         w = QtWidgets.QTabBar()
         layout = QtWidgets.QHBoxLayout()
         mainwindow = QMainWindow()
-        db = DBWidget()
+        db = DataBrowserWidget()
         dock = QDockWidget("Navigation", self)
         dock.setWidget(db.get_nav())
         mainwindow.addDockWidget(Qt.TopDockWidgetArea, dock)
