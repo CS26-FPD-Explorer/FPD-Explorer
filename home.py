@@ -4,8 +4,9 @@ import matplotlib
 import h5py
 
 from PySide2 import QtWidgets, QtCore
-from PySide2.QtWidgets import QMainWindow, QFileDialog
-from PySide2.QtCore import Slot
+from PySide2.QtWidgets import QMainWindow, QFileDialog, QDockWidget, QListWidget
+from PySide2.QtCore import Slot, Qt
+from PySide2.QtGui import *
 
 from resources.ui_homescreen import Ui_MainWindow
 # from resources.ui_mainwindow import Ui_MainWindow
@@ -24,11 +25,6 @@ os.environ["OMP_NUM_THREADS"] = "1"
 matplotlib.use('Qt5Agg')
 os.environ["OMP_NUM_THREADS"] = "1"
 
-class TestDBWidget(QMainWindow):
-    def __init__(self):
-        super(TestDBWidget, self).__init__()
-        self._ui = Ui_Form()
-        self._ui.setupUi(self)
 
 class ApplicationWindow(QMainWindow):
     """
@@ -99,20 +95,34 @@ class ApplicationWindow(QMainWindow):
     def start_dbrowser(self):
         w = QtWidgets.QTabBar()
         layout = QtWidgets.QHBoxLayout()
+        mainwindow = QMainWindow()
+        print(mainwindow)
+        dock = QDockWidget("Customers", self)
+        dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
-        dbrowser_tab = TestDBWidget()#QtWidgets.QWidget()
-        dbrowser_tab.setObjectName("dbrowser_tab")
+        customerList = QListWidget(dock)
+        customerList.addItems(["John Doe, Harmony Enterprises, 12 Lakeside, Ambleton",
+                            "Jane Doe, Memorabilia, 23 Watersedge, Beaton",
+                            "Tammy Shea, Tiblanka, 38 Sea Views, Carlton",
+                            "Tim Sheen, Caraba Gifts, 48 Ocean Way, Deal",
+                            "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston",
+                            "Sally Hobart, Tiroli Tea, 67 Long River, Fedula"])
+        dock.setWidget(customerList)
+        mainwindow.addDockWidget(Qt.RightDockWidgetArea, dock)
+        dock2 = QDockWidget("Customers", self)
+        dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
-        layout.addWidget(dbrowser_tab,0)#,QtCore.Qt.AlignHCenter)
-        dbrowser_tab2 = TestDBWidget()
-        layout.addWidget(dbrowser_tab2,0)
-        w.setLayout(layout)
+        dock2.setWidget(customerList)
+        mainwindow.addDockWidget(Qt.LeftDockWidgetArea, dock2)
+        #dbrowser_tab.setObjectName("dbrowser_tab")
+        #layout.addWidget(dbrowser_tab,0)#,QtCore.Qt.AlignHCenter)
+        #dbrowser_tab2 = TestDBWidget()
+        #layout.addWidget(dbrowser_tab2,0)
 
 
         # dbrowser_tab.layout = QtWidgets.QGridLayout()
-        tab_index = self._ui.tabWidget.addTab(w, "DataBrowser")
+        tab_index = self._ui.tabWidget.addTab(mainwindow, "DataBrowser")
         self._ui.tabWidget.setCurrentIndex(tab_index)
-        print(dbrowser_tab.parentWidget())
         print(self._ui.tabWidget.widget(tab_index).parentWidget())
 
         # tab = self._ui.tabWidget.widget(tab_index)
