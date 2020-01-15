@@ -1,30 +1,27 @@
 import sys
 import os
-import matplotlib
+import matplotlib as plt
 import h5py
+# import qdarkgraystyle
 
 from PySide2 import QtWidgets, QtCore
-from PySide2.QtWidgets import QMainWindow, QFileDialog, QDockWidget, QListWidget
+from PySide2.QtWidgets import QMainWindow, QFileDialog, QDockWidget
 from PySide2.QtCore import Slot, Qt
 from PySide2.QtGui import *
 
 from resources.ui_homescreen import Ui_MainWindow
 # from resources.ui_mainwindow import Ui_MainWindow
-from resources.ui_test_nav import Ui_Form
-from resources.ui_test_dock import Ui_DockWidget
 from resources.ui_data_browser import Ui_DataBrowser
-
 
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
 import data_browser_explorer
+import config_handler as config
 from collections import OrderedDict
-
-os.environ["OMP_NUM_THREADS"] = "1"
 
 # Make sure that we are using QT5
 
-matplotlib.use('Qt5Agg')
+plt.use('Qt5Agg')
 os.environ["OMP_NUM_THREADS"] = "1"
 
 
