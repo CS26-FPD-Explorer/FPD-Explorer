@@ -37,6 +37,7 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_about.triggered.connect(self.function_about)
         self._ui.action_Find_Circular_Center.triggered.connect(
             self.function_find_circular_center)
+        self._ui.action_Remove_Aperture.triggered.connect(self.function_remove_aperture)
 
         self._ui.darkModeButton.setChecked(dark_mode_config)
 
@@ -166,12 +167,12 @@ class ApplicationWindow(QMainWindow):
         Calculate the circular center for the current data
         """
         
-        widget=CustomInputFormCircularCenter()
+        widget = CustomInputFormCircularCenter()
         widget.exec()
-        sigma=widget._ui.sigma_value.value()
-        rmms_1=widget._ui.rmms1st.value()
-        rmms_2=widget._ui.rmms2nd.value()
-        rmms_3=widget._ui.rmms3rd.value()
+        sigma = widget._ui.sigma_value.value()
+        rmms_1 = widget._ui.rmms1st.value()
+        rmms_2 = widget._ui.rmms2nd.value()
+        rmms_3 = widget._ui.rmms3rd.value()
         print(sigma,rmms_1,rmms_2,rmms_3)
         ##lowest_input_radius,max_radius,number_of_circles
         if self._data_browser:
@@ -181,7 +182,27 @@ class ApplicationWindow(QMainWindow):
         else:
             QtWidgets.QMessageBox.warning(self,"Warning",
             "The files must be loaded before the circular center can be calculated.")
-        
+    @Slot()
+    def function_remove_aperture(self):
+        """generate aperture to limit region to BF disc. This will also allow the algorythm to go faster
+        """
+
+        widget = CustomInputRemoveAperture()
+        widget.exec()
+        sigma = widget._ui.sigma_val.value()
+        add_radius = widget._ui.add_radius.value()
+        aaf = widget._ui.aaf.value()
+
+        print(sigma,add_radius,aaf)
+
+        if self._data_browser:
+            ap = fpdp.synthetic_aperture(mm_sel.shape[-2:], cyx= self.cyx, rio=(0, self.radius+add_radius), sigma ,aaf)[0]
+            plt.matshow(ap)  
+            print("desired code reached")
+        else:
+            QtWidgets.QMessageBox.warning(self,"Warning",
+            "The files must be loaded before the aperture can be generated.")
+
         
 
     @Slot(str)
