@@ -1,0 +1,51 @@
+# This file is a template, and might need editing before it works on your project.
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python/tags/
+image: python:3.7
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+stages:
+ - build
+ - static analysis
+ - run
+
+setup:
+ stage: build
+ script:
+  - sudo rm -f -r ~/venv
+  - sudo apt-get update
+  - sudo apt-get upgrade -y
+  - sudo apt-get autoremove && sudo apt-get autoclean
+  - sudo apt-get install python3.7-dev python3-virtualenv python3-pip
+  - python3 -m virtualenv ~/venv --python=python3.7
+  - source ~/venv/bin/activate
+  - pip install --upgrade pip
+  - pip3 install -r requirements.txt
+  - pip3 install git+git://github.com/09ubberboy90/qdarkgraystyle.git
+
+flake8:
+ stage: static analysis
+ script:
+  - source ~/venv/bin/activate
+  - python -m flake8 --select E501 *.py
+
+run:
+ stage: run
+ script:
+  - source ~/venv/bin/activate
+  - python3 compile_ui.py

@@ -11,6 +11,7 @@ import fpd_processing_new as fpdp_new
 
 from resources.ui_loadingbox import Ui_LoadingBox
 from resources.ui_inputbox import Ui_InputBox
+from resources.ui_inputBoxCircularCenter import Ui_CircularCenterInput
 
 
 class MyMplCanvas(FigureCanvas):
@@ -105,6 +106,32 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
+class CustomInputFormCircularCenter(QtWidgets.QDialog):
+    def __init__(self):
+        super(CustomInputFormCircularCenter, self).__init__()
+        self._ui = Ui_CircularCenterInput()
+        self._ui.setupUi(self)
+    @Slot()
+    def restore_default(self):
+        """
+        Restore X and Y to their default value
+        """
+        print("restoring to default")
+        self._ui.rmms1st.setValue(10)
+        self._ui.rmms2nd.setValue(60)
+        self._ui.rmms3rd.setValue(1)
+        self._ui.sigma_value.setValue(2)
+    @Slot()
+    def reject(self):
+        """
+        Overload of the reject function
+        Reset the value to its default to not mess up the loading
+        DO NOT RENAME: Overloading function
+        """
+        self.restore_default()
+        return super().reject()
+        
+
 
 
 class CustomLoadingForm(QtWidgets.QDialog):
@@ -149,22 +176,16 @@ class CustomLoadingForm(QtWidgets.QDialog):
 
         self.threadpool.start(worker2)
 
-    @property
-    def sum_im(self):
-        return self._sum_im
+    
 
     @Slot()
-    @sum_im.setter
     def sum_im(self, value):
+        print("self._sum_im")
         self._sum_im = value
 
-    @property
-    def sum_dif(self):
-        return self._sum_dif
-
     @Slot()
-    @sum_dif.setter
     def sum_dif(self, value):
+        print("self._sum_dif")
         self._sum_dif = value
 
     @Slot(tuple)
@@ -237,7 +258,7 @@ class GuiUpdater(QRunnable):
             result_val = self._fn(
                 *self._args, **self._kwargs
             )
-
+            print(result_val)
         except:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]

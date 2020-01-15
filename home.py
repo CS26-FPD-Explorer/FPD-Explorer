@@ -4,13 +4,16 @@ import matplotlib
 import h5py
 
 from PySide2 import QtWidgets, QtCore
-from PySide2.QtWidgets import QMainWindow, QFileDialog
-from PySide2.QtCore import Slot
+from PySide2.QtWidgets import QMainWindow, QFileDialog, QDockWidget, QListWidget
+from PySide2.QtCore import Slot, Qt
+from PySide2.QtGui import *
 
 from resources.ui_homescreen import Ui_MainWindow
 # from resources.ui_mainwindow import Ui_MainWindow
 from resources.ui_test_nav import Ui_Form
 from resources.ui_test_dock import Ui_DockWidget
+from resources.ui_data_browser import Ui_DataBrowser
+
 
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
@@ -24,11 +27,24 @@ os.environ["OMP_NUM_THREADS"] = "1"
 matplotlib.use('Qt5Agg')
 os.environ["OMP_NUM_THREADS"] = "1"
 
-class TestDBWidget(QMainWindow):
+
+class DBWidget(QtWidgets.QWidget):
     def __init__(self):
-        super(TestDBWidget, self).__init__()
-        self._ui = Ui_Form()
+        super(DBWidget, self).__init__()
+        self._ui = Ui_DataBrowser()
         self._ui.setupUi(self)
+
+    def get_nav(self):
+        """
+        Returns the layout that is inside the widget normally
+        """
+        return self._ui.navigationWidget
+
+    def get_diff(self):
+        """
+        Returns the layout that is inside the widget normally
+        """
+        return self._ui.diffractionWidget
 
 class ApplicationWindow(QMainWindow):
     """
@@ -99,30 +115,18 @@ class ApplicationWindow(QMainWindow):
     def start_dbrowser(self):
         w = QtWidgets.QTabBar()
         layout = QtWidgets.QHBoxLayout()
+        mainwindow = QMainWindow()
+        db = DBWidget()
+        dock = QDockWidget("Navigation", self)
+        dock.setWidget(db.get_nav())
+        mainwindow.addDockWidget(Qt.TopDockWidgetArea, dock)
 
-        dbrowser_tab = TestDBWidget()#QtWidgets.QWidget()
-        dbrowser_tab.setObjectName("dbrowser_tab")
+        dock2 = QDockWidget("Diffraction", self)
+        dock2.setWidget(db.get_diff())
+        mainwindow.addDockWidget(Qt.TopDockWidgetArea, dock2)
 
-        layout.addWidget(dbrowser_tab,0)#,QtCore.Qt.AlignHCenter)
-        dbrowser_tab2 = TestDBWidget()
-        layout.addWidget(dbrowser_tab2,0)
-        w.setLayout(layout)
-
-
-        # dbrowser_tab.layout = QtWidgets.QGridLayout()
-        tab_index = self._ui.tabWidget.addTab(w, "DataBrowser")
+        tab_index = self._ui.tabWidget.addTab(mainwindow, "DataBrowser")
         self._ui.tabWidget.setCurrentIndex(tab_index)
-        print(dbrowser_tab.parentWidget())
-        print(self._ui.tabWidget.widget(tab_index).parentWidget())
-
-        # tab = self._ui.tabWidget.widget(tab_index)
-        # tab.setParent(self._ui.tabWidget)
-        # print(tab)
-
-        # t = self._ui.tabWidget.widget(2)
-        # self._ui.tabWidget.setAllowedAreas(Qt.LeftDockWidgetArea)
-        # QtWidgets.QMainWindow.setDockNestingEnabled(self, False)
-        # print("isDockNestingEnabled=" + str(QtWidgets.QMainWindow.isDockNestingEnabled(self)))
 
     @Slot()
     def load_files_old(self):

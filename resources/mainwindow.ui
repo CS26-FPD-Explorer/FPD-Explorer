@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1087</width>
+    <width>1088</width>
     <height>636</height>
    </rect>
   </property>
@@ -21,7 +21,7 @@
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout_5">
-    <item row="0" column="1">
+    <item row="0" column="2">
      <widget class="QLineEdit" name="MIB">
       <property name="inputMask">
        <string/>
@@ -40,7 +40,14 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
+    <item row="0" column="3">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
      <widget class="QLineEdit" name="DM3">
       <property name="inputMask">
        <string/>
@@ -59,10 +66,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="pushButton">
+    <item row="0" column="0">
+     <widget class="QCheckBox" name="darkModeButton">
       <property name="text">
-       <string>PushButton</string>
+       <string>Dark Mode</string>
       </property>
      </widget>
     </item>
@@ -73,8 +80,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1087</width>
-     <height>26</height>
+     <width>1088</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -89,7 +96,14 @@
      <addaction name="action_mib"/>
      <addaction name="action_hdf5"/>
     </widget>
+    <widget class="QMenu" name="menuFunctions">
+     <property name="title">
+      <string>Functions </string>
+     </property>
+     <addaction name="action_Find_Circular_Center"/>
+    </widget>
     <addaction name="menu_Open"/>
+    <addaction name="menuFunctions"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -130,7 +144,7 @@
      <item row="1" column="0">
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
-        <widget class="MyMplCanvas" name="widget_3" native="true">
+        <widget class="MyMplCanvas" name="navCanvas" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -290,7 +304,7 @@
      <item row="1" column="0">
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="MyMplCanvas" name="widget_4" native="true">
+        <widget class="MyMplCanvas" name="diffCanvas" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -322,6 +336,11 @@
   <action name="action_about">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_Find_Circular_Center">
+   <property name="text">
+    <string>Find Circular Center</string>
    </property>
   </action>
  </widget>
@@ -368,8 +387,8 @@
    <slot>update_rect(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>528</x>
-     <y>87</y>
+     <x>530</x>
+     <y>83</y>
     </hint>
     <hint type="destinationlabel">
      <x>543</x>
@@ -384,8 +403,8 @@
    <slot>update_rect(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>266</x>
-     <y>87</y>
+     <x>267</x>
+     <y>83</y>
     </hint>
     <hint type="destinationlabel">
      <x>0</x>
@@ -400,12 +419,28 @@
    <slot>update_color_map(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1007</x>
-     <y>95</y>
+     <x>1077</x>
+     <y>82</y>
     </hint>
     <hint type="destinationlabel">
      <x>1086</x>
      <y>140</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>darkModeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>change_color_mode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>62</x>
+     <y>613</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>60</x>
+     <y>635</y>
     </hint>
    </hints>
   </connection>
@@ -417,5 +452,6 @@
   <slot>update_rect(int)</slot>
   <slot>update_zoom(int)</slot>
   <slot>update_color_map(QString)</slot>
+  <slot>change_color_mode()</slot>
  </slots>
 </ui>

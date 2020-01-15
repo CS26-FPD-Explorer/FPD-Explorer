@@ -7,7 +7,6 @@ import os
 f = []
 for (dirpath, dirnames, filenames) in walk("./resources/"):
     f.extend([os.path.join(*dirpath.split("/"), s) for s in filenames])
-
 print(f"Found {len(f)} files: Compiling.....")
 for el in f:
     file_path, ext = os.path.splitext(el)
@@ -15,4 +14,4 @@ for el in f:
     new_file = os.path.join(*file[:-1], "ui_" + file[-1] +".py")
     if ext == ".ui":
         print(f"Compiling {el} to {new_file} ... ")
-        subprocess.run("pyside2-uic -o " + new_file + " " + el, capture_output=True, check=True)
+        subprocess.run("pyside2-uic -o " + new_file + " " + el,shell=True, check=True)
