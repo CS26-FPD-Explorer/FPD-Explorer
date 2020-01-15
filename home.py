@@ -106,7 +106,8 @@ class ApplicationWindow(QMainWindow):
         return False
     
     def _update_last_path(self, new_path):
-        self._last_path = "".join(new_path.split(".")[:-1])+"/"
+        self._last_path = "/".join(new_path.split("/")[:-1])+"/"
+        config.add_config({"file_path":self._last_path})
 
     @Slot()
     def load_files(self):
@@ -256,11 +257,13 @@ class ApplicationWindow(QMainWindow):
     #         else:
     #             return
 
-
+config.load_config()
 fpd_app = QtWidgets.QApplication()
-
+dark_mode_config = config.get_config("dark_mode")
+if dark_mode_config:
+    plt.style.use('dark_background')
+    fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
 window = ApplicationWindow()
-# window.setWindowTitle("%s" % progname)
 window.show()
 sys.exit(fpd_app.exec_())
 # qApp.exec_()
