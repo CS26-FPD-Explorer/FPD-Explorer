@@ -196,7 +196,8 @@ class ApplicationWindow(QMainWindow):
         print(sigma,add_radius,aaf)
 
         if self._data_browser:
-            ap = fpdp.synthetic_aperture(mm_sel.shape[-2:], cyx= self.cyx, rio=(0, self.radius+add_radius), sigma ,aaf)[0]
+            ap = fpdp.synthetic_aperture(mm_sel.shape[-2:], cyx= self.cyx, 
+            rio=(0, self.radius+add_radius), sigma ,aaf)[0]
             plt.matshow(ap)  
             print("desired code reached")
         else:
