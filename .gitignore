@@ -15,3 +15,7 @@ __pycache__/
 # Compiled Documents
 *.pdf
 *.ps
+*ui_*
+
+*.ini
+!default.ini
