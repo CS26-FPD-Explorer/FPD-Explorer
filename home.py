@@ -9,7 +9,8 @@ from PySide2.QtCore import Slot
 
 from resources.ui_homescreen import Ui_MainWindow
 # from resources.ui_mainwindow import Ui_MainWindow
-from resources.ui_test_widget import Ui_Form
+from resources.ui_test_nav import Ui_Form
+from resources.ui_test_dock import Ui_DockWidget
 
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
@@ -96,11 +97,28 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def start_dbrowser(self):
+        w = QtWidgets.QTabBar()
+        layout = QtWidgets.QHBoxLayout()
+
         dbrowser_tab = TestDBWidget()#QtWidgets.QWidget()
         dbrowser_tab.setObjectName("dbrowser_tab")
+
+        layout.addWidget(dbrowser_tab,0)#,QtCore.Qt.AlignHCenter)
+        dbrowser_tab2 = TestDBWidget()
+        layout.addWidget(dbrowser_tab2,0)
+        w.setLayout(layout)
+
+
         # dbrowser_tab.layout = QtWidgets.QGridLayout()
-        tab_index = self._ui.tabWidget.addTab(dbrowser_tab, "DataBrowser")
+        tab_index = self._ui.tabWidget.addTab(w, "DataBrowser")
         self._ui.tabWidget.setCurrentIndex(tab_index)
+        print(dbrowser_tab.parentWidget())
+        print(self._ui.tabWidget.widget(tab_index).parentWidget())
+
+        # tab = self._ui.tabWidget.widget(tab_index)
+        # tab.setParent(self._ui.tabWidget)
+        # print(tab)
+
         # t = self._ui.tabWidget.widget(2)
         # self._ui.tabWidget.setAllowedAreas(Qt.LeftDockWidgetArea)
         # QtWidgets.QMainWindow.setDockNestingEnabled(self, False)
