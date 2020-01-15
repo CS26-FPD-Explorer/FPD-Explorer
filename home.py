@@ -57,9 +57,14 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_dm3.triggered.connect(self.function_dm3)
         # self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         # self._ui.action_about.triggered.connect(self.function_about)
+        # self._ui.action_Find_Circular_Center.triggered.connect(
+        #     self.function_find_circular_center)
+
+        # self._ui.darkModeButton.setChecked(dark_mode_config)
 
         self._data_browser = None
-        self._last_path = ""
+        self._last_path = config.get_config("file_path")
+        # self._init_color_map()
 
         # makes all tabs except Home closable
         self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
@@ -72,7 +77,8 @@ class ApplicationWindow(QMainWindow):
         Spawn a file dialog to open an mib file
         """
         fname, _ = QFileDialog.getOpenFileName(
-            self, 'Open file', self._last_path, "MERLIN binary files (*.mib)")
+            self, 'Open file', self._last_path,
+            "MERLIN binary files (*.mib)")
         if fname:
             if fname[-3:] == "mib":  # empty string means user cancelled
                 self._update_last_path(fname)
@@ -88,7 +94,8 @@ class ApplicationWindow(QMainWindow):
         Spawn a file dialog to open a dm3 file
         """
         fname, _ = QFileDialog.getOpenFileName(
-            self, 'Open file', self._last_path, "Digital Micrograph files (*.dm3)")
+            self, 'Open file', self._last_path,
+            "Digital Micrograph files (*.dm3)")
         if fname:
             if fname[-3:] == "dm3":
                 self._update_last_path(fname)
