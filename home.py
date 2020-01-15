@@ -13,6 +13,7 @@ from resources.ui_homescreen import Ui_MainWindow
 # from resources.ui_mainwindow import Ui_MainWindow
 from resources.ui_data_browser import Ui_DataBrowser
 
+from fpd.fpd_file import MerlinBinary
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
 import data_browser_explorer
@@ -110,7 +111,7 @@ class ApplicationWindow(QMainWindow):
         config.add_config({"file_path":self._last_path})
 
     @Slot()
-    def load_files(self):
+    def load_files_new(self):
         """
         setp up the databrowser and open the file if not present
         """
@@ -121,20 +122,21 @@ class ApplicationWindow(QMainWindow):
         w = QtWidgets.QTabBar()
         layout = QtWidgets.QHBoxLayout()
         mainwindow = QMainWindow()
-        db = DataBrowserWidget()
+        # self._db_widget = DataBrowserWidget()
+
         dock = QDockWidget("Navigation", self)
-        dock.setWidget(db.get_nav())
+        dock.setWidget(self._db_widget.get_nav())
         mainwindow.addDockWidget(Qt.TopDockWidgetArea, dock)
 
         dock2 = QDockWidget("Diffraction", self)
-        dock2.setWidget(db.get_diff())
+        dock2.setWidget(self._db_widget.get_diff())
         mainwindow.addDockWidget(Qt.TopDockWidgetArea, dock2)
 
         tab_index = self._ui.tabWidget.addTab(mainwindow, "DataBrowser")
         self._ui.tabWidget.setCurrentIndex(tab_index)
 
     @Slot()
-    def load_files_old(self):
+    def load_files(self):
         """
         setp up the databrowser and open the file if not present
         """
@@ -145,7 +147,9 @@ class ApplicationWindow(QMainWindow):
             mib = self._mib_path
         except AttributeError:
             response = QtWidgets.QMessageBox.warning(
-                self, "Warning", "<strong>We noticed you don't have a Merlin Binary File</strong> <br> Do you want to select one ?",
+                self, "Warning", 
+                """<strong>We noticed you don't have a Merlin Binary File</strong>
+                <br> Do you want to select one ?""",
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Yes:
@@ -162,7 +166,9 @@ class ApplicationWindow(QMainWindow):
         except AttributeError:
             dm3 = []
             response = QtWidgets.QMessageBox.warning(
-                self, "Warning", "<strong>We noticed you don't have a Digital Micrograph files</strong> <br> Do you want to select one ?",
+                self, "Warning",
+                """<strong>We noticed you don't have a Digital Micrograph files</strong>
+                <br> Do you want to select one ?""",
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Cancel:  # do nothing
@@ -184,8 +190,8 @@ class ApplicationWindow(QMainWindow):
 
         self._ds = self._mb.get_memmap()
 
-        x, y = self._input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
-                                text_y="Amount to skip for Diffraction Image")  # Check what i sthe maximum value
+        x, y = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
+                          text_y="Amount to skip for Diffraction Image")  # Check what is the maximum value
         real_skip = x
         recip_skip = y
         print("skipping : " + str(x) + " " + str(y))
@@ -195,12 +201,14 @@ class ApplicationWindow(QMainWindow):
         # Assign the down-sampled dataset
         self.ds_sel = self._ds[::real_skip,
                                ::real_skip, ::recip_skip, ::recip_skip]
-        # remove # above to reduce total file loading - last indice is amount to skip by.
+        # remove # above to reduce total file loading - last indice is amount to skip by
         # Coordinate order is y,x,ky,kx
         # i.e. reduce real and recip space pixel count in memory
 
-        widget = CustomLoadingForm(self.ds_sel)
-        widget.exec()
+        loading_widget = CustomLoadingForm(self.ds_sel)
+        loading_widget.exec()
+        self._sum_dif = loading_widget._sum_dif
+        self._sum_im = loading_widget._sum_im
 
         # # Set the value to default
         # scanY, scanX = self.ds_sel.shape[:2]
@@ -215,48 +223,27 @@ class ApplicationWindow(QMainWindow):
         #                                     widget_1=self._ui.widget_3, widget_2=self._ui.widget_4)
         print("end")
         
-    # def _input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
-    #     """
-    #     create an input form with the given value
-    #     Parameters
-    #     ----------
-    #     initial_x int value the top value should start from
-    #     initial_y int value the bottom value should start from
-    #     minimum int minimum value the spin box should be allowed to go
-    #     maximum int maximum value the spin box should be allowed to go
-    #     text_x str Text to set in the top screen
-    #     text_y str Text to set in the bottom screen
+    def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
+        """
+        create an input form with the given value
+        Parameters
+        ----------
+        initial_x int value the top value should start from
+        initial_y int value the bottom value should start from
+        minimum int minimum value the spin box should be allowed to go
+        maximum int maximum value the spin box should be allowed to go
+        text_x str Text to set in the top screen
+        text_y str Text to set in the bottom screen
 
-    #     """
+        """
 
-    #     widget = CustomInputForm(initial_x, initial_y, minimum, maximum, text_x, text_y)
-    #     widget.exec()
-    #     x = pow(2, widget._ui.Xsize.value())
-    #     y = pow(2, widget._ui.Ysize.value())
-    #     return x, y
+        widget = CustomInputForm(initial_x, initial_y,
+                                    minimum, maximum, text_x, text_y)
+        widget.exec()
+        x = pow(2, widget._ui.Xsize.value())
+        y = pow(2, widget._ui.Ysize.value())
+        return x, y
 
-
-
-
-    # @Slot()
-    # def LoadFiles(self):
-    #     x_value = None
-    #     y_value = None
-    #     #Cherk if Mib exist
-    #     try:
-    #         mib = self.mib_path
-    #     except AttributeError:
-    #         response = QtWidgets.QMessageBox.warning(
-    #             self, "Warning", "<strong>We noticed you don't have a Merlin Binary File</strong> <br> Do you want to select one ?",
-    #             QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-    #             QtWidgets.QMessageBox.Yes)
-    #         if response == QtWidgets.QMessageBox.Yes:
-    #             valid = self.function_mib()  # load a .mib file and use it
-    #             if not valid: #user canceled
-    #                 return 
-    #         else:
-    #             return
-    
     def closeEvent(self, event):
         config.save_config()
         event.accept()
