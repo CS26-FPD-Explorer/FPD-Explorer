@@ -119,22 +119,8 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def start_dbrowser(self):
-        w = QtWidgets.QTabBar()
-        layout = QtWidgets.QHBoxLayout()
-        mainwindow = QMainWindow()
-        # self._db_widget = DataBrowserWidget()
-
-        dock = QDockWidget("Navigation", self)
-        dock.setWidget(self._db_widget.get_nav())
-        mainwindow.addDockWidget(Qt.TopDockWidgetArea, dock)
-
-        dock2 = QDockWidget("Diffraction", self)
-        dock2.setWidget(self._db_widget.get_diff())
-        mainwindow.addDockWidget(Qt.TopDockWidgetArea, dock2)
-
-        tab_index = self._ui.tabWidget.addTab(mainwindow, "DataBrowser")
-        self._ui.tabWidget.setCurrentIndex(tab_index)
-
+        data_browser_explorer.start_dbrowser(self)
+    
     @Slot()
     def load_files(self):
         """
