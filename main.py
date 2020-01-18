@@ -11,7 +11,7 @@ from resources.ui_mainwindow import Ui_MainWindow
 
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
-import data_browser_explorer
+import data_browser_explorer_OLD_MAIN as data_browser_explorer
 import config_handler as config
 from collections import OrderedDict
 
