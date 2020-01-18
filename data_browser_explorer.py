@@ -180,7 +180,6 @@ class DataBrowserWidget(QtWidgets.QWidget):
         value : str name of the color map
 
         """
-
         if self._data_browser:
             print("DBself="+str(self._data_browser))
             print("DBselffunction="+str(self._data_browser.update_color_map(value)))
@@ -188,6 +187,20 @@ class DataBrowserWidget(QtWidgets.QWidget):
         else:
             print("else="+str(self.sender().setCurrentIndex(-1)))
             self.sender().setCurrentIndex(-1)
+    
+    @Slot(int)
+    def update_rect(self, value: int):
+        """
+        Update the rectangle based on the value selected by the SpinBox
+        Parameters
+        ----------
+        value : int new value to set the rectangle to
+
+        """
+        if self._data_browser:
+            return self._data_browser.update_rect(value, self.sender().objectName())
+        else:
+            self.sender().setValue(1)
 
 
 def start_dbrowser(ApplicationWindow):

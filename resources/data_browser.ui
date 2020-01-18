@@ -212,8 +212,41 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>navY</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>DataBrowser</receiver>
+   <slot>update_rect(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>530</x>
+     <y>83</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>543</x>
+     <y>121</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>navX</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>DataBrowser</receiver>
+   <slot>update_rect(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>267</x>
+     <y>83</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>update_color_map(QString)</slot>
+  <slot>update_rect(int)</slot>
  </slots>
 </ui>
