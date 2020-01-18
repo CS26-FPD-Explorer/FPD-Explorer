@@ -11,14 +11,14 @@ from PySide2.QtGui import *
 
 from resources.ui_homescreen import Ui_MainWindow
 # from resources.ui_mainwindow import Ui_MainWindow
-from resources.ui_data_browser import Ui_DataBrowser
+# from resources.ui_data_browser import Ui_DataBrowser DEL
 
 from fpd.fpd_file import MerlinBinary
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
 import data_browser_explorer
 import config_handler as config
-from collections import OrderedDict
+# from collections import OrderedDict DEL
 
 # Make sure that we are using QT5
 
@@ -26,23 +26,23 @@ plt.use('Qt5Agg')
 os.environ["OMP_NUM_THREADS"] = "1"
 
 
-class DataBrowserWidget(QtWidgets.QWidget):
-    def __init__(self):
-        super(DataBrowserWidget, self).__init__()
-        self._ui = Ui_DataBrowser()
-        self._ui.setupUi(self)
+# class DataBrowserWidget(QtWidgets.QWidget):
+#     def __init__(self):
+#         super(DataBrowserWidget, self).__init__()
+#         self._ui = Ui_DataBrowser()
+#         self._ui.setupUi(self)
 
-    def get_nav(self):
-        """
-        Returns the navigation widget of DataBrowser
-        """
-        return self._ui.navigationWidget
+#     def get_nav(self):
+#         """
+#         Returns the navigation widget of DataBrowser
+#         """
+#         return self._ui.navigationWidget
 
-    def get_diff(self):
-        """
-        Returns the diffraction widget of DataBrowser
-        """
-        return self._ui.diffractionWidget
+#     def get_diff(self):
+#         """
+#         Returns the diffraction widget of DataBrowser
+#         """
+#         return self._ui.diffractionWidget
 
 class ApplicationWindow(QMainWindow):
     """
@@ -65,7 +65,7 @@ class ApplicationWindow(QMainWindow):
 
         self._data_browser = None
         self._last_path = config.get_config("file_path")
-        # self._init_color_map()
+        # self._init_color_map() DEL
 
         # makes all tabs except Home closable
         self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
@@ -120,6 +120,23 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def start_dbrowser(self):
         data_browser_explorer.start_dbrowser(self)
+    # @Slot(str)
+    # def update_color_map(self, value: str):
+    #     data_browser_explorer.update_color_map(self, value)
+    # @Slot(str)
+    # def update_color_map(self, value: str):
+    #     """
+    #     Update the rectangle based on the value selected by the user
+    #     Parameters
+    #     ----------
+    #     value : str name of the color map
+
+    #     """
+
+    #     if self._data_browser:
+    #         return self._data_browser.update_color_map(value)
+    #     else:
+    #         self.sender().setCurrentIndex(-1)
     
     @Slot()
     def load_files(self):

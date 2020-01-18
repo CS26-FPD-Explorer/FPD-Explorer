@@ -195,5 +195,25 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>colorMap</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>DataBrowser</receiver>
+   <slot>update_color_map(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>362</x>
+     <y>13</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>543</x>
+     <y>317</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>update_color_map(QString)</slot>
+ </slots>
 </ui>
