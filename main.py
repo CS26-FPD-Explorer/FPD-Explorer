@@ -10,7 +10,6 @@ from PySide2.QtCore import Slot
 from resources.ui_mainwindow import Ui_MainWindow
 
 from resources.ui_inputBoxRemoveAperture import Ui_RemoveAperture
-from resources.ui_InputBoxCenterOfMass import Ui_CenterofMass
 
 
 from data_browser_new import DataBrowserNew
@@ -42,7 +41,6 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_Find_Circular_Center.triggered.connect(
             self.function_find_circular_center)
         self._ui.action_Remove_Aperture.triggered.connect(self.function_remove_aperture)
-        self._ui.action_Center_of_Mass.triggered.connect(self.function_center_of_mass)
 
         self._ui.darkModeButton.setChecked(dark_mode_config)
 
@@ -213,43 +211,12 @@ class ApplicationWindow(QMainWindow):
 
            
         if self._data_browser  and self.cyx.size !=0:
-            self.mm_sel = self.ds_sel 
+            mm_sel = self.ds_sel 
             
             
-            self.ap = fpdp.synthetic_aperture(self.mm_sel.shape[-2:], self.cyx, rio = (0, self.radius+add_radius), sigma=self.sigma ,aaf=self.aaf)[0]
-            plot.matshow(self.ap)  
-    @Slot()
-    def function_center_of_mass(self):
-        widget = CustomInputFormCenterOfMass()
-        widget.exec()
-        nc = widget._ui.nc.value()
-        nr = widget._ui.nr.value()
-
-        if not self._data_browser:
-            QtWidgets.QMessageBox.warning(self,"Warning",
-            "The files must be loaded before the aperture can be generated.")
-        try:  
-            if self.cyx.size !=0:
-                pass
-        except AttributeError:
-              QtWidgets.QMessageBox.warning(self,"Warning",
-             "The circular center must be calculated before this step can be taken.")
-        try:
-            if self.ap.size!=0 :
-                pass
-        except:
-            QtWidgets.QMessageBox.warning(self,"Warning",
-            "The aperture must be generated before this step can be taken.")
-        
-        if self._data_browser and self.cyx.size !=0 and self.ap.size != 0:
-             com_yx = fpdp.center_of_mass(self.mm_sel, nr, nc, thr='otsu', aperture=self.ap)
-
-
-
-
-        
-
-
+            ap = fpdp.synthetic_aperture(mm_sel.shape[-2:], self.cyx, rio = (0, self.radius+add_radius), sigma=self.sigma ,aaf=self.aaf)[0]
+            plot.matshow(ap)  
+            
        
         
 
