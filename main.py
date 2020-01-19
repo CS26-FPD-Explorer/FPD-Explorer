@@ -1,13 +1,17 @@
 import sys
 import os
 import matplotlib as plt
+import matplotlib.pyplot as plot
 import h5py
 import qdarkgraystyle
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
-
 from resources.ui_mainwindow import Ui_MainWindow
+
+from resources.ui_inputBoxRemoveAperture import Ui_RemoveAperture
+
+
 
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
@@ -37,10 +41,11 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_about.triggered.connect(self.function_about)
         self._ui.action_Find_Circular_Center.triggered.connect(
             self.function_find_circular_center)
-
+        self._ui.action_Remove_Aperture.triggered.connect(self.function_remove_aperture)
         self._ui.darkModeButton.setChecked(dark_mode_config)
 
         self._data_browser = None
+        self._cyx = None
         self._last_path = config.get_config("file_path")
         self._init_color_map()
 
@@ -166,22 +171,58 @@ class ApplicationWindow(QMainWindow):
         Calculate the circular center for the current data
         """
         
-        widget=CustomInputFormCircularCenter()
+        widget = CustomInputFormCircularCenter()
         widget.exec()
-        sigma=widget._ui.sigma_value.value()
-        rmms_1=widget._ui.rmms1st.value()
-        rmms_2=widget._ui.rmms2nd.value()
-        rmms_3=widget._ui.rmms3rd.value()
-        print(sigma,rmms_1,rmms_2,rmms_3)
-        ##lowest_input_radius,max_radius,number_of_circles
+        sigma = widget._ui.sigma_value.value()
+        rmms_1 = widget._ui.rmms1st.value()
+        rmms_2 = widget._ui.rmms2nd.value()
+        rmms_3 = widget._ui.rmms3rd.value()
+        
+        
         if self._data_browser:
-            self.cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,
+            self._cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,
             rmms=(rmms_1, rmms_2, rmms_3))
-            print("desired code reached")
+            print(self._cyx)
         else:
             QtWidgets.QMessageBox.warning(self,"Warning",
             "The files must be loaded before the circular center can be calculated.")
+    @Slot()
+    def function_remove_aperture(self):
+        """
+        Generate aperture to limit region to BF disc. This will also allow the algorythm to go faster
+        """
+        widget = CustomInputRemoveAperture()
+        widget.exec()
+        self.sigma = widget._ui.sigma_val.value()
+        add_radius = widget._ui.add_radius.value()
+        self.aaf = widget._ui.aaf.value()
+
         
+        
+        if not self._data_browser:
+             QtWidgets.QMessageBox.warning(self,"Warning",
+             "The files must be loaded before the aperture can be generated.")
+        
+        if self._cyx is None:
+             QtWidgets.QMessageBox.warning(self,"Warning",
+             "The circular center must be calculated before this step can be taken.")
+
+           
+        if self._data_browser  and self._cyx.size !=0:
+            self.mm_sel = self.ds_sel 
+            
+            
+            self.ap = fpdp.synthetic_aperture(self.mm_sel.shape[-2:], self._cyx, rio = 
+            (0, self.radius+add_radius), sigma=self.sigma ,aaf=self.aaf)[0]
+            plot.matshow(self.ap)  
+    
+
+
+
+        
+
+
+       
         
 
     @Slot(str)
