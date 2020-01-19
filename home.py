@@ -2,7 +2,7 @@ import sys
 import os
 import matplotlib as plt
 import h5py
-# import qdarkgraystyle
+import qdarkgraystyle
 
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtWidgets import QMainWindow, QFileDialog, QDockWidget
@@ -61,7 +61,7 @@ class ApplicationWindow(QMainWindow):
         # self._ui.action_Find_Circular_Center.triggered.connect(
         #     self.function_find_circular_center)
 
-        # self._ui.darkModeButton.setChecked(dark_mode_config)
+        self._ui.dark_mode_button.setChecked(dark_mode_config)
 
         self._data_browser = None
         self._files_loaded = False
@@ -133,6 +133,20 @@ class ApplicationWindow(QMainWindow):
         self._last_path = "/".join(new_path.split("/")[:-1])+"/"
         config.add_config({"file_path":self._last_path})
 
+    @Slot()
+    def change_color_mode(self):
+        dark_mode_config = self._ui.dark_mode_button.isChecked()
+        print(f"Changing theme to {dark_mode_config}")
+        if dark_mode_config:
+            fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+        else:
+            fpd_app.setStyleSheet("")
+        
+        QtWidgets.QMessageBox.information(self, "Information",
+        """Your settings have correctly been applied
+        Note that some changes will need a restart""")
+        config.add_config({"Appearence":{"dark_mode": dark_mode_config}})
+    
     @Slot()
     def load_files_new(self):
         """

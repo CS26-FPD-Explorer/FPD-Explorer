@@ -1000,6 +1000,13 @@
       </widget>
      </widget>
     </item>
+    <item row="1" column="0">
+     <widget class="QCheckBox" name="dark_mode_button">
+      <property name="text">
+       <string>Dark Mode</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -1085,8 +1092,8 @@
      <y>156</y>
     </hint>
     <hint type="destinationlabel">
-     <x>771</x>
-     <y>34</y>
+     <x>793</x>
+     <y>69</y>
     </hint>
    </hints>
   </connection>
@@ -1117,8 +1124,8 @@
      <y>300</y>
     </hint>
     <hint type="destinationlabel">
-     <x>449</x>
-     <y>36</y>
+     <x>382</x>
+     <y>74</y>
     </hint>
    </hints>
   </connection>
@@ -1149,8 +1156,24 @@
      <y>300</y>
     </hint>
     <hint type="destinationlabel">
-     <x>533</x>
-     <y>34</y>
+     <x>505</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dark_mode_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>change_color_mode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>41</x>
+     <y>853</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>589</x>
+     <y>360</y>
     </hint>
    </hints>
   </connection>
@@ -1162,5 +1185,6 @@
   <slot>start_dbrowser()</slot>
   <slot>find_circular_centre()</slot>
   <slot>clear_files()</slot>
+  <slot>change_color_mode()</slot>
  </slots>
 </ui>
