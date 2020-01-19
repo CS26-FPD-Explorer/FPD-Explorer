@@ -852,7 +852,7 @@
                 <string>.mib filename</string>
                </property>
                <property name="clearButtonEnabled">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -868,10 +868,10 @@
                 <bool>true</bool>
                </property>
                <property name="placeholderText">
-                <string>.dmr filename</string>
+                <string>.dm3 filename</string>
                </property>
                <property name="clearButtonEnabled">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -893,7 +893,7 @@
                 <string>.hdf5 filename</string>
                </property>
                <property name="clearButtonEnabled">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -1138,6 +1138,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>clear_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>clear_files()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>462</x>
+     <y>300</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>533</x>
+     <y>34</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>load_files()</slot>
@@ -1145,5 +1161,6 @@
   <slot>function_dm3()</slot>
   <slot>start_dbrowser()</slot>
   <slot>find_circular_centre()</slot>
+  <slot>clear_files()</slot>
  </slots>
 </ui>

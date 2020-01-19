@@ -166,6 +166,22 @@ class ApplicationWindow(QMainWindow):
     #         self.sender().setCurrentIndex(-1)
     
     @Slot()
+    def clear_files(self):
+        """
+        """
+        if self._ui.mib_line.text():
+            print("mibline="+str(self._ui.mib_line.text()))
+            del self._mib_path
+            self._ui.mib_line.clear()
+        if self._ui.dm3_line.text():
+            del self._dm3_path
+            self._ui.dm3_line.clear()
+        if self._ui.hdf5_line.text():
+            # TO DO: ADD hdf5 RELEVANT CODE ONCE hdf5 OPENING ADDED
+            pass
+        self._files_loaded = False
+
+    @Slot()
     def load_files(self):
         """
         setp up the databrowser and open the file if not present
@@ -241,6 +257,7 @@ class ApplicationWindow(QMainWindow):
         self._sum_im = loading_widget._sum_im
 
         self._files_loaded = True
+        print("files_loaded="+str(self._files_loaded))
         # # Set the value to default
         # scanY, scanX = self.ds_sel.shape[:2]
         # self._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
