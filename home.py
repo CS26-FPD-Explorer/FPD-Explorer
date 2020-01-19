@@ -64,6 +64,7 @@ class ApplicationWindow(QMainWindow):
         # self._ui.darkModeButton.setChecked(dark_mode_config)
 
         self._data_browser = None
+        self._files_loaded = False
         self._last_path = config.get_config("file_path")
         # self._init_color_map() DEL
 
