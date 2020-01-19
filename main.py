@@ -10,6 +10,7 @@ from PySide2.QtCore import Slot
 from resources.ui_mainwindow import Ui_MainWindow
 
 from resources.ui_inputBoxRemoveAperture import Ui_RemoveAperture
+from resources.ui_InputBoxCenterOfMass import Ui_CenterofMass
 
 
 from data_browser_new import DataBrowserNew
@@ -41,10 +42,12 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_Find_Circular_Center.triggered.connect(
             self.function_find_circular_center)
         self._ui.action_Remove_Aperture.triggered.connect(self.function_remove_aperture)
+        self._ui.action_Center_of_Mass.triggered.connect(self.function_center_of_mass)
 
         self._ui.darkModeButton.setChecked(dark_mode_config)
-
+        self._cyx = None
         self._data_browser = None
+        self._ap = None
         self._last_path = config.get_config("file_path")
         self._init_color_map()
 
@@ -180,9 +183,9 @@ class ApplicationWindow(QMainWindow):
         
         
         if self._data_browser:
-            self.cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,
-            rmms=(rmms_1, rmms_2, rmms_3))
-            print(self.cyx)
+             self._cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,
+             rmms=(rmms_1, rmms_2, rmms_3))
+             print( self._cyx)
         else:
             QtWidgets.QMessageBox.warning(self,"Warning",
             "The files must be loaded before the circular center can be calculated.")
@@ -202,21 +205,48 @@ class ApplicationWindow(QMainWindow):
         if not self._data_browser:
              QtWidgets.QMessageBox.warning(self,"Warning",
              "The files must be loaded before the aperture can be generated.")
-        try:  
-            if self.cyx.size !=0:
-                pass
-        except AttributeError:
-              QtWidgets.QMessageBox.warning(self,"Warning",
+        
+        if self._cyx is None:
+             QtWidgets.QMessageBox.warning(self,"Warning",
              "The circular center must be calculated before this step can be taken.")
 
            
-        if self._data_browser  and self.cyx.size !=0:
-            mm_sel = self.ds_sel 
+        if self._data_browser  and self._cyx.size !=0:
+            self.mm_sel = self.ds_sel 
             
             
-            ap = fpdp.synthetic_aperture(mm_sel.shape[-2:], self.cyx, rio = (0, self.radius+add_radius), sigma=self.sigma ,aaf=self.aaf)[0]
-            plot.matshow(ap)  
-            
+            self._ap = fpdp.synthetic_aperture(self.mm_sel.shape[-2:], self._cyx, rio = 
+            (0, self.radius+add_radius), sigma=self.sigma ,aaf=self.aaf)[0]
+            plot.matshow(self._ap)  
+    
+
+    def function_center_of_mass(self):
+        widget = CustomInputFormCenterOfMass()
+        widget.exec()
+        nc = widget._ui.nc.value()
+        nr = widget._ui.nr.value()
+
+        if not self._data_browser:
+            QtWidgets.QMessageBox.warning(self,"Warning",
+            "The files must be loaded before the aperture can be generated.")
+        
+        if self._cyx is None:
+            QtWidgets.QMessageBox.warning(self,"Warning",
+            "The circular center must be calculated before this step can be taken.")
+        
+        if self._ap is None:
+             QtWidgets.QMessageBox.warning(self,"Warning",
+            "The aperture must be generated before this step can be taken.")
+        
+        else: 
+             com_yx = fpdp.center_of_mass(self.mm_sel, nr, nc, thr='otsu', aperture=self._ap)
+
+
+
+
+        
+
+
        
         
 
