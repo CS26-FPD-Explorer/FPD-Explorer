@@ -156,8 +156,7 @@ class ApplicationWindow(QMainWindow):
         dark_mode_config = self._ui.darkModeButton.isChecked()
         print(f"Changing theme to {dark_mode_config}")
         if dark_mode_config:
-            ##fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
-            pass
+            fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
         else:
             fpd_app.setStyleSheet("")
         
@@ -284,7 +283,7 @@ fpd_app = QtWidgets.QApplication()
 dark_mode_config = config.get_config("dark_mode")
 if dark_mode_config:
     plt.style.use('dark_background')
-   ### fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+    fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
 window = ApplicationWindow()
 window.show()
 sys.exit(fpd_app.exec_())
