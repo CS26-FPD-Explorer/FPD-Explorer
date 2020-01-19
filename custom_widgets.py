@@ -12,6 +12,7 @@ import fpd_processing_new as fpdp_new
 from resources.ui_loadingbox import Ui_LoadingBox
 from resources.ui_inputbox import Ui_InputBox
 from resources.ui_inputBoxCircularCenter import Ui_CircularCenterInput
+from resources.ui_inputBoxRemoveAperture import Ui_RemoveAperture
 
 
 class MyMplCanvas(FigureCanvas):
