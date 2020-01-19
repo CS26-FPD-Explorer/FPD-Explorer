@@ -183,6 +183,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
         if self._data_browser:
             print("DBself="+str(self._data_browser))
             print("DBselffunction="+str(self._data_browser.update_color_map(value)))
+            print("colormap value="+value)
             return self._data_browser.update_color_map(value)
         else:
             print("else="+str(self.sender().setCurrentIndex(-1)))

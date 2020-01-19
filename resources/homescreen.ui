@@ -639,7 +639,7 @@
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QPushButton" name="pushButton_38">
+            <widget class="QPushButton" name="find_circ_c_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -1127,11 +1127,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>find_circ_c_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>find_circular_centre()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>635</x>
+     <y>197</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>667</x>
+     <y>35</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>load_files()</slot>
   <slot>function_mib()</slot>
   <slot>function_dm3()</slot>
   <slot>start_dbrowser()</slot>
+  <slot>find_circular_centre()</slot>
  </slots>
 </ui>

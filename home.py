@@ -16,7 +16,7 @@ from resources.ui_homescreen import Ui_MainWindow
 from fpd.fpd_file import MerlinBinary
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
-import data_browser_explorer
+import data_browser_explorer, circular_centre
 import config_handler as config
 # from collections import OrderedDict DEL
 
@@ -120,6 +120,10 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def start_dbrowser(self):
         data_browser_explorer.start_dbrowser(self)
+    
+    @Slot()
+    def find_circular_centre(self):
+        circular_centre.find_circular_centre(self)
     # @Slot(str)
     # def update_color_map(self, value: str):
     #     data_browser_explorer.update_color_map(self, value)
@@ -213,6 +217,7 @@ class ApplicationWindow(QMainWindow):
         self._sum_dif = loading_widget._sum_dif
         self._sum_im = loading_widget._sum_im
 
+        self._files_loaded = True
         # # Set the value to default
         # scanY, scanX = self.ds_sel.shape[:2]
         # self._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
