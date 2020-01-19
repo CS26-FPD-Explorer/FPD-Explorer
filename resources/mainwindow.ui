@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1088</width>
-    <height>636</height>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,7 +81,7 @@
      <x>0</x>
      <y>0</y>
      <width>1088</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -101,6 +101,8 @@
       <string>Functions </string>
      </property>
      <addaction name="action_Find_Circular_Center"/>
+     <addaction name="action_Remove_Aperture"/>
+     <addaction name="action_Center_of_Mass"/>
     </widget>
     <addaction name="menu_Open"/>
     <addaction name="menuFunctions"/>
@@ -341,6 +343,16 @@
   <action name="action_Find_Circular_Center">
    <property name="text">
     <string>Find Circular Center</string>
+   </property>
+  </action>
+  <action name="action_Remove_Aperture">
+   <property name="text">
+    <string>Remove Aperture</string>
+   </property>
+  </action>
+  <action name="action_Center_of_Mass">
+   <property name="text">
+    <string>Center of Mass </string>
    </property>
   </action>
  </widget>
