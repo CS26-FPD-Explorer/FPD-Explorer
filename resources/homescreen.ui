@@ -998,11 +998,6 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>Tab 2</string>
-       </attribute>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -1064,22 +1059,6 @@
  <resources/>
  <connections>
   <connection>
-   <sender>dm3_button</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>function_dm3()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>302</x>
-     <y>147</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>312</x>
-     <y>33</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>mib_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
@@ -1091,22 +1070,6 @@
     </hint>
     <hint type="destinationlabel">
      <x>202</x>
-     <y>36</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>load_button</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>load_files()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>213</x>
-     <y>300</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>449</x>
      <y>36</y>
     </hint>
    </hints>
@@ -1140,6 +1103,38 @@
     <hint type="destinationlabel">
      <x>667</x>
      <y>35</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>load_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>load_files()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>213</x>
+     <y>300</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>449</x>
+     <y>36</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dm3_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>function_dm3()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>302</x>
+     <y>147</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>33</y>
     </hint>
    </hints>
   </connection>
