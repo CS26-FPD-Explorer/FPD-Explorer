@@ -3,7 +3,7 @@ import os
 import matplotlib as plt
 import matplotlib.pyplot as plot
 import h5py
-###import qdarkgraystyle
+import qdarkgraystyle
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
