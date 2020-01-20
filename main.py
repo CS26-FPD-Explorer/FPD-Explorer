@@ -3,7 +3,7 @@ import os
 import matplotlib as plt
 import matplotlib.pyplot as plot
 import h5py
-###import qdarkgraystyle
+import qdarkgraystyle
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
@@ -158,7 +158,7 @@ class ApplicationWindow(QMainWindow):
         dark_mode_config = self._ui.darkModeButton.isChecked()
         print(f"Changing theme to {dark_mode_config}")
         if dark_mode_config:
-            ##fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+            fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
             pass
         else:
             fpd_app.setStyleSheet("")
@@ -323,7 +323,7 @@ fpd_app = QtWidgets.QApplication()
 dark_mode_config = config.get_config("dark_mode")
 if dark_mode_config:
     plt.style.use('dark_background')
-   ### fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+    fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
 window = ApplicationWindow()
 window.show()
 sys.exit(fpd_app.exec_())
