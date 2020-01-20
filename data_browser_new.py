@@ -310,6 +310,20 @@ class DataBrowserNew:
                 self.rect.set_width(value)
             elif button[-1] == "Y":
                 self.rect.set_height(value)
+            #get top left corner 
+            x0,y0 = self.rect.get_xy()
+            #make sure we're not out of bounds
+            if x0 < 0: #left
+                self.rect.set_x(0)
+            
+            if y0 < 0: #top
+                self.rect.set_y(0)
+
+            if x0+self.rect.get_width() > self.scanX: #right
+                self.rect.set_x(self.scanX-self.rect.get_width())
+            
+            if y0+ self.rect.get_height() > self.scanY: #bottom
+                self.rect.set_y(self.scanY-self.rect.get_height())
 
             canvas = self.rect.figure.canvas
             axes = self.rect.axes
@@ -338,7 +352,7 @@ class DataBrowserNew:
             self.plot_data = self.h5f_ds[self.scanYind,
                                          self.scanXind, self.colour_index, :, :]
         else:
-            if self.rect.get_height() > 1 and self.rect.get_width() > 1:
+            if self.rect.get_height() > 1 or self.rect.get_width() > 1:
                 y_slice = self.scanYind if self.scanYind >= 0 else 0
                 x_slice = self.scanXind if self.scanXind >= 0 else 0
                 zooming = True
