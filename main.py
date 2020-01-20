@@ -43,9 +43,9 @@ class ApplicationWindow(QMainWindow):
             self.function_find_circular_center)
         self._ui.action_Remove_Aperture.triggered.connect(self.function_remove_aperture)
         self._ui.darkModeButton.setChecked(dark_mode_config)
-
-        self._data_browser = None
         self._cyx = None
+        self._data_browser = None
+        self._ap = None
         self._last_path = config.get_config("file_path")
         self._init_color_map()
 
@@ -171,52 +171,89 @@ class ApplicationWindow(QMainWindow):
         Calculate the circular center for the current data
         """
         
-        widget = CustomInputFormCircularCenter()
-        widget.exec()
-        sigma = widget._ui.sigma_value.value()
-        rmms_1 = widget._ui.rmms1st.value()
-        rmms_2 = widget._ui.rmms2nd.value()
-        rmms_3 = widget._ui.rmms3rd.value()
+        
         
         
         if self._data_browser:
+            widget = CustomInputFormCircularCenter()
+            widget.exec()
+            sigma = widget._ui.sigma_value.value()
+            rmms_1 = widget._ui.rmms1st.value()
+            rmms_2 = widget._ui.rmms2nd.value()
+            rmms_3 = widget._ui.rmms3rd.value()
             self._cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,
             rmms=(rmms_1, rmms_2, rmms_3))
-            print(self._cyx)
+            print( self._cyx)
         else:
             QtWidgets.QMessageBox.warning(self,"Warning",
-            "The files must be loaded before the circular center can be calculated.")
+            "<b>The files must be loaded</b> before the circular center can be calculated.")
+
     @Slot()
     def function_remove_aperture(self):
         """
         Generate aperture to limit region to BF disc. This will also allow the algorythm to go faster
         """
-        widget = CustomInputRemoveAperture()
-        widget.exec()
-        self.sigma = widget._ui.sigma_val.value()
-        add_radius = widget._ui.add_radius.value()
-        self.aaf = widget._ui.aaf.value()
-
+        err_str = ""
         
         
         if not self._data_browser:
-             QtWidgets.QMessageBox.warning(self,"Warning",
-             "The files must be loaded before the aperture can be generated.")
+             err_str+= "<b>The files must be loaded</b> before the aperture can be generated.<br></br><br></br>"
         
         if self._cyx is None:
-             QtWidgets.QMessageBox.warning(self,"Warning",
-             "The circular center must be calculated before this step can be taken.")
+             err_str += "<b>The circular center</b> must be calculated before this step can be taken. <br></br>"
+        
+        if err_str:
+            QtWidgets.QMessageBox.warning(self,"Warning",err_str)
+
 
            
         if self._data_browser  and self._cyx.size !=0:
+            widget = CustomInputRemoveAperture()
+            widget.exec()
+            self.sigma = widget._ui.sigma_val.value()
+            add_radius = widget._ui.add_radius.value()
+            self.aaf = widget._ui.aaf.value()
+
             self.mm_sel = self.ds_sel 
             
             
-            self.ap = fpdp.synthetic_aperture(self.mm_sel.shape[-2:], self._cyx, rio = 
+            self._ap = fpdp.synthetic_aperture(self.mm_sel.shape[-2:], self._cyx, rio = 
             (0, self.radius+add_radius), sigma=self.sigma ,aaf=self.aaf)[0]
-            plot.matshow(self.ap)  
+            plot.matshow(self._ap)  
     
 
+    def function_center_of_mass(self):
+        
+        err_str = ""
+
+        if not self._data_browser:
+            err_str+= "<b>The files must be loaded</b> before the center of mass can be calculated.<br></br><br></br>"
+
+        if self._cyx is None:
+            err_str += "<b>The circular center</b> must be calculated before this step can be taken.<br></br><br></br>"
+
+        if self._ap is None:
+            err_str += "<b>The aperture</b> must be generated before this step can be taken.<br></br><br></br>"
+        
+        if err_str:
+            QtWidgets.QMessageBox.warning(self,"Warning",err_str)
+ 
+        else: 
+            widget = CustomInputFormCenterOfMass()
+            widget.exec()
+            nc = widget._ui.nc.value()
+            nr = widget._ui.nr.value()
+
+            com_yx = fpdp.center_of_mass(self.mm_sel, nr, nc, thr='otsu', aperture=self._ap)
+            print(com_yx)
+            fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
+            com_yx_cor = com_yx - fit
+            # Convert to beta using the BF disc and calibration.
+            # The pixel value radius from before could be used for the calibration, or we can do a subpixel equivalent.
+            # You may see that the aperture is not a perfect circle - error bars
+
+            cyx_sp, r_sp = fpdp.find_circ_centre(self._sum_dif, sigma=2, rmms=(self.radius-8, self.radius+8, 1), spf=4)
+            print(r_sp)
 
 
         
