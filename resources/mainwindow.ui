@@ -102,7 +102,6 @@
      </property>
      <addaction name="action_Find_Circular_Center"/>
      <addaction name="action_Remove_Aperture"/>
-     <addaction name="action_Center_of_Mass"/>
     </widget>
     <addaction name="menu_Open"/>
     <addaction name="menuFunctions"/>

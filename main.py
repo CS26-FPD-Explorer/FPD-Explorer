@@ -10,7 +10,7 @@ from PySide2.QtCore import Slot
 from resources.ui_mainwindow import Ui_MainWindow
 
 from resources.ui_inputBoxRemoveAperture import Ui_RemoveAperture
-from resources.ui_InputBoxCenterOfMass import Ui_CenterofMass
+
 
 
 from data_browser_new import DataBrowserNew
@@ -42,8 +42,6 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_Find_Circular_Center.triggered.connect(
             self.function_find_circular_center)
         self._ui.action_Remove_Aperture.triggered.connect(self.function_remove_aperture)
-        self._ui.action_Center_of_Mass.triggered.connect(self.function_center_of_mass)
-
         self._ui.darkModeButton.setChecked(dark_mode_config)
         self._cyx = None
         self._data_browser = None
@@ -159,7 +157,6 @@ class ApplicationWindow(QMainWindow):
         print(f"Changing theme to {dark_mode_config}")
         if dark_mode_config:
             fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
-            pass
         else:
             fpd_app.setStyleSheet("")
         
