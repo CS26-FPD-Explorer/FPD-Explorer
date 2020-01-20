@@ -17,6 +17,26 @@ class DataBrowserWidget(QtWidgets.QWidget):
         self._data_browser = None
         self._init_color_map()
 
+    def setup_ui(self, shape:tuple):
+        """
+        Setup of all the default value for the explorer
+        """
+        # Set the value to default
+        scanY, scanX = shape
+        self._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
+        self._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 1)
+        self._ui.navX.setMaximum(scanX)
+        self._ui.navY.setMaximum(scanY)
+        self._ui.colorMap.setCurrentIndex(0)
+
+    
+    def set_data_browser(self, data_browser):
+        """
+        Secure setter for the databrowser variable
+        """
+        self._data_browser = data_browser
+        print(self._data_browser)    
+
     def get_nav(self):
         """
         Returns the navigation widget of DataBrowser
@@ -72,9 +92,6 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
         """
         if self._data_browser:
-            print("DBself="+str(self._data_browser))
-            print("DBselffunction="+str(self._data_browser.update_color_map(value)))
-            print("colormap value="+value)
             return self._data_browser.update_color_map(value)
         else:
             print("else="+str(self.sender().setCurrentIndex(-1)))
@@ -113,22 +130,14 @@ def start_dbrowser(ApplicationWindow):
         tab_index = ApplicationWindow._ui.tabWidget.addTab(mainwindow, "DataBrowser")
         ApplicationWindow._ui.tabWidget.setCurrentIndex(tab_index)
 
-        # Set the value to default
-        scanY, scanX = ApplicationWindow.ds_sel.shape[:2]
-        db_widget._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
-        db_widget._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 1)
-        db_widget._ui.navX.setMaximum(scanX)
-        db_widget._ui.navY.setMaximum(scanY)
         
-        print(db_widget.get_nav())
-        print(db_widget.get_diff())
         ApplicationWindow._data_browser = DataBrowserNew(
             ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
-            widget_1=db_widget._ui.widget_3, widget_2=db_widget._ui.widget_4)
+            widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
         # navCanvas == widget_3, diffCanvas == widget_4, Flo didn't name them in data_browser.ui
 
-        db_widget._data_browser = ApplicationWindow._data_browser
-        db_widget._ui.colorMap.setCurrentIndex(0)
+        db_widget.set_data_browser(ApplicationWindow._data_browser)
+        db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
     else:
         QtWidgets.QMessageBox.warning(ApplicationWindow, "Warning",
         "The files must be loaded before DataBrowser can be opened.")
