@@ -1,13 +1,8 @@
 from PySide2 import QtWidgets
-# from PySide2.QtWidgets import QMainWindow, QDockWidget
-# from PySide2.QtCore import Slot, Qt
 
-# from data_browser_new import DataBrowserNew
-# from collections import OrderedDict
-# from resources.ui_data_browser import Ui_DataBrowser
 import fpd
 import fpd.fpd_processing as fpdp
-# import fpd_processing_new as fpdp_new
+
 from custom_widgets import CustomInputFormCircularCenter
 
 def find_circular_centre(ApplicationWindow):

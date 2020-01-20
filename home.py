@@ -10,39 +10,18 @@ from PySide2.QtCore import Slot, Qt
 from PySide2.QtGui import *
 
 from resources.ui_homescreen import Ui_MainWindow
-# from resources.ui_mainwindow import Ui_MainWindow
-# from resources.ui_data_browser import Ui_DataBrowser DEL
 
 from fpd.fpd_file import MerlinBinary
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
 import data_browser_explorer, circular_centre
 import config_handler as config
-# from collections import OrderedDict DEL
 
 # Make sure that we are using QT5
 
 plt.use('Qt5Agg')
 os.environ["OMP_NUM_THREADS"] = "1"
 
-
-# class DataBrowserWidget(QtWidgets.QWidget):
-#     def __init__(self):
-#         super(DataBrowserWidget, self).__init__()
-#         self._ui = Ui_DataBrowser()
-#         self._ui.setupUi(self)
-
-#     def get_nav(self):
-#         """
-#         Returns the navigation widget of DataBrowser
-#         """
-#         return self._ui.navigationWidget
-
-#     def get_diff(self):
-#         """
-#         Returns the diffraction widget of DataBrowser
-#         """
-#         return self._ui.diffractionWidget
 
 class ApplicationWindow(QMainWindow):
     """
@@ -58,15 +37,12 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_dm3.triggered.connect(self.function_dm3)
         # self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         self._ui.action_about.triggered.connect(self.function_about)
-        # self._ui.action_Find_Circular_Center.triggered.connect(
-        #     self.function_find_circular_center)
 
         self._ui.dark_mode_button.setChecked(dark_mode_config)
 
         self._data_browser = None
         self._files_loaded = False
         self._last_path = config.get_config("file_path")
-        # self._init_color_map() DEL
 
         # makes all tabs except Home closable
         self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
@@ -148,40 +124,17 @@ class ApplicationWindow(QMainWindow):
         config.add_config({"Appearence":{"dark_mode": dark_mode_config}})
     
     @Slot()
-    def load_files_new(self):
-        """
-        setp up the databrowser and open the file if not present
-        """
-        return data_browser_explorer.load_files(self)
-
-    @Slot()
     def start_dbrowser(self):
         data_browser_explorer.start_dbrowser(self)
     
     @Slot()
     def find_circular_centre(self):
         circular_centre.find_circular_centre(self)
-    # @Slot(str)
-    # def update_color_map(self, value: str):
-    #     data_browser_explorer.update_color_map(self, value)
-    # @Slot(str)
-    # def update_color_map(self, value: str):
-    #     """
-    #     Update the rectangle based on the value selected by the user
-    #     Parameters
-    #     ----------
-    #     value : str name of the color map
-
-    #     """
-
-    #     if self._data_browser:
-    #         return self._data_browser.update_color_map(value)
-    #     else:
-    #         self.sender().setCurrentIndex(-1)
     
     @Slot()
     def clear_files(self):
         """
+        Clears all provided files and resets the file_loaded flag
         """
         if self._ui.mib_line.text():
             print("mibline="+str(self._ui.mib_line.text()))
@@ -272,17 +225,6 @@ class ApplicationWindow(QMainWindow):
 
         self._files_loaded = True
         print("files_loaded="+str(self._files_loaded))
-        # # Set the value to default
-        # scanY, scanX = self.ds_sel.shape[:2]
-        # self._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
-        # self._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 1)
-        # self._ui.navX.setMaximum(scanX)
-        # self._ui.navY.setMaximum(scanY)
-
-        # self._sum_dif = widget.sum_dif
-        # self._sum_im = widget.sum_im
-        # self._data_browser = DataBrowserNew(self.ds_sel, nav_im=self._sum_im,
-        #                                     widget_1=self._ui.widget_3, widget_2=self._ui.widget_4)
         print("end")
         
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
