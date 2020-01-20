@@ -189,6 +189,7 @@ class ApplicationWindow(QMainWindow):
         else:
             QtWidgets.QMessageBox.warning(self,"Warning",
             "The files must be loaded before the circular center can be calculated.")
+
     @Slot()
     def function_remove_aperture(self):
         """
@@ -204,7 +205,7 @@ class ApplicationWindow(QMainWindow):
         
         if not self._data_browser:
              QtWidgets.QMessageBox.warning(self,"Warning",
-             "The files must be loaded before the aperture can be generated.")
+             "The files must be loaded add_radiusbefore the aperture can be generated.")
         
         if self._cyx is None:
              QtWidgets.QMessageBox.warning(self,"Warning",
@@ -225,7 +226,7 @@ class ApplicationWindow(QMainWindow):
         widget.exec()
         nc = widget._ui.nc.value()
         nr = widget._ui.nr.value()
-
+        print(nc, nr, self._ap.shape)
         if not self._data_browser:
             QtWidgets.QMessageBox.warning(self,"Warning",
             "The files must be loaded before the aperture can be generated.")
@@ -235,13 +236,20 @@ class ApplicationWindow(QMainWindow):
             "The circular center must be calculated before this step can be taken.")
         
         if self._ap is None:
-             QtWidgets.QMessageBox.warning(self,"Warning",
+            QtWidgets.QMessageBox.warning(self,"Warning",
             "The aperture must be generated before this step can be taken.")
         
         else: 
-             com_yx = fpdp.center_of_mass(self.mm_sel, nr, nc, thr='otsu', aperture=self._ap)
+            com_yx = fpdp.center_of_mass(self.mm_sel, nr, nc, thr='otsu', aperture=self._ap)
+            print(com_yx)
+            fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
+            com_yx_cor = com_yx - fit
+            # Convert to beta using the BF disc and calibration.
+            # The pixel value radius from before could be used for the calibration, or we can do a subpixel equivalent.
+            # You may see that the aperture is not a perfect circle - error bars
 
-
+            cyx_sp, r_sp = fpdp.find_circ_centre(self._sum_dif, sigma=2, rmms=(self.radius-8, self.radius+8, 1), spf=4)
+            print(r_sp)
 
 
         
