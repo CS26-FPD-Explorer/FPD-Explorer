@@ -174,45 +174,49 @@ class ApplicationWindow(QMainWindow):
         Calculate the circular center for the current data
         """
         
-        widget = CustomInputFormCircularCenter()
-        widget.exec()
-        sigma = widget._ui.sigma_value.value()
-        rmms_1 = widget._ui.rmms1st.value()
-        rmms_2 = widget._ui.rmms2nd.value()
-        rmms_3 = widget._ui.rmms3rd.value()
+        
         
         
         if self._data_browser:
-             self._cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,
-             rmms=(rmms_1, rmms_2, rmms_3))
-             print( self._cyx)
+            widget = CustomInputFormCircularCenter()
+            widget.exec()
+            sigma = widget._ui.sigma_value.value()
+            rmms_1 = widget._ui.rmms1st.value()
+            rmms_2 = widget._ui.rmms2nd.value()
+            rmms_3 = widget._ui.rmms3rd.value()
+            self._cyx,self.radius = fpdp.find_circ_centre(self._sum_dif,sigma,
+            rmms=(rmms_1, rmms_2, rmms_3))
+            print( self._cyx)
         else:
             QtWidgets.QMessageBox.warning(self,"Warning",
-            "The files must be loaded before the circular center can be calculated.")
+            "<b>The files must be loaded</b> before the circular center can be calculated.")
 
     @Slot()
     def function_remove_aperture(self):
         """
         Generate aperture to limit region to BF disc. This will also allow the algorythm to go faster
         """
-        widget = CustomInputRemoveAperture()
-        widget.exec()
-        self.sigma = widget._ui.sigma_val.value()
-        add_radius = widget._ui.add_radius.value()
-        self.aaf = widget._ui.aaf.value()
-
+        err_str = ""
         
         
         if not self._data_browser:
-             QtWidgets.QMessageBox.warning(self,"Warning",
-             "The files must be loaded add_radiusbefore the aperture can be generated.")
+             err_str+= "<b>The files must be loaded</b> before the aperture can be generated.<br></br><br></br>"
         
         if self._cyx is None:
-             QtWidgets.QMessageBox.warning(self,"Warning",
-             "The circular center must be calculated before this step can be taken.")
+             err_str += "<b>The circular center</b> must be calculated before this step can be taken. <br></br>"
+        
+        if err_str:
+            QtWidgets.QMessageBox.warning(self,"Warning",err_str)
+
 
            
         if self._data_browser  and self._cyx.size !=0:
+            widget = CustomInputRemoveAperture()
+            widget.exec()
+            self.sigma = widget._ui.sigma_val.value()
+            add_radius = widget._ui.add_radius.value()
+            self.aaf = widget._ui.aaf.value()
+
             self.mm_sel = self.ds_sel 
             
             
@@ -222,24 +226,27 @@ class ApplicationWindow(QMainWindow):
     
 
     def function_center_of_mass(self):
-        widget = CustomInputFormCenterOfMass()
-        widget.exec()
-        nc = widget._ui.nc.value()
-        nr = widget._ui.nr.value()
-        print(nc, nr, self._ap.shape)
+        
+        err_str = ""
+
         if not self._data_browser:
-            QtWidgets.QMessageBox.warning(self,"Warning",
-            "The files must be loaded before the aperture can be generated.")
-        
+            err_str+= "<b>The files must be loaded</b> before the center of mass can be calculated.<br></br><br></br>"
+
         if self._cyx is None:
-            QtWidgets.QMessageBox.warning(self,"Warning",
-            "The circular center must be calculated before this step can be taken.")
-        
+            err_str += "<b>The circular center</b> must be calculated before this step can be taken.<br></br><br></br>"
+
         if self._ap is None:
-            QtWidgets.QMessageBox.warning(self,"Warning",
-            "The aperture must be generated before this step can be taken.")
+            err_str += "<b>The aperture</b> must be generated before this step can be taken.<br></br><br></br>"
         
+        if err_str:
+            QtWidgets.QMessageBox.warning(self,"Warning",err_str)
+ 
         else: 
+            widget = CustomInputFormCenterOfMass()
+            widget.exec()
+            nc = widget._ui.nc.value()
+            nr = widget._ui.nr.value()
+
             com_yx = fpdp.center_of_mass(self.mm_sel, nr, nc, thr='otsu', aperture=self._ap)
             print(com_yx)
             fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
