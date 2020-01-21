@@ -39,10 +39,12 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_about.triggered.connect(self.function_about)
 
         self._ui.dark_mode_button.setChecked(dark_mode_config)
-
-        self._data_browser = None
-        self._files_loaded = False
         self._last_path = config.get_config("file_path")
+
+        self._files_loaded = False
+        self._data_browser = None
+        self._cyx = None
+        self._ap = None
 
         # makes all tabs except Home closable
         self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
@@ -130,6 +132,10 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def find_circular_centre(self):
         circular_centre.find_circular_centre(self)
+    
+    @Slot()
+    def remove_aperture(self):
+        circular_centre.remove_aperture(self)
     
     @Slot()
     def clear_files(self):

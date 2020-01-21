@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1100</width>
-    <height>700</height>
+    <height>721</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -414,7 +414,7 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QPushButton" name="pushButton_37">
+            <widget class="QPushButton" name="rm_aperture_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -994,12 +994,28 @@
    <slot>change_color_mode()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>41</x>
-     <y>853</y>
+     <x>52</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
      <x>103</x>
-     <y>806</y>
+     <y>720</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rm_aperture_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>remove_aperture()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>705</x>
+     <y>242</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>909</x>
+     <y>50</y>
     </hint>
    </hints>
   </connection>
@@ -1012,5 +1028,6 @@
   <slot>find_circular_centre()</slot>
   <slot>clear_files()</slot>
   <slot>change_color_mode()</slot>
+  <slot>remove_aperture()</slot>
  </slots>
 </ui>
