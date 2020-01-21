@@ -12,6 +12,7 @@ import fpd_processing_new as fpdp_new
 from resources.ui_loadingbox import Ui_LoadingBox
 from resources.ui_inputbox import Ui_InputBox
 from resources.ui_inputBoxCircularCenter import Ui_CircularCenterInput
+from resources.ui_inputBoxRemoveAperture import Ui_RemoveAperture
 
 
 class MyMplCanvas(FigureCanvas):
@@ -106,6 +107,8 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
+
+
 class CustomInputFormCircularCenter(QtWidgets.QDialog):
     def __init__(self):
         super(CustomInputFormCircularCenter, self).__init__()
@@ -114,7 +117,7 @@ class CustomInputFormCircularCenter(QtWidgets.QDialog):
     @Slot()
     def restore_default(self):
         """
-        Restore X and Y to their default value
+        Restore all values to initial state
         """
         print("restoring to default")
         self._ui.rmms1st.setValue(10)
@@ -130,8 +133,32 @@ class CustomInputFormCircularCenter(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
-        
 
+
+class CustomInputRemoveAperture(QtWidgets.QDialog):
+    def __init__(self):
+        super(CustomInputRemoveAperture, self).__init__()
+        self._ui = Ui_RemoveAperture()
+        self._ui.setupUi(self)
+    @Slot()
+    def restore_default(self):
+        """
+        Restore all values to initial state
+        """
+        print("restoring to default")
+        self._ui.sigma_val.setValue(0)
+        self._ui.add_radius.setValue(8)
+        self._ui.aaf.setValue(2)
+        
+    @Slot()
+    def reject(self):
+        """
+        Overload of the reject function
+        Reset the value to its default to not mess up the loading
+        DO NOT RENAME: Overloading function
+        """
+        self.restore_default()
+        return super().reject()
 
 
 class CustomLoadingForm(QtWidgets.QDialog):
@@ -175,8 +202,6 @@ class CustomLoadingForm(QtWidgets.QDialog):
         worker2.signals.result.connect(self.sum_dif)
 
         self.threadpool.start(worker2)
-
-    
 
     @Slot()
     def sum_im(self, value):
