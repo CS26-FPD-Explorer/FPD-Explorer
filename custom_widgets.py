@@ -9,11 +9,11 @@ import fpd
 import fpd.fpd_processing as fpdp
 import fpd_processing_new as fpdp_new
 
-from resources.ui_InputBoxCenterOfMass import Ui_CenterofMass
 from resources.ui_loadingbox import Ui_LoadingBox
 from resources.ui_inputbox import Ui_InputBox
 from resources.ui_inputBoxCircularCenter import Ui_CircularCenterInput
 from resources.ui_inputBoxRemoveAperture import Ui_RemoveAperture
+from resources.ui_inputBoxCenterOfMass import Ui_CenterofMass
 
 
 class MyMplCanvas(FigureCanvas):
@@ -108,6 +108,8 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
+
+
 class CustomInputFormCircularCenter(QtWidgets.QDialog):
     def __init__(self):
         super(CustomInputFormCircularCenter, self).__init__()
@@ -132,6 +134,7 @@ class CustomInputFormCircularCenter(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
+
 
 class CustomInputRemoveAperture(QtWidgets.QDialog):
     def __init__(self):
@@ -158,6 +161,7 @@ class CustomInputRemoveAperture(QtWidgets.QDialog):
         self.restore_default()
         return super().reject()
 
+
 class CustomInputFormCenterOfMass(QtWidgets.QDialog):
     def __init__(self):
         super(CustomInputFormCenterOfMass, self).__init__()
@@ -181,6 +185,7 @@ class CustomInputFormCenterOfMass(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
+
 
 class CustomLoadingForm(QtWidgets.QDialog):
     def __init__(self, ds_sel):
@@ -223,8 +228,6 @@ class CustomLoadingForm(QtWidgets.QDialog):
         worker2.signals.result.connect(self.sum_dif)
 
         self.threadpool.start(worker2)
-
-    
 
     @Slot()
     def sum_im(self, value):
