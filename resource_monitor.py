@@ -1,15 +1,18 @@
 import psutil
-import time
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-
-matplotlib.use('Qt5Agg')
+from matplotlib.animation import FuncAnimation
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
-class CpuFreqGraph(object):
-    def __init__(self, ax):
+class CpuFreqGraph(FigureCanvas, FuncAnimation):
+    def __init__(self, parent=None):
+        self._fig = Figure()
+        ax = self._fig.add_subplot(111)
+        FigureCanvas.__init__(self, self._fig)
+        FuncAnimation.__init__(self, self._fig,self.animate, interval=100, blit=False)
+        self.setParent(parent)
+
         ##Needed to initialize the capture
         psutil.cpu_times_percent(interval=None)
         self.ax = ax
@@ -23,14 +26,7 @@ class CpuFreqGraph(object):
         self.ax.set_xlabel("Time")
 
         self.ax.set_ylim(0,100)
-
-
-        plt.tick_params(
-            axis='x',          # changes apply to the x-axis
-            which='both',      # both major and minor ticks are affected
-            bottom=False,      # ticks along the bottom edge are off
-            top=False,
-            labelbottom=False)      # ticks along the top edge are off
+        self.ax.get_xaxis().set_ticks([])
         self.ax.spines['right'].set_color(None)
         self.ax.spines['top'].set_color(None)
 
@@ -82,14 +78,3 @@ def find_procs_by_name(name):
         if p.info['name'] == name:
             ls.append(p)
     return ls
-
-
-fig, ax = plt.subplots()
-
-
-cpu = CpuFreqGraph(ax)
-
-ani = animation.FuncAnimation(
-    fig, cpu.animate, interval=100, blit=False )
-plt.show()
-
