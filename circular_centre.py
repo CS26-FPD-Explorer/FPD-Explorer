@@ -32,10 +32,10 @@ def remove_aperture(ApplicationWindow):
     err_str = ""
     
     if not ApplicationWindow._files_loaded:
-        err_str+= "<b>The files must be loaded</b> before the aperture can be generated.<br></br><br></br>"
+        err_str+= "<b>The files must be loaded</b> before the aperture can be generated.<br><br>"
     
     if ApplicationWindow._cyx is None:
-        err_str += "<b>The circular centre</b> must be calculated before this step can be taken. <br></br>"
+        err_str += "<b>The circular centre must be calculated</b> before this step can be taken."
     
     if err_str:
         QtWidgets.QMessageBox.warning(ApplicationWindow,"Warning",err_str)

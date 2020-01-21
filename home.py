@@ -167,8 +167,8 @@ class ApplicationWindow(QMainWindow):
         except AttributeError:
             response = QtWidgets.QMessageBox.warning(
                 self, "Warning", 
-                """<strong>We noticed you don't have a Merlin Binary File</strong>
-                <br> Do you want to select one ?""",
+                """<b>You have not provided a Merlin Binary file.</b>
+                <br> Would you like to select one?""",
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Yes:
@@ -186,8 +186,8 @@ class ApplicationWindow(QMainWindow):
             dm3 = []
             response = QtWidgets.QMessageBox.warning(
                 self, "Warning",
-                """<strong>We noticed you don't have a Digital Micrograph files</strong>
-                <br> Do you want to select one ?""",
+                """<b>You have not provided a Digital Micrograph file.</b>
+                <br> Would you like to select one?""",
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Cancel:  # do nothing

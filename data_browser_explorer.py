@@ -140,4 +140,4 @@ def start_dbrowser(ApplicationWindow):
         db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
     else:
         QtWidgets.QMessageBox.warning(ApplicationWindow, "Warning",
-        "The files must be loaded before DataBrowser can be opened.")
+        "<b>The files must be loaded</b> before DataBrowser can be opened.")
