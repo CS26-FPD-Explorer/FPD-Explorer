@@ -9,6 +9,7 @@ import fpd
 import fpd.fpd_processing as fpdp
 import fpd_processing_new as fpdp_new
 
+from resources.ui_InputBoxCenterOfMass import Ui_CenterofMass
 from resources.ui_loadingbox import Ui_LoadingBox
 from resources.ui_inputbox import Ui_InputBox
 from resources.ui_inputBoxCircularCenter import Ui_CircularCenterInput
@@ -107,8 +108,6 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
-
-
 class CustomInputFormCircularCenter(QtWidgets.QDialog):
     def __init__(self):
         super(CustomInputFormCircularCenter, self).__init__()
@@ -133,7 +132,6 @@ class CustomInputFormCircularCenter(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
-
 
 class CustomInputRemoveAperture(QtWidgets.QDialog):
     def __init__(self):
@@ -160,6 +158,29 @@ class CustomInputRemoveAperture(QtWidgets.QDialog):
         self.restore_default()
         return super().reject()
 
+class CustomInputFormCenterOfMass(QtWidgets.QDialog):
+    def __init__(self):
+        super(CustomInputFormCenterOfMass, self).__init__()
+        self._ui = Ui_CenterofMass()
+        self._ui.setupUi(self)
+    @Slot()
+    def restore_default(self):
+        """
+        Restore all values to initial state
+        """
+        print("restoring to default")
+        self._ui.nr.setValue(16)
+        self._ui.nc.setValue(16)
+      
+    @Slot()
+    def reject(self):
+        """
+        Overload of the reject function
+        Reset the value to its default to not mess up the loading
+        DO NOT RENAME: Overloading function
+        """
+        self.restore_default()
+        return super().reject()
 
 class CustomLoadingForm(QtWidgets.QDialog):
     def __init__(self, ds_sel):
@@ -202,6 +223,8 @@ class CustomLoadingForm(QtWidgets.QDialog):
         worker2.signals.result.connect(self.sum_dif)
 
         self.threadpool.start(worker2)
+
+    
 
     @Slot()
     def sum_im(self, value):
