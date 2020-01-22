@@ -51,12 +51,17 @@ def add_config(config: dict):
     }
     """
     print("Saving new value")
-    if isinstance(list(config.values())[0], dict):
-        # already have a section so we can just update
-        _data_to_save.update(config)
-    else:
-        _data_to_save["Default"].update(config)
-    print(_data_to_save)
+    if isinstance(config, dict):
+        if isinstance(list(config.values())[0], dict):
+            # already have a section so we can just update
+            _data_to_save.update(config)
+            print(_data_to_save)
+            return True
+        else:
+            _data_to_save["Default"].update(config)
+            print(_data_to_save)
+            return True
+    return False
 
 
 def load_config():
