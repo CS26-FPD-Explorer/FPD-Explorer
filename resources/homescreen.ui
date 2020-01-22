@@ -351,7 +351,7 @@
             </widget>
            </item>
            <item row="3" column="0">
-            <widget class="QPushButton" name="pushButton_39">
+            <widget class="QPushButton" name="centre_of_mass_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -361,7 +361,7 @@
               </font>
              </property>
              <property name="text">
-              <string>center_of_mass</string>
+              <string>centre_of_mass</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -918,8 +918,8 @@
      <y>156</y>
     </hint>
     <hint type="destinationlabel">
-     <x>793</x>
-     <y>69</y>
+     <x>727</x>
+     <y>35</y>
     </hint>
    </hints>
   </connection>
@@ -934,8 +934,8 @@
      <y>197</y>
     </hint>
     <hint type="destinationlabel">
-     <x>667</x>
-     <y>35</y>
+     <x>778</x>
+     <y>56</y>
     </hint>
    </hints>
   </connection>
@@ -1014,8 +1014,24 @@
      <y>242</y>
     </hint>
     <hint type="destinationlabel">
-     <x>909</x>
-     <y>50</y>
+     <x>788</x>
+     <y>83</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>centre_of_mass_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>centre_of_mass()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>724</x>
+     <y>295</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>789</x>
+     <y>117</y>
     </hint>
    </hints>
   </connection>
@@ -1029,5 +1045,6 @@
   <slot>clear_files()</slot>
   <slot>change_color_mode()</slot>
   <slot>remove_aperture()</slot>
+  <slot>centre_of_mass()</slot>
  </slots>
 </ui>

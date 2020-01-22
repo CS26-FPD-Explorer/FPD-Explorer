@@ -5,7 +5,7 @@ from PySide2 import QtWidgets
 import fpd
 import fpd.fpd_processing as fpdp
 
-from custom_widgets import CustomInputFormCircularCenter, CustomInputRemoveAperture
+from custom_widgets import CustomInputFormCircularCenter, CustomInputRemoveAperture, CustomInputFormCenterOfMass
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
 def find_circular_centre(ApplicationWindow):
@@ -32,7 +32,7 @@ def remove_aperture(ApplicationWindow):
     err_str = ""
     
     if not ApplicationWindow._files_loaded:
-        err_str+= "<b>The files must be loaded</b> before the aperture can be generated.<br><br>"
+        err_str += "<b>The files must be loaded</b> before the aperture can be generated.<br><br>"
     
     if ApplicationWindow._cyx is None:
         err_str += "<b>The circular centre must be calculated</b> before this step can be taken."
@@ -53,3 +53,36 @@ def remove_aperture(ApplicationWindow):
         ApplicationWindow._ap = fpdp.synthetic_aperture(ApplicationWindow.mm_sel.shape[-2:],
         ApplicationWindow._cyx, rio = (0, ApplicationWindow.radius+add_radius), sigma=sigma, aaf=aaf)[0]
         plot.matshow(ApplicationWindow._ap)  
+
+def centre_of_mass(ApplicationWindow):
+    """
+    ADD DOCSTRING
+    """
+    err_str = ""
+
+    if not ApplicationWindow._files_loaded:
+        err_str += "<b>The files must be loaded</b> before the centre of mass can be calculated.<br><br>"
+
+    if ApplicationWindow._cyx is None:
+        err_str += "<b>The circular centre must be calculated</b> before this step can be taken.<br><br>"
+
+    if ApplicationWindow._ap is None:
+        err_str += "<b>The aperture must be generated</b> before this step can be taken."
+    
+    if err_str:
+        QtWidgets.QMessageBox.warning(ApplicationWindow,"Warning",err_str)
+    else: 
+        widget = CustomInputFormCenterOfMass()
+        widget.exec()
+        nr = widget._ui.nr.value()
+        nc = widget._ui.nc.value()
+
+        com_yx = fpdp.center_of_mass(ApplicationWindow.mm_sel, nr, nc, thr='otsu', aperture=ApplicationWindow._ap)
+        
+        fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
+        com_yx_cor = com_yx - fit
+        # Convert to beta using the BF disc and calibration.
+        # The pixel value radius from before could be used for the calibration, or we can do a subpixel equivalent.
+        # You may see that the aperture is not a perfect circle - error bars
+        cyx_sp, r_sp = fpdp.find_circ_centre(ApplicationWindow._sum_dif, sigma=2,
+                        rmms=(ApplicationWindow.radius-8, ApplicationWindow.radius+8, 1), spf=4)

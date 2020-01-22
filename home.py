@@ -14,7 +14,7 @@ from resources.ui_homescreen import Ui_MainWindow
 from fpd.fpd_file import MerlinBinary
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
-import data_browser_explorer, circular_centre
+import data_browser_explorer, centre_of_mass
 import config_handler as config
 
 # Make sure that we are using QT5
@@ -131,11 +131,15 @@ class ApplicationWindow(QMainWindow):
     
     @Slot()
     def find_circular_centre(self):
-        circular_centre.find_circular_centre(self)
+        centre_of_mass.find_circular_centre(self)
     
     @Slot()
     def remove_aperture(self):
-        circular_centre.remove_aperture(self)
+        centre_of_mass.remove_aperture(self)
+    
+    @Slot()
+    def centre_of_mass(self):
+        centre_of_mass.centre_of_mass(self)
     
     @Slot()
     def clear_files(self):
@@ -153,6 +157,8 @@ class ApplicationWindow(QMainWindow):
             # TO DO: ADD hdf5 RELEVANT CODE ONCE hdf5 OPENING ADDED
             pass
         self._files_loaded = False
+        self._cyx = None
+        self._ap = None
 
     @Slot()
     def load_files(self):
