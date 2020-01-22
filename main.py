@@ -8,7 +8,7 @@ from PySide2 import QtWidgets, QtCore
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
 
-from resources.ui_mainwindow import Ui_MainWindow
+from ui.ui_mainwindow import Ui_MainWindow
 
 from data_browser_new import DataBrowserNew
 from custom_widgets import *

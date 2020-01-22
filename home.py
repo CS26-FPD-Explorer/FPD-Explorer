@@ -9,7 +9,7 @@ from PySide2.QtWidgets import QMainWindow, QFileDialog, QDockWidget
 from PySide2.QtCore import Slot, Qt
 from PySide2.QtGui import *
 
-from resources.ui_homescreen import Ui_MainWindow
+from ui.ui_homescreen import Ui_MainWindow
 
 from fpd.fpd_file import MerlinBinary
 from data_browser_new import DataBrowserNew

@@ -9,11 +9,11 @@ import fpd
 import fpd.fpd_processing as fpdp
 import fpd_processing_new as fpdp_new
 
-from resources.ui_loadingbox import Ui_LoadingBox
-from resources.ui_inputbox import Ui_InputBox
-from resources.ui_inputBoxCircularCenter import Ui_CircularCenterInput
-from resources.ui_inputBoxRemoveAperture import Ui_RemoveAperture
-from resources.ui_inputBoxCenterOfMass import Ui_CenterofMass
+from ui.ui_loadingbox import Ui_LoadingBox
+from ui.ui_inputbox import Ui_InputBox
+from ui.ui_inputBoxCircularCenter import Ui_CircularCenterInput
+from ui.ui_inputBoxRemoveAperture import Ui_RemoveAperture
+from ui.ui_inputBoxCenterOfMass import Ui_CenterofMass
 
 
 class MyMplCanvas(FigureCanvas):

@@ -5,7 +5,7 @@ from PySide2.QtCore import Slot, Qt
 from data_browser_new import DataBrowserNew
 from collections import OrderedDict
 
-from resources.ui_data_browser import Ui_DataBrowser
+from ui.ui_data_browser import Ui_DataBrowser
 
 
 class DataBrowserWidget(QtWidgets.QWidget):
