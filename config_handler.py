@@ -7,6 +7,7 @@ DEFAULT_NAME = "default.ini"
 
 _data_to_save = {}
 
+
 def get_config(key_to_get: str):
     """
     Get a config setting with the given key
@@ -69,6 +70,7 @@ def load_config():
     Load the configuration file
     """
     global _data_to_save
+
     def as_dict(config):
         """
         Converts a ConfigParser object into a dictionary.
@@ -80,9 +82,9 @@ def load_config():
         for section in config.sections():
             the_dict[section] = {}
             for key, val in config.items(section):
-                if val.lower() in ["true","yes"]:
+                if val.lower() in ["true", "yes"]:
                     val = True
-                elif val.lower() in ["false","no"]:
+                elif val.lower() in ["false", "no"]:
                     val = False
                 the_dict[section][key] = val
         return the_dict
@@ -99,6 +101,7 @@ def load_config():
     _data_to_save.update(as_dict(config))
     print(_data_to_save)
 
+
 def save_config():
     """
     Save all the config to file
@@ -108,7 +111,7 @@ def save_config():
         with open(CONFIGFILE_NAME, "r") as f:
             prev_config = f.read()
     print("Saving....")
-        # Create the configuration file as it doesn't exist yet
+    # Create the configuration file as it doesn't exist yet
     with open(CONFIGFILE_NAME, "w") as f:
         try:
             # Add content to the file
