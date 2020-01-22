@@ -658,7 +658,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -710,7 +710,7 @@
   <customwidget>
    <class>CpuFreqGraph</class>
    <extends>QWidget</extends>
-   <header>resource_monitor</header>
+   <header>FPD_Explorer.resource_monitor</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,27 +1,18 @@
-import sys
 import os
-import matplotlib as plt
-import h5py
-import qdarkgraystyle
-
-from PySide2 import QtWidgets, QtCore
-from PySide2.QtWidgets import QMainWindow, QFileDialog, QDockWidget
-from PySide2.QtCore import Slot, Qt
-from PySide2.QtGui import *
-
-from ui.ui_homescreen import Ui_MainWindow
+import sys
 
 from fpd.fpd_file import MerlinBinary
-from data_browser_new import DataBrowserNew
-from custom_widgets import *
-import data_browser_explorer
-import centre_of_mass
-import config_handler as config
+from PySide2 import QtWidgets
+from PySide2.QtCore import Slot
+from PySide2.QtWidgets import QFileDialog, QMainWindow
 
-# Make sure that we are using QT5
+import qdarkgraystyle
 
-plt.use('Qt5Agg')
-os.environ["OMP_NUM_THREADS"] = "1"
+from . import centre_of_mass
+from . import config_handler as config
+from . import data_browser_explorer
+from .custom_widgets import *
+from .res.ui_homescreen import Ui_MainWindow
 
 
 class ApplicationWindow(QMainWindow):
@@ -29,10 +20,13 @@ class ApplicationWindow(QMainWindow):
     Create the main window and connect the menu bar slots
     """
 
-    def __init__(self):
+    def __init__(self, app=None, dark_mode_config=False):
         super(ApplicationWindow, self).__init__()
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
+
+        self.app = app
+        self.dark_mode_config = dark_mode_config
 
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_dm3.triggered.connect(self.function_dm3)
@@ -115,11 +109,12 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def change_color_mode(self):
         dark_mode_config = self._ui.dark_mode_button.isChecked()
-        print(f"Changing theme to {dark_mode_config}")
-        if dark_mode_config:
-            fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
-        else:
-            fpd_app.setStyleSheet("")
+        if self.app is not None:
+            print(f"Changing theme to {dark_mode_config}")
+            if dark_mode_config:
+                self.app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+            else:
+                self.app.setStyleSheet("")
 
         QtWidgets.QMessageBox.information(self, "Information",
                                           """Your settings have correctly been applied
@@ -259,15 +254,3 @@ class ApplicationWindow(QMainWindow):
     def closeEvent(self, event):
         config.save_config()
         event.accept()
-
-
-config.load_config()
-fpd_app = QtWidgets.QApplication()
-dark_mode_config = config.get_config("dark_mode")
-if dark_mode_config:
-    plt.style.use('dark_background')
-    fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
-window = ApplicationWindow()
-window.show()
-sys.exit(fpd_app.exec_())
-# qApp.exec_()
