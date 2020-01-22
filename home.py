@@ -14,7 +14,8 @@ from ui.ui_homescreen import Ui_MainWindow
 from fpd.fpd_file import MerlinBinary
 from data_browser_new import DataBrowserNew
 from custom_widgets import *
-import data_browser_explorer, centre_of_mass
+import data_browser_explorer
+import centre_of_mass
 import config_handler as config
 
 # Make sure that we are using QT5
@@ -64,10 +65,10 @@ class ApplicationWindow(QMainWindow):
                 self._update_last_path(fname)
                 self._mib_path = fname
                 self._ui.mib_line.clear()
-                self._ui.mib_line.insert(fname[fname.rfind('/') + 1 :])
+                self._ui.mib_line.insert(fname[fname.rfind('/') + 1:])
                 return True
         return False
-    
+
     @Slot()
     def function_dm3(self):
         """
@@ -81,10 +82,10 @@ class ApplicationWindow(QMainWindow):
                 self._update_last_path(fname)
                 self._dm3_path = fname
                 self._ui.dm3_line.clear()
-                self._ui.dm3_line.insert(fname[fname.rfind('/') + 1 :])
+                self._ui.dm3_line.insert(fname[fname.rfind('/') + 1:])
                 return True
         return False
-    
+
     @Slot()
     def function_about(self):
         """
@@ -109,7 +110,7 @@ class ApplicationWindow(QMainWindow):
 
     def _update_last_path(self, new_path):
         self._last_path = "/".join(new_path.split("/")[:-1])+"/"
-        config.add_config({"file_path":self._last_path})
+        config.add_config({"file_path": self._last_path})
 
     @Slot()
     def change_color_mode(self):
@@ -119,28 +120,28 @@ class ApplicationWindow(QMainWindow):
             fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
         else:
             fpd_app.setStyleSheet("")
-        
+
         QtWidgets.QMessageBox.information(self, "Information",
-        """Your settings have correctly been applied
+                                          """Your settings have correctly been applied
         Note that some changes will need a restart""")
-        config.add_config({"Appearence":{"dark_mode": dark_mode_config}})
-    
+        config.add_config({"Appearence": {"dark_mode": dark_mode_config}})
+
     @Slot()
     def start_dbrowser(self):
         data_browser_explorer.start_dbrowser(self)
-    
+
     @Slot()
     def find_circular_centre(self):
         centre_of_mass.find_circular_centre(self)
-    
+
     @Slot()
     def remove_aperture(self):
         centre_of_mass.remove_aperture(self)
-    
+
     @Slot()
     def centre_of_mass(self):
         centre_of_mass.centre_of_mass(self)
-    
+
     @Slot()
     def clear_files(self):
         """
@@ -172,7 +173,7 @@ class ApplicationWindow(QMainWindow):
             mib = self._mib_path
         except AttributeError:
             response = QtWidgets.QMessageBox.warning(
-                self, "Warning", 
+                self, "Warning",
                 """<b>You have not provided a Merlin Binary file.</b>
                 <br> Would you like to select one?""",
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
@@ -196,18 +197,13 @@ class ApplicationWindow(QMainWindow):
                 <br> Would you like to select one?""",
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
-            if response == QtWidgets.QMessageBox.Cancel:  # do nothing
-                return
-            elif response == QtWidgets.QMessageBox.Yes:
+            if response == QtWidgets.QMessageBox.Yes:
                 valid = self.function_dm3()  # load a .DM3 file and use it
                 if not valid:  # user canceled
                     return
                 dm3 = self._dm3_path
             else:  # load the data using custum parameter
-                # x, y = self._input_form(initial_x=8, initial_y=8, minimum=2)
-                # x_value = (x, 'x', 'na')
-                # y_value = (y, 'y', 'na')
-                print("else")
+                return
 
         hdr = self._mib_path[:-4]+".hdr"
         self._mb = MerlinBinary(mib, hdr, dm3, scanYalu=y_value,
@@ -216,7 +212,7 @@ class ApplicationWindow(QMainWindow):
         self._ds = self._mb.get_memmap()
 
         x, y = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
-                          text_y="Amount to skip for Diffraction Image")  # Check what is the maximum value
+                               text_y="Amount to skip for Diffraction Image")  # Check what is the maximum value
         real_skip = x
         recip_skip = y
         print("skipping : " + str(x) + " " + str(y))
@@ -238,7 +234,7 @@ class ApplicationWindow(QMainWindow):
         self._files_loaded = True
         print("files_loaded="+str(self._files_loaded))
         print("end")
-        
+
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
         """
         create an input form with the given value
@@ -254,7 +250,7 @@ class ApplicationWindow(QMainWindow):
         """
 
         widget = CustomInputForm(initial_x, initial_y,
-                                    minimum, maximum, text_x, text_y)
+                                 minimum, maximum, text_x, text_y)
         widget.exec()
         x = pow(2, widget._ui.Xsize.value())
         y = pow(2, widget._ui.Ysize.value())
