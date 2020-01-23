@@ -1,32 +1,15 @@
-from __future__ import print_function
+import logging
+import os
+import sys
+from distutils.version import LooseVersion
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
 from fpd.fpd_file import _check_fpd_file, _get_hdf5_file_from_obj
 
 # file module version (separate from fpd version)
 __version__ = '0.1.1'
-from scipy.interpolate import CloughTocher2DInterpolator
-from scipy.interpolate import griddata
-import sys
-from itertools import product
-from collections import namedtuple
-from tqdm import tqdm
-import io
-from pkg_resources import parse_version
-import logging
-from distutils.version import LooseVersion
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import inspect
-from functools import partial
-import os
-from collections import MutableMapping
-import re
-import codecs
-from dateutil.parser import parse
-import time
-from collections import OrderedDict
-import numpy as np
-import h5py
-import mmap
 _min_version = '0.1.0'
 
 #from . import _p3
@@ -58,7 +41,7 @@ if LooseVersion(_mplv) >= LooseVersion('2.2.0'):
     _mpl_non_adjust = True
 
 
-class DataBrowserNew:
+class DataBrowser:
     def __init__(self, fpgn, nav_im=None, cmap=None, colour_index=None,
                  nav_im_dict=None, fpd_check=True, widget_1=None, widget_2=None):
         '''
