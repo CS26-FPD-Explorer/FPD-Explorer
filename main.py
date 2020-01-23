@@ -4,9 +4,9 @@ import matplotlib as plt
 import matplotlib.style
 from PySide2 import QtWidgets
 
-import FPD_Explorer.config_handler as config
+import fpd_explorer.config_handler as config
 import qdarkgraystyle
-from FPD_Explorer.home import ApplicationWindow
+from fpd_explorer.home import ApplicationWindow
 
 plt.use('Qt5Agg')
 

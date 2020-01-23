@@ -6,7 +6,7 @@ from matplotlib.figure import Figure
 from PySide2 import QtWidgets
 from PySide2.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
 
-from .Custom_Fpd_Lib import fpd_processing as fpdp_new
+from .custom_fpd_lib import fpd_processing as fpdp_new
 from .res.ui_inputbox import Ui_InputBox
 from .res.ui_inputBoxCenterOfMass import Ui_CenterofMass
 from .res.ui_inputBoxCircularCenter import Ui_CircularCenterInput

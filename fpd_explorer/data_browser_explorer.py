@@ -4,7 +4,7 @@ from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QDockWidget, QMainWindow
 
-from .Custom_Fpd_Lib.data_browser import DataBrowser
+from .custom_fpd_lib.data_browser import DataBrowser
 from .res.ui_data_browser import Ui_DataBrowser
 
 

@@ -5,7 +5,7 @@ import subprocess
 
 import os
 f = []
-for (dirpath, dirnames, filenames) in walk("./FPD_Explorer/res/"):
+for (dirpath, dirnames, filenames) in walk("./fpd_explorer/res/"):
     f.extend([os.path.join(*dirpath.split("/"), s) for s in filenames])
 print(f"Found {len(f)} files: Compiling.....")
 for el in f:
