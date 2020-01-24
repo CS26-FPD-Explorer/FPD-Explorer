@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1100</width>
-    <height>721</height>
+    <height>725</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -186,7 +186,7 @@
               </font>
              </property>
              <property name="text">
-              <string>centre_of_mass</string>
+              <string>Not center of mass</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -228,7 +228,7 @@
               </font>
              </property>
              <property name="text">
-              <string>DataBrowser</string>
+              <string>Data Browser</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -249,7 +249,7 @@
               </font>
              </property>
              <property name="text">
-              <string>synthetic_aperture</string>
+              <string>synthetic aperture</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -270,7 +270,7 @@
               </font>
              </property>
              <property name="text">
-              <string>find_circ_centre</string>
+              <string>Find circular center</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -281,7 +281,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="dpc_explorer_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -291,7 +291,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>DPC Explorer</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -658,7 +658,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -860,6 +860,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>dpc_explorer_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>start_dpc_explorer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>993</x>
+     <y>158</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1094</x>
+     <y>472</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>load_files()</slot>
@@ -871,5 +887,6 @@
   <slot>change_color_mode()</slot>
   <slot>remove_aperture()</slot>
   <slot>centre_of_mass()</slot>
+  <slot>start_dpc_explorer()</slot>
  </slots>
 </ui>

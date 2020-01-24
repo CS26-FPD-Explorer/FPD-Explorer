@@ -89,3 +89,4 @@ def centre_of_mass(ApplicationWindow):
         # You may see that the aperture is not a perfect circle - error bars
         cyx_sp, r_sp = fpdp.find_circ_centre(ApplicationWindow._sum_dif, sigma=2,
                                              rmms=(ApplicationWindow.radius-8, ApplicationWindow.radius+8, 1), spf=4)
+        ApplicationWindow.com_yx_beta = com_yx_cor
