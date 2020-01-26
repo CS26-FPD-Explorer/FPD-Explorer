@@ -545,20 +545,21 @@ class DPC_Explorer:
             ims.append(im)
         self._xy_ims = ims
         self.fig.tight_layout()
+        wd = {'color':"dimgrey"}
 
         ## open in Gwyddion
         self.fig.subplots_adjust(bottom=0.1)
         # open Y
         axGY = self.add_axes([0.02, 0.02, 0.10, 0.05])
-        self._bGY = mpl.widgets.Button(axGY, 'Open Y')
+        self._bGY = mpl.widgets.Button(axGY, 'Open Y',**wd )
         self._bGY.on_clicked(self._on_GY)
         # open X
         axGX = self.add_axes([0.14, 0.02, 0.10, 0.05])
-        self._bGX = mpl.widgets.Button(axGX, 'Open X')
+        self._bGX = mpl.widgets.Button(axGX, 'Open X',**wd)
         self._bGX.on_clicked(self._on_GX)
 
         axYXr = self.add_axes([0.26, 0.02, 0.10, 0.05])
-        self._bYXr = mpl.widgets.Button(axYXr, 'lim <- r')
+        self._bYXr = mpl.widgets.Button(axYXr, 'lim <- r',**wd)
         self._bYXr.on_clicked(self._on_YXr)
         if self._yx_range_from_r:
             if mplv2:
@@ -742,7 +743,7 @@ class DPC_Explorer:
 
         self.fig.subplots_adjust(bottom=0.27, left=0.2)
         ax.set_aspect(1)
-        plt.minorticks_on()
+        #plt.minorticks_on()
         self._figs.append(f)
 
         if self._nbins is None:
@@ -828,7 +829,6 @@ class DPC_Explorer:
 
         if dark_mode:
             axcolor = 'darkgray'
-            mpl.rcParams['axes.facecolor'] = "cyan"
         else:
             axcolor = 'lightgoldenrodyellow'
         # SLIDERS
@@ -836,6 +836,7 @@ class DPC_Explorer:
             d = {'facecolor': axcolor}
         else:
             d = {'axisbg': axcolor}
+        wd = {'color':"dimgrey"}
         self._axgaus = self.add_axes([0.1, 0.1, 0.65, 0.03], **d)
         self._axvectrot = self.add_axes([0.1, 0.15, 0.65, 0.03], **d)
         self._sgaus = Slider(self._axgaus, 'Gaus.', 0.0, self._gaus_lim,
@@ -848,35 +849,35 @@ class DPC_Explorer:
         # BUTTONS
         # save button
         axsave = self.add_axes([0.90, 0.02, 0.07, 0.05])
-        self._bsave = mpl.widgets.Button(axsave, 'Save')
+        self._bsave = mpl.widgets.Button(axsave, 'Save', **wd)
         self._bsave.on_clicked(self._on_save)
         # close button
         axclose = self.add_axes([0.82, 0.02, 0.07, 0.05])
-        self._bclose = mpl.widgets.Button(axclose, 'Close')
+        self._bclose = mpl.widgets.Button(axclose, 'Close', **wd)
         self._bclose.on_clicked(self._on_close)
         # reset dt button
         axdt = self.add_axes([0.74, 0.02, 0.07, 0.05])
-        self._bdt = mpl.widgets.Button(axdt, 'R:dt')
+        self._bdt = mpl.widgets.Button(axdt, 'R:dt', **wd)
         self._bdt.on_clicked(self._on_dt)
         # reset descan button
         axds = self.add_axes([0.66, 0.02, 0.07, 0.05])
-        self._bds = mpl.widgets.Button(axds, 'R:DS')
+        self._bds = mpl.widgets.Button(axds, 'R:DS', **wd)
         self._bds.on_clicked(self._on_ds)
         # reset sigma
         axsig = self.add_axes([0.58, 0.02, 0.07, 0.05])
-        self._bsig = mpl.widgets.Button(axsig, 'R:sig')
+        self._bsig = mpl.widgets.Button(axsig, 'R:sig', **wd)
         self._bsig.on_clicked(self._on_sig)
         # reset rotation
         axvec = self.add_axes([0.50, 0.02, 0.07, 0.05])
-        self._bvec = mpl.widgets.Button(axvec, 'R:rot')
+        self._bvec = mpl.widgets.Button(axvec, 'R:rot', **wd)
         self._bvec.on_clicked(self._on_vec)
         # reset r_min
         axrmin = self.add_axes([0.42, 0.02, 0.07, 0.05])
-        self._brmin = mpl.widgets.Button(axrmin, 'R:rmin')
+        self._brmin = mpl.widgets.Button(axrmin, 'R:rmin', **wd)
         self._brmin.on_clicked(self._on_r_min)
         # ransac button
         axran = self.add_axes([0.34, 0.02, 0.07, 0.05])
-        self._bran = mpl.widgets.Button(axran, 'Ran.')
+        self._bran = mpl.widgets.Button(axran, 'Ran.', **wd)
         self._bran.on_clicked(self._on_ransac)
         if self._ransac:
             if mplv2:
@@ -886,7 +887,7 @@ class DPC_Explorer:
 
         # median button
         axmed = self.add_axes([0.26, 0.02, 0.07, 0.05])
-        self._bmed = mpl.widgets.Button(axmed, 'Med.')
+        self._bmed = mpl.widgets.Button(axmed, 'Med.', **wd)
         self._bmed.on_clicked(self._on_median)
         if self._median:
             if mplv2:
@@ -895,16 +896,16 @@ class DPC_Explorer:
                 self._bmed.ax.set_axis_bgcolor('green')
         # print cmd
         axprint = self.add_axes([0.18, 0.02, 0.07, 0.05])
-        self._bprint = mpl.widgets.Button(axprint, 'Prt')
+        self._bprint = mpl.widgets.Button(axprint, 'Prt', **wd)
         self._bprint.on_clicked(self._on_print)
         # write xy and print cmd
         axwxy = self.add_axes([0.10, 0.02, 0.07, 0.05])
-        self._bwxy = mpl.widgets.Button(axwxy, 'xy')
+        self._bwxy = mpl.widgets.Button(axwxy, 'xy', **wd)
         self._bwxy.on_clicked(self._on_wxy)
 
         # flip buttons
         axflipy = self.add_axes([0.90, 0.08, 0.07, 0.05])
-        self._bflipy = mpl.widgets.Button(axflipy, 'Flip Y')
+        self._bflipy = mpl.widgets.Button(axflipy, 'Flip Y', **wd)
         self._bflipy.on_clicked(self._on_flipy)
         if self._flip_y:
             if mplv2:
@@ -914,7 +915,7 @@ class DPC_Explorer:
 
         axflipx = self.add_axes([0.90, 0.14, 0.07, 0.05])
 
-        self._bflipx = mpl.widgets.Button(axflipx, 'Flip X')
+        self._bflipx = mpl.widgets.Button(axflipx, 'Flip X', **wd)
         self._bflipx.on_clicked(self._on_flipx)
         if self._flip_x:
             if mplv2:
@@ -1160,7 +1161,7 @@ class DPC_Explorer:
             ax.axes.get_xaxis().set_visible(False)
             ax.axes.get_yaxis().set_visible(False)
             ims.append(im)
-        plt.tight_layout()
+        self.fig.tight_layout()
 
         if self.widget is None:
             plt.draw()
