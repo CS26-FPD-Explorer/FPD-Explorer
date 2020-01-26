@@ -20,6 +20,15 @@ from fpd.ransac_tools import ransac_im_fit
 from fpd import _p3
 from fpd.utils import median_of_difference_lc, median_lc
 
+try:
+    from fpd_explorer import config_handler as config
+    dark_mode = config.get_config("dark_mode")
+    print("sucessful imprt")
+except ImportError:
+    dark_mode = False
+
+
+#from fpd_explorer.dpc_explorer import DPC_Explorer_Widget
 mplv2 = int(plt.matplotlib.__version__.split('.')[0]) >= 2
 
 
@@ -43,7 +52,7 @@ class DPC_Explorer:
                  dt=0, gaus_lim=16, cw_rmin=1.0/3, cmap=None, median=False,
                  median_mode=0, ransac=False, ransac_dict=None, nbins=None,
                  hist_lims=None, flip_y=False, flip_x=False, origin='top',
-                 yx_range_from_r=True):
+                 yx_range_from_r=True, widget = None):
         '''
         Interactive plots of vector field using matplotlib.
         
@@ -124,7 +133,9 @@ class DPC_Explorer:
         yx_range_from_r : bool
             If True, the y and x plot ranges are set from the maximum radius. The
             centre is always set from the centre.
-        
+        widgte : DPC_Explorer_Widget
+            A qt widget that must contain either 4 widget or 4 dock widgets.
+
         Attributes
         ----------
         x : 2-D array
@@ -212,6 +223,7 @@ class DPC_Explorer:
             
         '''
 
+        self.widget = widget
         plt.ion()
 
         create_time = datetime.datetime.now()
@@ -494,12 +506,25 @@ class DPC_Explorer:
         kwd = dict(adjustable='box-forced', aspect='equal')
         if _mpl_non_adjust:
             _ = kwd.pop('adjustable')
-        f, (ax1, ax2) = plt.subplots(1, 2, True, True,
-                                     figsize=(6.4, 4),
-                                     subplot_kw=kwd)
-        self._figs.append(f)
-        f.canvas.set_window_title('xy')
+
+        window_name = 'xy'
+        if self.widget is not None:
+            docked = self.widget.setup_docking(window_name)
+            self.fig = docked.get_fig()
+            self.fig.clf()
+        
+            (ax1, ax2) = self.fig.subplots(1, 2, True, True,subplot_kw=kwd)
+            f = self.fig.canvas
+        else:
+            f, (ax1, ax2) = plt.subplots(1, 2, True, True,
+                                figsize=(6.4, 4),
+                                subplot_kw=kwd)
+
+            f.canvas.set_window_title(window_title)
+            self.fig = plt
+
         ims = []
+        self._figs.append(f)
 
         y, x = self.y-self._yc, self.x-self._xc
         if self._yx_range_from_r:
@@ -519,20 +544,20 @@ class DPC_Explorer:
             ax.axes.get_yaxis().set_visible(False)
             ims.append(im)
         self._xy_ims = ims
-        plt.tight_layout()
+        self.fig.tight_layout()
 
         ## open in Gwyddion
-        plt.subplots_adjust(bottom=0.1)
+        self.fig.subplots_adjust(bottom=0.1)
         # open Y
-        axGY = plt.axes([0.02, 0.02, 0.10, 0.05])
+        axGY = self.add_axes([0.02, 0.02, 0.10, 0.05])
         self._bGY = mpl.widgets.Button(axGY, 'Open Y')
         self._bGY.on_clicked(self._on_GY)
         # open X
-        axGX = plt.axes([0.14, 0.02, 0.10, 0.05])
+        axGX = self.add_axes([0.14, 0.02, 0.10, 0.05])
         self._bGX = mpl.widgets.Button(axGX, 'Open X')
         self._bGX.on_clicked(self._on_GX)
 
-        axYXr = plt.axes([0.26, 0.02, 0.10, 0.05])
+        axYXr = self.add_axes([0.26, 0.02, 0.10, 0.05])
         self._bYXr = mpl.widgets.Button(axYXr, 'lim <- r')
         self._bYXr.on_clicked(self._on_YXr)
         if self._yx_range_from_r:
@@ -541,7 +566,10 @@ class DPC_Explorer:
             else:
                 self._bYXr.ax.set_axis_bgcolor('green')
 
-        plt.draw()
+        if self.widget is None:
+            plt.draw()
+        else:
+            docked.get_canvas().draw()
 
         # rectangle selector for histogram only, not using middle button
         self._xy_selector = RectangleSelector(ax1,
@@ -553,8 +581,16 @@ class DPC_Explorer:
                                               minspany=5,
                                               spancoords='pixels',
                                               interactive=True)
-        f.canvas.mpl_connect('key_press_event', self._on_xy_plot_key)
-        f.canvas.mpl_connect(self._xy_selector.onmove, self._update_hist_plot)
+
+        if self.widget is None:
+            f.canvas.mpl_connect('key_press_event', self._on_xy_plot_key)
+            f.canvas.mpl_connect(self._xy_selector.onmove, self._update_hist_plot)
+
+        else:
+            docked.get_canvas().mpl_connect('key_press_event', self._on_xy_plot_key)
+            docked.get_canvas().mpl_connect(self._xy_selector.onmove, self._update_hist_plot)
+
+
 
     def _on_YXr(self, event):
         self._yx_range_from_r = not self._yx_range_from_r
@@ -690,12 +726,24 @@ class DPC_Explorer:
         self._update_calcs_and_plots()
 
     def _plot_hist(self):
-        f, ax = plt.subplots()
-        self._figs.append(f)
-        f.canvas.set_window_title('hist')
-        plt.subplots_adjust(bottom=0.27, left=0.2)
+        window_name = 'hist'
+
+        if self.widget is not None:
+            docked = self.widget.setup_docking(window_name)
+            self.fig = docked.get_fig()
+            self.fig.clf()
+
+            ax = self.fig.subplots()
+            f = self.fig.canvas
+        else:
+            f, ax = plt.subplots()
+            f.canvas.set_window_title(window_name)
+            self.fig = plt
+
+        self.fig.subplots_adjust(bottom=0.27, left=0.2)
         ax.set_aspect(1)
         plt.minorticks_on()
+        self._figs.append(f)
 
         if self._nbins is None:
             self._nbins = int(np.prod(self.x.size)**0.5/2)
@@ -766,20 +814,30 @@ class DPC_Explorer:
         ax.add_patch(self._circ_r_max)
         ax.add_patch(self._circ_r_min)
 
-        self._hist_title = plt.title(self._hist_tit_str(), fontsize=12, y=0.98)
-        plt.xlabel('x')
-        plt.ylabel('y')
-        cbar = plt.colorbar(self._hist_im)
+        if self.widget is None:
+            self._hist_title = plt.title(self._hist_tit_str(), fontsize=12, y=0.98)
+            plt.xlabel('x')
+            plt.ylabel('y')
+        else:
+            self._hist_title = self.fig.suptitle(self._hist_tit_str(), fontsize=12, y=0.98)
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+
+        cbar = self.fig.colorbar(self._hist_im)
         cbar.ax.set_ylabel('Counts')
 
-        axcolor = 'lightgoldenrodyellow'
+        if dark_mode:
+            axcolor = 'darkgray'
+            mpl.rcParams['axes.facecolor'] = "cyan"
+        else:
+            axcolor = 'lightgoldenrodyellow'
         # SLIDERS
         if mplv2:
             d = {'facecolor': axcolor}
         else:
             d = {'axisbg': axcolor}
-        self._axgaus = plt.axes([0.1, 0.1, 0.65, 0.03], **d)
-        self._axvectrot = plt.axes([0.1, 0.15, 0.65, 0.03], **d)
+        self._axgaus = self.add_axes([0.1, 0.1, 0.65, 0.03], **d)
+        self._axvectrot = self.add_axes([0.1, 0.15, 0.65, 0.03], **d)
         self._sgaus = Slider(self._axgaus, 'Gaus.', 0.0, self._gaus_lim,
                              valinit=self._gaus)
         self._svectrot = Slider(self._axvectrot, 'Rot.', 0.0, 360.0,
@@ -789,35 +847,35 @@ class DPC_Explorer:
 
         # BUTTONS
         # save button
-        axsave = plt.axes([0.90, 0.02, 0.07, 0.05])
+        axsave = self.add_axes([0.90, 0.02, 0.07, 0.05])
         self._bsave = mpl.widgets.Button(axsave, 'Save')
         self._bsave.on_clicked(self._on_save)
         # close button
-        axclose = plt.axes([0.82, 0.02, 0.07, 0.05])
+        axclose = self.add_axes([0.82, 0.02, 0.07, 0.05])
         self._bclose = mpl.widgets.Button(axclose, 'Close')
         self._bclose.on_clicked(self._on_close)
         # reset dt button
-        axdt = plt.axes([0.74, 0.02, 0.07, 0.05])
+        axdt = self.add_axes([0.74, 0.02, 0.07, 0.05])
         self._bdt = mpl.widgets.Button(axdt, 'R:dt')
         self._bdt.on_clicked(self._on_dt)
         # reset descan button
-        axds = plt.axes([0.66, 0.02, 0.07, 0.05])
+        axds = self.add_axes([0.66, 0.02, 0.07, 0.05])
         self._bds = mpl.widgets.Button(axds, 'R:DS')
         self._bds.on_clicked(self._on_ds)
         # reset sigma
-        axsig = plt.axes([0.58, 0.02, 0.07, 0.05])
+        axsig = self.add_axes([0.58, 0.02, 0.07, 0.05])
         self._bsig = mpl.widgets.Button(axsig, 'R:sig')
         self._bsig.on_clicked(self._on_sig)
         # reset rotation
-        axvec = plt.axes([0.50, 0.02, 0.07, 0.05])
+        axvec = self.add_axes([0.50, 0.02, 0.07, 0.05])
         self._bvec = mpl.widgets.Button(axvec, 'R:rot')
         self._bvec.on_clicked(self._on_vec)
         # reset r_min
-        axrmin = plt.axes([0.42, 0.02, 0.07, 0.05])
+        axrmin = self.add_axes([0.42, 0.02, 0.07, 0.05])
         self._brmin = mpl.widgets.Button(axrmin, 'R:rmin')
         self._brmin.on_clicked(self._on_r_min)
         # ransac button
-        axran = plt.axes([0.34, 0.02, 0.07, 0.05])
+        axran = self.add_axes([0.34, 0.02, 0.07, 0.05])
         self._bran = mpl.widgets.Button(axran, 'Ran.')
         self._bran.on_clicked(self._on_ransac)
         if self._ransac:
@@ -827,7 +885,7 @@ class DPC_Explorer:
                 self._bran.ax.set_axis_bgcolor('green')
 
         # median button
-        axmed = plt.axes([0.26, 0.02, 0.07, 0.05])
+        axmed = self.add_axes([0.26, 0.02, 0.07, 0.05])
         self._bmed = mpl.widgets.Button(axmed, 'Med.')
         self._bmed.on_clicked(self._on_median)
         if self._median:
@@ -836,16 +894,16 @@ class DPC_Explorer:
             else:
                 self._bmed.ax.set_axis_bgcolor('green')
         # print cmd
-        axprint = plt.axes([0.18, 0.02, 0.07, 0.05])
+        axprint = self.add_axes([0.18, 0.02, 0.07, 0.05])
         self._bprint = mpl.widgets.Button(axprint, 'Prt')
         self._bprint.on_clicked(self._on_print)
         # write xy and print cmd
-        axwxy = plt.axes([0.10, 0.02, 0.07, 0.05])
+        axwxy = self.add_axes([0.10, 0.02, 0.07, 0.05])
         self._bwxy = mpl.widgets.Button(axwxy, 'xy')
         self._bwxy.on_clicked(self._on_wxy)
 
         # flip buttons
-        axflipy = plt.axes([0.90, 0.08, 0.07, 0.05])
+        axflipy = self.add_axes([0.90, 0.08, 0.07, 0.05])
         self._bflipy = mpl.widgets.Button(axflipy, 'Flip Y')
         self._bflipy.on_clicked(self._on_flipy)
         if self._flip_y:
@@ -854,7 +912,7 @@ class DPC_Explorer:
             else:
                 self._bflipy.ax.set_axis_bgcolor('green')
 
-        axflipx = plt.axes([0.90, 0.14, 0.07, 0.05])
+        axflipx = self.add_axes([0.90, 0.14, 0.07, 0.05])
 
         self._bflipx = mpl.widgets.Button(axflipx, 'Flip X')
         self._bflipx.on_clicked(self._on_flipx)
@@ -868,13 +926,13 @@ class DPC_Explorer:
         # cmaps
         active_ind = list(self._cmaps.keys()).index(self._cmap_curent[0])
         h = 0.05*len(self._cmaps)
-        rax = plt.axes([0.02, 0.9-h, 0.17, h])
+        rax = self.add_axes([0.02, 0.9-h, 0.17, h])
         self._radio = RadioButtons(rax, self._cmaps.keys(), active=active_ind)
         self._radio.on_clicked(self._on_cmap)
 
         # median mode
         hm = 0.05*2+0.01
-        raxm = plt.axes([0.02, 0.9-(h+hm+0.01), 0.17, hm])
+        raxm = self.add_axes([0.02, 0.9-(h+hm+0.01), 0.17, hm])
         self._radiom = RadioButtons(raxm, ['med.', 'med. of dif.'], active=self._median_mode)
         self._radiom.on_clicked(self._on_median_mode)
 
@@ -883,13 +941,17 @@ class DPC_Explorer:
             s = '%d (+1) / %d' % (self._seq_ind, self._seq_length)
             self._seq_txt = f.text(0.095, 0.26, s, ha='center', va='bottom')
 
-            self._axprev = plt.axes([0.02, 0.2, 0.07, 0.05])
-            self._axnext = plt.axes([0.10, 0.2, 0.07, 0.05])
+            self._axprev = self.add_axes([0.02, 0.2, 0.07, 0.05])
+            self._axnext = self.add_axes([0.10, 0.2, 0.07, 0.05])
             self._bnext = mpl.widgets.Button(self._axnext, 'Next')
             self._bnext.on_clicked(self._on_seq_next)
             self._bprev = mpl.widgets.Button(self._axprev, 'Prev')
             self._bprev.on_clicked(self._on_seq_prev)
-        plt.draw()
+
+        if self.widget is None:
+            plt.draw()
+        else:
+            docked.get_canvas().draw()
 
     def _on_flipy(self, event):
         self._flip_y = not self._flip_y
@@ -1065,12 +1127,25 @@ class DPC_Explorer:
         if _mpl_non_adjust:
             _ = kwd.pop('adjustable')
 
-        f, axs = plt.subplots(1, 3, sharex=True, sharey=True,
+        window_name = 'rt'
+        if self.widget is not None:
+            docked = self.widget.setup_docking(window_name)
+            self.fig = docked.get_fig()
+            self.fig.clf()
+
+            axs = self.fig.subplots(1, 3, sharex=True, sharey=True,
+                              subplot_kw=kwd)
+            f = self.fig.canvas
+        else:
+            f, axs = plt.subplots(1, 3, sharex=True, sharey=True,
                               subplot_kw=kwd,
                               figsize=(12, 4.4))
-        self._figs.append(f)
-        f.canvas.set_window_title('rt')
+            f.canvas.set_window_title(window_name)
+            self.fig = plt
+        
         ims = []
+        self._figs.append(f)
+
         for i, (ax, d, t) in enumerate(zip(axs.flat,
                                            [self.rn]+self._t_ims,
                                            ['radius',
@@ -1086,7 +1161,12 @@ class DPC_Explorer:
             ax.axes.get_yaxis().set_visible(False)
             ims.append(im)
         plt.tight_layout()
-        plt.draw()
+
+        if self.widget is None:
+            plt.draw()
+        else:
+            docked.get_canvas().draw()
+
         self._im_objs = ims
 
     def _plot_cw(self):
@@ -1108,13 +1188,24 @@ class DPC_Explorer:
             # figure exists
             axs = self._cw_fig.axes
         except AttributeError:
+            window_name = 'cw'
             # 1st run, ao make figure
-            f, axs = plt.subplots(1, 2, subplot_kw=dict(projection='polar'),
-                                  figsize=(6.4, 3))
+            if self.widget is not None:
+                docked = self.widget.setup_docking(window_name)
+                self.fig = docked.get_fig()
+                self.fig.clf()
+
+                axs = self.fig.subplots(1, 2, subplot_kw=dict(projection='polar'))
+                f = self.fig.canvas
+            else:
+                f, axs = plt.subplots(1, 2, subplot_kw=dict(projection='polar'),
+                                    figsize=(6.4, 3))
+                f.canvas.set_window_title(window_name)
+                f.patch.set_alpha(0.0)
+
+                self.fig = plt
             self._cw_fig = f
             self._figs.append(f)
-            f.canvas.set_window_title('cw')
-            f.patch.set_alpha(0.0)
 
         ims = []
         for ax, pd in zip(axs, [A_rgb, A_rgb_rv]):
@@ -1127,7 +1218,11 @@ class DPC_Explorer:
             ax.set_axis_off()
             ax.set_theta_offset(self._dt)
             ims.append(im)
-        self._cw_fig.canvas.draw_idle()
+        if self.widget is None:
+            self._cw_fig.canvas.draw_idle()
+        else:
+            docked.get_canvas().draw_idle()
+
         self._cw_im_objs = ims
 
     def _update_cw_plot_theta(self):
@@ -1201,7 +1296,7 @@ class DPC_Explorer:
         path = os.path.join(working_dir, save_dir)
         print('saving into: ' + path)
 
-        # fig windows
+        # self.fig windows
         if not os.path.exists(path):
             os.mkdir(path)
         for f, tag in zip(self._figs, ['xy', 'hist', 'rt', 'cw']):
@@ -1597,3 +1692,9 @@ class DPC_Explorer:
                 self._update_hist_calc()
         else:
             print('Nothing to update.')
+
+    def add_axes(self,*argv, **kwargs):
+        if self.widget is None:
+            return plt.axes(*argv,**kwargs)
+        else:
+            return self.fig.add_axes(*argv, **kwargs)

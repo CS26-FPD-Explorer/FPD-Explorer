@@ -113,8 +113,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
 def start_dbrowser(ApplicationWindow):
     if ApplicationWindow._files_loaded:
-        w = QtWidgets.QTabBar()
-        layout = QtWidgets.QHBoxLayout()
+        
         mainwindow = QMainWindow()
         db_widget = DataBrowserWidget()
 
