@@ -1,29 +1,24 @@
+import collections
+import datetime
+import json
+import numbers
+import os
 from distutils.version import LooseVersion
 
-import datetime
+import matplotlib as mpl
+import matplotlib.pylab as plt
 import numpy as np
 import scipy as sp
-from scipy import ndimage
-import collections
-import os
-import numbers
-import json
-
-import matplotlib as mpl
-from matplotlib.widgets import RectangleSelector
-from matplotlib.widgets import Slider
-from matplotlib.widgets import RadioButtons
-import matplotlib.pylab as plt
-
+from fpd import _p3
 from fpd.gwy import writeGSF
 from fpd.ransac_tools import ransac_im_fit
-from fpd import _p3
-from fpd.utils import median_of_difference_lc, median_lc
+from fpd.utils import median_lc, median_of_difference_lc
+from matplotlib.widgets import RadioButtons, RectangleSelector, Slider
+from scipy import ndimage
 
 try:
     from fpd_explorer import config_handler as config
     dark_mode = config.get_config("dark_mode")
-    print("sucessful imprt")
 except ImportError:
     dark_mode = False
 
@@ -52,13 +47,13 @@ class DPC_Explorer:
                  dt=0, gaus_lim=16, cw_rmin=1.0/3, cmap=None, median=False,
                  median_mode=0, ransac=False, ransac_dict=None, nbins=None,
                  hist_lims=None, flip_y=False, flip_x=False, origin='top',
-                 yx_range_from_r=True, widget = None):
+                 yx_range_from_r=True, widget=None):
         '''
         Interactive plots of vector field using matplotlib.
-        
+
         Returns class from which the save method can be used to 
         programmatically save the analysis.
-        
+
         Parameters
         ----------
         d : array-like or int
@@ -152,7 +147,7 @@ class DPC_Explorer:
             Theta RGB float [0, 1] image of shape (..., 3).
         tr_im : 3-D array
             Magnitude scaled theta RGB float [0, 1] image of shape (..., 3).
-            
+
         Notes
         -----        
         On histogram:
@@ -160,15 +155,15 @@ class DPC_Explorer:
             Ctrl+arrows for Y descan.
             Alt+arrows for X descan.
             Increment is fraction of r_max.
-            
+
             Ctrl+ mouse drag on circle is rotate angle.
             Mouse drag on circle sets r_max.
             Shift+ mouse drag on circle sets r_min.
             Mouse drag on square moves centre.
-            
+
         On xy plots:
             Click+drag in y for histogram region select.
-        
+
         Order of process operations:
             1. median
             2. ransac background
@@ -177,32 +172,32 @@ class DPC_Explorer:
             5. percentile
             6. gaussian smoothing
             7. vector rotation
-        
+
         Descan correction happens early so that manual or programmatic 
         correction can be used without affecting other parameters.
-              
+
         The histogram is generated from processed x-y data.
-        
+
         The x and y data are plotted relative to chosen centre on histogram 
         with same range on each so relative magnitudes can easily be seen.
-        
+
         Examples
         --------
         A noiseless plot:
-        
+
         >>> import matplotlib.pylab as plt
         >>> plt.ion()
         >>> import fpd
         >>> b = fpd.DPC_Explorer(64)
         >>> save_dir = b.save('Test')     
-        
+
         A plot with random noise:
-        
+
         >>> ransac_dict = {'mode': 1, 'residual_threshold': 0.1}
         >>> b = fpd.DPC_Explorer(-64, ransac=True, ransac_dict=ransac_dict)
-        
+
         A sequence of 3 datasets:
-        
+
         >>> import matplotlib.pylab as plt
         >>> import fpd
         >>> import numpy as np
@@ -212,15 +207,15 @@ class DPC_Explorer:
         >>> yx[-2,0] += 0.5
         >>> yx[-1,0] += 1.0
         >>> b = fpd.DPC_Explorer(d=yx)
-        
-        
+
+
         TODO
         ----
         Reset hist regions / plot limits on updates?
-            
+
         Avoid rare issues of small radii by updating rwh size or
         by making centre click move circle, not rectangle drag?
-            
+
         '''
 
         self.widget = widget
@@ -326,8 +321,8 @@ class DPC_Explorer:
         if r_min is not None:
             r_min_pct = None
         # commented out so inverse plots can be made
-        #if r_min is not None and r_max is not None:
-            #if r_min >= r_max:
+        # if r_min is not None and r_max is not None:
+            # if r_min >= r_max:
             #r_min = 0
         self._hist_title = None
         self.rn = None      # [0 1] normalised with possible clipping
@@ -352,14 +347,14 @@ class DPC_Explorer:
         self._cw_im_objs = None
         self._plot_cw()
 
-        #self._figs[1].canvas.manager.window.raise_()
-        #'''
+        # self._figs[1].canvas.manager.window.raise_()
+        # '''
         try:
             self._figs[1].canvas.manager.window.raise_()
         except AttributeError as e:
             # probably in an ipython notebook
             pass
-        #'''
+        # '''
         self._connect()
 
     # scanY, scanX
@@ -390,7 +385,7 @@ class DPC_Explorer:
         hsv_mod = mpl.colors.ListedColormap(rgb)
         self._cmaps['HSV_mod'] = hsv_mod
 
-        #hsv
+        # hsv
         self._cmaps['HSV'] = mpl.cm.get_cmap('hsv')
 
         # rygb
@@ -512,13 +507,13 @@ class DPC_Explorer:
             docked = self.widget.setup_docking(window_name)
             self.fig = docked.get_fig()
             self.fig.clf()
-        
-            (ax1, ax2) = self.fig.subplots(1, 2, True, True,subplot_kw=kwd)
+
+            (ax1, ax2) = self.fig.subplots(1, 2, True, True, subplot_kw=kwd)
             f = self.fig.canvas
         else:
             f, (ax1, ax2) = plt.subplots(1, 2, True, True,
-                                figsize=(6.4, 4),
-                                subplot_kw=kwd)
+                                         figsize=(6.4, 4),
+                                         subplot_kw=kwd)
 
             f.canvas.set_window_title(window_title)
             self.fig = plt
@@ -545,21 +540,21 @@ class DPC_Explorer:
             ims.append(im)
         self._xy_ims = ims
         self.fig.tight_layout()
-        wd = {'color':"dimgrey"}
+        wd = {'color': "dimgrey"}
 
         ## open in Gwyddion
         self.fig.subplots_adjust(bottom=0.1)
         # open Y
         axGY = self.add_axes([0.02, 0.02, 0.10, 0.05])
-        self._bGY = mpl.widgets.Button(axGY, 'Open Y',**wd )
+        self._bGY = mpl.widgets.Button(axGY, 'Open Y', **wd)
         self._bGY.on_clicked(self._on_GY)
         # open X
         axGX = self.add_axes([0.14, 0.02, 0.10, 0.05])
-        self._bGX = mpl.widgets.Button(axGX, 'Open X',**wd)
+        self._bGX = mpl.widgets.Button(axGX, 'Open X', **wd)
         self._bGX.on_clicked(self._on_GX)
 
         axYXr = self.add_axes([0.26, 0.02, 0.10, 0.05])
-        self._bYXr = mpl.widgets.Button(axYXr, 'lim <- r',**wd)
+        self._bYXr = mpl.widgets.Button(axYXr, 'lim <- r', **wd)
         self._bYXr.on_clicked(self._on_YXr)
         if self._yx_range_from_r:
             if mplv2:
@@ -590,8 +585,6 @@ class DPC_Explorer:
         else:
             docked.get_canvas().mpl_connect('key_press_event', self._on_xy_plot_key)
             docked.get_canvas().mpl_connect(self._xy_selector.onmove, self._update_hist_plot)
-
-
 
     def _on_YXr(self, event):
         self._yx_range_from_r = not self._yx_range_from_r
@@ -633,9 +626,9 @@ class DPC_Explorer:
         self._update_hist_plot()
 
     # to reshow selector
-    #b.xy_selector.update()
+    # b.xy_selector.update()
     # to check visible
-    #b.xy_selector.artists[0].get_visible()
+    # b.xy_selector.artists[0].get_visible()
 
     def _on_xy_plot_key(self, event):
         # to reset hist on cleared selection
@@ -652,7 +645,7 @@ class DPC_Explorer:
 
         for im, imd, t in zip(self._xy_ims, [y, x], ['y', 'x']):
             im.set_data(imd)
-            #im.autoscale()
+            # im.autoscale()
             im.set_clim((vmin, vmax))
             im.axes.title.set_text(t+' stdev: %0.3e' % (imd.std()))
         im.figure.canvas.draw_idle()
@@ -687,17 +680,17 @@ class DPC_Explorer:
             self._r_max = np.percentile(self.r, r_max_pct)
         else:
             # all other calls use r_max, r_min
-            #r_min = 0   # self._r_max
+            # r_min = 0   # self._r_max
             pass
         # Could check r_min < r_max, but allowed so inversion of values
         # will plot removed regions.
         self.rn = (self.r-self._r_min)/(self._r_max-self._r_min)
         self.rn = self.rn.clip(0, 1)
 
-        ## create rgb theta with different scalling by r
+        # create rgb theta with different scalling by r
         #t_hsv = mpl.cm.colors.rgb_to_hsv(t_rgba[...,:3])
         #t_hsv_v = t_hsv.copy()
-        #t_hsv_v[...,2]*=self.rn
+        # t_hsv_v[...,2]*=self.rn
         #t_rgb_v = mpl.cm.colors.hsv_to_rgb(t_hsv_v)
 
         t_rgb_v = t_rgba*self.rn[..., None]
@@ -743,7 +736,7 @@ class DPC_Explorer:
 
         self.fig.subplots_adjust(bottom=0.27, left=0.2)
         ax.set_aspect(1)
-        #plt.minorticks_on()
+        # plt.minorticks_on()
         self._figs.append(f)
 
         if self._nbins is None:
@@ -836,7 +829,7 @@ class DPC_Explorer:
             d = {'facecolor': axcolor}
         else:
             d = {'axisbg': axcolor}
-        wd = {'color':"dimgrey"}
+        wd = {'color': "dimgrey"}
         self._axgaus = self.add_axes([0.1, 0.1, 0.65, 0.03], **d)
         self._axvectrot = self.add_axes([0.1, 0.15, 0.65, 0.03], **d)
         self._sgaus = Slider(self._axgaus, 'Gaus.', 0.0, self._gaus_lim,
@@ -998,7 +991,7 @@ class DPC_Explorer:
     def get_image_sequence(self, im_types='tr_im', images=False):
         '''
         Get data or rendered images of a sequence or a single dataset.
-        
+
         Parameters
         ----------
         im_types : str or list of str
@@ -1008,13 +1001,13 @@ class DPC_Explorer:
             If False, the raw data is returned (floats), otherwise, the
             data are returned as 8-bit images. The offset and scale are set
             appropriately for the image.  
-        
+
         Returns
         -------
         ims : ndarray
             Image sequence(s) of shape ([im_types,], seq_len, imagey, imagex).
             The `seq_len` index is squeezed if singular.
-        
+
         '''
 
         n = 1
@@ -1135,15 +1128,15 @@ class DPC_Explorer:
             self.fig.clf()
 
             axs = self.fig.subplots(1, 3, sharex=True, sharey=True,
-                              subplot_kw=kwd)
+                                    subplot_kw=kwd)
             f = self.fig.canvas
         else:
             f, axs = plt.subplots(1, 3, sharex=True, sharey=True,
-                              subplot_kw=kwd,
-                              figsize=(12, 4.4))
+                                  subplot_kw=kwd,
+                                  figsize=(12, 4.4))
             f.canvas.set_window_title(window_name)
             self.fig = plt
-        
+
         ims = []
         self._figs.append(f)
 
@@ -1200,7 +1193,7 @@ class DPC_Explorer:
                 f = self.fig.canvas
             else:
                 f, axs = plt.subplots(1, 2, subplot_kw=dict(projection='polar'),
-                                    figsize=(6.4, 3))
+                                      figsize=(6.4, 3))
                 f.canvas.set_window_title(window_name)
                 f.patch.set_alpha(0.0)
 
@@ -1210,8 +1203,8 @@ class DPC_Explorer:
 
         ims = []
         for ax, pd in zip(axs, [A_rgb, A_rgb_rv]):
-            #if ax.ishold():
-            #ax.hold('off')
+            # if ax.ishold():
+            # ax.hold('off')
             ax.clear()
             im = ax.pcolormesh(T, R, values, color=pd.reshape((-1, 3)),
                                shading='gouraud')
@@ -1256,7 +1249,7 @@ class DPC_Explorer:
         '''
         Save data to timestamped directory. If part of a sequence, the
         directory is appended with `_seq%02d`, starting at 0.
-        
+
         Parameters
         ----------
         working_dir : string or None
@@ -1264,12 +1257,12 @@ class DPC_Explorer:
             If None, the current working directory is used.
         post_tag : string
             Appended to data directory name.
-        
+
         Returns
         -------
         save_dir : string
             Directory of saved data.
-        
+
         '''
 
         save_dir = self._on_save(None, post_tag=post_tag, working_dir=working_dir)
@@ -1417,7 +1410,7 @@ class DPC_Explorer:
             self._r_min, self._r_max, self._descanY_factY*1000, self._descanY_factX*1000, self._descanX_factY*1000, self._descanX_factX*1000, self._yc, self._xc, self._vectrot, self._gaus, self._pct[0][0], self._pct[0][1], self._pct[1][0], self._pct[1][1], self._dt, str(self._median), self._median_mode, str(self._ransac), str(self._ransac_dict), str(self._flip_y), str(self._flip_x), self._origin, str(self._yx_range_from_r))
 
         print(cmd_str)
-        #print('\n')
+        # print('\n')
         return cmd_str
 
     def _on_wxy(self, event):
@@ -1486,7 +1479,7 @@ class DPC_Explorer:
 
         yu = False
         xu = False
-        #print(event.key)
+        # print(event.key)
         if event.key == 'control':
             self._ctrl = True
             return
@@ -1579,7 +1572,7 @@ class DPC_Explorer:
             t = np.arctan2(event.ydata-y0, event.xdata-x0)
             dt = -(t-t0)
             if self._ctrl:
-                #print(dt)
+                # print(dt)
                 self._dt = self._dt_temp+dt
             elif self._shift:
                 # change r_min
@@ -1630,14 +1623,14 @@ class DPC_Explorer:
     def plot_cmap_ordinates(self, n=8, endpoint=True):
         '''
         Plot ordinates of colourmaps in seperate figures.
-        
+
         Parameters
         ----------
         n : int
             Number of angles (excluding 360 degrees).
         endpoint : bool
             If True, add 360 (==0) degrees to plot.
-        
+
         '''
 
         import matplotlib.patches as patches
@@ -1657,7 +1650,7 @@ class DPC_Explorer:
         '''
         Set one or both of y and x data and, optionally, update plots.
         The data arrays are always updated.
-        
+
         Parameters
         ----------
         y : 2-D array or None
@@ -1668,12 +1661,12 @@ class DPC_Explorer:
             New yx data (in 1st dimension).
         update_plots : bool
             If True, update plots.
-        
+
         Notes
         -----
         The new data need not be of the same shape as the previous data,
         however, the edges used for the histogram are not currently updated.
-               
+
         '''
 
         if y is not None:
@@ -1694,8 +1687,8 @@ class DPC_Explorer:
         else:
             print('Nothing to update.')
 
-    def add_axes(self,*argv, **kwargs):
+    def add_axes(self, *argv, **kwargs):
         if self.widget is None:
-            return plt.axes(*argv,**kwargs)
+            return plt.axes(*argv, **kwargs)
         else:
             return self.fig.add_axes(*argv, **kwargs)

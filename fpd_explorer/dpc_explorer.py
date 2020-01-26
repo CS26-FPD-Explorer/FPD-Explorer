@@ -1,14 +1,24 @@
-from .custom_fpd_lib import dpc_explorer_class as dpc
-import scipy as sp
-from .res.ui_dpc_browser import Ui_DPC_Explorer_Widget
 import fpd
-
+import scipy as sp
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QDockWidget, QMainWindow
 
+from .custom_fpd_lib import dpc_explorer_class as dpc
+from .res.ui_dpc_browser import Ui_DPC_Explorer_Widget
+
 
 class DPC_Explorer_Widget(QtWidgets.QWidget):
+    """
+    Initialize the required widget needed by DPC explorer tab
+
+    Parameters
+    ----------
+    ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
+    mainwindow : QMainWindow The main window in which the dock widget should get created
+
+    """
+
     def __init__(self, ApplicationWindow, mainwindow):
         super(DPC_Explorer_Widget, self).__init__()
         self._ui = Ui_DPC_Explorer_Widget()
@@ -17,31 +27,55 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
                         self._ui.widget_3, self._ui.widget_4]
 
         self.application_window = ApplicationWindow
-        self.main_window=mainwindow
+        self.main_window = mainwindow
 
     def _get_first_free_widget(self):
+        """
+        Return the first widget in the list of available widget 
+        """
         return self.widgets.pop(0)
 
     def setup_docking(self, name):
+        """
+        Initialize a dock widget with the given name
+        Parameters
+        ----------
+        name : str the name of the dock widget window
+
+        Return
+        ---------
+        widget : QWidget the widget inside of the dock widget or None if no widget available
+        """
         widget = self._get_first_free_widget()
-        dock = QDockWidget(name, self.application_window)
-        dock.setWidget(widget)
-        self.main_window.addDockWidget(Qt.TopDockWidgetArea, dock)
+        if widget is not None:
+            dock = QDockWidget(name, self.application_window)
+            dock.setWidget(widget)
+            self.main_window.addDockWidget(Qt.TopDockWidgetArea, dock)
         return widget
 
 
 def start_dpc(ApplicationWindow):
+    """
+    Start the DPC Explorer and switch to that tab if the files are loaded.
+    Otherwise display an error
+
+    Parameters
+    ----------
+    ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
+
+    """
     mainwindow = QMainWindow()
     dpc_explorer = DPC_Explorer_Widget(ApplicationWindow, mainwindow)
 
     bt = fpd.mag_tools.beta2bt(ApplicationWindow.com_yx_beta) * 1e9  # T*nm
 
     # rotate image if needed. This can make data interpretation easier.
-    bt = sp.ndimage.rotate(bt, angle=0.0, axes=(-2, -1), 
-        reshape=False, order=3, mode='constant', cval=0.0, prefilter=True)
+    bt = sp.ndimage.rotate(bt, angle=0.0, axes=(-2, -1),
+                           reshape=False, order=3, mode='constant', cval=0.0, prefilter=True)
 
     tab_index = ApplicationWindow._ui.tabWidget.addTab(mainwindow, "DPC Explorer")
     ApplicationWindow._ui.tabWidget.setCurrentIndex(tab_index)
-    
+
     DE = dpc.DPC_Explorer(bt, cyx=(0, 0), vectrot=125, gaus=0.0, pct=0.5, widget=dpc_explorer)
 
+    # TODO implement error message
