@@ -504,7 +504,7 @@ class DPC_Explorer:
 
         window_name = 'xy'
         if self.widget is not None:
-            docked = self.widget.setup_docking(window_name)
+            docked = self.widget.setup_docking(window_name, "Bottom")
             self.fig = docked.get_fig()
             self.fig.clf()
 
@@ -723,7 +723,7 @@ class DPC_Explorer:
         window_name = 'hist'
 
         if self.widget is not None:
-            docked = self.widget.setup_docking(window_name)
+            docked = self.widget.setup_docking(window_name, floating=False)
             self.fig = docked.get_fig()
             self.fig.clf()
 
@@ -1123,7 +1123,7 @@ class DPC_Explorer:
 
         window_name = 'rt'
         if self.widget is not None:
-            docked = self.widget.setup_docking(window_name)
+            docked = self.widget.setup_docking(window_name, "Bottom")
             self.fig = docked.get_fig()
             self.fig.clf()
 

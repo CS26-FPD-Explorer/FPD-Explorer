@@ -2,7 +2,7 @@ import fpd
 import scipy as sp
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot
-from PySide2.QtWidgets import QDockWidget, QMainWindow
+from PySide2.QtWidgets import QDockWidget, QMainWindow, QGridLayout
 
 from .custom_fpd_lib import dpc_explorer_class as dpc
 from .res.ui_dpc_browser import Ui_DPC_Explorer_Widget
@@ -23,9 +23,9 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         super(DPC_Explorer_Widget, self).__init__()
         self._ui = Ui_DPC_Explorer_Widget()
         self._ui.setupUi(self)
-        self.widgets = [self._ui.widget, self._ui.widget_2,
+        self._widgets = [self._ui.widget, self._ui.widget_2,
                         self._ui.widget_3, self._ui.widget_4]
-
+        self._docked_widgets = []
         self.application_window = ApplicationWindow
         self.main_window = mainwindow
 
@@ -33,9 +33,9 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         """
         Return the first widget in the list of available widget 
         """
-        return self.widgets.pop(0)
+        return self._widgets.pop(0)
 
-    def setup_docking(self, name):
+    def setup_docking(self, name, location="Top", floating=True):
         """
         Initialize a dock widget with the given name
         Parameters
@@ -45,12 +45,26 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         Return
         ---------
         widget : QWidget the widget inside of the dock widget or None if no widget available
+        location : tuple Position where we want the docking to be
         """
         widget = self._get_first_free_widget()
         if widget is not None:
+            layout = QGridLayout()
             dock = QDockWidget(name, self.application_window)
             dock.setWidget(widget)
-            self.main_window.addDockWidget(Qt.TopDockWidgetArea, dock)
+            dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea 
+            | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
+            if location == "Bottom":
+                loc = Qt.BottomDockWidgetArea
+            elif location == "Left":
+                loc = Qt.LeftDockWidgetArea
+            elif location == "Right":
+                loc = Qt.RightDockWidgetArea
+            else:
+                loc = Qt.TopDockWidgetArea
+            self.main_window.addDockWidget(loc, dock)
+            dock.setFloating(floating)
+            self._docked_widgets.append(dock)
         return widget
 
 
