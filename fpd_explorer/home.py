@@ -10,6 +10,8 @@ import qdarkgraystyle
 
 from . import centre_of_mass
 from . import config_handler as config
+from . import logger as debug
+
 from . import data_browser_explorer
 from .custom_widgets import *
 from .res.ui_homescreen import Ui_MainWindow
@@ -24,7 +26,6 @@ class ApplicationWindow(QMainWindow):
         super(ApplicationWindow, self).__init__()
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
-
         self.app = app
         self.dark_mode_config = dark_mode_config
 
@@ -60,6 +61,7 @@ class ApplicationWindow(QMainWindow):
                 self._mib_path = fname
                 self._ui.mib_line.clear()
                 self._ui.mib_line.insert(fname[fname.rfind('/') + 1:])
+                self.debug.log("Mib File correclty loaded")
                 return True
         return False
 
