@@ -1,31 +1,52 @@
 from typing import List
+from PySide2 import QtWidgets
+from enum import Enum, auto
+
+
+class Flags(Enum):
+    """
+    Order of the lines matter. It should match the order of the flow decided
+    """
+    files_loaded = auto()
+    circular_center = auto()
+    aperture = auto()
+    center_mass = auto()
+
+
 
 text_input = None
+app = None
 
 global_flags = {
-    "files_loaded":{
+    Flags.files_loaded:{
         "bool":False,
         "error":"<b>The files must be loaded</b> before the aperture can be generated.<br><br>",
         "needing":[]
     },
-    "circular_center":{
+    Flags.circular_center:{
         "bool":False,
-        "error":"<b>The circular centre must be calculated</b> before this step can be taken.",
-        "needing":["files_loaded"]
+        "error":"<b>The circular centre must be calculated</b> before this step can be taken.<br><br>",
+        "needing":[Flags.files_loaded]
     },
-    "aperture":{
+    Flags.aperture:{
         "bool":False,
-        "error":"<b>The circular centre must be calculated</b> before this step can be taken.",
-        "needing":["files_loaded", "circular_center"]
-    },   
+        "error":"<b>The aperture must be calculated</b> before this step can be taken.<br><br>",
+        "needing":[Flags.files_loaded, Flags.circular_center]
+    },
+    Flags.center_mass:{
+        "bool":False,
+        "error":"<b>The center of mass must be calculated</b> before this step can be taken.<br><br>",
+        "needing":[Flags.files_loaded, Flags.circular_center, Flags.aperture]
+    }
 }
 
-def setup(self, widget):
-    global text_input
+def setup(widget, application):
+    global text_input, app
     text_input = widget
+    app = application
 
-def add_flag(flag:str):
-    if not isinstance(flag, str):
+def add_flag(flag:Flags):
+    if not isinstance(flag, Flags):
         raise TypeError
     val = global_flags.get(flag, None)
     if val is None:
@@ -33,36 +54,36 @@ def add_flag(flag:str):
     else:
         global_flags[flag]["bool"] = not val["bool"]
 
-def log(self, in_str:str, flag: str = None):
+def log(in_str:str, flag: Flags = None):
     if text_input:
         if not isinstance(in_str,str):
             raise TypeError
-        if dict_bool:
+        if flag:
             add_flag(flag)
-        text_input.insertPlainText(in_str)
+        text_input.appendPlainText(in_str)
     else:
         raise RuntimeError("Text Input is not Defined")
 
-def check_if_all_needed(current_flag: str, recursion:bool = False, display=True) -> bool:
-    if not isinstance(current_flag, str):
+def check_if_all_needed(current_flag: Flags, recursion:bool = False, display=True) -> bool:
+    if app is None:
+        raise RuntimeError("No app has been provided")
+    if not isinstance(current_flag, Flags):
         raise TypeError
     flag = global_flags.get(current_flag, None)
     if flag is None:
         raise KeyError
     if isinstance(flag, dict): #Should always be true
-        if flag.get("bool", False):
-            need = [(current_flag,True)]
-            for el in flag.get("needing", []):
-                need.append((el,check_if_all_needed(el, recursion=True)))
-            if all([el[1] for el in need]):
-                return True
-        else:
-            need = [(current_flag, False)]
+        need = [(current_flag,flag.get("bool", False))]
+        for el in flag.get("needing", []):
+            need.append((el,check_if_all_needed(el, recursion=True)))
+        if all([el[1] for el in need]):
+            return True
         if not recursion:
-            err = [global_flags.get(el[0]).get("error") for el in need]
+            err = [global_flags.get(el[0]).get("error") for el in need if not global_flags.get(el[0]).get("bool")]
+            print(need)
             if display:
                 err = "".join(err)
-                QtWidgets.QMessageBox.warning(ApplicationWindow, "Warning",err)
+                QtWidgets.QMessageBox.warning(app, "Warning",err)
             else:
                 err = "\n".join(err)
                 print(err)
