@@ -1,7 +1,7 @@
 from typing import List
 from PySide2 import QtWidgets
 from enum import Enum, auto
-
+import operator
 
 class Flags(Enum):
     """
@@ -12,7 +12,8 @@ class Flags(Enum):
     aperture = auto()
     center_mass = auto()
 
-
+    def __lt__(self, other):
+        return self.value < other.value
 
 text_input = None
 app = None
@@ -79,8 +80,9 @@ def check_if_all_needed(current_flag: Flags, recursion:bool = False, display=Tru
         if all([el[1] for el in need]):
             return True
         if not recursion:
+            need = sorted(need, key=operator.itemgetter(0))
             err = [global_flags.get(el[0]).get("error") for el in need if not global_flags.get(el[0]).get("bool")]
-            print(need)
+            print(err)
             if display:
                 err = "".join(err)
                 QtWidgets.QMessageBox.warning(app, "Warning",err)
