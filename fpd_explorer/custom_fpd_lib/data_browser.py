@@ -1,32 +1,15 @@
-from __future__ import print_function
+import logging
+import os
+import sys
+from distutils.version import LooseVersion
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
 from fpd.fpd_file import _check_fpd_file, _get_hdf5_file_from_obj
 
 # file module version (separate from fpd version)
 __version__ = '0.1.1'
-from scipy.interpolate import CloughTocher2DInterpolator
-from scipy.interpolate import griddata
-import sys
-from itertools import product
-from collections import namedtuple
-from tqdm import tqdm
-import io
-from pkg_resources import parse_version
-import logging
-from distutils.version import LooseVersion
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import inspect
-from functools import partial
-import os
-from collections import MutableMapping
-import re
-import codecs
-from dateutil.parser import parse
-import time
-from collections import OrderedDict
-import numpy as np
-import h5py
-import mmap
 _min_version = '0.1.0'
 
 #from . import _p3
@@ -58,7 +41,7 @@ if LooseVersion(_mplv) >= LooseVersion('2.2.0'):
     _mpl_non_adjust = True
 
 
-class DataBrowserNew:
+class DataBrowser:
     def __init__(self, fpgn, nav_im=None, cmap=None, colour_index=None,
                  nav_im_dict=None, fpd_check=True, widget_1=None, widget_2=None):
         '''
@@ -310,6 +293,20 @@ class DataBrowserNew:
                 self.rect.set_width(value)
             elif button[-1] == "Y":
                 self.rect.set_height(value)
+            #get top left corner 
+            x0,y0 = self.rect.get_xy()
+            #make sure we're not out of bounds
+            if x0 < 0: #left
+                self.rect.set_x(0)
+            
+            if y0 < 0: #top
+                self.rect.set_y(0)
+
+            if x0+self.rect.get_width() > self.scanX: #right
+                self.rect.set_x(self.scanX-self.rect.get_width())
+            
+            if y0+ self.rect.get_height() > self.scanY: #bottom
+                self.rect.set_y(self.scanY-self.rect.get_height())
 
             canvas = self.rect.figure.canvas
             axes = self.rect.axes
@@ -338,7 +335,7 @@ class DataBrowserNew:
             self.plot_data = self.h5f_ds[self.scanYind,
                                          self.scanXind, self.colour_index, :, :]
         else:
-            if self.rect.get_height() > 1 and self.rect.get_width() > 1:
+            if self.rect.get_height() > 1 or self.rect.get_width() > 1:
                 y_slice = self.scanYind if self.scanYind >= 0 else 0
                 x_slice = self.scanXind if self.scanXind >= 0 else 0
                 zooming = True

@@ -1,19 +1,17 @@
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
-from PySide2 import QtWidgets, QtCore
-from PySide2.QtCore import QRunnable, QThreadPool, QObject, Signal, Slot
-import numpy as np
-
-import fpd
 import fpd.fpd_processing as fpdp
-import fpd_processing_new as fpdp_new
+import numpy as np
+from matplotlib.backends.backend_qt5agg import \
+    FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from PySide2 import QtWidgets
+from PySide2.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
 
-
-from resources.ui_loadingbox import Ui_LoadingBox
-from resources.ui_inputbox import Ui_InputBox
-from resources.ui_inputBoxCircularCenter import Ui_CircularCenterInput
-from resources.ui_inputBoxRemoveAperture import Ui_RemoveAperture
+from .custom_fpd_lib import fpd_processing as fpdp_new
+from .res.ui_inputbox import Ui_InputBox
+from .res.ui_inputBoxCenterOfMass import Ui_CenterofMass
+from .res.ui_inputBoxCircularCenter import Ui_CircularCenterInput
+from .res.ui_inputBoxRemoveAperture import Ui_RemoveAperture
+from .res.ui_loadingbox import Ui_LoadingBox
 
 
 class MyMplCanvas(FigureCanvas):
@@ -108,11 +106,14 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
+
+
 class CustomInputFormCircularCenter(QtWidgets.QDialog):
     def __init__(self):
         super(CustomInputFormCircularCenter, self).__init__()
         self._ui = Ui_CircularCenterInput()
         self._ui.setupUi(self)
+
     @Slot()
     def restore_default(self):
         """
@@ -123,6 +124,7 @@ class CustomInputFormCircularCenter(QtWidgets.QDialog):
         self._ui.rmms2nd.setValue(60)
         self._ui.rmms3rd.setValue(1)
         self._ui.sigma_value.setValue(2)
+
     @Slot()
     def reject(self):
         """
@@ -133,11 +135,13 @@ class CustomInputFormCircularCenter(QtWidgets.QDialog):
         self.restore_default()
         return super().reject()
 
+
 class CustomInputRemoveAperture(QtWidgets.QDialog):
     def __init__(self):
         super(CustomInputRemoveAperture, self).__init__()
         self._ui = Ui_RemoveAperture()
         self._ui.setupUi(self)
+
     @Slot()
     def restore_default(self):
         """
@@ -147,7 +151,7 @@ class CustomInputRemoveAperture(QtWidgets.QDialog):
         self._ui.sigma_val.setValue(0)
         self._ui.add_radius.setValue(8)
         self._ui.aaf.setValue(2)
-        
+
     @Slot()
     def reject(self):
         """
@@ -158,6 +162,31 @@ class CustomInputRemoveAperture(QtWidgets.QDialog):
         self.restore_default()
         return super().reject()
 
+
+class CustomInputFormCenterOfMass(QtWidgets.QDialog):
+    def __init__(self):
+        super(CustomInputFormCenterOfMass, self).__init__()
+        self._ui = Ui_CenterofMass()
+        self._ui.setupUi(self)
+
+    @Slot()
+    def restore_default(self):
+        """
+        Restore all values to initial state
+        """
+        print("restoring to default")
+        self._ui.nr.setValue(16)
+        self._ui.nc.setValue(16)
+
+    @Slot()
+    def reject(self):
+        """
+        Overload of the reject function
+        Reset the value to its default to not mess up the loading
+        DO NOT RENAME: Overloading function
+        """
+        self.restore_default()
+        return super().reject()
 
 
 class CustomLoadingForm(QtWidgets.QDialog):
@@ -201,8 +230,6 @@ class CustomLoadingForm(QtWidgets.QDialog):
         worker2.signals.result.connect(self.sum_dif)
 
         self.threadpool.start(worker2)
-
-    
 
     @Slot()
     def sum_im(self, value):
