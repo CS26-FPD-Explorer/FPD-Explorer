@@ -49,7 +49,6 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         """
         widget = self._get_first_free_widget()
         if widget is not None:
-            layout = QGridLayout()
             dock = QDockWidget(name, self.application_window)
             dock.setWidget(widget)
             dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea 

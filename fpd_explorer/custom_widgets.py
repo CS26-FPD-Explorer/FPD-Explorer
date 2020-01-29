@@ -129,7 +129,7 @@ class CustomInputFormCircularCenter(QtWidgets.QDialog):
     def reject(self):
         """
         Overload of the reject function
-        Reset the value to its default to not mess up the loading
+        Reset the value to its default to not mesys up the loading
         DO NOT RENAME: Overloading function
         """
         self.restore_default()
