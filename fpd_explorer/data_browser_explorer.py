@@ -7,6 +7,8 @@ from PySide2.QtWidgets import QDockWidget, QMainWindow
 from .custom_fpd_lib.data_browser import DataBrowser
 from .res.ui_data_browser import Ui_DataBrowser
 
+from . import logger
+from .logger import Flags
 
 class DataBrowserWidget(QtWidgets.QWidget):
     """
@@ -125,8 +127,9 @@ def start_dbrowser(ApplicationWindow):
     ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
 
     """
-    if ApplicationWindow._files_loaded:
-
+    if logger.check_if_all_needed(Flags.files_loaded):
+        w = QtWidgets.QTabBar()
+        layout = QtWidgets.QHBoxLayout()
         mainwindow = QMainWindow()
         db_widget = DataBrowserWidget()
 
@@ -148,6 +151,3 @@ def start_dbrowser(ApplicationWindow):
 
         db_widget.set_data_browser(ApplicationWindow._data_browser)
         db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
-    else:
-        QtWidgets.QMessageBox.warning(ApplicationWindow, "Warning",
-                                      "<b>The files must be loaded</b> before DataBrowser can be opened.")
