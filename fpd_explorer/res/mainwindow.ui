@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1088</width>
-    <height>636</height>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -74,7 +74,11 @@
      <x>0</x>
      <y>0</y>
      <width>1088</width>
+<<<<<<< HEAD:mainwindow.ui
      <height>21</height>
+=======
+     <height>26</height>
+>>>>>>> Devel:fpd_explorer/res/mainwindow.ui
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -89,6 +93,17 @@
      <addaction name="action_mib"/>
      <addaction name="action_hdf5"/>
     </widget>
+<<<<<<< HEAD:mainwindow.ui
+=======
+    <widget class="QMenu" name="menuFunctions">
+     <property name="title">
+      <string>Functions </string>
+     </property>
+     <addaction name="action_Find_Circular_Center"/>
+     <addaction name="action_Remove_Aperture"/>
+     <addaction name="action_Center_of_Mass"/>
+    </widget>
+>>>>>>> Devel:fpd_explorer/res/mainwindow.ui
     <addaction name="menu_Open"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -219,6 +234,24 @@
     <string>&amp;About</string>
    </property>
   </action>
+<<<<<<< HEAD:mainwindow.ui
+=======
+  <action name="action_Find_Circular_Center">
+   <property name="text">
+    <string>Find Circular Center</string>
+   </property>
+  </action>
+  <action name="action_Remove_Aperture">
+   <property name="text">
+    <string>Remove Aperture</string>
+   </property>
+  </action>
+  <action name="action_Center_of_Mass">
+   <property name="text">
+    <string>Center of Mass</string>
+   </property>
+  </action>
+>>>>>>> Devel:fpd_explorer/res/mainwindow.ui
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

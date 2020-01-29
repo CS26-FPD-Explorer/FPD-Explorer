@@ -1,3 +1,4 @@
+<<<<<<< HEAD:custom_widgets.py
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PySide2 import QtWidgets, QtCore
@@ -15,6 +16,22 @@ from fpd.ransac_tools import ransac_1D_fit, ransac_im_fit
 from ui_inputbox import Ui_InputBox
 import fpd_processing_new as fpdp_new
 from PySide2.QtWidgets import QProgressBar
+=======
+import fpd.fpd_processing as fpdp
+import numpy as np
+from matplotlib.backends.backend_qt5agg import \
+    FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from PySide2 import QtWidgets
+from PySide2.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
+
+from .custom_fpd_lib import fpd_processing as fpdp_new
+from .res.ui_inputbox import Ui_InputBox
+from .res.ui_inputBoxCenterOfMass import Ui_CenterofMass
+from .res.ui_inputBoxCircularCenter import Ui_CircularCenterInput
+from .res.ui_inputBoxRemoveAperture import Ui_RemoveAperture
+from .res.ui_loadingbox import Ui_LoadingBox
+>>>>>>> Devel:fpd_explorer/custom_widgets.py
 
 
 class MyMplCanvas(FigureCanvas):
@@ -95,9 +112,70 @@ class CustomInputForm(QtWidgets.QDialog):
         Restore X and Y to their default value 
         """
         print("restoring to default")
+<<<<<<< HEAD:custom_widgets.py
         self.ui.Xsize.setValue(self.default_x)
         self.ui.Ysize.setValue(self.default_y)
         
+=======
+        self._ui.Xsize.setValue(self._default_x)
+        self._ui.Ysize.setValue(self._default_y)
+
+    @Slot()
+    def reject(self):
+        """
+        Overload of the reject function
+        Reset the value to its default to not mess up the loading
+        DO NOT RENAME: Overloading function
+        """
+        self.restore_default()
+        return super().reject()
+
+
+class CustomInputFormCircularCenter(QtWidgets.QDialog):
+    def __init__(self):
+        super(CustomInputFormCircularCenter, self).__init__()
+        self._ui = Ui_CircularCenterInput()
+        self._ui.setupUi(self)
+
+    @Slot()
+    def restore_default(self):
+        """
+        Restore all values to initial state
+        """
+        print("restoring to default")
+        self._ui.rmms1st.setValue(10)
+        self._ui.rmms2nd.setValue(60)
+        self._ui.rmms3rd.setValue(1)
+        self._ui.sigma_value.setValue(2)
+
+    @Slot()
+    def reject(self):
+        """
+        Overload of the reject function
+        Reset the value to its default to not mess up the loading
+        DO NOT RENAME: Overloading function
+        """
+        self.restore_default()
+        return super().reject()
+
+
+class CustomInputRemoveAperture(QtWidgets.QDialog):
+    def __init__(self):
+        super(CustomInputRemoveAperture, self).__init__()
+        self._ui = Ui_RemoveAperture()
+        self._ui.setupUi(self)
+
+    @Slot()
+    def restore_default(self):
+        """
+        Restore all values to initial state
+        """
+        print("restoring to default")
+        self._ui.sigma_val.setValue(0)
+        self._ui.add_radius.setValue(8)
+        self._ui.aaf.setValue(2)
+
+>>>>>>> Devel:fpd_explorer/custom_widgets.py
     @Slot()
     def reject(self):
         """
@@ -105,6 +183,36 @@ class CustomInputForm(QtWidgets.QDialog):
         Reset the value to its default to not mess up the loading"""
         self.restore_default()
         return super().reject()
+<<<<<<< HEAD:custom_widgets.py
+=======
+
+
+class CustomInputFormCenterOfMass(QtWidgets.QDialog):
+    def __init__(self):
+        super(CustomInputFormCenterOfMass, self).__init__()
+        self._ui = Ui_CenterofMass()
+        self._ui.setupUi(self)
+
+    @Slot()
+    def restore_default(self):
+        """
+        Restore all values to initial state
+        """
+        print("restoring to default")
+        self._ui.nr.setValue(16)
+        self._ui.nc.setValue(16)
+
+    @Slot()
+    def reject(self):
+        """
+        Overload of the reject function
+        Reset the value to its default to not mess up the loading
+        DO NOT RENAME: Overloading function
+        """
+        self.restore_default()
+        return super().reject()
+
+>>>>>>> Devel:fpd_explorer/custom_widgets.py
 
 class CustomLoadingForm(QtWidgets.QDialog):
     def __init__(self, ds_sel):
@@ -146,7 +254,21 @@ class CustomLoadingForm(QtWidgets.QDialog):
         worker2.signals.finished.connect(self.thread_complete)
         worker2.signals.progress.connect(self.progress_fn)
         self.threadpool.start(worker2)
+<<<<<<< HEAD:custom_widgets.py
     
+=======
+
+    @Slot()
+    def sum_im(self, value):
+        print("self._sum_im")
+        self._sum_im = value
+
+    @Slot()
+    def sum_dif(self, value):
+        print("self._sum_dif")
+        self._sum_dif = value
+
+>>>>>>> Devel:fpd_explorer/custom_widgets.py
     @Slot(tuple)
     def progress_fn(self,value):
         if value[1] == "sum_diff":

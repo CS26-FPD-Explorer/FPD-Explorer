@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'loadingbox.ui',
-# licensing of 'loadingbox.ui' applies.
+# Form implementation generated from reading ui file '.\fpd_explorer\res\loadingbox.ui',
+# licensing of '.\fpd_explorer\res\loadingbox.ui' applies.
 #
-# Created: Wed Nov 13 17:57:01 2019
-#      by: pyside2-uic  running on PySide2 5.13.2
+# Created: Fri Jan 24 21:15:25 2020
+#      by: pyside2-uic  running on PySide2 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
 

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'inputbox.ui',
-# licensing of 'inputbox.ui' applies.
+# Form implementation generated from reading ui file '.\fpd_explorer\res\inputbox.ui',
+# licensing of '.\fpd_explorer\res\inputbox.ui' applies.
 #
-# Created: Wed Nov 13 17:57:01 2019
-#      by: pyside2-uic  running on PySide2 5.13.2
+# Created: Fri Jan 24 21:15:23 2020
+#      by: pyside2-uic  running on PySide2 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -76,6 +76,8 @@ class Ui_InputBox(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.Xtext.sizePolicy().hasHeightForWidth())
         self.Xtext.setSizePolicy(sizePolicy)
+        self.Xtext.setCursor(QtCore.Qt.ArrowCursor)
+        self.Xtext.setReadOnly(True)
         self.Xtext.setObjectName("Xtext")
         self.gridLayout_6.addWidget(self.Xtext, 0, 0, 1, 1)
         self.Yvalue = QtWidgets.QLineEdit(InputBox)

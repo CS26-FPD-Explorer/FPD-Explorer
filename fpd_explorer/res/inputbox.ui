@@ -142,8 +142,14 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="cursor">
+        <cursorShape>ArrowCursor</cursorShape>
+       </property>
        <property name="text">
         <string>X read size</string>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
