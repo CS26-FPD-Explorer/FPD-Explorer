@@ -12,6 +12,7 @@ from . import centre_of_mass
 from . import config_handler as config
 from . import logger
 from . import data_browser_explorer
+from . import dpc_explorer
 from .custom_widgets import *
 from .res.ui_homescreen import Ui_MainWindow
 from .logger import Flags
@@ -127,6 +128,11 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def start_dbrowser(self):
         data_browser_explorer.start_dbrowser(self)
+
+    @Slot()
+    def start_dpc_explorer(self):
+        dpc_explorer.start_dpc(self)
+
 
     @Slot()
     def find_circular_centre(self):

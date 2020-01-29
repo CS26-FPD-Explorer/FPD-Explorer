@@ -7,7 +7,8 @@ import os
 f = []
 for (dirpath, dirnames, filenames) in walk("./fpd_explorer/res/"):
     f.extend([os.path.join(*dirpath.split("/"), s) for s in filenames])
-print(f"Found {len(f)} files: Compiling.....")
+tmp = [el for el in f if el[-3:] == ".ui"]
+print(f"Found {len(tmp)} files: Compiling.....")
 for el in f:
     file_path, ext = os.path.splitext(el)
     file = os.path.split(file_path)

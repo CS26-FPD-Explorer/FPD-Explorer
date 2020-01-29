@@ -11,6 +11,10 @@ from . import logger
 from .logger import Flags
 
 class DataBrowserWidget(QtWidgets.QWidget):
+    """
+    Initialize the required widget needed by Data Browser tab
+    """
+
     def __init__(self):
         super(DataBrowserWidget, self).__init__()
         self._ui = Ui_DataBrowser()
@@ -114,6 +118,15 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
 
 def start_dbrowser(ApplicationWindow):
+    """
+    Start the data browser and switch to that tab if the files are loaded.
+    Otherwise display an error
+
+    Parameters
+    ----------
+    ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
+
+    """
     if logger.check_if_all_needed(Flags.files_loaded):
         w = QtWidgets.QTabBar()
         layout = QtWidgets.QHBoxLayout()
