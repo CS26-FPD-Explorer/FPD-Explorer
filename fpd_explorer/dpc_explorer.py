@@ -63,7 +63,8 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
             else:
                 loc = Qt.TopDockWidgetArea
             self.main_window.addDockWidget(loc, dock)
-            dock.setFloating(floating)
+            #Only need that if we want 
+            #dock.setFloating(floating)
             self._docked_widgets.append(dock)
         return widget
 
