@@ -71,7 +71,15 @@
           <property name="flat">
            <bool>false</bool>
           </property>
-          <layout class="QGridLayout" name="gridLayout_5"/>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="0" column="0">
+            <widget class="QPlainTextEdit" name="log_text">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item row="0" column="3">
