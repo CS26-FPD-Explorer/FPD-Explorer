@@ -116,6 +116,9 @@ class DataBrowserWidget(QtWidgets.QWidget):
         else:
             self.sender().setValue(1)
 
+    def close_handler(self):
+        self.get_nav().close()
+        self.get_diff().close()
 
 def start_dbrowser(ApplicationWindow):
     """
@@ -148,6 +151,7 @@ def start_dbrowser(ApplicationWindow):
             ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
             widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
         # navCanvas == widget_3, diffCanvas == widget_4, Flo didn't name them in data_browser.ui
-
+        
+        ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(_data_browser.close_handler)
         db_widget.set_data_browser(ApplicationWindow._data_browser)
         db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])

@@ -65,3 +65,5 @@ def centre_of_mass(ApplicationWindow):
         cyx_sp, r_sp = fpdp.find_circ_centre(ApplicationWindow._sum_dif, sigma=2,
                                              rmms=(ApplicationWindow.radius-8, ApplicationWindow.radius+8, 1), spf=4)
         logger.log("Center of mass has now been found", Flags.center_mass)
+        
+        ApplicationWindow.com_yx_beta = com_yx_cor
