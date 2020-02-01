@@ -25,7 +25,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
     def setup_ui(self, shape: tuple):
         """
-        Setup of all the default value for the explorer
+        Setup of all default values for the DataBrowser
         """
         # Set the value to default
         scanY, scanX = shape
@@ -57,7 +57,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
     def _init_color_map(self):
         """
         Create the dictionnary to fill the color map index
-        Value given by matplotlib wiki
+        Values given by matplotlib wiki
         """
         cmaps = OrderedDict()
         cmaps['Perceptually Uniform Sequential'] = [
@@ -117,8 +117,8 @@ class DataBrowserWidget(QtWidgets.QWidget):
             self.sender().setValue(1)
 
     def close_handler(self):
-        self.get_nav().close()
-        self.get_diff().close()
+        self.get_nav().parentWidget().close()
+        self.get_diff().parentWidget().close()
 
 def start_dbrowser(ApplicationWindow):
     """
@@ -150,7 +150,6 @@ def start_dbrowser(ApplicationWindow):
         ApplicationWindow._data_browser = DataBrowser(
             ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
             widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
-        # navCanvas == widget_3, diffCanvas == widget_4, Flo didn't name them in data_browser.ui
         
         ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(db_widget.close_handler)
         db_widget.set_data_browser(ApplicationWindow._data_browser)
