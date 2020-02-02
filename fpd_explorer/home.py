@@ -133,7 +133,6 @@ class ApplicationWindow(QMainWindow):
     def start_dpc_explorer(self):
         dpc_explorer.start_dpc(self)
 
-
     @Slot()
     def find_circular_centre(self):
         centre_of_mass.find_circular_centre(self)
@@ -164,6 +163,9 @@ class ApplicationWindow(QMainWindow):
         self._files_loaded = False
         self._cyx = None
         self._ap = None
+        for _ in range(self._ui.tabWidget.count() - 1):
+            # 1 because every time a tab is removed, indices are reassigned
+            self._ui.tabWidget.removeTab(1)
 
     @Slot()
     def load_files(self):
