@@ -166,6 +166,7 @@ class ApplicationWindow(QMainWindow):
         for _ in range(self._ui.tabWidget.count() - 1):
             # 1 because every time a tab is removed, indices are reassigned
             self._ui.tabWidget.removeTab(1)
+        logger.clear()
 
     @Slot()
     def load_files(self):

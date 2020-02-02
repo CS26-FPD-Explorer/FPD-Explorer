@@ -92,9 +92,8 @@ def check_if_all_needed(current_flag: Flags, recursion:bool = False, display=Tru
         return False
     else:
         raise RuntimeError("An unknow error has happened. Did you modified the structure of globals_flags")
-    
 
-def clear(self):
+def clear():
     if text_input:
         text_input.setPlainText("")
         for key in global_flags.keys():
