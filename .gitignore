@@ -17,3 +17,4 @@ qdarkgraystyle/
 # Compiled Documents
 *.pdf
 *.ps
+fpd_explorer/res/ui_*.py

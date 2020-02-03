@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file '.\fpd_explorer\res\inputBoxRemoveAperture.ui',
 # licensing of '.\fpd_explorer\res\inputBoxRemoveAperture.ui' applies.
 #
-# Created: Fri Jan 24 21:15:24 2020
+# Created: Mon Feb  3 22:25:28 2020
 #      by: pyside2-uic  running on PySide2 5.13.1
 #
 # WARNING! All changes made in this file will be lost!

@@ -2,6 +2,7 @@
 
 from os import walk
 import os
+import subprocess
 f = []
 for (dirpath, dirnames, filenames) in walk("./fpd_explorer/res/"):
     f.extend([os.path.join(*dirpath.split("/"), s) for s in filenames])
@@ -12,4 +13,7 @@ for el in f:
     new_file = os.path.join(*file[:-1], "ui_" + file[-1] + ".py")
     if ext == ".ui":
         print(f"Compiling {el} to {new_file} ... ")
-        subprocess.run("pyside2-uic -o " + new_file + " " + el, shell=True, check=True)
+        try:
+            subprocess.run("pyside2-uic -o " + new_file + " " + el, shell=True, check=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))

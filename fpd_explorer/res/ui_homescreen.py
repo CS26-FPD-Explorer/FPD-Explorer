@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file '.\fpd_explorer\res\homescreen.ui',
 # licensing of '.\fpd_explorer\res\homescreen.ui' applies.
 #
-# Created: Fri Jan 24 21:15:22 2020
+# Created: Mon Feb  3 22:25:26 2020
 #      by: pyside2-uic  running on PySide2 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
