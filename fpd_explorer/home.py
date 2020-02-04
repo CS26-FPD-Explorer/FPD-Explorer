@@ -209,7 +209,7 @@ class ApplicationWindow(QMainWindow):
                 if not valid:  # user canceled
                     return
                 dm3 = self._dm3_path
-            else:  # load the data using custum parameter
+            if response == QtWidgets.QMessageBox.Cancel:
                 return
 
         hdr = self._mib_path[:-4]+".hdr"
