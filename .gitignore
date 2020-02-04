@@ -1,7 +1,5 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-qdarkgraystyle/
-
 *.py[cod]
 *$py.class
 
@@ -17,4 +15,7 @@ qdarkgraystyle/
 # Compiled Documents
 *.pdf
 *.ps
-fpd_explorer/res/ui_*.py
+*ui_*
+
+*.ini
+!default.ini
