@@ -1,9 +1,3 @@
-from __future__ import unicode_literals
-from custom_widgets import *
-from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog
-from ui_inputbox import Ui_InputBox
-from fpd.fpd_file import MerlinBinary
-import h5py
 import sys
 
 import matplotlib as plt
