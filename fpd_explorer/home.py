@@ -243,14 +243,21 @@ class ApplicationWindow(QMainWindow):
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
         """
         create an input form with the given value
+        
         Parameters
         ----------
-        initial_x int value the top value should start from
-        initial_y int value the bottom value should start from
-        minimum int minimum value the spin box should be allowed to go
-        maximum int maximum value the spin box should be allowed to go
-        text_x str Text to set in the top screen
-        text_y str Text to set in the bottom screen
+        initial_x : int 
+            Value the top value should start from
+        initial_y : int 
+            Value the bottom value should start from
+        minimum : int 
+            Minimum value the spin box should be allowed to go
+        maximum : int 
+            Maximum value the spin box should be allowed to go
+        text_x : str 
+            Text to set in the top screen
+        text_y : str 
+            Text to set in the bottom screen
 
         """
 

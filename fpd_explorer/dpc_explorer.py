@@ -14,8 +14,10 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
 
     Parameters
     ----------
-    ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
-    mainwindow : QMainWindow The main window in which the dock widget should get created
+    ApplicationWindow : QApplication 
+        the parent in which the tab should be rendered
+    mainwindow : QMainWindow 
+        The main window in which the dock widget should get created
 
     """
 
@@ -40,12 +42,15 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         Initialize a dock widget with the given name
         Parameters
         ----------
-        name : str the name of the dock widget window
+        name : str 
+            Name of the dock widget window
 
         Return
         ---------
-        widget : QWidget the widget inside of the dock widget or None if no widget available
-        location : tuple Position where we want the docking to be
+        widget : QWidget 
+            The widget inside of the dock widget or None if no widget available
+        location : tuple 
+            Position where we want the docking to be
         """
         widget = self._get_first_free_widget()
         if widget is not None:
@@ -76,7 +81,8 @@ def start_dpc(ApplicationWindow):
 
     Parameters
     ----------
-    ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
+    ApplicationWindow : QApplication
+        Parent in which the tab should be rendered
 
     """
     mainwindow = QMainWindow()

@@ -15,7 +15,7 @@ def get_config(key_to_get: str):
     Parameters
     ----------
     key_to_get : str
-    Key of the value as given in the add config
+        Key of the value as given in the add config
     """
     def _finditem(key, obj=_data_to_save):
         """
@@ -39,17 +39,17 @@ def add_config(config: dict):
     Parameters
     ----------
     config : dict
-    dict must be configure as:
-        key = parameter
-        value = value
-    key can also be a section in which case value must be another dict respecting the upward configuration
-    Example :
-    {
-        Appearence:
+        dict must be configure as:
+            key = parameter
+            value = value
+        key can also be a section in which case value must be another dict respecting the upward configuration
+        Example :
         {
-            dark_mode:True
+            Appearence:
+            {
+                dark_mode:True
+            }
         }
-    }
     """
     print("Saving new value")
     if isinstance(config, dict):
