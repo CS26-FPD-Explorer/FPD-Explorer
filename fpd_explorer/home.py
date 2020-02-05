@@ -209,6 +209,9 @@ class ApplicationWindow(QMainWindow):
                 if not valid:  # user canceled
                     return
                 dm3 = self._dm3_path
+            if response == QtWidgets.QMessageBox.No:
+                x_value = (256, 'x', 'na')
+                y_value = (256, 'y', 'na')
             if response == QtWidgets.QMessageBox.Cancel:
                 return
 
