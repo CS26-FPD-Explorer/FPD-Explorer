@@ -1,7 +1,7 @@
 import inspect
 from inspect import signature
 from PySide2 import QtWidgets
-from PySide2.QtWidgets import (QLineEdit, QPushButton, QFormLayout)
+from PySide2.QtWidgets import (QLineEdit, QPushButton, QFormLayout, QSpinBox)
 class UI_Generator(QtWidgets.QDialog):
     """
     Initialize the required widget needed by DPC explorer tab
@@ -26,7 +26,6 @@ class UI_Generator(QtWidgets.QDialog):
 
     def get_param_docstring(self, fnct):
         sig = signature(fnct)
-        print(sig)
         doc = fnct.__doc__
         result = []
         tmp = []
@@ -62,6 +61,13 @@ class UI_Generator(QtWidgets.QDialog):
             if "str" in el[1]:
                 text = el[2] if el[2] is not None else el[0]
                 self.widgets[el[0]] = QLineEdit(text)
+            elif "int" in el[1]:
+                val = el[2] if el[2] is not None else 0
+                self.widgets[el[0]] = QSpinBox()
+                self.widgets[el[0]].setValue(val)
+            else:
+                print("TODO : Implement : ", el[1])
+
             
         self.button = QPushButton("Save")
         # Create layout and add widgets
