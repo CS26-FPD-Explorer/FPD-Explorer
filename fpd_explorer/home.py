@@ -210,6 +210,7 @@ class ApplicationWindow(QMainWindow):
                     return
                 dm3 = self._dm3_path
             if response == QtWidgets.QMessageBox.No:
+                logger.log("Working without a DM3 file")
                 x_value = (256, 'x', 'na')
                 y_value = (256, 'y', 'na')
             if response == QtWidgets.QMessageBox.Cancel:
