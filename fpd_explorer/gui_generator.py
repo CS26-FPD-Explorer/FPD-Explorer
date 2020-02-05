@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets
-
+from PySide2.QtWidgets import (QLineEdit, QPushButton, QFormLayout)
 class UI_Generator(QtWidgets.QDialog):
     """
     Initialize the required widget needed by DPC explorer tab
@@ -15,11 +15,12 @@ class UI_Generator(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, ApplicationWindow, mainwindow, fnct):
+    def __init__(self, application_window, main_window, fnct):
         super(UI_Generator, self).__init__()
-        self.application_window = ApplicationWindow
-        self.main_window = mainwindow
+        self.application_window = application_window
+        self.main_window = main_window
         self.param = self.get_param_docstring(fnct)
+        self.setup_ui()
 
     def get_param_docstring(self, fnct):
         doc = fnct.__doc__
@@ -44,4 +45,29 @@ class UI_Generator(QtWidgets.QDialog):
         result.append(tmp)    
         return result
 
+    def setup_ui(self):
+        self.result = {}
+        self.widgets = {}
+        print("settting up uis", len(self.param))
+        for el in self.param:
+            print(el)
+            if "str" in el[1]:
+                self.widgets[el[0]] = QLineEdit(el[0])
+            
+        self.button = QPushButton("Save")
+        # Create layout and add widgets
+        layout = QFormLayout()
+        for key, val in self.widgets.items():
+            layout.addRow(key, val)
+
+        layout.addRow(self.button)
+        # Set dialog layout
+        self.setLayout(layout)
+        # Add button signal to greetings slot
+        self.button.clicked.connect(self.save)
+
+    def save(self):
+        for key, val in self.widgets.items():
+            self.result[key] = val.text()
+        print(self.result)
 
