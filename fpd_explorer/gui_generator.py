@@ -1,3 +1,5 @@
+import inspect
+from inspect import signature
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import (QLineEdit, QPushButton, QFormLayout)
 class UI_Generator(QtWidgets.QDialog):
@@ -23,6 +25,8 @@ class UI_Generator(QtWidgets.QDialog):
         self.setup_ui()
 
     def get_param_docstring(self, fnct):
+        sig = signature(fnct)
+        print(sig)
         doc = fnct.__doc__
         result = []
         tmp = []
@@ -35,24 +39,29 @@ class UI_Generator(QtWidgets.QDialog):
                         result.append(tmp)
                         tmp = []
                     counter = 0
-                    tmp.extend(el.lstrip().split(':'))
+                    name, type = el.replace(' ', '').split(':')
+                    default = sig.parameters[name]
+                    if default is not None:
+                        default = default.default
+                        if default is inspect.Parameter.empty:
+                            default = None
+                    tmp.extend([name, type, default])
                 if counter > 0:
-                    tmp.append(param[idx].lstrip())
-                    if len(tmp) > 2 :
-                        tmp[2] = " ".join(tmp[2:])
-                        del tmp[3:]
+                    tmp.append(param[idx].strip())
+                    if len(tmp) > 3 :
+                        tmp[3] = " ".join(tmp[3:])
+                        del tmp[4:]
                 counter += 1
-        result.append(tmp)    
+        result.append(tmp)
         return result
 
     def setup_ui(self):
         self.result = {}
         self.widgets = {}
-        print("settting up uis", len(self.param))
         for el in self.param:
-            print(el)
             if "str" in el[1]:
-                self.widgets[el[0]] = QLineEdit(el[0])
+                text = el[2] if el[2] is not None else el[0]
+                self.widgets[el[0]] = QLineEdit(text)
             
         self.button = QPushButton("Save")
         # Create layout and add widgets
