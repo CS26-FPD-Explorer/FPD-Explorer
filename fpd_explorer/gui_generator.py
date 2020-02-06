@@ -1,7 +1,7 @@
 import inspect
 from inspect import signature
 from PySide2 import QtWidgets
-from PySide2.QtWidgets import (QLineEdit, QPushButton, QFormLayout, QSpinBox)
+from PySide2.QtWidgets import (QLineEdit, QPushButton, QFormLayout, QSpinBox, QCheckBox)
 class UI_Generator(QtWidgets.QDialog):
     """
     Initialize the required widget needed by DPC explorer tab
@@ -27,46 +27,51 @@ class UI_Generator(QtWidgets.QDialog):
     def get_param_docstring(self, fnct):
         sig = signature(fnct)
         doc = fnct.__doc__
-        result = []
-        tmp = []
-        param = doc.split('Parameters')[1].replace(',','').replace('-','').split("Return")[0].split('\n')
-        counter = 0
+        result = {}
+        param = doc.split('Parameters')[1].replace(',','').replace('-','').split("Return")[0].split("Attributes")[0].split('\n')
+        current_name = ""
+        global_space = -1
         for idx, el in enumerate(param):
             if not el.isspace() and el:
-                if el.find(':') != -1:
-                    if tmp != []:
-                        result.append(tmp)
-                        tmp = []
-                    counter = 0
-                    name, type = el.replace(' ', '').split(':')
-                    default = sig.parameters[name]
+                nb_space = len(el) - len(el.lstrip())
+                if global_space == -1 and el.find(':') != -1:
+                    global_space = nb_space
+                if nb_space == global_space:
+                    print(el.replace(' ',''))
+                    current_name, type = el.replace(' ', '').split(':')
+                    default = sig.parameters[current_name]
                     if default is not None:
                         default = default.default
                         if default is inspect.Parameter.empty:
                             default = None
-                    tmp.extend([name, type, default])
-                if counter > 0:
-                    tmp.append(param[idx].strip())
-                    if len(tmp) > 3 :
-                        tmp[3] = " ".join(tmp[3:])
-                        del tmp[4:]
-                counter += 1
-        result.append(tmp)
+                    result[current_name] = [type, default] 
+                else:
+                    result[current_name].append(param[idx].strip())
+                    if len(result[current_name]) > 2:
+                        result[current_name][2] = " ".join(result[current_name][2:])
+                        del result[current_name][3:]
+        print(result)
         return result
 
     def setup_ui(self):
         self.result = {}
         self.widgets = {}
-        for el in self.param:
-            if "str" in el[1]:
-                text = el[2] if el[2] is not None else el[0]
-                self.widgets[el[0]] = QLineEdit(text)
-            elif "int" in el[1]:
-                val = el[2] if el[2] is not None else 0
-                self.widgets[el[0]] = QSpinBox()
-                self.widgets[el[0]].setValue(val)
+        print(self.param)
+        for key, val in self.param.items():
+            if "str" in val[0]:
+                text = val[1] if val[1] is not None else key
+                self.widgets[key] = QLineEdit(text)
+            elif "int" in val[0] or "scalar" in val[0]:
+                default_val = val[1] if val[1] is not None else 0
+                self.widgets[key] = QSpinBox()
+                self.widgets[key].setValue(default_val)
+            elif "bool" in val[0]:
+                default_val = val[1] if val[1] is not None else False
+                self.widgets[key] = QCheckBox()
+                self.widgets[key].setEnabled(default_val)
+
             else:
-                print("TODO : Implement : ", el[1])
+                print("TODO : Implement : ", val[0])
 
             
         self.button = QPushButton("Save")
