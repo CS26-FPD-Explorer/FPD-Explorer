@@ -37,7 +37,6 @@ class UI_Generator(QtWidgets.QDialog):
                 if global_space == -1 and el.find(':') != -1:
                     global_space = nb_space
                 if nb_space == global_space:
-                    print(el.replace(' ',''))
                     current_name, type = el.replace(' ', '').split(':')
                     default = sig.parameters[current_name]
                     if default is not None:
@@ -50,13 +49,11 @@ class UI_Generator(QtWidgets.QDialog):
                     if len(result[current_name]) > 2:
                         result[current_name][2] = " ".join(result[current_name][2:])
                         del result[current_name][3:]
-        print(result)
         return result
 
     def setup_ui(self):
         self.result = {}
         self.widgets = {}
-        print(self.param)
         for key, val in self.param.items():
             if "str" in val[0]:
                 text = val[1] if val[1] is not None else key
@@ -70,8 +67,11 @@ class UI_Generator(QtWidgets.QDialog):
                 self.widgets[key] = QCheckBox()
                 self.widgets[key].setEnabled(default_val)
 
+
             else:
                 print("TODO : Implement : ", val[0])
+                continue
+            self.widgets[key].setToolTip(val[2])
 
             
         self.button = QPushButton("Save")
