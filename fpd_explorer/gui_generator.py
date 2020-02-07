@@ -1,7 +1,7 @@
 import inspect
 from inspect import signature
 from PySide2 import QtWidgets
-from PySide2.QtWidgets import (QLineEdit, QPushButton, QFormLayout, QSpinBox, QCheckBox)
+from PySide2.QtWidgets import (QLineEdit, QPushButton, QFormLayout, QSpinBox, QCheckBox, QDialogButtonBox)
 
 
 class UI_Generator(QtWidgets.QDialog):
@@ -23,10 +23,10 @@ class UI_Generator(QtWidgets.QDialog):
         super(UI_Generator, self).__init__()
         self.application_window = application_window
         self.main_window = main_window
-        self.param = self.get_param_docstring(fnct)
+        self.param = self.get_param(fnct)
         self.setup_ui()
 
-    def get_param_docstring(self, fnct):
+    def get_param(self, fnct):
         sig = signature(fnct)
         doc = fnct.__doc__
         result = {}
@@ -67,32 +67,34 @@ class UI_Generator(QtWidgets.QDialog):
         {
             type:[
                 [key, widget, bool],
-            ]
+            ],
         }
         """
         self.widgets = {}
+        self.default = {}
         for el in ["str", "int", "bool"]:
             self.widgets[el] = []
         for key, val in self.param.items():
             widget = None
             param_type = None
-            if "array" in val[0]:
+            if "array" in val[0] or "length" in val[0]:
                 # skip input that could be an array because its too hard to find a way to handle them
                 print("skipping : ", val[0])
                 continue
             elif "str" in val[0]:
-                text = val[1] if val[1] is not None else key
-                widget = QLineEdit(text)
+                default_val = val[1] if val[1] is not None else key
+                widget = QLineEdit()
+                widget.setPlaceholderText(self.set_default(widget, default_val))
                 param_type = "str"
             elif "int" in val[0] or "scalar" in val[0]:
                 default_val = val[1] if val[1] is not None else 0
                 widget = QSpinBox()
-                widget.setValue(default_val)
+                widget.setValue(self.set_default(widget,default_val))
                 param_type = "int"
             elif "bool" in val[0]:
                 default_val = val[1] if val[1] is not None else False
                 widget = QCheckBox()
-                widget.setEnabled(default_val)
+                widget.setChecked(self.set_default(widget,default_val))
                 param_type = "bool"
             else:
                 print("TODO : Implement : ", val[0])
@@ -102,19 +104,7 @@ class UI_Generator(QtWidgets.QDialog):
                 none_possible = True
             widget.setToolTip(val[2])
             self.widgets[param_type].append([key, widget, none_possible])
-
-        self.button = QPushButton("Save")
-        # Create layout and add widgets
-        layout = QFormLayout()
-        for widgets in self.widgets.values():
-            for key, widget, none_possible in widgets:
-                layout.addRow(key.replace("_", " ").capitalize(), widget)
-
-        layout.addRow(self.button)
-        # Set dialog layout
-        self.setLayout(layout)
-        # Add button signal to greetings slot
-        self.button.clicked.connect(self.save)
+        self.format_layout()
 
     def save(self):
         for param_type, widgets in self.widgets.items():
@@ -122,7 +112,45 @@ class UI_Generator(QtWidgets.QDialog):
                 if param_type == "bool":
                     self.result[key] = widget.isChecked()
                 elif param_type == "int":
-                    self.result[key] = widget.value()
+                    tmp = widget.value()
+                    if none_possible and tmp == 0:
+                        tmp = None
+                    self.result[key] = tmp
                 else:
                     self.result[key] = widget.text()
-        print(self.result)
+        self.accept()
+
+    def set_default(self, widget, default_val):
+        self.default[widget] = default_val
+        return default_val
+
+    def restore_default(self):
+        for param_type, widgets in self.widgets.items():
+            for key, widget, none_possible in widgets:
+                if param_type == "bool":
+                    widget.setChecked(self.default[widget])
+                elif param_type == "int":
+                    widget.setValue(self.default[widget])
+                else:
+                    widget.clear()
+                    widget.setPlaceholderText(self.default[widget])
+
+        
+    def format_layout(self):
+        # Create layout and add widgets
+        self.layout = QFormLayout()
+        for widgets in self.widgets.values():
+            for key, widget, none_possible in widgets:
+                self.layout.addRow(key.replace("_", " ").capitalize(), widget)
+
+        self.buttonBox = QDialogButtonBox();
+        self.buttonBox.addButton("Save",
+                             QDialogButtonBox.AcceptRole);
+        self.buttonBox.addButton("Cancel",
+                             QDialogButtonBox.RejectRole);
+        self.buttonBox.addButton(QDialogButtonBox.RestoreDefaults);
+        self.buttonBox.accepted.connect(self.save)
+        self.buttonBox.rejected.connect(self.reject)
+        self.buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self.restore_default)
+        self.layout.addRow(self.buttonBox)
+        self.setLayout(self.layout)
