@@ -117,6 +117,12 @@ class UI_Generator(QtWidgets.QDialog):
         self.button.clicked.connect(self.save)
 
     def save(self):
-        for key, val in self.widgets.items():
-            self.result[key] = val.text()
+        for param_type, widgets in self.widgets.items():
+            for key, widget, none_possible in widgets:
+                if param_type == "bool":
+                    self.result[key] = widget.isChecked()
+                elif param_type == "int":
+                    self.result[key] = widget.value()
+                else:
+                    self.result[key] = widget.text()
         print(self.result)
