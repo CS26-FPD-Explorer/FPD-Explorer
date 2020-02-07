@@ -1,7 +1,7 @@
 import inspect
 from inspect import signature
 from PySide2 import QtWidgets
-from PySide2.QtWidgets import (QLineEdit, QPushButton, QFormLayout, QSpinBox, QCheckBox, QDialogButtonBox)
+from PySide2.QtWidgets import QLineEdit, QPushButton, QFormLayout, QSpinBox, QCheckBox, QDialogButtonBox, QGridLayout
 
 
 class UI_Generator(QtWidgets.QDialog):
@@ -19,11 +19,12 @@ class UI_Generator(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, application_window, main_window, fnct):
+    def __init__(self, application_window, main_window, fnct, items_per_column=10):
         super(UI_Generator, self).__init__()
         self.application_window = application_window
         self.main_window = main_window
         self.param = self.get_param(fnct)
+        self.items_per_column = items_per_column
         self.setup_ui()
 
     def get_param(self, fnct):
@@ -89,12 +90,12 @@ class UI_Generator(QtWidgets.QDialog):
             elif "int" in val[0] or "scalar" in val[0]:
                 default_val = val[1] if val[1] is not None else 0
                 widget = QSpinBox()
-                widget.setValue(self.set_default(widget,default_val))
+                widget.setValue(self.set_default(widget, default_val))
                 param_type = "int"
             elif "bool" in val[0]:
                 default_val = val[1] if val[1] is not None else False
                 widget = QCheckBox()
-                widget.setChecked(self.set_default(widget,default_val))
+                widget.setChecked(self.set_default(widget, default_val))
                 param_type = "bool"
             else:
                 print("TODO : Implement : ", val[0])
@@ -118,6 +119,7 @@ class UI_Generator(QtWidgets.QDialog):
                     self.result[key] = tmp
                 else:
                     self.result[key] = widget.text()
+        print(self.result)
         self.accept()
 
     def set_default(self, widget, default_val):
@@ -135,22 +137,38 @@ class UI_Generator(QtWidgets.QDialog):
                     widget.clear()
                     widget.setPlaceholderText(self.default[widget])
 
-        
     def format_layout(self):
         # Create layout and add widgets
-        self.layout = QFormLayout()
+        all_widget = []
         for widgets in self.widgets.values():
             for key, widget, none_possible in widgets:
-                self.layout.addRow(key.replace("_", " ").capitalize(), widget)
+                all_widget.append((key.replace("_", " ").capitalize(), widget))
+                #self.layout.addRow(key.replace("_", " ").capitalize(), widget)
 
-        self.buttonBox = QDialogButtonBox();
+        self.layout = QGridLayout()
+
+        self.create_colums(all_widget, self.layout)
+
+        self.buttonBox = QDialogButtonBox()
         self.buttonBox.addButton("Save",
-                             QDialogButtonBox.AcceptRole);
+                                 QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton("Cancel",
-                             QDialogButtonBox.RejectRole);
-        self.buttonBox.addButton(QDialogButtonBox.RestoreDefaults);
+                                 QDialogButtonBox.RejectRole)
+        self.buttonBox.addButton(QDialogButtonBox.RestoreDefaults)
         self.buttonBox.accepted.connect(self.save)
         self.buttonBox.rejected.connect(self.reject)
         self.buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self.restore_default)
-        self.layout.addRow(self.buttonBox)
+        self.layout.addWidget(self.buttonBox, 1, 0, columnSpan=len(all_widget)//self.items_per_column)
         self.setLayout(self.layout)
+        
+
+    def create_colums(self, widget_list, vert_layout, n=0):
+        tmp = QtWidgets.QWidget()
+        layout = QFormLayout()
+        for name, widget in widget_list[0+self.items_per_column*n:self.items_per_column+self.items_per_column*n]:
+            layout.addRow(name, widget)
+        tmp.setLayout(layout)
+        vert_layout.addWidget(tmp, 0, n)
+        if self.items_per_column*n > len(widget_list):
+            return
+        self.create_colums(widget_list, vert_layout, n= n+1)
