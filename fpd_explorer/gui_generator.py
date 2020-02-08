@@ -1,8 +1,10 @@
 import inspect
 from inspect import signature
+
 from PySide2 import QtWidgets
-from PySide2.QtWidgets import QLineEdit, QPushButton, QFormLayout, QSpinBox, QCheckBox, QDialogButtonBox, QGridLayout
 from PySide2.QtCore import Qt
+from PySide2.QtWidgets import (QCheckBox, QDialogButtonBox, QFormLayout,
+                               QGridLayout, QLineEdit, QPushButton, QSpinBox)
 
 
 class UI_Generator(QtWidgets.QDialog):
@@ -143,8 +145,12 @@ class UI_Generator(QtWidgets.QDialog):
     def format_layout(self):
         # Create layout and add widgets
         all_widget = []
-        for widgets in self.widgets.values():
+        for param_type, widgets in self.widgets.items():
             for key, widget, none_possible in widgets:
+                if param_type == "bool":
+                    widget.setFixedWidth(20)
+                if param_type != "bool":
+                    widget.setFixedWidth(100)
                 widget.setFixedHeight(30)
                 all_widget.append((key.replace("_", " ").capitalize(), widget))
                 #self.layout.addRow(key.replace("_", " ").capitalize(), widget)
@@ -154,15 +160,14 @@ class UI_Generator(QtWidgets.QDialog):
         self.create_colums(all_widget, self.layout)
 
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Save
-                                        | QDialogButtonBox.Cancel
-                                        | QDialogButtonBox.RestoreDefaults)
+                                          | QDialogButtonBox.Cancel
+                                          | QDialogButtonBox.RestoreDefaults)
         self.buttonBox.accepted.connect(self.save)
         self.buttonBox.rejected.connect(self.reject)
         self.buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self.restore_default)
-        
-        self.layout.addWidget(self.buttonBox, 1, 0, 1,3, Qt.AlignRight)
+        self.layout.addWidget(self.buttonBox, 1, 0, 1, len(all_widget)//self.items_per_column+1, Qt.AlignRight)
         self.setLayout(self.layout)
-        self.setFixedSize(self.width(), self.minimumHeight())
+        self.setFixedSize(self.minimumWidth(), self.minimumHeight())
 
     def create_colums(self, widget_list, vert_layout, n=0):
         tmp = QtWidgets.QWidget()
@@ -170,7 +175,8 @@ class UI_Generator(QtWidgets.QDialog):
         for name, widget in widget_list[0+self.items_per_column*n:self.items_per_column+self.items_per_column*n]:
             layout.addRow(name, widget)
         tmp.setLayout(layout)
+        tmp.setFixedWidth(110+layout.itemAt(0, QFormLayout.FieldRole).geometry().width())
         vert_layout.addWidget(tmp, 0, n)
-        if self.items_per_column*n > len(widget_list):
+        if self.items_per_column*(n+1) > len(widget_list):
             return
         self.create_colums(widget_list, vert_layout, n=n+1)
