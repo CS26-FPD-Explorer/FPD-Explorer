@@ -155,18 +155,18 @@ class UI_Generator(QtWidgets.QDialog):
                 all_widget.append((key.replace("_", " ").capitalize(), widget))
                 #self.layout.addRow(key.replace("_", " ").capitalize(), widget)
 
-        self.layout = QGridLayout()
+        layout = QGridLayout()
 
-        self.create_colums(all_widget, self.layout)
+        self.create_colums(all_widget, layout)
 
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Save
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Save
                                           | QDialogButtonBox.Cancel
                                           | QDialogButtonBox.RestoreDefaults)
-        self.buttonBox.accepted.connect(self.save)
-        self.buttonBox.rejected.connect(self.reject)
-        self.buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self.restore_default)
-        self.layout.addWidget(self.buttonBox, 1, 0, 1, len(all_widget)//self.items_per_column+1, Qt.AlignRight)
-        self.setLayout(self.layout)
+        buttonBox.accepted.connect(self.save)
+        buttonBox.rejected.connect(self.reject)
+        buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self.restore_default)
+        layout.addWidget(buttonBox, 1, 0, 1, len(all_widget)//self.items_per_column+1, Qt.AlignRight)
+        self.setLayout(layout)
         self.setFixedSize(self.minimumWidth(), self.minimumHeight())
 
     def create_colums(self, widget_list, vert_layout, n=0):
