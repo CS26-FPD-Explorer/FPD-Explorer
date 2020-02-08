@@ -2,6 +2,7 @@ import inspect
 from inspect import signature
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import QLineEdit, QPushButton, QFormLayout, QSpinBox, QCheckBox, QDialogButtonBox, QGridLayout
+from PySide2.QtCore import Qt
 
 
 class UI_Generator(QtWidgets.QDialog):
@@ -91,6 +92,8 @@ class UI_Generator(QtWidgets.QDialog):
                 default_val = val[1] if val[1] is not None else 0
                 widget = QSpinBox()
                 widget.setValue(self.set_default(widget, default_val))
+                widget.setMinimum(-1000)
+                widget.setMaximum(1000)
                 param_type = "int"
             elif "bool" in val[0]:
                 default_val = val[1] if val[1] is not None else False
@@ -142,6 +145,7 @@ class UI_Generator(QtWidgets.QDialog):
         all_widget = []
         for widgets in self.widgets.values():
             for key, widget, none_possible in widgets:
+                widget.setFixedHeight(30)
                 all_widget.append((key.replace("_", " ").capitalize(), widget))
                 #self.layout.addRow(key.replace("_", " ").capitalize(), widget)
 
@@ -158,9 +162,11 @@ class UI_Generator(QtWidgets.QDialog):
         self.buttonBox.accepted.connect(self.save)
         self.buttonBox.rejected.connect(self.reject)
         self.buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self.restore_default)
-        self.layout.addWidget(self.buttonBox, 1, 0, columnSpan=len(all_widget)//self.items_per_column)
+        self.layout.addWidget(self.buttonBox, 1, 0, 1,3, Qt.AlignRight)
         self.setLayout(self.layout)
-        
+        self.setFixedSize(self.width(), self.minimumHeight())
+
+
 
     def create_colums(self, widget_list, vert_layout, n=0):
         tmp = QtWidgets.QWidget()
@@ -171,4 +177,4 @@ class UI_Generator(QtWidgets.QDialog):
         vert_layout.addWidget(tmp, 0, n)
         if self.items_per_column*n > len(widget_list):
             return
-        self.create_colums(widget_list, vert_layout, n= n+1)
+        self.create_colums(widget_list, vert_layout, n=n+1)
