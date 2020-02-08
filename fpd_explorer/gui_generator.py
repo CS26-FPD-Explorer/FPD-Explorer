@@ -29,6 +29,7 @@ class UI_Generator(QtWidgets.QDialog):
         self.param = self.get_param(fnct)
         self.items_per_column = items_per_column
         self.setup_ui()
+        self.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint) & ~Qt.WindowContextHelpButtonHint)
 
     def get_param(self, fnct):
         sig = signature(fnct)
