@@ -29,7 +29,6 @@ class ApplicationWindow(QMainWindow):
         self._ui.setupUi(self)
         self.app = app
         self.dark_mode_config = dark_mode_config
-        logger.setup(self._ui.log_text, self)
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_dm3.triggered.connect(self.function_dm3)
         # self._ui.action_hdf5.triggered.connect(self.function_hdf5)
