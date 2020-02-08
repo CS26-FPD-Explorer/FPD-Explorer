@@ -153,20 +153,16 @@ class UI_Generator(QtWidgets.QDialog):
 
         self.create_colums(all_widget, self.layout)
 
-        self.buttonBox = QDialogButtonBox()
-        self.buttonBox.addButton("Save",
-                                 QDialogButtonBox.AcceptRole)
-        self.buttonBox.addButton("Cancel",
-                                 QDialogButtonBox.RejectRole)
-        self.buttonBox.addButton(QDialogButtonBox.RestoreDefaults)
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Save
+                                        | QDialogButtonBox.Cancel
+                                        | QDialogButtonBox.RestoreDefaults)
         self.buttonBox.accepted.connect(self.save)
         self.buttonBox.rejected.connect(self.reject)
         self.buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self.restore_default)
+        
         self.layout.addWidget(self.buttonBox, 1, 0, 1,3, Qt.AlignRight)
         self.setLayout(self.layout)
         self.setFixedSize(self.width(), self.minimumHeight())
-
-
 
     def create_colums(self, widget_list, vert_layout, n=0):
         tmp = QtWidgets.QWidget()
