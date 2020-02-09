@@ -151,8 +151,6 @@ class ApplicationWindow(QMainWindow):
         """
         Clears all provided files and resets the file_loaded flag
         """
-        print("mib-line",self._ui.mib_line.text())
-        print("dm3-line",self._ui.dm3_line.text())
         if self._ui.mib_line.text():
             print("mibline="+str(self._ui.mib_line.text()))
             print(self._mib_path)
@@ -168,8 +166,7 @@ class ApplicationWindow(QMainWindow):
         self._files_loaded = False
         self._cyx = None
         self._ap = None
-        print("mib-line",self._ui.mib_line.text())
-        print("dm3-line",self._ui.dm3_line.text())
+        
     @Slot()
     def load_files(self):
         """
