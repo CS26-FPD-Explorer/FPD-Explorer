@@ -19,7 +19,7 @@ def get_config(key_to_get: str):
     """
     def _finditem(key, obj=_data_to_save):
         """
-        Return the item for a given key 
+        Return the item for a given key
         else none
         """
         if key in obj:
