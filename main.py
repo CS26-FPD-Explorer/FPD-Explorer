@@ -12,6 +12,7 @@ from PySide2 import QtWidgets
 import fpd_explorer.config_handler as config
 import qdarkgraystyle
 from fpd_explorer.home import ApplicationWindow
+import math
 
 plt.use('Qt5Agg')
 
