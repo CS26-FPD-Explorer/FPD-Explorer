@@ -37,7 +37,7 @@ flake8:
  stage: static analysis
  script:
   - source ~/venv/bin/activate
-  - python -m flake8 --select E501 *.py
+  - python -m flake8
 
 run:
  stage: run
