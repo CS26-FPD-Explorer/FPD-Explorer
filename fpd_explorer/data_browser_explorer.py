@@ -134,6 +134,7 @@ def start_dbrowser(ApplicationWindow):
         w = QtWidgets.QTabBar()
         layout = QtWidgets.QHBoxLayout()
         mainwindow = QMainWindow()
+        mainwindow.setObjectName("DataBrowserTab")
         db_widget = DataBrowserWidget()
 
         dock = QDockWidget("Navigation", ApplicationWindow)
