@@ -62,7 +62,7 @@ class ApplicationWindow(QMainWindow):
                 self._mib_path = fname
                 self._ui.mib_line.clear()
                 self._ui.mib_line.insert(fname[fname.rfind('/') + 1:])
-                logger.log("MIB file correclty loaded")
+                logger.log("MIB file correctly loaded")
                 return True
         return False
 
@@ -80,7 +80,7 @@ class ApplicationWindow(QMainWindow):
                 self._dm3_path = fname
                 self._ui.dm3_line.clear()
                 self._ui.dm3_line.insert(fname[fname.rfind('/') + 1:])
-                logger.log("DM3 file correclty loaded")
+                logger.log("DM3 file correctly loaded")
                 return True
         return False
 
