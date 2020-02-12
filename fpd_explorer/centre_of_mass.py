@@ -4,17 +4,19 @@ from .custom_widgets import MyMplCanvas
 import matplotlib.pyplot as plot
 from PySide2 import QtWidgets
 
+
 from PySide2.QtCore import Qt, Slot
-from PySide2.QtWidgets import QDockWidget, QMainWindow, QGridLayout, QPushButton,QHBoxLayout
+from PySide2.QtWidgets import QDockWidget, QMainWindow, QGridLayout, QPushButton, QHBoxLayout
 
 from .custom_widgets import (CustomInputFormCenterOfMass,
                              CustomInputFormCircularCenter,
                              CustomInputRemoveAperture,
-                            )
+                             )
 from .res.ui_popUpCanvas import Ui_PopUpCanvas
 
 from . import logger
 from .logger import Flags
+
 
 class Pop_Up_Widget(QtWidgets.QWidget):
     """
@@ -34,7 +36,6 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self.application_window = ApplicationWindow
         self.main_window = QMainWindow()
 
-
     def setup_docking(self, name):
         """
         Initialize a dock widget with the given name
@@ -48,23 +49,23 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         location : tuple Position where we want the docking to be
         """
         widget = self
-        
+
         self.dock = QDockWidget(name, self.application_window)
         self.dock.setWidget(widget)
-        self.dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea 
-        | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
+        self.dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea
+                                  | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
         loc = Qt.TopDockWidgetArea
         self.main_window.addDockWidget(loc, self.dock)
         self.tab_index = self.application_window._ui.tabWidget.addTab(self.main_window, name)
         self.application_window._ui.tabWidget.setCurrentIndex(self.tab_index)
-        
 
         return self._ui.canvas
+
     @Slot()
     def accept(self):
         self.dock.close()
         self.application_window._ui.tabWidget.removeTab(self.tab_index)
-        
+
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
 def find_circular_centre(ApplicationWindow):
@@ -87,13 +88,13 @@ def find_circular_centre(ApplicationWindow):
                                                                                  sigma, rmms=(rmms_1, rmms_2, rmms_3), widget=fig)
         logger.log("Circular center has now been initialized", Flags.circular_center)
 
+
 def remove_aperture(ApplicationWindow):
     """
     Generates a synthetic aperture for the users input 
     parameters, when function is used it will 
     bring up a figure on the UI.
     """
-   
 
     if logger.check_if_all_needed(Flags.circular_center):
         widget = CustomInputRemoveAperture()
@@ -112,6 +113,7 @@ def remove_aperture(ApplicationWindow):
         ax = fig.get_fig().subplots()
         ax.matshow(ApplicationWindow._ap)
         logger.log("Aperture has now been correctly initialized", Flags.aperture)
+
 
 def centre_of_mass(ApplicationWindow):
     """

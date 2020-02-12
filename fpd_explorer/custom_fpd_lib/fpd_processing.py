@@ -10,7 +10,10 @@ from skimage.filters import threshold_otsu
 from skimage.morphology import disk, binary_closing, binary_opening
 from scipy.ndimage.filters import gaussian_filter, gaussian_filter1d
 import matplotlib.pyplot as plt
-
+import multiprocessing as mp
+import sys
+from functools import partial
+import scipy as sp
 
 def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=None):
     '''
@@ -474,10 +477,10 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
         aperture = aperture[rii:rif+1, cii:cif+1].astype(np.float)
         if rebinning:
             ns = tuple([int(x/rebin) for x in aperture.shape])
-            aperture = rebinA(aperture, *ns)
+            aperture = fpdp.rebinA(aperture, *ns)
     
 
-    r_if, c_if = _block_indices((scanY, scanX), (nr, nc))
+    r_if, c_if = fpdp._block_indices((scanY, scanX), (nr, nc))
     com_im = np.zeros(nondet + (2,), dtype=np.float)
     yi, xi = np.indices((detY, detX))
     yi = yi[::-1, ...]   # reverse order so increasing Y is up.
@@ -486,7 +489,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
     yixi = yixi[rii:rif+1, cii:cif+1, :].astype(np.float)
     if rebinning:
         ns = tuple([int(x/rebin) for x in yixi.shape[:2]]) + yixi.shape[2:]
-        yixi = rebinA(yixi, *ns)
+        yixi = fpdp.rebinA(yixi, *ns)
     yi0 = yixi[:, 0, 0]
     xi0 = yixi[0, :, 1]
     
@@ -510,7 +513,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                     d = pre_func(d.reshape((-1,)+d.shape[-2:]))
                     d.shape = ns
                 
-                partial_comf = partial(_comf, 
+                partial_comf = partial(fpdp._comf, 
                                     use_ap=use_ap, 
                                     aperture=aperture, 
                                     yi0=yi0,
@@ -546,7 +549,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
     
     # print some stats
     if print_stats:
-        _print_shift_stats(com_im)
+        fpdp._print_shift_stats(com_im)
     
     return com_im
 
@@ -672,5 +675,3 @@ def synthetic_aperture(shape, cyx, rio, sigma=1, dt=np.float, aaf=3, ds_method='
             print("WARNING: Aperture extends beyond image (max r = %0.1f). Consider setting norm to True. 'rio':" %(ri_min), rio)
         m[i, :, :] = mi
     return m
-
-

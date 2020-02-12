@@ -24,7 +24,7 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         self._ui = Ui_DPC_Explorer_Widget()
         self._ui.setupUi(self)
         self._widgets = [self._ui.widget, self._ui.widget_2,
-                        self._ui.widget_3, self._ui.widget_4]
+                         self._ui.widget_3, self._ui.widget_4]
         self._docked_widgets = []
         self.application_window = ApplicationWindow
         self.main_window = mainwindow
@@ -49,10 +49,11 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         """
         widget = self._get_first_free_widget()
         if widget is not None:
+            layout = QGridLayout()
             dock = QDockWidget(name, self.application_window)
             dock.setWidget(widget)
-            dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea 
-            | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
+            dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea
+                                 | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
             if location == "Bottom":
                 loc = Qt.BottomDockWidgetArea
             elif location == "Left":
@@ -62,10 +63,15 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
             else:
                 loc = Qt.TopDockWidgetArea
             self.main_window.addDockWidget(loc, dock)
-            #Only need that if we want 
-            #dock.setFloating(floating)
+            # Only need that if we want
+            # dock.setFloating(floating)
             self._docked_widgets.append(dock)
         return widget
+
+    def close_handler(self):
+        print('closing')
+        for el in self._docked_widgets:
+            el.close()
 
 
 def start_dpc(ApplicationWindow):
@@ -87,6 +93,7 @@ def start_dpc(ApplicationWindow):
     bt = sp.ndimage.rotate(bt, angle=0.0, axes=(-2, -1),
                            reshape=False, order=3, mode='constant', cval=0.0, prefilter=True)
 
+    ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(dpc_explorer.close_handler)
     tab_index = ApplicationWindow._ui.tabWidget.addTab(mainwindow, "DPC Explorer")
     ApplicationWindow._ui.tabWidget.setCurrentIndex(tab_index)
 
