@@ -1,13 +1,11 @@
 import fpd
-import fpd.fpd_processing as fpdp
 import matplotlib.pyplot as plot
+import fpd.fpd_processing as fpdp
 
-from .custom_widgets import (CustomInputFormCenterOfMass,
-                             CustomInputFormCircularCenter,
-                             CustomInputRemoveAperture)
-
+# FPD Explorer
 from . import logger
 from .logger import Flags
+from .custom_widgets import CustomInputRemoveAperture, CustomInputFormCenterOfMass, CustomInputFormCircularCenter
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
 
@@ -53,7 +51,6 @@ def centre_of_mass(ApplicationWindow):
     """
     ADD DOCSTRING
     """
-    err_str = ""
     if logger.check_if_all_needed(Flags.aperture):
         widget = CustomInputFormCenterOfMass()
         widget.exec()
@@ -72,4 +69,6 @@ def centre_of_mass(ApplicationWindow):
                                              rmms=(ApplicationWindow.radius - 8,
                                                    ApplicationWindow.radius + 8, 1),
                                              spf=4)
+        ApplicationWindow.com_yx_beta = com_yx_cor
+
         logger.log("Center of mass has now been found", Flags.center_mass)

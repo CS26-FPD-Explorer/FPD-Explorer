@@ -2,8 +2,9 @@ import fpd
 import scipy as sp
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QDockWidget, QGridLayout, QMainWindow
+from PySide2.QtWidgets import QDockWidget, QMainWindow
 
+# FPD Explorer
 from .custom_fpd_lib import dpc_explorer_class as dpc
 from .res.ui_dpc_browser import Ui_DPC_Explorer_Widget
 
@@ -49,7 +50,6 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         """
         widget = self._get_first_free_widget()
         if widget is not None:
-            layout = QGridLayout()
             dock = QDockWidget(name, self.application_window)
             dock.setWidget(widget)
             dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea |
@@ -67,6 +67,11 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
             # dock.setFloating(floating)
             self._docked_widgets.append(dock)
         return widget
+
+    def close_handler(self):
+        print('closing')
+        for el in self._docked_widgets:
+            el.close()
 
 
 def start_dpc(ApplicationWindow):
@@ -88,6 +93,7 @@ def start_dpc(ApplicationWindow):
     bt = sp.ndimage.rotate(bt, angle=0.0, axes=(-2, -1),
                            reshape=False, order=3, mode='constant', cval=0.0, prefilter=True)
 
+    ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(dpc_explorer.close_handler)
     tab_index = ApplicationWindow._ui.tabWidget.addTab(mainwindow, "DPC Explorer")
     ApplicationWindow._ui.tabWidget.setCurrentIndex(tab_index)
 
