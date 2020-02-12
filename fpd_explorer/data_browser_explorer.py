@@ -153,6 +153,7 @@ def start_dbrowser(ApplicationWindow):
 
         tab_index = ApplicationWindow._ui.tabWidget.addTab(mainwindow, "DataBrowser")
         ApplicationWindow._ui.tabWidget.setCurrentIndex(tab_index)
+        ApplicationWindow._ui.tabWidget.setTabToolTip(tab_index, ApplicationWindow._ui.mib_line.text())
 
         ApplicationWindow._data_browser = DataBrowser(
             ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
