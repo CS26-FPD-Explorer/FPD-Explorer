@@ -161,3 +161,5 @@ def start_dbrowser(ApplicationWindow):
         ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(lambda: db_widget.close_handler(ApplicationWindow))
         db_widget.set_data_browser(ApplicationWindow._data_browser)
         db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
+
+        logger.log("Data Browser has been opened")
