@@ -1,9 +1,10 @@
 import fpd
 import scipy as sp
 from PySide2 import QtWidgets
-from PySide2.QtCore import Qt, Slot
-from PySide2.QtWidgets import QDockWidget, QMainWindow, QGridLayout
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import QDockWidget, QMainWindow
 
+# FPD Explorer
 from .custom_fpd_lib import dpc_explorer_class as dpc
 from .res.ui_dpc_browser import Ui_DPC_Explorer_Widget
 
@@ -24,14 +25,14 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         self._ui = Ui_DPC_Explorer_Widget()
         self._ui.setupUi(self)
         self._widgets = [self._ui.widget, self._ui.widget_2,
-                        self._ui.widget_3, self._ui.widget_4]
+                         self._ui.widget_3, self._ui.widget_4]
         self._docked_widgets = []
         self.application_window = ApplicationWindow
         self.main_window = mainwindow
 
     def _get_first_free_widget(self):
         """
-        Return the first widget in the list of available widget 
+        Return the first widget in the list of available widget
         """
         return self._widgets.pop(0)
 
@@ -49,11 +50,10 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         """
         widget = self._get_first_free_widget()
         if widget is not None:
-            layout = QGridLayout()
             dock = QDockWidget(name, self.application_window)
             dock.setWidget(widget)
-            dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea 
-            | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
+            dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea |
+                                 Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
             if location == "Bottom":
                 loc = Qt.BottomDockWidgetArea
             elif location == "Left":
@@ -63,8 +63,8 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
             else:
                 loc = Qt.TopDockWidgetArea
             self.main_window.addDockWidget(loc, dock)
-            #Only need that if we want 
-            #dock.setFloating(floating)
+            # Only need that if we want
+            # dock.setFloating(floating)
             self._docked_widgets.append(dock)
         return widget
 

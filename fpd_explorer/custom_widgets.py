@@ -1,17 +1,16 @@
-import fpd.fpd_processing as fpdp
 import numpy as np
-from matplotlib.backends.backend_qt5agg import \
-    FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
 from PySide2 import QtWidgets
-from PySide2.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
+from PySide2.QtCore import Slot, Signal, QObject, QRunnable, QThreadPool
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
+# FPD Explorer
 from .custom_fpd_lib import fpd_processing as fpdp_new
 from .res.ui_inputbox import Ui_InputBox
+from .res.ui_loadingbox import Ui_LoadingBox
 from .res.ui_inputBoxCenterOfMass import Ui_CenterofMass
 from .res.ui_inputBoxCircularCenter import Ui_CircularCenterInput
 from .res.ui_inputBoxRemoveAperture import Ui_RemoveAperture
-from .res.ui_loadingbox import Ui_LoadingBox
 
 
 class MyMplCanvas(FigureCanvas):
@@ -19,7 +18,6 @@ class MyMplCanvas(FigureCanvas):
 
     def __init__(self, parent=None):
         self._fig = Figure()
-        #self.axes = self.fig.add_subplot(111)
 
         FigureCanvas.__init__(self, self._fig)
         self.setParent(parent)
@@ -28,8 +26,6 @@ class MyMplCanvas(FigureCanvas):
                                    QtWidgets.QSizePolicy.Expanding,
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
-        # add plot toolbar from matplotlib
-        # self.toolbar = NavigationToolbar(self, self)
 
     def get_fig(self):
         return self._fig
@@ -41,7 +37,7 @@ class MyMplCanvas(FigureCanvas):
 class CustomInputForm(QtWidgets.QDialog):
     def __init__(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x: str = None, text_y: str = None):
         """
-        Create a new form with 2 input value x and Y and their output as power of 2         
+        Create a new form with 2 input value x and Y and their output as power of 2
 
         Parameters
         ----------
@@ -244,14 +240,14 @@ class CustomLoadingForm(QtWidgets.QDialog):
     @Slot(tuple)
     def progress_fn(self, value):
         """
-        Update the progress on the bar depending on which function called it 
+        Update the progress on the bar depending on which function called it
         """
         if value[1] == "sum_diff":
             self._ui.recipProgress.setValue(
-                self._ui.recipProgress.value()+value[0])
+                self._ui.recipProgress.value() + value[0])
         else:
             self._ui.realProgress.setValue(
-                self._ui.realProgress.value()+value[0])
+                self._ui.realProgress.value() + value[0])
 
     @Slot()
     def thread_complete(self):
@@ -276,7 +272,7 @@ class CustomSignals(QObject):
         `object` data returned from processing, anything
 
     progress
-        `tuple` (int : indicating % progress, caller) 
+        `tuple` (int : indicating % progress, caller)
 
     """
     finished = Signal()

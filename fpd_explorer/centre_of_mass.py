@@ -1,16 +1,15 @@
 import fpd
-import fpd.fpd_processing as fpdp
 import matplotlib.pyplot as plot
-from PySide2 import QtWidgets
+import fpd.fpd_processing as fpdp
 
-from .custom_widgets import (CustomInputFormCenterOfMass,
-                             CustomInputFormCircularCenter,
-                             CustomInputRemoveAperture)
-
+# FPD Explorer
 from . import logger
 from .logger import Flags
+from .custom_widgets import CustomInputRemoveAperture, CustomInputFormCenterOfMass, CustomInputFormCircularCenter
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
+
+
 def find_circular_centre(ApplicationWindow):
     """
     Calculate the circular centre for the current data
@@ -26,6 +25,7 @@ def find_circular_centre(ApplicationWindow):
                                                                                  sigma, rmms=(rmms_1, rmms_2, rmms_3))
         logger.log("Circular center has now been initialized", Flags.circular_center)
 
+
 def remove_aperture(ApplicationWindow):
     """
     Generate aperture to limit region to BF disc. This will also allow the algorithm to go faster
@@ -40,15 +40,17 @@ def remove_aperture(ApplicationWindow):
         ApplicationWindow.mm_sel = ApplicationWindow.ds_sel
 
         ApplicationWindow._ap = fpdp.synthetic_aperture(ApplicationWindow.mm_sel.shape[-2:],
-                                                        ApplicationWindow._cyx, rio=(0, ApplicationWindow.radius+add_radius), sigma=sigma, aaf=aaf)[0]
+                                                        ApplicationWindow._cyx,
+                                                        rio=(0, ApplicationWindow.radius + add_radius),
+                                                        sigma=sigma, aaf=aaf)[0]
         plot.matshow(ApplicationWindow._ap)
         logger.log("Aperture has now been correctly initialized", Flags.aperture)
+
 
 def centre_of_mass(ApplicationWindow):
     """
     ADD DOCSTRING
     """
-    err_str = ""
     if logger.check_if_all_needed(Flags.aperture):
         widget = CustomInputFormCenterOfMass()
         widget.exec()
@@ -62,8 +64,11 @@ def centre_of_mass(ApplicationWindow):
         # Convert to beta using the BF disc and calibration.
         # The pixel value radius from before could be used for the calibration, or we can do a subpixel equivalent.
         # You may see that the aperture is not a perfect circle - error bars
-        cyx_sp, r_sp = fpdp.find_circ_centre(ApplicationWindow._sum_dif, sigma=2,
-                                             rmms=(ApplicationWindow.radius-8, ApplicationWindow.radius+8, 1), spf=4)
-        logger.log("Center of mass has now been found", Flags.center_mass)
-        
+        cyx_sp, r_sp = fpdp.find_circ_centre(ApplicationWindow._sum_dif,
+                                             sigma=2,
+                                             rmms=(ApplicationWindow.radius - 8,
+                                                   ApplicationWindow.radius + 8, 1),
+                                             spf=4)
         ApplicationWindow.com_yx_beta = com_yx_cor
+        
+        logger.log("Center of mass has now been found", Flags.center_mass)
