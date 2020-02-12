@@ -137,8 +137,6 @@ def start_dbrowser(ApplicationWindow):
             ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab"))
         return
     if logger.check_if_all_needed(Flags.files_loaded):
-        w = QtWidgets.QTabBar()
-        layout = QtWidgets.QHBoxLayout()
         mainwindow = QMainWindow()
         mainwindow.setObjectName("DataBrowserTab")
         db_widget = DataBrowserWidget()
