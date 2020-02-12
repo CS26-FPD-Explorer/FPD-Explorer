@@ -116,9 +116,11 @@ class DataBrowserWidget(QtWidgets.QWidget):
         else:
             self.sender().setValue(1)
 
-    def close_handler(self):
+    def close_handler(self, ApplicationWindow):
         self.get_nav().parentWidget().close()
         self.get_diff().parentWidget().close()
+        ApplicationWindow._data_browser = None
+        ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
 
 def start_dbrowser(ApplicationWindow):
     """
@@ -152,6 +154,6 @@ def start_dbrowser(ApplicationWindow):
             ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
             widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
         
-        ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(db_widget.close_handler)
+        ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(lambda: db_widget.close_handler(ApplicationWindow))
         db_widget.set_data_browser(ApplicationWindow._data_browser)
         db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
