@@ -166,6 +166,9 @@ class ApplicationWindow(QMainWindow):
         for _ in range(self._ui.tabWidget.count() - 1):
             # 1 because every time a tab is removed, indices are reassigned
             self._ui.tabWidget.removeTab(1)
+        if self._data_browser:
+            self._data_browser = None
+            self._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
         logger.clear()
 
     @Slot()
