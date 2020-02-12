@@ -130,8 +130,6 @@ def start_dbrowser(ApplicationWindow):
 
     """
     if logger.check_if_all_needed(Flags.files_loaded):
-        w = QtWidgets.QTabBar()
-        layout = QtWidgets.QHBoxLayout()
         mainwindow = QMainWindow()
         db_widget = DataBrowserWidget()
 

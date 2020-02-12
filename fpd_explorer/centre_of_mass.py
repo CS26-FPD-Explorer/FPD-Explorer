@@ -51,7 +51,6 @@ def centre_of_mass(ApplicationWindow):
     """
     ADD DOCSTRING
     """
-    err_str = ""
     if logger.check_if_all_needed(Flags.aperture):
         widget = CustomInputFormCenterOfMass()
         widget.exec()
@@ -71,3 +70,4 @@ def centre_of_mass(ApplicationWindow):
                                                    ApplicationWindow.radius + 8, 1),
                                              spf=4)
         logger.log("Center of mass has now been found", Flags.center_mass)
+        ApplicationWindow.com_yx_beta = com_yx_cor

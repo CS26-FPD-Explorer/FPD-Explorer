@@ -12,5 +12,6 @@ tmp = [el for el in f if el[-3:] == ".py"]
 print(f"Found {len(tmp)} files: Compiling.....")
 for el in tmp:
     print(f"========== Formatting {el}")
+    subprocess.run("autoflake --in-place --remove-all-unused-imports " + el, shell=True, check=True)
     subprocess.run("isort " + el, shell=True, check=True)
     subprocess.run("autopep8 --in-place --aggressive --aggressive " + el, shell=True, check=True)
