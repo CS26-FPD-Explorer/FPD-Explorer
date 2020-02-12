@@ -124,6 +124,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
         ApplicationWindow._data_browser = None
         ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
 
+
 def start_dbrowser(ApplicationWindow):
     """
     Start the data browser and switch to that tab if the files are loaded.
@@ -158,7 +159,7 @@ def start_dbrowser(ApplicationWindow):
         ApplicationWindow._data_browser = DataBrowser(
             ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
             widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
-        
+
         ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(lambda: db_widget.close_handler(ApplicationWindow))
         db_widget.set_data_browser(ApplicationWindow._data_browser)
         db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])

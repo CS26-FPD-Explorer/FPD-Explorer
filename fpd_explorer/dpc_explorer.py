@@ -73,6 +73,7 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
         for el in self._docked_widgets:
             el.close()
 
+
 def start_dpc(ApplicationWindow):
     """
     Start the DPC Explorer and switch to that tab if the files are loaded.
