@@ -1,7 +1,7 @@
-import psutil
 import numpy as np
-from matplotlib.animation import FuncAnimation
+import psutil
 from matplotlib.figure import Figure
+from matplotlib.animation import FuncAnimation
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 

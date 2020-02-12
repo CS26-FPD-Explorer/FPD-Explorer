@@ -1,14 +1,15 @@
+# Standard Library
 from collections import OrderedDict
 
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QDockWidget, QMainWindow
 
-from .custom_fpd_lib.data_browser import DataBrowser
-from .res.ui_data_browser import Ui_DataBrowser
-
+# FPD Explorer
 from . import logger
 from .logger import Flags
+from .res.ui_data_browser import Ui_DataBrowser
+from .custom_fpd_lib.data_browser import DataBrowser
 
 
 class DataBrowserWidget(QtWidgets.QWidget):
@@ -129,8 +130,6 @@ def start_dbrowser(ApplicationWindow):
 
     """
     if logger.check_if_all_needed(Flags.files_loaded):
-        w = QtWidgets.QTabBar()
-        layout = QtWidgets.QHBoxLayout()
         mainwindow = QMainWindow()
         db_widget = DataBrowserWidget()
 
