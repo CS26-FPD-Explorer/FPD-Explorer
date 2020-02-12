@@ -119,7 +119,6 @@ def centre_of_mass(ApplicationWindow):
     """
     ADD DOCSTRING
     """
-    err_str = ""
     if logger.check_if_all_needed(Flags.aperture):
         widget = CustomInputFormCenterOfMass()
         widget.exec()
