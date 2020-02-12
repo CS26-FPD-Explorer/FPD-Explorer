@@ -1,10 +1,8 @@
-import pytest
 import sys, os
-sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/../")
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
 from fpd_explorer import config_handler as config
 import configparser
-import os
-import sys
+
 
 test_file = "test.ini"
 

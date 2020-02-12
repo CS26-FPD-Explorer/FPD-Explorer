@@ -1,7 +1,7 @@
-import pytest
-import sys, os
-sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/../")
 from fpd_explorer.custom_widgets import CustomInputForm
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+
 
 def init_inputbox():
     """
@@ -9,6 +9,7 @@ def init_inputbox():
     of the input data.
     """
     return CustomInputForm(initial_x=2, initial_y=2, minimum=0, maximum=13, text_x='', text_y='')
+
 
 def test_input_form_size_maximum(qtbot):
     """
@@ -21,9 +22,10 @@ def test_input_form_size_maximum(qtbot):
     assert (widget._ui.Xsize.value() > widget._ui.Xsize.maximum()) == False
     assert (widget._ui.Ysize.value() > widget._ui.Ysize.maximum()) == False
 
+
 def test_input_form_restore_to_default(qtbot):
     """
-    Testing that the restore to default function that is binded to the Restore Default 
+    Testing that the restore to default function that is binded to the Restore Default
     button resets the values correctly.
     """
     widget = init_inputbox()
