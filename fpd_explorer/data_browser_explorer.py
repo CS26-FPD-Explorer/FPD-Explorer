@@ -132,6 +132,10 @@ def start_dbrowser(ApplicationWindow):
     ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
 
     """
+    if ApplicationWindow._data_browser:
+        ApplicationWindow._ui.tabWidget.setCurrentWidget(
+            ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab"))
+        return
     if logger.check_if_all_needed(Flags.files_loaded):
         w = QtWidgets.QTabBar()
         layout = QtWidgets.QHBoxLayout()
