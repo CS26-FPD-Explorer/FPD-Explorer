@@ -109,7 +109,7 @@ def remove_aperture(ApplicationWindow):
                                                         ApplicationWindow._cyx, rio=(0, ApplicationWindow.radius+add_radius), sigma=sigma, aaf=aaf)[0]
         print(ApplicationWindow._ap)
         canvas = Pop_Up_Widget(ApplicationWindow)
-        fig = canvas.setup_docking("Circular Centre")
+        fig = canvas.setup_docking("Remove Aperture")
         ax = fig.get_fig().subplots()
         ax.matshow(ApplicationWindow._ap)
         logger.log("Aperture has now been correctly initialized", Flags.aperture)
