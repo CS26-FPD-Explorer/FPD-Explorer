@@ -10,6 +10,7 @@ from .res.ui_data_browser import Ui_DataBrowser
 from . import logger
 from .logger import Flags
 
+
 class DataBrowserWidget(QtWidgets.QWidget):
     """
     Initialize the required widget needed by Data Browser tab
@@ -29,8 +30,8 @@ class DataBrowserWidget(QtWidgets.QWidget):
         """
         # Set the value to default
         scanY, scanX = shape
-        self._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
-        self._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 1)
+        self._ui.navX.setValue(scanX // 64 if scanX // 64 != 0 else 1)
+        self._ui.navY.setValue(scanY // 64 if scanY // 64 != 0 else 1)
         self._ui.navX.setMaximum(scanX)
         self._ui.navY.setMaximum(scanY)
         self._ui.colorMap.setCurrentIndex(0)
@@ -99,7 +100,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
         if self._data_browser:
             return self._data_browser.update_color_map(value)
         else:
-            print("else="+str(self.sender().setCurrentIndex(-1)))
+            print("else=" + str(self.sender().setCurrentIndex(-1)))
             self.sender().setCurrentIndex(-1)
 
     @Slot(int)

@@ -3,7 +3,7 @@ import logging
 import os
 from datetime import datetime
 
-from fpd_explorer import logger 
+from fpd_explorer import logger
 
 import matplotlib as plt
 import matplotlib.style
@@ -18,12 +18,14 @@ plt.use('Qt5Agg')
 error_logger = logging.getLogger('fpd_logger')
 # Configure logger to write to a file...
 
+
 def fpd_exept_handler(type, value, tb):
     tmp_str = "Uncaught exception: {0}".format(str(value))
-    #error_logger.exception(value)
-    widget = QtWidgets.QMessageBox.critical(window, "ERROR",tmp_str)
+    # error_logger.exception(value)
+    widget = QtWidgets.QMessageBox.critical(window, "ERROR", tmp_str)
     write_log(tmp_str, tb)
     logger.clear()
+
 
 def write_log(error, tb):
     if not os.path.isdir(".log/"):
@@ -31,11 +33,12 @@ def write_log(error, tb):
     remove_old_log()
     now = datetime.now()
     current_time = now.strftime("%d-%m-%Y@%H-%M-%S")
-    with open(".log/"+current_time+".txt", "w") as f:
-        f.write("Error occured at : " + current_time +"\n\n")
+    with open(".log/" + current_time + ".txt", "w") as f:
+        f.write("Error occured at : " + current_time + "\n\n")
         f.write(error + "\n\n")
         for el in traceback.format_tb(tb):
             f.write(el)
+
 
 def remove_old_log():
     f = []
@@ -45,12 +48,12 @@ def remove_old_log():
     len_tmp = len(tmp)
     if len_tmp >= 10:
         print(sorted(tmp))
-        for el in sorted(tmp,reverse=True)[9:]:
+        for el in sorted(tmp, reverse=True)[9:]:
             print("removing", el)
             os.remove(el)
 
 
-sys.excepthook = fpd_exept_handler  
+sys.excepthook = fpd_exept_handler
 
 if __name__ == "__main__":
     config.load_config()
@@ -59,7 +62,7 @@ if __name__ == "__main__":
     if dark_mode_config:
         plt.style.use('dark_background')
         fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
-    window = ApplicationWindow(fpd_app,dark_mode_config)
+    window = ApplicationWindow(fpd_app, dark_mode_config)
     logger.setup(window._ui.log_text, window)
 
     window.show()

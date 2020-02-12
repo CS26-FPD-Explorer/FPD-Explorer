@@ -1,6 +1,3 @@
-import os
-import sys
-
 from fpd.fpd_file import MerlinBinary
 from PySide2 import QtWidgets
 from PySide2.QtCore import Slot
@@ -13,7 +10,7 @@ from . import config_handler as config
 from . import logger
 from . import data_browser_explorer
 from . import dpc_explorer
-from .custom_widgets import *
+from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
 from .logger import Flags
 
@@ -89,24 +86,24 @@ class ApplicationWindow(QMainWindow):
         Display a pop-up describing the software.
         """
         about = QtWidgets.QMessageBox()
-        about.setText("""<p><u>Help</u></p><p>This software allows users to process electron 
-        microscopy images, you can import 3 different types of files: .dm3,.mib and .hdf5 by Clicking 
-         'File-&gt;Open-&gt;Filetype'.</p><p>Once the files have been loaded in, click the Pushbutton 
-         in the bottom right, the next window displayed will have defaultvalue for downsampling which 
-         is 2^3 by default, but can be modified to change the downsampling rate. After the 
-         downsampling rate has been selected, press OK and this will bring you to a window in which a 
-         selection can be made, if sum real image is selected then the real image will be shown on 
-         the left. if sum recip space is selected then an inverted image will be shown.</p><p>Once 
-         'OK' is clicked the images will load in to the window docks and a progress bar is present to 
-         show the progress of this process. The dm3. image on the left can be navigated around 
-         byclicking on a certain pixel within the image and this will show the diffraction Image on 
-         the right at this point.</p><p><u>About</u></p><p>This software was created using QT,PySide 
-         2, and the FPD library.</p><p>The creators are Florent Audonnet, Michal Broos, Bruce Kerr, 
+        about.setText("""<p><u>Help</u></p><p>This software allows users to process electron
+        microscopy images, you can import 3 different types of files: .dm3,.mib and .hdf5 by Clicking
+         'File-&gt;Open-&gt;Filetype'.</p><p>Once the files have been loaded in, click the Pushbutton
+         in the bottom right, the next window displayed will have defaultvalue for downsampling which
+         is 2^3 by default, but can be modified to change the downsampling rate. After the
+         downsampling rate has been selected, press OK and this will bring you to a window in which a
+         selection can be made, if sum real image is selected then the real image will be shown on
+         the left. if sum recip space is selected then an inverted image will be shown.</p><p>Once
+         'OK' is clicked the images will load in to the window docks and a progress bar is present to
+         show the progress of this process. The dm3. image on the left can be navigated around
+         byclicking on a certain pixel within the image and this will show the diffraction Image on
+         the right at this point.</p><p><u>About</u></p><p>This software was created using QT,PySide
+         2, and the FPD library.</p><p>The creators are Florent Audonnet, Michal Broos, Bruce Kerr,
          Ruize Shen and Ewan Pandelus.</p><p> <br></p>""")
         about.exec()
 
     def _update_last_path(self, new_path):
-        self._last_path = "/".join(new_path.split("/")[:-1])+"/"
+        self._last_path = "/".join(new_path.split("/")[:-1]) + "/"
         config.add_config({"file_path": self._last_path})
 
     @Slot()
@@ -132,7 +129,6 @@ class ApplicationWindow(QMainWindow):
     def start_dpc_explorer(self):
         dpc_explorer.start_dpc(self)
 
-
     @Slot()
     def find_circular_centre(self):
         centre_of_mass.find_circular_centre(self)
@@ -151,7 +147,7 @@ class ApplicationWindow(QMainWindow):
         Clears all provided files and resets the file_loaded flag
         """
         if self._ui.mib_line.text():
-            print("mibline="+str(self._ui.mib_line.text()))
+            print("mibline=" + str(self._ui.mib_line.text()))
             del self._mib_path
             self._ui.mib_line.clear()
         if self._ui.dm3_line.text():
@@ -208,7 +204,7 @@ class ApplicationWindow(QMainWindow):
             else:  # load the data using custum parameter
                 return
 
-        hdr = self._mib_path[:-4]+".hdr"
+        hdr = self._mib_path[:-4] + ".hdr"
         self._mb = MerlinBinary(mib, hdr, dm3, scanYalu=y_value,
                                 scanXalu=x_value, row_end_skip=1)
 
@@ -236,7 +232,7 @@ class ApplicationWindow(QMainWindow):
 
         self._files_loaded = True
         logger.add_flag(Flags.files_loaded)
-        print("files_loaded="+str(self._files_loaded))
+        print("files_loaded=" + str(self._files_loaded))
         print("end")
 
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
