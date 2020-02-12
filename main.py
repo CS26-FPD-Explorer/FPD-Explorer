@@ -1,16 +1,18 @@
-import sys, traceback
-import logging
+# Standard Library
 import os
+import sys
+import logging
+import traceback
 from datetime import datetime
 
-from fpd_explorer import logger
-
 import matplotlib as plt
+import qdarkgraystyle
 import matplotlib.style
 from PySide2 import QtWidgets
 
+# First Party
 import fpd_explorer.config_handler as config
-import qdarkgraystyle
+from fpd_explorer import logger
 from fpd_explorer.home import ApplicationWindow
 
 plt.use('Qt5Agg')

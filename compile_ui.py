@@ -1,9 +1,10 @@
 # Dirty file to automatically compile all .ui files
 
-from os import walk
-import subprocess
-
+# Standard Library
 import os
+import subprocess
+from os import walk
+
 f = []
 for (dirpath, dirnames, filenames) in walk("./fpd_explorer/res/"):
     f.extend([os.path.join(*dirpath.split("/"), s) for s in filenames])

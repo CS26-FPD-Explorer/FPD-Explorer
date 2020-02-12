@@ -4,6 +4,7 @@ from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QDockWidget, QGridLayout, QMainWindow
 
+# FPD Explorer
 from .custom_fpd_lib import dpc_explorer_class as dpc
 from .res.ui_dpc_browser import Ui_DPC_Explorer_Widget
 

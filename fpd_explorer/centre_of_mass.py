@@ -1,13 +1,11 @@
 import fpd
-import fpd.fpd_processing as fpdp
 import matplotlib.pyplot as plot
+import fpd.fpd_processing as fpdp
 
-from .custom_widgets import (CustomInputFormCenterOfMass,
-                             CustomInputFormCircularCenter,
-                             CustomInputRemoveAperture)
-
+# FPD Explorer
 from . import logger
 from .logger import Flags
+from .custom_widgets import CustomInputRemoveAperture, CustomInputFormCenterOfMass, CustomInputFormCircularCenter
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
 
