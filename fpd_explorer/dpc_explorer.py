@@ -68,6 +68,11 @@ class DPC_Explorer_Widget(QtWidgets.QWidget):
             self._docked_widgets.append(dock)
         return widget
 
+    def close_handler(self):
+        print('closing')
+        for el in self._docked_widgets:
+            el.close()
+
 
 def start_dpc(ApplicationWindow):
     """
@@ -88,6 +93,7 @@ def start_dpc(ApplicationWindow):
     bt = sp.ndimage.rotate(bt, angle=0.0, axes=(-2, -1),
                            reshape=False, order=3, mode='constant', cval=0.0, prefilter=True)
 
+    ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(dpc_explorer.close_handler)
     tab_index = ApplicationWindow._ui.tabWidget.addTab(mainwindow, "DPC Explorer")
     ApplicationWindow._ui.tabWidget.setCurrentIndex(tab_index)
 

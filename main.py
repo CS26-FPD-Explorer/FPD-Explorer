@@ -21,7 +21,7 @@ error_logger = logging.getLogger('fpd_logger')
 # Configure logger to write to a file...
 
 
-def fpd_exept_handler(type, value, tb):
+def fpd_except_handler(type, value, tb):
     tmp_str = "Uncaught exception: {0}".format(str(value))
     # error_logger.exception(value)
     widget = QtWidgets.QMessageBox.critical(window, "ERROR", tmp_str)
@@ -55,7 +55,7 @@ def remove_old_log():
             os.remove(el)
 
 
-sys.excepthook = fpd_exept_handler
+sys.excepthook = fpd_except_handler
 
 if __name__ == "__main__":
     config.load_config()

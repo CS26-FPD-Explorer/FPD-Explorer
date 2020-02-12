@@ -77,6 +77,9 @@
              <property name="readOnly">
               <bool>true</bool>
              </property>
+             <property name="plainText">
+              <string>Start by loading files</string>
+             </property>
             </widget>
            </item>
           </layout>

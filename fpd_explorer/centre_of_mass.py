@@ -69,5 +69,6 @@ def centre_of_mass(ApplicationWindow):
                                              rmms=(ApplicationWindow.radius - 8,
                                                    ApplicationWindow.radius + 8, 1),
                                              spf=4)
-        logger.log("Center of mass has now been found", Flags.center_mass)
         ApplicationWindow.com_yx_beta = com_yx_cor
+
+        logger.log("Center of mass has now been found", Flags.center_mass)

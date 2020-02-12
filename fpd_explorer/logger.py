@@ -102,7 +102,7 @@ def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=Tr
 
 def clear():
     if text_input:
-        text_input.setPlainText("")
+        text_input.setPlainText("Start by loading files")
         for key in global_flags.keys():
             global_flags[key]["bool"] = False
     else:
