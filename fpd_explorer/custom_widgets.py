@@ -12,6 +12,7 @@ from .res.ui_loadingbox import Ui_LoadingBox
 from .res.ui_inputBoxCenterOfMass import Ui_CenterofMass
 from .res.ui_inputBoxCircularCenter import Ui_CircularCenterInput
 from .res.ui_inputBoxRemoveAperture import Ui_RemoveAperture
+from .res.ui_loadingboxCenterOfMass import Ui_LoadingBoxCenterOfMass
 
 
 class MyMplCanvas(FigureCanvas):
@@ -253,6 +254,16 @@ class CustomInputFormCenterOfMass(QtWidgets.QDialog):
         """
         self.restore_default()
         return super().reject()
+
+
+class CustomLoadingFormCenterOfMass(QtWidgets.QDialog):
+    def __init__(self):
+        """
+        Set up a loading form with 1 progress bar parameters
+        """
+        super(CustomLoadingFormCenterOfMass, self).__init__()
+        self._ui = Ui_LoadingBoxCenterOfMass()
+        self._ui.setupUi(self)
 
 
 class CustomLoadingForm(QtWidgets.QDialog):
