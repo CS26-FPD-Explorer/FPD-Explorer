@@ -1,10 +1,10 @@
+# Standard Library
 import inspect
 from inspect import signature
 
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import (QCheckBox, QDialogButtonBox, QFormLayout,
-                               QGridLayout, QLineEdit, QPushButton, QSpinBox)
+from PySide2.QtWidgets import QSpinBox, QCheckBox, QLineEdit, QFormLayout, QGridLayout, QDialogButtonBox
 
 
 class UI_Generator(QtWidgets.QDialog):
@@ -15,7 +15,7 @@ class UI_Generator(QtWidgets.QDialog):
     ----------
     ApplicationWindow : QApplication
         The parent in which the tab should be rendered
-    mainwindow : QMainWindow 
+    mainwindow : QMainWindow
         The main window in which the dock widget should get created
     fnct : function
         The function object for which we want to create the input box
@@ -154,30 +154,31 @@ class UI_Generator(QtWidgets.QDialog):
                     widget.setFixedWidth(100)
                 widget.setFixedHeight(30)
                 all_widget.append((key.replace("_", " ").capitalize(), widget))
-                #self.layout.addRow(key.replace("_", " ").capitalize(), widget)
+                # self.layout.addRow(key.replace("_", " ").capitalize(), widget)
 
         layout = QGridLayout()
 
         self.create_colums(all_widget, layout)
 
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Save
-                                          | QDialogButtonBox.Cancel
-                                          | QDialogButtonBox.RestoreDefaults)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Save |
+                                     QDialogButtonBox.Cancel |
+                                     QDialogButtonBox.RestoreDefaults)
         buttonBox.accepted.connect(self.save)
         buttonBox.rejected.connect(self.reject)
         buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self.restore_default)
-        layout.addWidget(buttonBox, 1, 0, 1, len(all_widget)//self.items_per_column+1, Qt.AlignRight)
+        layout.addWidget(buttonBox, 1, 0, 1, len(all_widget) // self.items_per_column + 1, Qt.AlignRight)
         self.setLayout(layout)
         self.setFixedSize(self.minimumWidth(), self.minimumHeight())
 
     def create_colums(self, widget_list, vert_layout, n=0):
         tmp = QtWidgets.QWidget()
         layout = QFormLayout()
-        for name, widget in widget_list[0+self.items_per_column*n:self.items_per_column+self.items_per_column*n]:
+        for name, widget in widget_list[0 + self.items_per_column *
+                                        n:self.items_per_column + self.items_per_column * n]:
             layout.addRow(name, widget)
         tmp.setLayout(layout)
-        tmp.setFixedWidth(110+layout.itemAt(0, QFormLayout.FieldRole).geometry().width())
+        tmp.setFixedWidth(110 + layout.itemAt(0, QFormLayout.FieldRole).geometry().width())
         vert_layout.addWidget(tmp, 0, n)
-        if self.items_per_column*(n+1) > len(widget_list):
+        if self.items_per_column * (n + 1) > len(widget_list):
             return
-        self.create_colums(widget_list, vert_layout, n=n+1)
+        self.create_colums(widget_list, vert_layout, n=n + 1)

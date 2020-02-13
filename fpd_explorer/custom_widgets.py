@@ -259,7 +259,7 @@ class CustomLoadingForm(QtWidgets.QDialog):
     def __init__(self, ds_sel):
         """
         Set up a new loading form with 2 progress bar
-        
+
         Parameters
         ----------
         ds_sel : Merlin Binary Memory Map
