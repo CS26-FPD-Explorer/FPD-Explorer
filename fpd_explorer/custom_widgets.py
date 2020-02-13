@@ -80,8 +80,8 @@ class Pop_Up_Widget(QtWidgets.QWidget):
 
         dock = QDockWidget(self)
         dock.setWidget(widget)
-        dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea
-                             | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
+        dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea |
+                             Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
         if location == "Bottom":
             loc = Qt.BottomDockWidgetArea
         elif location == "Left":

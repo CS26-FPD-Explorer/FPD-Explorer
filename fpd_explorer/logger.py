@@ -100,7 +100,6 @@ def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=Tr
         raise RuntimeError("An unknow error has happened. Did you modified the structure of globals_flags")
 
 
-
 def clear():
     if text_input:
         text_input.setPlainText("Start by loading files")

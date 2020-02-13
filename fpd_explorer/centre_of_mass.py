@@ -9,7 +9,6 @@ from .custom_widgets import (
     CustomInputFormCircularCenter
 )
 
-
 # NEED TO GO THROUGH PRIVATE VARIABLES
 
 
@@ -50,7 +49,10 @@ def remove_aperture(ApplicationWindow):
         ApplicationWindow.mm_sel = ApplicationWindow.ds_sel
 
         ApplicationWindow._ap = fpdp.synthetic_aperture(
-            ApplicationWindow.mm_sel.shape[-2:], ApplicationWindow._cyx, rio=(0, ApplicationWindow.radius + add_radius), sigma=sigma, aaf=aaf)[0]
+            ApplicationWindow.mm_sel.shape[-2:],
+            ApplicationWindow._cyx,
+            rio=(0, ApplicationWindow.radius + add_radius),
+            sigma=sigma, aaf=aaf)[0]
         print(ApplicationWindow._ap)
         canvas = Pop_Up_Widget(ApplicationWindow, "Aperture")
         fig = canvas.setup_docking("Aperture")
@@ -72,8 +74,8 @@ def centre_of_mass(ApplicationWindow):
                                      aperture=ApplicationWindow._ap, parallel=False)
 
         # TODO: Fix the mess in another feature
-        #fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
-        #com_yx_cor = com_yx - fit
+        # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
+        # com_yx_cor = com_yx - fit
         # Convert to beta using the BF disc and calibration.
         # The pixel value radius from before could be used for the calibration, or we can do a subpixel equivalent.
         # You may see that the aperture is not a perfect circle - error bars
