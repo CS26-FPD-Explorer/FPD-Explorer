@@ -19,7 +19,6 @@ class MyMplCanvas(FigureCanvas):
 
     def __init__(self, parent=None):
         self._fig = Figure()
-        #self.axes = self.fig.add_subplot(111)
 
         FigureCanvas.__init__(self, self._fig)
         self.setParent(parent)
@@ -28,8 +27,6 @@ class MyMplCanvas(FigureCanvas):
                                    QtWidgets.QSizePolicy.Expanding,
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
-        # add plot toolbar from matplotlib
-        # self.toolbar = NavigationToolbar(self, self)
 
     def get_fig(self):
         return self._fig

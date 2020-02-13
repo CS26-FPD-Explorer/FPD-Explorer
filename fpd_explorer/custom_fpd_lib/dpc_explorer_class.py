@@ -44,7 +44,7 @@ except:
 class DPC_Explorer:
     def __init__(self, d, r_min=0, r_max=None, r_min_pct=0, r_max_pct=95,
                  descan=[0, 0, 0, 0], cyx=None, vectrot=0, gaus=0, pct=None,
-                 dt=0, gaus_lim=16, cw_rmin=1.0/3, cmap=None, median=False,
+                 dt=0, gaus_lim=16, cw_rmin=1.0 / 3, cmap=None, median=False,
                  median_mode=0, ransac=False, ransac_dict=None, nbins=None,
                  hist_lims=None, flip_y=False, flip_x=False, origin='top',
                  yx_range_from_r=True, widget=None):
@@ -228,11 +228,11 @@ class DPC_Explorer:
 
         self._origin = origin.lower()
         if isinstance(d, int):
-            dim = np.indices((np.abs(d),)*2).astype(float)
+            dim = np.indices((np.abs(d),) * 2).astype(float)
             dim -= dim.mean((1, 2))[:, None, None]
             dim *= np.array([-1, 1])[:, None, None]      # flip y
             if d < 0:
-                dim += np.random.rand(*dim.shape)*10
+                dim += np.random.rand(*dim.shape) * 10
             d = dim
         else:
             d = np.array(d)
@@ -273,19 +273,19 @@ class DPC_Explorer:
             self._ransac_dict = {'mode': 1, 'scale': True, 'fract': 0.5}
 
         if isinstance(pct, (int, float)):
-            self._pct = ((pct,)*2,)*2
+            self._pct = ((pct,) * 2,) * 2
         elif isinstance(pct, (collections.Sequence, np.ndarray)):
             y_pct = pct[0]
             x_pct = pct[1]
             if isinstance(y_pct, (int, float)):
-                y_pct = (pct,)*2
+                y_pct = (pct,) * 2
             if isinstance(x_pct, (int, float)):
-                x_pct = (pct,)*2
+                x_pct = (pct,) * 2
             self._pct = (y_pct, x_pct)
         else:
-            self._pct = ((0,)*2,)*2
+            self._pct = ((0,) * 2,) * 2
 
-        descan = [ds/1000.0 for ds in descan]
+        descan = [ds / 1000.0 for ds in descan]
         self._descanY_factY, self._descanY_factX, self._descanX_factY, self._descanX_factX = descan
         self._y_orig, self._x_orig = self.y.copy(), self.x.copy()
         self._make_scan_indices()
@@ -376,11 +376,11 @@ class DPC_Explorer:
             self._cmaps['my_cmap'] = cmap_in
 
         # modified hsv
-        theta = np.linspace(0, np.pi*2, 256)
+        theta = np.linspace(0, np.pi * 2, 256)
         r = np.cos((theta))
-        g = np.cos((theta-np.pi*2/3))
-        b = np.cos((theta-np.pi*4/3))
-        r, g, b = [(x+1)/2 for x in (r, g, b)]
+        g = np.cos((theta - np.pi * 2 / 3))
+        b = np.cos((theta - np.pi * 4 / 3))
+        r, g, b = [(x + 1) / 2 for x in (r, g, b)]
         rgb = np.vstack([r, g, b]).T                # Nx3
         hsv_mod = mpl.colors.ListedColormap(rgb)
         self._cmaps['HSV_mod'] = hsv_mod
@@ -456,10 +456,10 @@ class DPC_Explorer:
             self.y -= self._fity
 
         # descan
-        self._descany = (self._inds[0]*self._descanY_factY
-                         + self._inds[1]*self._descanY_factX)
-        self._descanx = (self._inds[0]*self._descanX_factY
-                         + self._inds[1]*self._descanX_factX)
+        self._descany = (self._inds[0] * self._descanY_factY
+                         + self._inds[1] * self._descanY_factX)
+        self._descanx = (self._inds[0] * self._descanX_factY
+                         + self._inds[1] * self._descanX_factX)
 
         self.y = self.y + self._descany
         self.x = self.x + self._descanx
@@ -467,19 +467,19 @@ class DPC_Explorer:
         # flip
         if self._flip_y:
             y_centre = np.percentile(self.y, 50)
-            self.y = 2.0*y_centre - self.y
+            self.y = 2.0 * y_centre - self.y
 
         if self._flip_x:
             x_centre = np.percentile(self.x, 50)
-            self.x = 2.0*x_centre - self.x
+            self.x = 2.0 * x_centre - self.x
 
         # percentile
         if self._pct:
             ymin, ymax = np.percentile(self.y,
-                                       [self._pct[0][0], 100-self._pct[0][1]])
+                                       [self._pct[0][0], 100 - self._pct[0][1]])
             self.y = self.y.clip(ymin, ymax)
             xmin, xmax = np.percentile(self.x,
-                                       [self._pct[1][0], 100-self._pct[1][1]])
+                                       [self._pct[1][0], 100 - self._pct[1][1]])
             self.x = self.x.clip(xmin, xmax)
 
         # Gaussian smoothing
@@ -491,9 +491,9 @@ class DPC_Explorer:
             # rotate vector anticlockwise by angle deg (>0)
             r = np.sqrt(y**2 + x**2)
             t = np.arctan2(y, x)
-            t2 = t+np.deg2rad(deg)
-            y2 = r*np.sin(t2)
-            x2 = r*np.cos(t2)
+            t2 = t + np.deg2rad(deg)
+            y2 = r * np.sin(t2)
+            x2 = r * np.cos(t2)
             return y2, x2
         self.y, self.x = rotvec(self.y, self.x, self._vectrot)
 
@@ -521,7 +521,7 @@ class DPC_Explorer:
         ims = []
         self._figs.append(f)
 
-        y, x = self.y-self._yc, self.x-self._xc
+        y, x = self.y - self._yc, self.x - self._xc
         if self._yx_range_from_r:
             vmin, vmax = -self._r_max, self._r_max
         else:
@@ -533,7 +533,7 @@ class DPC_Explorer:
                            cmap='gray',
                            vmin=vmin,
                            vmax=vmax)
-            ax.set_title(t+' stdev: %0.3e' % (d.std()))
+            ax.set_title(t + ' stdev: %0.3e' % (d.std()))
             ax.set_axis_off()
             ax.axes.get_xaxis().set_visible(False)
             ax.axes.get_yaxis().set_visible(False)
@@ -599,8 +599,8 @@ class DPC_Explorer:
         sy, sx = self.y.shape
         filename = writeGSF(filename=None,
                             data=self.y,
-                            XReal=1.0*sx,
-                            YReal=1.0*sy,
+                            XReal=1.0 * sx,
+                            YReal=1.0 * sy,
                             Title='Y',
                             open_file=True)
         self._tmp_fns.append(filename)
@@ -610,8 +610,8 @@ class DPC_Explorer:
         sy, sx = self.x.shape
         filename = writeGSF(filename=None,
                             data=self.x,
-                            XReal=1.0*sx,
-                            YReal=1.0*sy,
+                            XReal=1.0 * sx,
+                            YReal=1.0 * sy,
                             Title='Y',
                             open_file=True)
         self._tmp_fns.append(filename)
@@ -637,7 +637,7 @@ class DPC_Explorer:
 
     def _update_xy_plot(self):
         #y, x = self.y, self.x
-        y, x = self.y-self._yc, self.x-self._xc
+        y, x = self.y - self._yc, self.x - self._xc
         if self._yx_range_from_r:
             vmin, vmax = -self._r_max, self._r_max
         else:
@@ -647,7 +647,7 @@ class DPC_Explorer:
             im.set_data(imd)
             # im.autoscale()
             im.set_clim((vmin, vmax))
-            im.axes.title.set_text(t+' stdev: %0.3e' % (imd.std()))
+            im.axes.title.set_text(t + ' stdev: %0.3e' % (imd.std()))
         im.figure.canvas.draw_idle()
 
         # to reshow on draw
@@ -655,22 +655,22 @@ class DPC_Explorer:
             self._xy_selector.update()
 
     def _calc_rt(self, r_max_pct=None, r_min_pct=None):
-        cy = self.y-self._yc
-        cx = self.x-self._xc
+        cy = self.y - self._yc
+        cx = self.x - self._xc
 
         self.r = np.sqrt(cy**2 + cx**2)
         self._t = np.arctan2(cy, cx)
         # applied angle offset to plot data
-        tplot = self._t-self._dt
-        self._t[self._t < 0] += 2*np.pi
-        self._t[self._t > 2*np.pi] -= 2*np.pi
-        tplot[tplot < 0] += 2*np.pi
-        tplot[tplot > 2*np.pi] -= 2*np.pi
+        tplot = self._t - self._dt
+        self._t[self._t < 0] += 2 * np.pi
+        self._t[self._t > 2 * np.pi] -= 2 * np.pi
+        tplot[tplot < 0] += 2 * np.pi
+        tplot[tplot > 2 * np.pi] -= 2 * np.pi
 
         # create hsv theta array
-        self.tn = self._t/(2*np.pi)
+        self.tn = self._t / (2 * np.pi)
         # angle offset applied
-        t_rgba = self._cmap_curent[1](tplot/(2*np.pi))
+        t_rgba = self._cmap_curent[1](tplot / (2 * np.pi))
 
         # calculate normalised r
         if r_min_pct is not None:
@@ -684,7 +684,7 @@ class DPC_Explorer:
             pass
         # Could check r_min < r_max, but allowed so inversion of values
         # will plot removed regions.
-        self.rn = (self.r-self._r_min)/(self._r_max-self._r_min)
+        self.rn = (self.r - self._r_min) / (self._r_max - self._r_min)
         self.rn = self.rn.clip(0, 1)
 
         # create rgb theta with different scalling by r
@@ -693,15 +693,15 @@ class DPC_Explorer:
         # t_hsv_v[...,2]*=self.rn
         #t_rgb_v = mpl.cm.colors.hsv_to_rgb(t_hsv_v)
 
-        t_rgb_v = t_rgba*self.rn[..., None]
+        t_rgb_v = t_rgba * self.rn[..., None]
         self.t_im = t_rgba[:, :, :3]
         self.tr_im = t_rgb_v[:, :, :3]
         self._t_ims = [self.t_im, self.tr_im]
 
     def _hist_tit_str(self):
-        tit = '(cy, cx), (r_min, r_max): (%0.3f, %0.3f), (%0.3f, %0.3f)    dt: %0.3f\nDescan Y(y,x), X(y,x) x1000: (%0.3f, %0.3f), (%0.3f, %0.3f)\n' % (self._yc, self._xc, self._r_min, self._r_max, self._dt/np.pi*180,
-                                                                                                                                                        self._descanY_factY*1000, self._descanY_factX*1000,
-                                                                                                                                                        self._descanX_factY*1000, self._descanX_factX*1000)
+        tit = '(cy, cx), (r_min, r_max): (%0.3f, %0.3f), (%0.3f, %0.3f)    dt: %0.3f\nDescan Y(y,x), X(y,x) x1000: (%0.3f, %0.3f), (%0.3f, %0.3f)\n' % (self._yc, self._xc, self._r_min, self._r_max, self._dt / np.pi * 180,
+                                                                                                                                                        self._descanY_factY * 1000, self._descanY_factX * 1000,
+                                                                                                                                                        self._descanX_factY * 1000, self._descanX_factX * 1000)
         return tit
 
     def _update_calcs_and_plots(self, calc_ransac=False):
@@ -740,7 +740,7 @@ class DPC_Explorer:
         self._figs.append(f)
 
         if self._nbins is None:
-            self._nbins = int(np.prod(self.x.size)**0.5/2)
+            self._nbins = int(np.prod(self.x.size)**0.5 / 2)
         if self._hist_lims is None:
             if self._seq:
                 ys = self._seq_data[:, 0]
@@ -751,18 +751,18 @@ class DPC_Explorer:
 
             # pct is currently fixed at instantiation, so hist limits can be clipped
             ymin, ymax = np.percentile(ys,
-                                       [self._pct[0][0], 100-self._pct[0][1]])
+                                       [self._pct[0][0], 100 - self._pct[0][1]])
             xmin, xmax = np.percentile(xs,
-                                       [self._pct[1][0], 100-self._pct[1][1]])
+                                       [self._pct[1][0], 100 - self._pct[1][1]])
             #xmin, xmax = xs.min(), xs.max()
             #ymin, ymax = ys.min(), ys.max()
         else:
             xmin, xmax, ymin, ymax = self._hist_lims
-        rng = np.max([xmax-xmin, ymax-ymin])/2.0
-        xc = (xmin + xmax)/2.0
-        yc = (ymin + ymax)/2.0
-        xy_bins = [np.linspace(xc-rng, xc+rng, self._nbins+1),
-                   np.linspace(yc-rng, yc+rng, self._nbins+1)]
+        rng = np.max([xmax - xmin, ymax - ymin]) / 2.0
+        xc = (xmin + xmax) / 2.0
+        yc = (ymin + ymax) / 2.0
+        xy_bins = [np.linspace(xc - rng, xc + rng, self._nbins + 1),
+                   np.linspace(yc - rng, yc + rng, self._nbins + 1)]
 
         H, self._xedges, self._yedges = np.histogram2d(self.x.flatten(),
                                                        self.y.flatten(),
@@ -795,10 +795,10 @@ class DPC_Explorer:
 
         #rwh = (self._xedges[1]-self._xedges[0])*2
         trans = ax.transData.inverted()
-        rwh = (trans.transform(ax.transAxes.transform((0.02,)*2))
+        rwh = (trans.transform(ax.transAxes.transform((0.02,) * 2))
                - np.array(ax.axis())[0::2])
         rwh = rwh[0]
-        self._rect = mpl.patches.Rectangle((self._xc-rwh/2, self._yc-rwh/2),
+        self._rect = mpl.patches.Rectangle((self._xc - rwh / 2, self._yc - rwh / 2),
                                            rwh,
                                            rwh,
                                            ec='k',
@@ -919,14 +919,14 @@ class DPC_Explorer:
         # RADIOS
         # cmaps
         active_ind = list(self._cmaps.keys()).index(self._cmap_curent[0])
-        h = 0.05*len(self._cmaps)
-        rax = self.add_axes([0.02, 0.9-h, 0.17, h])
+        h = 0.05 * len(self._cmaps)
+        rax = self.add_axes([0.02, 0.9 - h, 0.17, h])
         self._radio = RadioButtons(rax, self._cmaps.keys(), active=active_ind)
         self._radio.on_clicked(self._on_cmap)
 
         # median mode
-        hm = 0.05*2+0.01
-        raxm = self.add_axes([0.02, 0.9-(h+hm+0.01), 0.17, hm])
+        hm = 0.05 * 2 + 0.01
+        raxm = self.add_axes([0.02, 0.9 - (h + hm + 0.01), 0.17, hm])
         self._radiom = RadioButtons(raxm, ['med.', 'med. of dif.'], active=self._median_mode)
         self._radiom.on_clicked(self._on_median_mode)
 
@@ -1052,7 +1052,7 @@ class DPC_Explorer:
                     # autoscale
                     mins[i], maxs[i] = np.percentile(ims[i], [0, 100], axis=(-3, -2, -1))
                 elif imt in zt2pi:
-                    maxs[i] = 2*np.pi
+                    maxs[i] = 2 * np.pi
                 elif imt in zto:
                     pass
                 else:
@@ -1061,7 +1061,7 @@ class DPC_Explorer:
                     mins[i], maxs[i] = np.percentile(ims[i], [0, 100], axis=(-3, -2, -1))
 
             # adjust dimensionality
-            for i in range(ims.ndim-1):
+            for i in range(ims.ndim - 1):
                 mins = mins[..., None]
                 maxs = maxs[..., None]
             ims = (ims - mins) / (maxs - mins) * 255   # all [0, 255]
@@ -1141,7 +1141,7 @@ class DPC_Explorer:
         self._figs.append(f)
 
         for i, (ax, d, t) in enumerate(zip(axs.flat,
-                                           [self.rn]+self._t_ims,
+                                           [self.rn] + self._t_ims,
                                            ['radius',
                                             'theta',
                                             'theta (r)'])):
@@ -1165,14 +1165,14 @@ class DPC_Explorer:
 
     def _plot_cw(self):
         N = 32
-        t = np.radians(np.linspace(0, 360, 2*N))    # theta
+        t = np.radians(np.linspace(0, 360, 2 * N))    # theta
         r = np.linspace(self._cw_rmin, 1, N)         # radii
 
         R, T = np.meshgrid(r, t)                    # meshes. T: # [0 2pi]
         values = np.random.random((t.size, r.size))
-        Rn = (R-R.min())/np.ptp(R)                  # [0 1]
+        Rn = (R - R.min()) / np.ptp(R)                  # [0 1]
 
-        A_rgb = self._cmap_curent[1](T/(2*np.pi))[..., :3]
+        A_rgb = self._cmap_curent[1](T / (2 * np.pi))[..., :3]
         A_hsv = mpl.cm.colors.rgb_to_hsv(A_rgb)
         A_hsv_rv = A_hsv.copy()
         A_hsv_rv[..., 2] *= Rn
@@ -1225,7 +1225,7 @@ class DPC_Explorer:
         im.figure.canvas.draw_idle()
 
     def _update_rt_plot(self):
-        for imp, imd in zip(self._im_objs, [self.rn]+self._t_ims):
+        for imp, imd in zip(self._im_objs, [self.rn] + self._t_ims):
             imp.set_data(imd)
         self._im_objs[0].autoscale()  # for r
         imp.figure.canvas.draw_idle()
@@ -1294,55 +1294,55 @@ class DPC_Explorer:
         if not os.path.exists(path):
             os.mkdir(path)
         for f, tag in zip(self._figs, ['xy', 'hist', 'rt', 'cw']):
-            f_path = os.path.join(path, now+'_win_'+tag)
-            f.savefig(f_path+'.png', bbox_inches='tight', dpi=300)
+            f_path = os.path.join(path, now + '_win_' + tag)
+            f.savefig(f_path + '.png', bbox_inches='tight', dpi=300)
 
         # rt images
         for fn, imob in zip(['rn', 'tc', 'tcrv'], self._im_objs):
             im_data = imob.get_array().data
-            mpl.image.imsave(os.path.join(path, now+'_'+fn+'.png'),
+            mpl.image.imsave(os.path.join(path, now + '_' + fn + '.png'),
                              im_data, cmap='gray')
 
         # (y,x)
         for fn, imob in zip(['y', 'x'], self._xy_ims):
             im_data = imob.get_array().data
-            np.savetxt(os.path.join(path, now+'_'+fn+'.dat.gz'), im_data)
+            np.savetxt(os.path.join(path, now + '_' + fn + '.dat.gz'), im_data)
             if self._yx_range_from_r:
                 vmin, vmax = -self._r_max, self._r_max
             else:
                 vmin, vmax = np.percentile(im_data, [0, 100])
-            mpl.image.imsave(os.path.join(path, now+'_'+fn+'.png'),
+            mpl.image.imsave(os.path.join(path, now + '_' + fn + '.png'),
                              im_data, cmap='gray', vmin=vmin, vmax=vmax)
         for fn, arr in zip(['y_orig', 'x_orig'], [self._y_orig, self._x_orig]):
-            np.savetxt(os.path.join(path, now+'_'+fn+'.dat.gz'), arr)
-            mpl.image.imsave(os.path.join(path, now+'_'+fn+'.png'),
+            np.savetxt(os.path.join(path, now + '_' + fn + '.dat.gz'), arr)
+            mpl.image.imsave(os.path.join(path, now + '_' + fn + '.png'),
                              arr, cmap='gray')
 
         # (r, theta)
-        np.savetxt(os.path.join(path, now+'_'+'t'+'.dat.gz'), self._t)
-        mpl.image.imsave(os.path.join(path, now+'_'+'r'+'.png'), self.r,
+        np.savetxt(os.path.join(path, now + '_' + 't' + '.dat.gz'), self._t)
+        mpl.image.imsave(os.path.join(path, now + '_' + 'r' + '.png'), self.r,
                          cmap='gray')
-        np.savetxt(os.path.join(path, now+'_'+'r'+'.dat.gz'), self.r)
+        np.savetxt(os.path.join(path, now + '_' + 'r' + '.dat.gz'), self.r)
         # no color t since tc is equivalent
 
         # data
         dnames = ['yc', 'xc', 'r_max', 'descanY_factY', 'descanY_factX',
                   'descanX_factY', 'descanX_factX', 'dt', 'gaus',
                   'vectrot', 'r_min']
-        data = ['%0.6e' % (getattr(self, '_'+t)) for t in dnames]
-        data = np.column_stack((dnames+['pct', 'median', 'median_mode', 'ransac', 'ransac_dict', 'flip_y', 'flip_x', 'origin'],
-                                data+[json.dumps(self._pct),
-                                      json.dumps(self._median),
-                                      json.dumps(self._median_mode),
-                                      json.dumps(self._ransac),
-                                      json.dumps(self._ransac_dict),
-                                      json.dumps(self._flip_y),
-                                      json.dumps(self._flip_x),
-                                      json.dumps(self._origin)]))
-        np.savetxt(os.path.join(path, now+'_'+'data'+'.dat'), data, fmt="%s")
+        data = ['%0.6e' % (getattr(self, '_' + t)) for t in dnames]
+        data = np.column_stack((dnames + ['pct', 'median', 'median_mode', 'ransac', 'ransac_dict', 'flip_y', 'flip_x', 'origin'],
+                                data + [json.dumps(self._pct),
+                                        json.dumps(self._median),
+                                        json.dumps(self._median_mode),
+                                        json.dumps(self._ransac),
+                                        json.dumps(self._ransac_dict),
+                                        json.dumps(self._flip_y),
+                                        json.dumps(self._flip_x),
+                                        json.dumps(self._origin)]))
+        np.savetxt(os.path.join(path, now + '_' + 'data' + '.dat'), data, fmt="%s")
 
         # cmd opts
-        fn = os.path.join(path, now+'_'+'cmd_opts'+'.txt')
+        fn = os.path.join(path, now + '_' + 'cmd_opts' + '.txt')
         with open(fn, "w") as text_file:
             text_file.write(self._on_print(None))
 
@@ -1351,7 +1351,7 @@ class DPC_Explorer:
         for fn, ax in zip(['flat', 'val'], f.axes):
             we = ax.get_window_extent()
             extent = we.transformed(f.dpi_scale_trans.inverted())
-            f.savefig(os.path.join(path, now+'_cw_'+fn+'.png'),
+            f.savefig(os.path.join(path, now + '_cw_' + fn + '.png'),
                       bbox_inches=extent, dpi=300)
         print('Done')
         return path
@@ -1407,7 +1407,7 @@ class DPC_Explorer:
     def _on_print(self, event):
         # print command options for current settings to stdout
         cmd_str = "r_min=%0.4f, r_max=%0.4f, descan=[%0.4f, %0.4f, %0.4f, %0.4f], cyx=[%0.4f, %0.4f], vectrot=%0.2f, gaus=%0.2f, pct=[[%0.3f, %0.3f], [%0.3f, %0.3f]], dt=%0.2f, median=%s, median_mode=%d, ransac=%s, ransac_dict=%s, flip_y=%s, flip_x=%s, origin=%s, yx_range_from_r=%s" % (
-            self._r_min, self._r_max, self._descanY_factY*1000, self._descanY_factX*1000, self._descanX_factY*1000, self._descanX_factX*1000, self._yc, self._xc, self._vectrot, self._gaus, self._pct[0][0], self._pct[0][1], self._pct[1][0], self._pct[1][1], self._dt, str(self._median), self._median_mode, str(self._ransac), str(self._ransac_dict), str(self._flip_y), str(self._flip_x), self._origin, str(self._yx_range_from_r))
+            self._r_min, self._r_max, self._descanY_factY * 1000, self._descanY_factX * 1000, self._descanX_factY * 1000, self._descanX_factX * 1000, self._yc, self._xc, self._vectrot, self._gaus, self._pct[0][0], self._pct[0][1], self._pct[1][0], self._pct[1][1], self._dt, str(self._median), self._median_mode, str(self._ransac), str(self._ransac_dict), str(self._flip_y), str(self._flip_x), self._origin, str(self._yx_range_from_r))
 
         print(cmd_str)
         # print('\n')
@@ -1455,13 +1455,13 @@ class DPC_Explorer:
 
         val = s.val
         if event.button == 'up':
-            new_val = val+delta
+            new_val = val + delta
             if new_val <= s.valmax:
                 s.set_val(new_val)
             else:
                 s.set_val(s.valmax)
         if event.button == 'down':
-            new_val = val-delta
+            new_val = val - delta
             if new_val >= s.valmin:
                 s.set_val(new_val)
             else:
@@ -1489,30 +1489,30 @@ class DPC_Explorer:
         if 'ctrl+' in event.key:
             # y plane
             if 'up' in event.key:
-                self._descanY_factY += self._r_max/1000
+                self._descanY_factY += self._r_max / 1000
                 yu = True
             if 'down' in event.key:
-                self._descanY_factY -= self._r_max/1000
+                self._descanY_factY -= self._r_max / 1000
                 yu = True
             if 'left' in event.key:
-                self._descanY_factX += self._r_max/1000
+                self._descanY_factX += self._r_max / 1000
                 yu = True
             if 'right' in event.key:
-                self._descanY_factX -= self._r_max/1000
+                self._descanY_factX -= self._r_max / 1000
                 yu = True
         if 'alt+' in event.key:
             # x plane
             if 'up' in event.key:
-                self._descanX_factY += self._r_max/1000
+                self._descanX_factY += self._r_max / 1000
                 xu = True
             if 'down' in event.key:
-                self._descanX_factY -= self._r_max/1000
+                self._descanX_factY -= self._r_max / 1000
                 xu = True
             if 'left' in event.key:
-                self._descanX_factX += self._r_max/1000
+                self._descanX_factX += self._r_max / 1000
                 xu = True
             if 'right' in event.key:
-                self._descanX_factX -= self._r_max/1000
+                self._descanX_factX -= self._r_max / 1000
                 xu = True
         if yu or xu:
             # update plots
@@ -1556,31 +1556,31 @@ class DPC_Explorer:
         dy = event.ydata - ypress
         if self._press_cnt:
             #print('x0=%f, xpress=%f, event.xdata=%f, dx=%f, x0+dx=%f' %(x0, xpress, event.xdata, dx, x0+dx))
-            self._rect.set_x(x0+dx)
-            self._rect.set_y(y0+dy)
-            self._yc = self._yc_temp+dy
-            self._xc = self._xc_temp+dx
+            self._rect.set_x(x0 + dx)
+            self._rect.set_y(y0 + dy)
+            self._yc = self._yc_temp + dy
+            self._xc = self._xc_temp + dx
             self._circ_r_max.center = (self._xc, self._yc)
             self._circ_r_min.center = (self._xc, self._yc)
             #print(dy, dx)
         else:
             # must be in circle
             #print('x0=%f, xpress=%f, event.xdata=%f, dx=%f, x0+dx=%f'%(x0, xpress, event.xdata, dx, x0+dx))
-            r0 = ((xpress-x0)**2+(ypress-y0)**2)**0.5
-            t0 = np.arctan2(ypress-y0, xpress-x0)
-            r = ((event.xdata-x0)**2+(event.ydata-y0)**2)**0.5
-            t = np.arctan2(event.ydata-y0, event.xdata-x0)
-            dt = -(t-t0)
+            r0 = ((xpress - x0)**2 + (ypress - y0)**2)**0.5
+            t0 = np.arctan2(ypress - y0, xpress - x0)
+            r = ((event.xdata - x0)**2 + (event.ydata - y0)**2)**0.5
+            t = np.arctan2(event.ydata - y0, event.xdata - x0)
+            dt = -(t - t0)
             if self._ctrl:
                 # print(dt)
-                self._dt = self._dt_temp+dt
+                self._dt = self._dt_temp + dt
             elif self._shift:
                 # change r_min
-                self._r_min = self._r_min_temp + r-r0
+                self._r_min = self._r_min_temp + r - r0
                 self._circ_r_min.set_radius(self._r_min)
             else:
                 #print(xpress, event.xdata, x0, r, r0, r/r0, self._r_max)
-                self._r_max = self._r_max_temp + r-r0
+                self._r_max = self._r_max_temp + r - r0
                 self._circ_r_max.set_radius(self._r_max)
         self._hist_title.set_text(self._hist_tit_str())
         self._rect.figure.canvas.draw_idle()
@@ -1637,7 +1637,7 @@ class DPC_Explorer:
         if endpoint:
             n += 1
         for cmap in self._cmaps.values():
-            clrs = cmap(np.linspace(0, 360, n, endpoint=endpoint)/360.0)
+            clrs = cmap(np.linspace(0, 360, n, endpoint=endpoint) / 360.0)
             clrs[-1] = clrs[0]
             plt.figure()
             ax = plt.gca()

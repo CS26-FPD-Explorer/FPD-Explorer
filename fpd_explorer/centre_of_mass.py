@@ -11,6 +11,8 @@ from .custom_widgets import (
 
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
+
+
 def find_circular_centre(ApplicationWindow):
     """
     Calculate the circular centre for the users input

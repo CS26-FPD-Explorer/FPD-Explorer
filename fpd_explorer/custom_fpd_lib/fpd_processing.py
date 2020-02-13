@@ -72,7 +72,7 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=Non
                 if mask is None:
                     d = data[ri:rf, ci:cf, ...]
                 else:
-                    d = (data[ri:rf, ci:cf, ...]*mask)
+                    d = (data[ri:rf, ci:cf, ...] * mask)
                 sum_im[ri:rf, ci:cf, ...] = d.sum((-2, -1))
                 if progress_callback:
                     progress_callback.emit((np.prod(d.shape[:-2]), "sum_im"))
@@ -141,7 +141,7 @@ def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=No
                 d = data[ri:rf, ci:cf, ...]
                 d = np.ascontiguousarray(d)
                 if mask is not None:
-                    d = d*mask
+                    d = d * mask
                 sum_dif += d.sum((0, 1))
                 if progress_callback:
                     progress_callback.emit((np.prod(d.shape[:-2]), "sum_diff"))

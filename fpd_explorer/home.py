@@ -10,7 +10,7 @@ from . import logger, dpc_explorer, centre_of_mass
 from . import config_handler as config
 from . import data_browser_explorer
 from .logger import Flags
-from .custom_widgets import *
+from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
 
 
@@ -25,7 +25,6 @@ class ApplicationWindow(QMainWindow):
         self._ui.setupUi(self)
         self.app = app
         self.dark_mode_config = dark_mode_config
-        logger.setup(self._ui.log_text, self)
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_dm3.triggered.connect(self.function_dm3)
         # self._ui.action_hdf5.triggered.connect(self.function_hdf5)
@@ -58,7 +57,7 @@ class ApplicationWindow(QMainWindow):
                 self._mib_path = fname
                 self._ui.mib_line.clear()
                 self._ui.mib_line.insert(fname[fname.rfind('/') + 1:])
-                logger.log("MIB file correclty loaded")
+                logger.log("MIB file correctly loaded")
                 return True
         return False
 
@@ -76,7 +75,7 @@ class ApplicationWindow(QMainWindow):
                 self._dm3_path = fname
                 self._ui.dm3_line.clear()
                 self._ui.dm3_line.insert(fname[fname.rfind('/') + 1:])
-                logger.log("DM3 file correclty loaded")
+                logger.log("DM3 file correctly loaded")
                 return True
         return False
 
@@ -159,6 +158,13 @@ class ApplicationWindow(QMainWindow):
         self._files_loaded = False
         self._cyx = None
         self._ap = None
+        for _ in range(self._ui.tabWidget.count() - 1):
+            # 1 because every time a tab is removed, indices are reassigned
+            self._ui.tabWidget.removeTab(1)
+        if self._data_browser:
+            self._data_browser = None
+            self._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
+        logger.clear()
 
     @Slot()
     def load_files(self):
@@ -201,7 +207,11 @@ class ApplicationWindow(QMainWindow):
                 if not valid:  # user canceled
                     return
                 dm3 = self._dm3_path
-            else:  # load the data using custum parameter
+            if response == QtWidgets.QMessageBox.No:
+                logger.log("Working without a DM3 file")
+                x_value = (256, 'x', 'na')
+                y_value = (256, 'y', 'na')
+            if response == QtWidgets.QMessageBox.Cancel:
                 return
 
         hdr = self._mib_path[:-4] + ".hdr"
