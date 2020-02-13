@@ -4,7 +4,16 @@ from inspect import signature
 
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QSpinBox, QCheckBox, QLineEdit, QFormLayout, QGridLayout, QDialogButtonBox
+from PySide2.QtWidgets import (
+    QSpinBox,
+    QCheckBox,
+    QLineEdit,
+    QFormLayout,
+    QGridLayout,
+    QVBoxLayout,
+    QDoubleSpinBox,
+    QDialogButtonBox
+)
 
 
 class UI_Generator(QtWidgets.QDialog):
@@ -22,10 +31,9 @@ class UI_Generator(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, application_window, main_window, fnct, items_per_column=10):
+    def __init__(self, application_window, fnct, items_per_column=10):
         super(UI_Generator, self).__init__()
         self.application_window = application_window
-        self.main_window = main_window
         self.param = self.get_param(fnct)
         self.items_per_column = items_per_column
         self.setup_ui()
@@ -77,12 +85,13 @@ class UI_Generator(QtWidgets.QDialog):
         """
         self.widgets = {}
         self.default = {}
-        for el in ["str", "int", "bool"]:
+        for el in ["str", "int", "iterable", "bool"]:
             self.widgets[el] = []
         for key, val in self.param.items():
             widget = None
             param_type = None
-            if "array" in val[0] or "length" in val[0]:
+            iter_ran = 1
+            if "array" in val[0] or "QtWidget" in val[0]:
                 # skip input that could be an array because its too hard to find a way to handle them
                 print("skipping : ", val[0])
                 continue
@@ -91,31 +100,48 @@ class UI_Generator(QtWidgets.QDialog):
                 widget = QLineEdit()
                 widget.setPlaceholderText(self.set_default(widget, default_val))
                 param_type = "str"
-            elif "int" in val[0] or "scalar" in val[0]:
-                default_val = val[1] if val[1] is not None else 0
-                widget = QSpinBox()
-                widget.setValue(self.set_default(widget, default_val))
-                widget.setMinimum(-1000)
-                widget.setMaximum(1000)
+            elif "int" in val[0] or "scalar" in val[0] or "float" in val[0]:
+                widget = self.create_int_float(val, True if "float" in val[0] else False)
                 param_type = "int"
+
             elif "bool" in val[0]:
                 default_val = val[1] if val[1] is not None else False
                 widget = QCheckBox()
                 widget.setChecked(self.set_default(widget, default_val))
                 param_type = "bool"
+            elif "iterable" in val[0]:
+                iter_ran = int(''.join(x for x in val[0] if x.isdigit()))
+                widget = QtWidgets.QWidget()
+                lay = QVBoxLayout()
+                for el in range(iter_ran):
+                    lay.addWidget(self.create_int_float(val))
+                widget.setLayout(lay)
+                param_type = "iterable"
+
             else:
                 print("TODO : Implement : ", val[0])
                 continue
             none_possible = False
-            if "None" in val[0]:
+            if "None" in val[0] or val[1] == None:
                 none_possible = True
             widget.setToolTip(val[2])
-            self.widgets[param_type].append([key, widget, none_possible])
+            self.widgets[param_type].append([key, widget, none_possible, iter_ran])
         self.format_layout()
+
+    def create_int_float(self, val, is_float=False):
+        default_val = val[1] if val[1] is not None else 0
+        if is_float:
+            widget = QDoubleSpinBox()
+        else:
+            widget = QSpinBox()
+        widget.setValue(self.set_default(widget, default_val))
+        widget.setMinimum(-1000)
+        widget.setMaximum(1000)
+        return widget
 
     def save(self):
         for param_type, widgets in self.widgets.items():
-            for key, widget, none_possible in widgets:
+            for key, widget, none_possible, iter_ran in widgets:
                 if param_type == "bool":
                     self.result[key] = widget.isChecked()
                 elif param_type == "int":
@@ -134,7 +160,7 @@ class UI_Generator(QtWidgets.QDialog):
 
     def restore_default(self):
         for param_type, widgets in self.widgets.items():
-            for key, widget, none_possible in widgets:
+            for key, widget, none_possible, iter_ran in widgets:
                 if param_type == "bool":
                     widget.setChecked(self.default[widget])
                 elif param_type == "int":
@@ -147,13 +173,20 @@ class UI_Generator(QtWidgets.QDialog):
         # Create layout and add widgets
         all_widget = []
         for param_type, widgets in self.widgets.items():
-            for key, widget, none_possible in widgets:
+            for key, widget, none_possible, iter_ran in widgets:
                 if param_type == "bool":
                     widget.setFixedWidth(20)
                 if param_type != "bool":
                     widget.setFixedWidth(100)
                 widget.setFixedHeight(30)
-                all_widget.append((key.replace("_", " ").capitalize(), widget))
+                if "iterable" in param_type:
+                    for el in range(iter_ran):
+                        sub_widget = widget.layout().itemAt(el).widget()
+                        sub_widget.setFixedWidth(100)
+                        sub_widget.setFixedHeight(30)
+                        all_widget.append((key.replace("_", " ").capitalize() + " " + str(el), sub_widget))
+                else:
+                    all_widget.append((key.replace("_", " ").capitalize(), widget))
                 # self.layout.addRow(key.replace("_", " ").capitalize(), widget)
 
         layout = QGridLayout()
@@ -179,6 +212,6 @@ class UI_Generator(QtWidgets.QDialog):
         tmp.setLayout(layout)
         tmp.setFixedWidth(110 + layout.itemAt(0, QFormLayout.FieldRole).geometry().width())
         vert_layout.addWidget(tmp, 0, n)
-        if self.items_per_column * (n + 1) > len(widget_list):
+        if self.items_per_column * (n + 1) >= len(widget_list):
             return
         self.create_colums(widget_list, vert_layout, n=n + 1)
