@@ -1,11 +1,10 @@
-import fpd.fpd_processing as fpdp
 import numpy as np
 from matplotlib.backends.backend_qt5agg import \
     FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from PySide2 import QtWidgets, QtCore
-from PySide2.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot, Qt
-from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout, QGridLayout
+from PySide2 import QtWidgets
+from PySide2.QtCore import QObject, QRunnable, Qt, QThreadPool, Signal, Slot
+from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout
 
 from .custom_fpd_lib import fpd_processing as fpdp_new
 from .res.ui_inputbox import Ui_InputBox
@@ -13,6 +12,7 @@ from .res.ui_inputBoxCenterOfMass import Ui_CenterofMass
 from .res.ui_inputBoxCircularCenter import Ui_CircularCenterInput
 from .res.ui_inputBoxRemoveAperture import Ui_RemoveAperture
 from .res.ui_loadingbox import Ui_LoadingBox
+
 
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
@@ -54,7 +54,7 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self.tab_name = tab_name
         self.main_window = QMainWindow()
         self.main_widget = QtWidgets.QWidget()
-        #self.main_window.setCentralWidget(self.main_widget)
+        # self.main_window.setCentralWidget(self.main_widget)
 
         buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         buttonBox.accepted.connect(lambda: self.close_handler())
@@ -66,8 +66,7 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self.main_widget.setLayout(self.gridLayout)
 
         self._docked_widgets = []
-        #self.application_window._ui.tabWidget.tabCloseRequested.connect(self.close_handler)
-
+        # self.application_window._ui.tabWidget.tabCloseRequested.connect(self.close_handler)
 
     def setup_docking(self, name, location="Top"):
         """
@@ -85,7 +84,7 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         dock = QDockWidget(self)
         dock.setWidget(widget)
         dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea
-                                | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
+                             | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
         if location == "Bottom":
             loc = Qt.BottomDockWidgetArea
         elif location == "Left":
@@ -111,7 +110,7 @@ class Pop_Up_Widget(QtWidgets.QWidget):
 class CustomInputForm(QtWidgets.QDialog):
     def __init__(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x: str = None, text_y: str = None):
         """
-        Create a new form with 2 input value x and Y and their output as power of 2         
+        Create a new form with 2 input value x and Y and their output as power of 2
 
         Parameters
         ----------
@@ -314,14 +313,14 @@ class CustomLoadingForm(QtWidgets.QDialog):
     @Slot(tuple)
     def progress_fn(self, value):
         """
-        Update the progress on the bar depending on which function called it 
+        Update the progress on the bar depending on which function called it
         """
         if value[1] == "sum_diff":
             self._ui.recipProgress.setValue(
-                self._ui.recipProgress.value()+value[0])
+                self._ui.recipProgress.value() + value[0])
         else:
             self._ui.realProgress.setValue(
-                self._ui.realProgress.value()+value[0])
+                self._ui.realProgress.value() + value[0])
 
     @Slot()
     def thread_complete(self):
@@ -346,7 +345,7 @@ class CustomSignals(QObject):
         `object` data returned from processing, anything
 
     progress
-        `tuple` (int : indicating % progress, caller) 
+        `tuple` (int : indicating % progress, caller)
 
     """
     finished = Signal()
@@ -382,7 +381,7 @@ class GuiUpdater(QRunnable):
                 *self._args, **self._kwargs
             )
             print(result_val)
-        except:
+        except BaseException:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
