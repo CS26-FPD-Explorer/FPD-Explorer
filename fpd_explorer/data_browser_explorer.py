@@ -1,14 +1,16 @@
+# Standard Library
 from collections import OrderedDict
 
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QDockWidget, QMainWindow
 
-from .custom_fpd_lib.data_browser import DataBrowser
-from .res.ui_data_browser import Ui_DataBrowser
-
+# FPD Explorer
 from . import logger
 from .logger import Flags
+from .res.ui_data_browser import Ui_DataBrowser
+from .custom_fpd_lib.data_browser import DataBrowser
+
 
 class DataBrowserWidget(QtWidgets.QWidget):
     """
@@ -25,12 +27,12 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
     def setup_ui(self, shape: tuple):
         """
-        Setup of all the default value for the explorer
+        Setup of all default values for the DataBrowser
         """
         # Set the value to default
         scanY, scanX = shape
-        self._ui.navX.setValue(scanX//64 if scanX//64 != 0 else 1)
-        self._ui.navY.setValue(scanY//64 if scanY//64 != 0 else 1)
+        self._ui.navX.setValue(scanX // 64 if scanX // 64 != 0 else 1)
+        self._ui.navY.setValue(scanY // 64 if scanY // 64 != 0 else 1)
         self._ui.navX.setMaximum(scanX)
         self._ui.navY.setMaximum(scanY)
         self._ui.colorMap.setCurrentIndex(0)
@@ -57,7 +59,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
     def _init_color_map(self):
         """
         Create the dictionnary to fill the color map index
-        Value given by matplotlib wiki
+        Values given by matplotlib wiki
         """
         cmaps = OrderedDict()
         cmaps['Perceptually Uniform Sequential'] = [
@@ -99,7 +101,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
         if self._data_browser:
             return self._data_browser.update_color_map(value)
         else:
-            print("else="+str(self.sender().setCurrentIndex(-1)))
+            print("else=" + str(self.sender().setCurrentIndex(-1)))
             self.sender().setCurrentIndex(-1)
 
     @Slot(int)
@@ -116,6 +118,12 @@ class DataBrowserWidget(QtWidgets.QWidget):
         else:
             self.sender().setValue(1)
 
+    def close_handler(self, ApplicationWindow):
+        self.get_nav().parentWidget().close()
+        self.get_diff().parentWidget().close()
+        ApplicationWindow._data_browser = None
+        ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
+
 
 def start_dbrowser(ApplicationWindow):
     """
@@ -127,10 +135,13 @@ def start_dbrowser(ApplicationWindow):
     ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
 
     """
+    if ApplicationWindow._data_browser:
+        ApplicationWindow._ui.tabWidget.setCurrentWidget(
+            ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab"))
+        return
     if logger.check_if_all_needed(Flags.files_loaded):
-        w = QtWidgets.QTabBar()
-        layout = QtWidgets.QHBoxLayout()
         mainwindow = QMainWindow()
+        mainwindow.setObjectName("DataBrowserTab")
         db_widget = DataBrowserWidget()
 
         dock = QDockWidget("Navigation", ApplicationWindow)
@@ -143,11 +154,14 @@ def start_dbrowser(ApplicationWindow):
 
         tab_index = ApplicationWindow._ui.tabWidget.addTab(mainwindow, "DataBrowser")
         ApplicationWindow._ui.tabWidget.setCurrentIndex(tab_index)
+        ApplicationWindow._ui.tabWidget.setTabToolTip(tab_index, ApplicationWindow._ui.mib_line.text())
 
         ApplicationWindow._data_browser = DataBrowser(
             ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
             widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
-        # navCanvas == widget_3, diffCanvas == widget_4, Flo didn't name them in data_browser.ui
 
+        ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(lambda: db_widget.close_handler(ApplicationWindow))
         db_widget.set_data_browser(ApplicationWindow._data_browser)
         db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
+
+        logger.log("Data Browser has been opened")

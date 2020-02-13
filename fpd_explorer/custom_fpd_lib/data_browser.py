@@ -155,7 +155,7 @@ class DataBrowser:
             self.plot_data = self.h5f_ds[self.scanYind, self.scanXind, :, :]
         self.plot_data = np.ascontiguousarray(self.plot_data)
 
-        self.rwh = max(self.scanY, self.scanX)//64
+        self.rwh = max(self.scanY, self.scanX) // 64
         if self.rwh == 0:
             self.rwh = 1
         self.rect = None
@@ -201,8 +201,8 @@ class DataBrowser:
         if self.nav_im.ndim == 3 or (self.nav_im.ndim == 2 and im.cmap.name != 'gray'):
             # rgb
             rect_c = 'w'  # 'k'
-        self.rect = mpl.patches.Rectangle((self.scanYind-self.rwh/2,
-                                           self.scanXind-self.rwh/2),
+        self.rect = mpl.patches.Rectangle((self.scanYind - self.rwh / 2,
+                                           self.scanXind - self.rwh / 2),
                                           self.rwh, self.rwh, ec=rect_c,
                                           fc='none', lw=2, picker=4)
         ax.add_patch(self.rect)
@@ -238,7 +238,7 @@ class DataBrowser:
                              cmap=self.cmap,
                              norm=norm,
                              vmin=0.01)
-        #plt.sca(ax)
+        # plt.sca(ax)
         self.cbar = plt.colorbar(self.im)
         ax.format_coord = self.format_coord
         self.update_dif_plot()
@@ -279,7 +279,7 @@ class DataBrowser:
         if not self.widget_2:
             self.f_dif.canvas.mpl_disconnect(self.cid_f_dif)
 
-    def update_rect(self, value:int, button):
+    def update_rect(self, value: int, button):
         """
         Update the rectangle in navigation image based on the value in the spinbox
 
@@ -293,20 +293,20 @@ class DataBrowser:
                 self.rect.set_width(value)
             elif button[-1] == "Y":
                 self.rect.set_height(value)
-            #get top left corner 
-            x0,y0 = self.rect.get_xy()
-            #make sure we're not out of bounds
-            if x0 < 0: #left
+            # get top left corner
+            x0, y0 = self.rect.get_xy()
+            # make sure we're not out of bounds
+            if x0 < 0:  # left
                 self.rect.set_x(0)
-            
-            if y0 < 0: #top
+
+            if y0 < 0:  # top
                 self.rect.set_y(0)
 
-            if x0+self.rect.get_width() > self.scanX: #right
-                self.rect.set_x(self.scanX-self.rect.get_width())
-            
-            if y0+ self.rect.get_height() > self.scanY: #bottom
-                self.rect.set_y(self.scanY-self.rect.get_height())
+            if x0 + self.rect.get_width() > self.scanX:  # right
+                self.rect.set_x(self.scanX - self.rect.get_width())
+
+            if y0 + self.rect.get_height() > self.scanY:  # bottom
+                self.rect.set_y(self.scanY - self.rect.get_height())
 
             canvas = self.rect.figure.canvas
             axes = self.rect.axes
@@ -319,8 +319,8 @@ class DataBrowser:
             self.update_dif_plot()
 
     def format_coord(self, x, y):
-        col = np.ceil(x-0.5).astype(int)
-        row = np.ceil(y-0.5).astype(int)
+        col = np.ceil(x - 0.5).astype(int)
+        row = np.ceil(y - 0.5).astype(int)
         if col >= 0 and col < self.detX and row >= 0 and row < self.detY:
             z = self.plot_data[row, col]
             return 'x=%d, y=%d, z=%d' % (x, y, z)
@@ -339,8 +339,8 @@ class DataBrowser:
                 y_slice = self.scanYind if self.scanYind >= 0 else 0
                 x_slice = self.scanXind if self.scanXind >= 0 else 0
                 zooming = True
-                self.plot_data = self.h5f_ds[y_slice:y_slice+self.rect.get_height(),
-                                             x_slice:x_slice+self.rect.get_width(), :, :]
+                self.plot_data = self.h5f_ds[y_slice:y_slice + self.rect.get_height(),
+                                             x_slice:x_slice + self.rect.get_width(), :, :]
                 self.plot_data = np.mean(self.plot_data, axis=(0, 1))
             else:
                 self.plot_data = self.h5f_ds[self.scanYind,
@@ -371,7 +371,6 @@ class DataBrowser:
             self.im.set_cmap(self.cmap)
             self.update_dif_plot()
 
-
     def nav_move_factory(self):
 
         def on_press(event):
@@ -396,7 +395,7 @@ class DataBrowser:
             else:
                 # in axis but not rectangle
                 # print event.xdata, event.ydata
-                x0, y0 = (None,)*2
+                x0, y0 = (None,) * 2
 
             self.press = x0, y0, event.xdata, event.ydata
             self.yind_temp = self.scanYind
@@ -416,10 +415,10 @@ class DataBrowser:
             #print(x0, y0, xpress, ypress, dx, dy, event.xdata, event.ydata)
             if abs(dy) > 0 or abs(dx) > 0:
                 #print('x0=%f, xpress=%f, event.xdata=%f, dx=%f, x0+dx=%f'%(x0, xpress, event.xdata, dx, x0+dx))
-                self.rect.set_x(x0+dx)
-                self.rect.set_y(y0+dy)
-                self.scanYind = self.yind_temp+dy
-                self.scanXind = self.xind_temp+dx
+                self.rect.set_x(x0 + dx)
+                self.rect.set_y(y0 + dy)
+                self.scanYind = self.yind_temp + dy
+                self.scanXind = self.xind_temp + dx
                 #print(dy, dx)
 
                 canvas = self.rect.figure.canvas
@@ -440,11 +439,11 @@ class DataBrowser:
             if not self.press:
                 return
             x, y = self.press[2:]
-            if np.round(event.xdata-x) == 0 and np.round(event.ydata-y) == 0:
+            if np.round(event.xdata - x) == 0 and np.round(event.ydata - y) == 0:
                 # mouse didn't move
                 x, y = np.round(x), np.round(y)
-                self.rect.set_x(x-self.rwh/2)
-                self.rect.set_y(y-self.rwh/2)
+                self.rect.set_x(x - self.rwh / 2)
+                self.rect.set_y(y - self.rwh / 2)
                 self.scanYind = int(y)
                 self.scanXind = int(x)
 
@@ -489,14 +488,14 @@ class DataBrowser:
             cur_xlim = self.im.axes.get_xlim()
             cur_ylim = self.im.axes.get_ylim()
             #print(cur_xlim, cur_ylim)
-            cur_xrange = (cur_xlim[1] - cur_xlim[0])*.5
-            cur_yrange = (cur_ylim[1] - cur_ylim[0])*.5
+            cur_xrange = (cur_xlim[1] - cur_xlim[0]) * .5
+            cur_yrange = (cur_ylim[1] - cur_ylim[0]) * .5
             xdata = event.xdata  # get event x location
             ydata = event.ydata  # get event y location
             if xdata and ydata:
                 if event.button == 'down':
                     # deal with zoom in
-                    scale_factor = 1/base_scale
+                    scale_factor = 1 / base_scale
                 elif event.button == 'up':
                     # deal with zoom out
                     scale_factor = base_scale
@@ -506,9 +505,9 @@ class DataBrowser:
                     print(event.button)
                 # set new limits
                 self.im.axes.set_xlim(
-                    [xdata - (xdata-cur_xlim[0]) / scale_factor, xdata + (cur_xlim[1]-xdata) / scale_factor])
+                    [xdata - (xdata - cur_xlim[0]) / scale_factor, xdata + (cur_xlim[1] - xdata) / scale_factor])
                 self.im.axes.set_ylim(
-                    [ydata - (ydata-cur_ylim[0]) / scale_factor, ydata + (cur_ylim[1]-ydata) / scale_factor])
+                    [ydata - (ydata - cur_ylim[0]) / scale_factor, ydata + (cur_ylim[1] - ydata) / scale_factor])
                 self.im.axes.figure.canvas.draw()
 
         base_scale = 1.5
