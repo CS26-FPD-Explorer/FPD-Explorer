@@ -723,7 +723,7 @@ class DPC_Explorer:
         window_name = 'hist'
 
         if self.widget is not None:
-            docked = self.widget.setup_docking(window_name, floating=False)
+            docked = self.widget.setup_docking(window_name)
             self.fig = docked.get_fig()
             self.fig.clf()
 

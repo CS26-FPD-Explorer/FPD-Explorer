@@ -182,7 +182,11 @@ def find_circ_centre(im, sigma, rmms, mask=None, plot=True, spf=1, low_threshold
         If not None, values in the image below this percentile are masked.
     max_n : int
         Maximum number of discs to find.
-    
+    widget : QtWidget
+        A qt widget that must contain as many widgets or dock widget as there is popup window
+
+
+
     Returns
     -------
     Tuple of arrays of (center_y, center_x), radius.
@@ -264,7 +268,8 @@ def find_circ_centre(im, sigma, rmms, mask=None, plot=True, spf=1, low_threshold
         if LooseVersion(mplv) >= LooseVersion('2.2.0'):
            _ = kwd.pop('adjustable') 
         if widget is not None:
-            fig=widget.get_fig()
+            docked = widget.setup_docking("Circular Center", "Bottom")
+            fig = docked.get_fig()
             fig.clf()
             (ax1, ax2, ax3) = fig.subplots(1, 3, sharex=True, sharey=True,
                                           subplot_kw=kwd)
@@ -319,7 +324,7 @@ def find_circ_centre(im, sigma, rmms, mask=None, plot=True, spf=1, low_threshold
         if widget is None:
             plt.draw()
         else:
-            widget.get_canvas().draw()
+            docked.get_canvas().draw()
             
     
     if spf > 1:
@@ -330,7 +335,7 @@ def find_circ_centre(im, sigma, rmms, mask=None, plot=True, spf=1, low_threshold
 
 def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                    rebin=None, parallel=True, ncores=None, print_stats=True,
-                   nrnc_are_chunks=False, origin='top'):
+                   nrnc_are_chunks=False, origin='top', widget=None):
     '''
     Calculate a centre of mass image from fpd data. The results are
     naturally sub-pixel resolution.
@@ -374,7 +379,9 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
     origin : str
         Controls y-origin of returned data. If origin='top', pythonic indexing 
         is used. If origin='bottom', increasing y is up.
-    
+    widget : QtWidget
+        A qt widget that must contain as many widgets or dock widget as there is popup window
+
     Returns
     -------
     Array of shape (yx, scanY, scanX, ...).
