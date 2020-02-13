@@ -1,17 +1,17 @@
 import numpy as np
-from matplotlib.backends.backend_qt5agg import \
-    FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
 from PySide2 import QtWidgets
-from PySide2.QtCore import QObject, QRunnable, Qt, QThreadPool, Signal, Slot
+from PySide2.QtCore import Qt, Slot, Signal, QObject, QRunnable, QThreadPool
+from matplotlib.figure import Figure
 from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
+# FPD Explorer
 from .custom_fpd_lib import fpd_processing as fpdp_new
 from .res.ui_inputbox import Ui_InputBox
+from .res.ui_loadingbox import Ui_LoadingBox
 from .res.ui_inputBoxCenterOfMass import Ui_CenterofMass
 from .res.ui_inputBoxCircularCenter import Ui_CircularCenterInput
 from .res.ui_inputBoxRemoveAperture import Ui_RemoveAperture
-from .res.ui_loadingbox import Ui_LoadingBox
 
 
 class MyMplCanvas(FigureCanvas):

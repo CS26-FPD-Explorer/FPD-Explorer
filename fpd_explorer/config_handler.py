@@ -1,6 +1,7 @@
-import configparser
+# Standard Library
 import os
 import sys
+import configparser
 
 CONFIGFILE_NAME = "config.ini"
 DEFAULT_NAME = "default.ini"

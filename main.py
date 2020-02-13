@@ -1,10 +1,12 @@
+# Standard Library
 import sys
 
 import matplotlib as plt
-import matplotlib.style
 import qdarkgraystyle
+import matplotlib.style
 from PySide2 import QtWidgets
 
+# First Party
 import fpd_explorer.config_handler as config
 from fpd_explorer.home import ApplicationWindow
 

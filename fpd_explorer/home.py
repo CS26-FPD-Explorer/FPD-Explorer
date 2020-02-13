@@ -1,15 +1,16 @@
 
 import qdarkgraystyle
-from fpd.fpd_file import MerlinBinary
 from PySide2 import QtWidgets
+from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QFileDialog, QMainWindow
 
-from . import centre_of_mass
+# FPD Explorer
+from . import logger, dpc_explorer, centre_of_mass
 from . import config_handler as config
-from . import data_browser_explorer, dpc_explorer, logger
-from .custom_widgets import *
+from . import data_browser_explorer
 from .logger import Flags
+from .custom_widgets import *
 from .res.ui_homescreen import Ui_MainWindow
 
 

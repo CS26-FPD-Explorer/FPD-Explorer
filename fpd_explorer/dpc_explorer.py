@@ -1,6 +1,7 @@
 import fpd
 import scipy as sp
 
+# FPD Explorer
 from .custom_fpd_lib import dpc_explorer_class as dpc
 from .custom_widgets import Pop_Up_Widget
 

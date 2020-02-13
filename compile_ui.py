@@ -1,5 +1,6 @@
 # Dirty file to automatically compile all .ui files
 
+# Standard Library
 import os
 import subprocess
 from os import walk

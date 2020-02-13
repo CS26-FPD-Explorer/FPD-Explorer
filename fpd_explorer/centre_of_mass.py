@@ -1,9 +1,13 @@
+# FPD Explorer
 from . import logger
-from .custom_fpd_lib import fpd_processing as fpdp
-from .custom_widgets import (CustomInputFormCenterOfMass,
-                             CustomInputFormCircularCenter,
-                             CustomInputRemoveAperture, Pop_Up_Widget)
 from .logger import Flags
+from .custom_fpd_lib import fpd_processing as fpdp
+from .custom_widgets import (
+    Pop_Up_Widget,
+    CustomInputRemoveAperture,
+    CustomInputFormCenterOfMass,
+    CustomInputFormCircularCenter
+)
 
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
