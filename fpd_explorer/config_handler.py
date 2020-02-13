@@ -128,7 +128,7 @@ def save_config():
             config = configparser.ConfigParser()
             config.read_dict(tmp_dict)
             config.write(f)
-        except:
+        except BaseException:
             if prev_config:
                 f.write(prev_config)
                 print("Unexpected error:", sys.exc_info())

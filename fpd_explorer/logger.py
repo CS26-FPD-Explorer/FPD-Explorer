@@ -58,7 +58,7 @@ def add_flag(flag: Flags):
     if val is None:
         raise KeyError
     else:
-        global_flags[flag]["bool"] = not val["bool"]
+        global_flags[flag]["bool"] = True
 
 
 def log(in_str: str, flag: Flags = None):

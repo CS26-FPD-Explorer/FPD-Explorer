@@ -1,7 +1,8 @@
 import numpy as np
 from PySide2 import QtWidgets
-from PySide2.QtCore import Slot, Signal, QObject, QRunnable, QThreadPool
+from PySide2.QtCore import Qt, Slot, Signal, QObject, QRunnable, QThreadPool
 from matplotlib.figure import Figure
+from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 # FPD Explorer
@@ -32,6 +33,75 @@ class MyMplCanvas(FigureCanvas):
 
     def get_canvas(self):
         return self
+
+
+class Pop_Up_Widget(QtWidgets.QWidget):
+    """
+    Initialize the required widget needed by DPC explorer tab
+
+    Parameters
+    ----------
+    ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
+
+    """
+
+    def __init__(self, ApplicationWindow, tab_name=""):
+        super(Pop_Up_Widget, self).__init__()
+        self.application_window = ApplicationWindow
+        self.tab_name = tab_name
+        self.main_window = QMainWindow()
+        self.main_widget = QtWidgets.QWidget()
+        # self.main_window.setCentralWidget(self.main_widget)
+
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
+        buttonBox.accepted.connect(lambda: self.close_handler())
+        buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setDefault(True)
+
+        self.gridLayout = QVBoxLayout()
+        self.gridLayout.addWidget(self.main_window)
+        self.gridLayout.addWidget(buttonBox)
+        self.main_widget.setLayout(self.gridLayout)
+
+        self._docked_widgets = []
+        # self.application_window._ui.tabWidget.tabCloseRequested.connect(self.close_handler)
+
+    def setup_docking(self, name, location="Top"):
+        """
+        Initialize a dock widget with the given name
+        Parameters
+        ----------
+        name : str the name of the dock widget window
+
+        Return
+        ---------
+        widget : QWidget the widget inside of the dock widget
+        """
+        widget = MyMplCanvas(self)
+
+        dock = QDockWidget(self)
+        dock.setWidget(widget)
+        dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea |
+                             Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
+        if location == "Bottom":
+            loc = Qt.BottomDockWidgetArea
+        elif location == "Left":
+            loc = Qt.LeftDockWidgetArea
+        elif location == "Right":
+            loc = Qt.RightDockWidgetArea
+        else:
+            loc = Qt.TopDockWidgetArea
+        self.main_window.addDockWidget(loc, dock)
+        self._docked_widgets.append(dock)
+        self.tab_index = self.application_window._ui.tabWidget.addTab(self.main_widget, self.tab_name)
+        self.application_window._ui.tabWidget.setCurrentIndex(self.tab_index)
+
+        return widget
+
+    def close_handler(self):
+        self.application_window._ui.tabWidget.removeTab(self.tab_index)
+        for el in self._docked_widgets:
+            el.close()
+            del el
 
 
 class CustomInputForm(QtWidgets.QDialog):
@@ -125,7 +195,7 @@ class CustomInputFormCircularCenter(QtWidgets.QDialog):
     def reject(self):
         """
         Overload of the reject function
-        Reset the value to its default to not mess up the loading
+        Reset the value to its default to not mesys up the loading
         DO NOT RENAME: Overloading function
         """
         self.restore_default()
@@ -308,7 +378,7 @@ class GuiUpdater(QRunnable):
                 *self._args, **self._kwargs
             )
             print(result_val)
-        except:
+        except BaseException:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
