@@ -1,7 +1,7 @@
 # Standard Library
 import inspect
 from inspect import signature
-
+from collections import defaultdict
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import (
@@ -83,14 +83,11 @@ class UI_Generator(QtWidgets.QDialog):
             ],
         }
         """
-        self.widgets = {}
+        self.widgets = defaultdict(list)
         self.default = {}
-        for el in ["str", "int", "iterable", "bool"]:
-            self.widgets[el] = []
         for key, val in self.param.items():
             widget = None
             param_type = None
-            iter_ran = 1
             if "array" in val[0] or "QtWidget" in val[0]:
                 # skip input that could be an array because its too hard to find a way to handle them
                 print("skipping : ", val[0])
@@ -116,7 +113,7 @@ class UI_Generator(QtWidgets.QDialog):
                 for el in range(iter_ran):
                     lay.addWidget(self.create_int_float(val))
                 widget.setLayout(lay)
-                param_type = "iterable"
+                param_type = "iterable_"+str(iter_ran)
 
             else:
                 print("TODO : Implement : ", val[0])
@@ -125,7 +122,7 @@ class UI_Generator(QtWidgets.QDialog):
             if "None" in val[0] or val[1] == None:
                 none_possible = True
             widget.setToolTip(val[2])
-            self.widgets[param_type].append([key, widget, none_possible, iter_ran])
+            self.widgets[param_type].append([key, widget, none_possible])
         self.format_layout()
 
     def create_int_float(self, val, is_float=False):
@@ -141,7 +138,7 @@ class UI_Generator(QtWidgets.QDialog):
 
     def save(self):
         for param_type, widgets in self.widgets.items():
-            for key, widget, none_possible, iter_ran in widgets:
+            for key, widget, none_possible in widgets:
                 if param_type == "bool":
                     self.result[key] = widget.isChecked()
                 elif param_type == "int":
@@ -149,6 +146,12 @@ class UI_Generator(QtWidgets.QDialog):
                     if none_possible and tmp == 0:
                         tmp = None
                     self.result[key] = tmp
+                if "iterable" in param_type:
+                    val_ls = []
+                    iter_ran = int(param_type.split("_")[1])
+                    for el in range(iter_ran):
+                        val_ls.append(self.sub_ls[widget][el].value())
+                    self.result[key] = val_ls
                 else:
                     self.result[key] = widget.text()
         print(self.result)
@@ -160,7 +163,7 @@ class UI_Generator(QtWidgets.QDialog):
 
     def restore_default(self):
         for param_type, widgets in self.widgets.items():
-            for key, widget, none_possible, iter_ran in widgets:
+            for key, widget, none_possible in widgets:
                 if param_type == "bool":
                     widget.setChecked(self.default[widget])
                 elif param_type == "int":
@@ -172,23 +175,26 @@ class UI_Generator(QtWidgets.QDialog):
     def format_layout(self):
         # Create layout and add widgets
         all_widget = []
+        self.sub_ls = defaultdict(list)
         for param_type, widgets in self.widgets.items():
-            for key, widget, none_possible, iter_ran in widgets:
+            for key, widget, none_possible in widgets:
                 if param_type == "bool":
                     widget.setFixedWidth(20)
                 if param_type != "bool":
                     widget.setFixedWidth(100)
                 widget.setFixedHeight(30)
                 if "iterable" in param_type:
+                    iter_ran = int(param_type.split("_")[1])
                     for el in range(iter_ran):
                         sub_widget = widget.layout().itemAt(el).widget()
+                        self.sub_ls[widget].append(sub_widget)
                         sub_widget.setFixedWidth(100)
                         sub_widget.setFixedHeight(30)
                         all_widget.append((key.replace("_", " ").capitalize() + " " + str(el), sub_widget))
                 else:
                     all_widget.append((key.replace("_", " ").capitalize(), widget))
                 # self.layout.addRow(key.replace("_", " ").capitalize(), widget)
-
+        print(self.sub_ls)
         layout = QGridLayout()
 
         self.create_colums(all_widget, layout)
