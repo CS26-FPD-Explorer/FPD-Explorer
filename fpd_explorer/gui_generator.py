@@ -2,6 +2,7 @@
 import inspect
 from inspect import signature
 from collections import defaultdict
+
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import (
@@ -36,6 +37,7 @@ class UI_Generator(QtWidgets.QDialog):
         self.application_window = application_window
         self.param = self.get_param(fnct)
         self.items_per_column = items_per_column
+        self.default = {}
         self.setup_ui()
         self.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint) & ~Qt.WindowContextHelpButtonHint)
 
@@ -84,7 +86,6 @@ class UI_Generator(QtWidgets.QDialog):
         }
         """
         self.widgets = defaultdict(list)
-        self.default = {}
         for key, val in self.param.items():
             widget = None
             param_type = None
@@ -113,13 +114,14 @@ class UI_Generator(QtWidgets.QDialog):
                 for el in range(iter_ran):
                     lay.addWidget(self.create_int_float(val))
                 widget.setLayout(lay)
-                param_type = "iterable_"+str(iter_ran)
+                param_type = "iterable_" + str(iter_ran)
 
             else:
                 print("TODO : Implement : ", val[0])
                 continue
             none_possible = False
-            if "None" in val[0] or val[1] == None:
+            print(val)
+            if "None" in val[0]:
                 none_possible = True
             widget.setToolTip(val[2])
             self.widgets[param_type].append([key, widget, none_possible])
@@ -140,13 +142,14 @@ class UI_Generator(QtWidgets.QDialog):
         for param_type, widgets in self.widgets.items():
             for key, widget, none_possible in widgets:
                 if param_type == "bool":
+                    print(key,widget.isChecked() )
                     self.result[key] = widget.isChecked()
                 elif param_type == "int":
                     tmp = widget.value()
                     if none_possible and tmp == 0:
                         tmp = None
                     self.result[key] = tmp
-                if "iterable" in param_type:
+                elif "iterable" in param_type:
                     val_ls = []
                     iter_ran = int(param_type.split("_")[1])
                     for el in range(iter_ran):
@@ -156,6 +159,9 @@ class UI_Generator(QtWidgets.QDialog):
                     self.result[key] = widget.text()
         print(self.result)
         self.accept()
+
+    def get_result(self):
+        return self.result
 
     def set_default(self, widget, default_val):
         self.default[widget] = default_val
@@ -168,6 +174,10 @@ class UI_Generator(QtWidgets.QDialog):
                     widget.setChecked(self.default[widget])
                 elif param_type == "int":
                     widget.setValue(self.default[widget])
+                elif "iterable" in param_type:
+                    iter_ran = int(param_type.split("_")[1])
+                    for el in range(iter_ran):
+                        self.sub_ls[widget][el].setValue(0)
                 else:
                     widget.clear()
                     widget.setPlaceholderText(self.default[widget])
