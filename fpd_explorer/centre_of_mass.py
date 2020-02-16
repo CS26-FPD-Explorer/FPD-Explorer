@@ -1,6 +1,7 @@
 # FPD Explorer
 from . import logger
 from .logger import Flags
+from .gui_generator import UI_Generator
 from .custom_fpd_lib import fpd_processing as fpdp
 from .custom_widgets import (
     Pop_Up_Widget,
@@ -19,17 +20,17 @@ def find_circular_centre(ApplicationWindow):
     bring up a figure on the UI.
     """
     if logger.check_if_all_needed(Flags.files_loaded):
-        widget = CustomInputFormCircularCenter()
-        widget.exec()
         canvas = Pop_Up_Widget(ApplicationWindow, "Circular Center")
-
-        sigma = widget._ui.sigma_value.value()
-        rmms_1 = widget._ui.rmms1st.value()
-        rmms_2 = widget._ui.rmms2nd.value()
-        rmms_3 = widget._ui.rmms3rd.value()
+        params = UI_Generator(ApplicationWindow, fpdp.find_circ_centre)
+        if not params.exec():
+            # Procedure was cancelled so just give up
+            return
         ApplicationWindow._cyx, ApplicationWindow.radius = fpdp.find_circ_centre(
-            ApplicationWindow._sum_dif, sigma, rmms=(rmms_1, rmms_2, rmms_3), widget=canvas)
+            ApplicationWindow._sum_dif, **params.get_result(), widget=canvas)
+        print(ApplicationWindow._cyx)
         logger.log("Circular center has now been initialized", Flags.circular_center)
+        logger.log("Radius is : " + str(ApplicationWindow.radius))
+        logger.log("Center (y, x) is : " + str(ApplicationWindow._cyx))
 
 
 def remove_aperture(ApplicationWindow):
@@ -40,19 +41,17 @@ def remove_aperture(ApplicationWindow):
     """
 
     if logger.check_if_all_needed(Flags.circular_center):
-        widget = CustomInputRemoveAperture()
-        widget.exec()
-        sigma = widget._ui.sigma_val.value()
-        add_radius = widget._ui.add_radius.value()
-        aaf = widget._ui.aaf.value()
+        key_add = {
+            "rio": ["length2iterable", None, "Inner and outer radii [ri,ro) in a number of forms"]
+        }
+        params = UI_Generator(ApplicationWindow, fpdp.synthetic_aperture, key_ignore=["shape"], key_add=key_add)
+        if not params.exec():
+            # Procedure was cancelled so just give up
+            return
 
         ApplicationWindow.mm_sel = ApplicationWindow.ds_sel
-
         ApplicationWindow._ap = fpdp.synthetic_aperture(
-            ApplicationWindow.mm_sel.shape[-2:],
-            ApplicationWindow._cyx,
-            rio=(0, ApplicationWindow.radius + add_radius),
-            sigma=sigma, aaf=aaf)[0]
+            ApplicationWindow.mm_sel.shape[-2:], **params.get_result())[0]
         print(ApplicationWindow._ap)
         canvas = Pop_Up_Widget(ApplicationWindow, "Aperture")
         fig = canvas.setup_docking("Aperture")
@@ -66,12 +65,23 @@ def centre_of_mass(ApplicationWindow):
     ADD DOCSTRING
     """
     if logger.check_if_all_needed(Flags.aperture):
-        widget = CustomInputFormCenterOfMass()
-        widget.exec()
-        nr = widget._ui.nr.value()
-        nc = widget._ui.nc.value()
-        com_yx = fpdp.center_of_mass(ApplicationWindow.mm_sel, nr, nc, thr='otsu',
-                                     aperture=ApplicationWindow._ap, parallel=False)
+        key_add = {
+            "aperture": ["bool", True, """Should an aperture be provided \n
+            If yes then the output of remove aperture shall be used"""]
+        }
+
+        params = UI_Generator(ApplicationWindow, fpdp.center_of_mass, key_ignore=["data", "aperture"], key_add=key_add)
+        if not params.exec():
+            # Procedure was cancelled so just give up
+            return
+        results = params.get_result()
+        if results["aperture"] == True:
+            # Replace the bool with the variable
+            results["aperture"] = ApplicationWindow._ap
+        else:
+            # Remove aperture in this case since its a bool and they expect an array
+            results.pop("aperture")
+        com_yx = fpdp.center_of_mass(ApplicationWindow.mm_sel, **results, thr='otsu')
 
         # TODO: Fix the mess in another feature
         # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
