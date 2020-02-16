@@ -1,14 +1,22 @@
 # Standard Library
 import inspect
-from collections import defaultdict
 from inspect import signature
+from collections import defaultdict
 
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import (QCheckBox, QDialogButtonBox, QDoubleSpinBox,
-                               QFormLayout, QGridLayout, QLineEdit, QSpinBox,
-                               QVBoxLayout)
+from PySide2.QtWidgets import (
+    QSpinBox,
+    QCheckBox,
+    QLineEdit,
+    QFormLayout,
+    QGridLayout,
+    QVBoxLayout,
+    QDoubleSpinBox,
+    QDialogButtonBox
+)
 
+# FPD Explorer
 from . import config_handler as config
 
 
@@ -49,7 +57,7 @@ class UI_Generator(QtWidgets.QDialog):
 
     def _get_param(self, fnct) -> dict:
         """
-        Get the paramaters based of a given function 
+        Get the paramaters based of a given function
 
         Uses the docstring and parses it. Must respect numpy style docstring to parse correctly
         Also uses the function siganture to get default
@@ -59,7 +67,7 @@ class UI_Generator(QtWidgets.QDialog):
         fnct : fnct
             The function you want to get the parameter of
 
-        Returns 
+        Returns
         ----------
         result : dict
             A dict with the variable name as a key and the default value and description as item

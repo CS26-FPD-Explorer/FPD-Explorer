@@ -3,12 +3,7 @@ from . import logger
 from .logger import Flags
 from .gui_generator import UI_Generator
 from .custom_fpd_lib import fpd_processing as fpdp
-from .custom_widgets import (
-    Pop_Up_Widget,
-    CustomInputRemoveAperture,
-    CustomInputFormCenterOfMass,
-    CustomInputFormCircularCenter
-)
+from .custom_widgets import Pop_Up_Widget
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
 

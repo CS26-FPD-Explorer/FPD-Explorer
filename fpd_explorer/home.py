@@ -1,9 +1,11 @@
 
-import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QFileDialog, QMainWindow
+
+# First Party
+import qdarkgraystyle
 
 # FPD Explorer
 from . import logger, dpc_explorer, centre_of_mass

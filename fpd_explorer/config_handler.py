@@ -32,12 +32,14 @@ def get_config(key_to_get: str):
                     return item
     return _finditem(key_to_get)
 
-def get_dict(key_to_get: str)-> dict: 
+
+def get_dict(key_to_get: str) -> dict:
     """
     Return either the dict for the given key or an empty dict
     """
     return _data_to_save.get(key_to_get, {})
-    
+
+
 def add_config(config: dict):
     """
     Add some config to the save file
