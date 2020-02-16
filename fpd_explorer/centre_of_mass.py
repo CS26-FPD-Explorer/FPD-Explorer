@@ -16,13 +16,17 @@ def find_circular_centre(ApplicationWindow):
     """
     if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Circular Center")
-        params = UI_Generator(ApplicationWindow, fpdp.find_circ_centre)
+        key_add = {
+            "im": [
+                "multipleinput", [
+                    ("Image", ApplicationWindow._sum_im), ("Diffraction", ApplicationWindow._sum_dif)], "Test"]}
+
+        params = UI_Generator(ApplicationWindow, fpdp.find_circ_centre, key_ignore=["im"], key_add=key_add)
+
         if not params.exec():
             # Procedure was cancelled so just give up
             return
-        ApplicationWindow._cyx, ApplicationWindow.radius = fpdp.find_circ_centre(
-            ApplicationWindow._sum_dif, **params.get_result(), widget=canvas)
-        print(ApplicationWindow._cyx)
+        ApplicationWindow._cyx, ApplicationWindow.radius = fpdp.find_circ_centre(**params.get_result(), widget=canvas)
         logger.log("Circular center has now been initialized", Flags.circular_center)
         logger.log("Radius is : " + str(ApplicationWindow.radius))
         logger.log("Center (y, x) is : " + str(ApplicationWindow._cyx))

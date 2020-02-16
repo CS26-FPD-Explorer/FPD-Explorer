@@ -92,6 +92,8 @@ def load_config():
                     val = True
                 elif val.lower() in ["false", "no"]:
                     val = False
+                if isinstance(val, str) and val.isdigit():
+                    val = float(val)
                 the_dict[section][key] = val
         return the_dict
 
@@ -116,6 +118,7 @@ def save_config():
         with open(CONFIGFILE_NAME, "r") as f:
             prev_config = f.read()
     print("Saving....")
+    print(_data_to_save)
     # Create the configuration file as it doesn't exist yet
     with open(CONFIGFILE_NAME, "w") as f:
         try:

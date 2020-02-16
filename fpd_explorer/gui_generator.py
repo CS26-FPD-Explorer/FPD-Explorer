@@ -6,8 +6,10 @@ from collections import defaultdict
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import (
+    QWidget,
     QSpinBox,
     QCheckBox,
+    QComboBox,
     QLineEdit,
     QFormLayout,
     QGridLayout,
@@ -101,7 +103,7 @@ class UI_Generator(QtWidgets.QDialog):
         if self.key_ignore is not None:
             [result.pop(x, None) for x in self.key_ignore]
         if self.key_add is not None:
-            [result.update(self.key_add)]
+            result.update(self.key_add)
 
         return result
 
@@ -147,13 +149,18 @@ class UI_Generator(QtWidgets.QDialog):
                 param_type = "bool"
             elif "iterable" in val[0]:
                 iter_ran = int(''.join(x for x in val[0] if x.isdigit()))
-                widget = QtWidgets.QWidget()
+                widget = QWidget()
                 lay = QVBoxLayout()
                 for el in range(iter_ran):
                     lay.addWidget(self._create_int_float(val, key=key + '_' + str(el)))
                 widget.setLayout(lay)
                 param_type = "iterable_" + str(iter_ran)
-
+            elif "multipleinput" in val[0]:
+                param_type = "multipleinput"
+                widget = QComboBox()
+                for idx, el in enumerate(val[1]):
+                    widget.addItem(el[0])
+                    widget.setItemData(idx, el[1])
             else:
                 print("TODO : Implement : ", val[0])
                 continue
@@ -164,7 +171,7 @@ class UI_Generator(QtWidgets.QDialog):
             self.widgets[param_type].append([key, widget, none_possible])
         self._format_layout()
 
-    def _create_int_float(self, val, is_float: bool = False, key: str = None) -> QtWidgets.QWidget:
+    def _create_int_float(self, val, is_float: bool = False, key: str = None) -> QWidget:
         """
         Creates the widget for integer or float
 
@@ -179,7 +186,7 @@ class UI_Generator(QtWidgets.QDialog):
 
         Returns
         -------
-        QtWidgets.QWidget
+        QWidget
             The given widget correctly set up
         """
         default_val = val[1] if val[1] is not None else 0
@@ -190,7 +197,10 @@ class UI_Generator(QtWidgets.QDialog):
         # Needed to return to default if they ever want it
         widget.setValue(self._set_default(widget, default_val))
         tmp_val = self.config_val.get(key, None)
-        if tmp_val is not None and tmp_val not in 'None':
+        if isinstance(tmp_val, str):
+            if 'None' not in tmp_val:
+                widget.setValue(float(tmp_val))
+        elif tmp_val is not None:
             widget.setValue(float(tmp_val))
         widget.setMinimum(-1000)
         widget.setMaximum(1000)
@@ -205,26 +215,32 @@ class UI_Generator(QtWidgets.QDialog):
         saved_result = {}
         for param_type, widgets in self.widgets.items():
             for key, widget, none_possible in widgets:
+                # Use skip if there is no need to save to file as it is
+                skip = False
                 if param_type == "bool":
-                    self.result[key] = widget.isChecked()
-                    saved_result[key] = str(widget.isChecked())
+                    val = widget.isChecked()
                 elif param_type == "int":
-                    tmp = widget.value()
-                    if none_possible and tmp == 0:
-                        tmp = None
-                    self.result[key] = tmp
-                    saved_result[key] = str(tmp)
+                    val = widget.value()
+                    if none_possible and (val == 0 or val == 0.0):
+                        val = None
                 elif "iterable" in param_type:
-                    val_ls = []
+                    val = []
                     iter_ran = int(param_type.split("_")[1])
                     for el in range(iter_ran):
-                        val = self.sub_ls[widget][el].value()
-                        val_ls.append(val)
-                        saved_result[key + "_" + str(el)] = val
-                    self.result[key] = val_ls
+                        value = self.sub_ls[widget][el].value()
+                        val.append(value)
+                        saved_result[key + "_" + str(el)] = value
+                    skip = True
+                elif param_type == "multipleinput":
+                    val = widget.itemData(widget.currentIndex())
+                    skip = True
                 else:
-                    self.result[key] = widget.text()
-                    saved_result[key] = widget.text()
+                    val = widget.text()
+                self.result[key] = val
+                if not skip:
+                    if param_type != "bool":
+                        val = str(val)
+                    saved_result[key] = val
         config.add_config({self.fnct: saved_result})
         self.accept()
 
@@ -239,13 +255,13 @@ class UI_Generator(QtWidgets.QDialog):
         """
         return self.result
 
-    def _set_default(self, widget: QtWidgets.QWidget, default_val: str) -> str:
+    def _set_default(self, widget: QWidget, default_val: str) -> str:
         """
         Saves the default value in a dict used to restore to default
 
         Parameters
         ----------
-        widget : QtWidgets.QWidget
+        widget : QWidget
             The widget that should have this default value
         default_val : str
             The default value
@@ -272,6 +288,8 @@ class UI_Generator(QtWidgets.QDialog):
                     iter_ran = int(param_type.split("_")[1])
                     for el in range(iter_ran):
                         self.sub_ls[widget][el].setValue(0)
+                elif param_type == "multipleinput":
+                    widget.setCurrentIndex(0)
                 else:
                     widget.clear()
                     widget.setPlaceholderText(self.default[widget])
@@ -298,12 +316,12 @@ class UI_Generator(QtWidgets.QDialog):
                         self.sub_ls[widget].append(sub_widget)
                         sub_widget.setFixedWidth(100)
                         sub_widget.setFixedHeight(30)
-                        all_widget.append((key.replace("_", " ").capitalize() + " " + str(el), sub_widget))
+                        all_widget.append((key.replace("_", " ").capitalize() + " " + str(el), sub_widget, param_type))
                 else:
-                    all_widget.append((key.replace("_", " ").capitalize(), widget))
+                    all_widget.append((key.replace("_", " ").capitalize(), widget, param_type))
                 # self.layout.addRow(key.replace("_", " ").capitalize(), widget)
         layout = QGridLayout()
-
+        all_widget.sort(key=lambda x: x[2], reverse=True)
         self._create_colums(all_widget, layout)
 
         buttonBox = QDialogButtonBox(QDialogButtonBox.Save |
@@ -330,10 +348,10 @@ class UI_Generator(QtWidgets.QDialog):
         n : int, optional
             Used for recursion to keep track on how many items have already been added, by default 0
         """
-        tmp = QtWidgets.QWidget()
+        tmp = QWidget()
         layout = QFormLayout()
-        for name, widget in widget_list[0 + self.items_per_column *
-                                        n:self.items_per_column + self.items_per_column * n]:
+        for name, widget, _ in widget_list[0 + self.items_per_column *
+                                           n:self.items_per_column + self.items_per_column * n]:
             layout.addRow(name, widget)
         tmp.setLayout(layout)
         tmp.setFixedWidth(110 + layout.itemAt(0, QFormLayout.FieldRole).geometry().width())
