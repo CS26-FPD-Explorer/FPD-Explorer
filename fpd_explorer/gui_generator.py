@@ -1,21 +1,16 @@
 # Standard Library
 import inspect
-from inspect import signature
 from collections import defaultdict
+from inspect import signature
 
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import (
-    QSpinBox,
-    QCheckBox,
-    QLineEdit,
-    QFormLayout,
-    QGridLayout,
-    QVBoxLayout,
-    QDoubleSpinBox,
-    QDialogButtonBox
-)
+from PySide2.QtWidgets import (QCheckBox, QDialogButtonBox, QDoubleSpinBox,
+                               QFormLayout, QGridLayout, QLineEdit, QSpinBox,
+                               QVBoxLayout)
+
 from . import config_handler as config
+
 
 class UI_Generator(QtWidgets.QDialog):
     """
@@ -23,12 +18,18 @@ class UI_Generator(QtWidgets.QDialog):
 
     Parameters
     ----------
-    ApplicationWindow : QApplication
+    application_window : QApplication
         The parent in which the tab should be rendered
-    mainwindow : QMainWindow
-        The main window in which the dock widget should get created
     fnct : function
         The function object for which we want to create the input box
+            Parameters
+    items_per_column : int, optional
+        Number of widgets per colum, by default 10
+    key_ignore : list, optional
+        List of variable names to be removed from the GUI, by default None
+    key_add : dict , optional
+        Dict with variable name as a key and a list composed of type, default value and description,
+        by default None
 
     """
 
@@ -46,14 +47,27 @@ class UI_Generator(QtWidgets.QDialog):
         self._setup_ui()
         self.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint) & ~Qt.WindowContextHelpButtonHint)
 
-    def _get_param(self, fnct):
+    def _get_param(self, fnct) -> dict:
+        """
+        Get the paramaters based of a given function 
+
+        Uses the docstring and parses it. Must respect numpy style docstring to parse correctly
+        Also uses the function siganture to get default
+
+        Parameters
+        ----------
+        fnct : fnct
+            The function you want to get the parameter of
+
+        Returns 
+        ----------
+        result : dict
+            A dict with the variable name as a key and the default value and description as item
+        """
         sig = signature(fnct)
         doc = fnct.__doc__
         result = {}
-        """
-        result is a dict with the variable name as key and a list composed of type, default value, description
-
-        """
+        # result is a dict with the variable name as key and a list composed of type, default value, description
         param = doc.split('Parameters')[1].replace(',', '').replace(
             '-', '').split("Return")[0].split("Attributes")[0].split('\n')
         current_name = ""
@@ -84,8 +98,8 @@ class UI_Generator(QtWidgets.QDialog):
         return result
 
     def _setup_ui(self):
-        self.result = {}
         """
+        Creates the UI. Assumes the parameter list has already been defined
         self.widgets is a dictionary with the type as key and a list of widgets as val
 
         the list of widgets is compossed of a list compossed of key, widget, None value possible
@@ -95,6 +109,7 @@ class UI_Generator(QtWidgets.QDialog):
             ],
         }
         """
+        self.result = {}
         self.widgets = defaultdict(list)
         for key, val in self.param.items():
             widget = None
@@ -109,7 +124,7 @@ class UI_Generator(QtWidgets.QDialog):
                 widget.setPlaceholderText(self._set_default(widget, default_val))
                 tmp_val = self.config_val.get(key, None)
                 if tmp_val is not None:
-                    widget.SetText(tmp_val)
+                    widget.setText(tmp_val)
                 param_type = "str"
             elif "int" in val[0] or "scalar" in val[0] or "float" in val[0]:
                 widget = self._create_int_float(val, True if "float" in val[0] else False, key=key)
@@ -127,7 +142,7 @@ class UI_Generator(QtWidgets.QDialog):
                 widget = QtWidgets.QWidget()
                 lay = QVBoxLayout()
                 for el in range(iter_ran):
-                    lay.addWidget(self._create_int_float(val, key=key+'_'+str(el)))
+                    lay.addWidget(self._create_int_float(val, key=key + '_' + str(el)))
                 widget.setLayout(lay)
                 param_type = "iterable_" + str(iter_ran)
 
@@ -141,7 +156,24 @@ class UI_Generator(QtWidgets.QDialog):
             self.widgets[param_type].append([key, widget, none_possible])
         self._format_layout()
 
-    def _create_int_float(self, val, is_float=False, key=None):
+    def _create_int_float(self, val, is_float: bool = False, key: str = None) -> QtWidgets.QWidget:
+        """
+        Creates the widget for integer or float
+
+        Parameters
+        ----------
+        val : list
+            list of type, default value, description
+        is_float : bool, optional
+            is the value suposed to be a float, by default False
+        key : str, optional
+            The variable name, by default None
+
+        Returns
+        -------
+        QtWidgets.QWidget
+            The given widget correctly set up
+        """
         default_val = val[1] if val[1] is not None else 0
         if is_float:
             widget = QDoubleSpinBox()
@@ -180,22 +212,48 @@ class UI_Generator(QtWidgets.QDialog):
                     for el in range(iter_ran):
                         val = self.sub_ls[widget][el].value()
                         val_ls.append(val)
-                        saved_result[key+"_"+str(el)] = val
+                        saved_result[key + "_" + str(el)] = val
                     self.result[key] = val_ls
                 else:
                     self.result[key] = widget.text()
                     saved_result[key] = widget.text()
-        config.add_config({self.fnct:saved_result})
+        config.add_config({self.fnct: saved_result})
         self.accept()
 
-    def get_result(self):
+    def get_result(self) -> dict:
+        """
+        Returns the value collected by the widget
+
+        Returns
+        -------
+        dict
+            Dict composed of variable name as key and the value entered by the user
+        """
         return self.result
 
-    def _set_default(self, widget, default_val):
+    def _set_default(self, widget: QtWidgets.QWidget, default_val: str) -> str:
+        """
+        Saves the default value in a dict used to restore to default
+
+        Parameters
+        ----------
+        widget : QtWidgets.QWidget
+            The widget that should have this default value
+        default_val : str
+            The default value
+
+        Returns
+        -------
+        str
+            returns the input
+        """
         self.default[widget] = default_val
         return default_val
 
     def _restore_default(self):
+        """
+        Restores all the widget to their default value
+        """
         for param_type, widgets in self.widgets.items():
             for key, widget, none_possible in widgets:
                 if param_type == "bool":
@@ -211,6 +269,9 @@ class UI_Generator(QtWidgets.QDialog):
                     widget.setPlaceholderText(self.default[widget])
 
     def _format_layout(self):
+        """
+        Creates the layout and organize it based on the list of widgets
+        """
         # Create layout and add widgets
         all_widget = []
         self.sub_ls = defaultdict(list)
@@ -224,6 +285,7 @@ class UI_Generator(QtWidgets.QDialog):
                 if "iterable" in param_type:
                     iter_ran = int(param_type.split("_")[1])
                     for el in range(iter_ran):
+                        # Loop for all children and add them as single child
                         sub_widget = widget.layout().itemAt(el).widget()
                         self.sub_ls[widget].append(sub_widget)
                         sub_widget.setFixedWidth(100)
@@ -246,7 +308,20 @@ class UI_Generator(QtWidgets.QDialog):
         self.setLayout(layout)
         self.setFixedSize(self.minimumWidth(), self.minimumHeight())
 
-    def _create_colums(self, widget_list, vert_layout, n=0):
+    def _create_colums(self, widget_list: list, grid_layout: QtWidgets.QGridLayout, n=0):
+        """
+        Recursively add items to a column
+        The number of items per colum depends on self.items_per_column
+
+        Parameters
+        ----------
+        widget_list : list
+            list of all widgets that need to be added
+        grid_layout : QtWidgets.QGridLayout
+            the grid layout where the widgets must be added
+        n : int, optional
+            Used for recursion to keep track on how many items have already been added, by default 0
+        """
         tmp = QtWidgets.QWidget()
         layout = QFormLayout()
         for name, widget in widget_list[0 + self.items_per_column *
@@ -254,7 +329,7 @@ class UI_Generator(QtWidgets.QDialog):
             layout.addRow(name, widget)
         tmp.setLayout(layout)
         tmp.setFixedWidth(110 + layout.itemAt(0, QFormLayout.FieldRole).geometry().width())
-        vert_layout.addWidget(tmp, 0, n)
+        grid_layout.addWidget(tmp, 0, n)
         if self.items_per_column * (n + 1) >= len(widget_list):
             return
-        self._create_colums(widget_list, vert_layout, n=n + 1)
+        self._create_colums(widget_list, grid_layout, n=n + 1)
