@@ -13,7 +13,8 @@ def start_dpc(ApplicationWindow):
 
     Parameters
     ----------
-    ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
+    ApplicationWindow : QApplication
+        Parent in which the tab should be rendered
 
     """
     dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")

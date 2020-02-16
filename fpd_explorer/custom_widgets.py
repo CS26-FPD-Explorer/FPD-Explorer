@@ -9,9 +9,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from .custom_fpd_lib import fpd_processing as fpdp_new
 from .res.ui_inputbox import Ui_InputBox
 from .res.ui_loadingbox import Ui_LoadingBox
-from .res.ui_inputBoxCenterOfMass import Ui_CenterofMass
-from .res.ui_inputBoxCircularCenter import Ui_CircularCenterInput
-from .res.ui_inputBoxRemoveAperture import Ui_RemoveAperture
 
 
 class MyMplCanvas(FigureCanvas):
@@ -259,9 +256,10 @@ class CustomLoadingForm(QtWidgets.QDialog):
     def __init__(self, ds_sel):
         """
         Set up a new loading form with 2 progress bar
+
         Parameters
         ----------
-        ds_sel : MerlinBinary Memory Map
+        ds_sel : Merlin Binary Memory Map
 
         """
         super(CustomLoadingForm, self).__init__()

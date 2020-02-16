@@ -6,11 +6,11 @@ import traceback
 from datetime import datetime
 
 import matplotlib as plt
-import qdarkgraystyle
 import matplotlib.style
 from PySide2 import QtWidgets
 
 # First Party
+import qdarkgraystyle
 import fpd_explorer.config_handler as config
 from fpd_explorer import logger
 from fpd_explorer.home import ApplicationWindow
@@ -23,7 +23,7 @@ error_logger = logging.getLogger('fpd_logger')
 
 def fpd_except_handler(type, value, tb):
     tmp_str = "Uncaught exception: {0}".format(str(value))
-    # error_logger.exception(value)
+    error_logger.exception(value, tb)
     widget = QtWidgets.QMessageBox.critical(window, "ERROR", tmp_str)
     write_log(tmp_str, tb)
     logger.clear()
@@ -49,9 +49,9 @@ def remove_old_log():
     tmp = [el for el in f if el[-4:] == ".txt"]
     len_tmp = len(tmp)
     if len_tmp >= 10:
-        print(sorted(tmp))
+        # print(sorted(tmp))
         for el in sorted(tmp, reverse=True)[9:]:
-            print("removing", el)
+            # print("removing", el)
             os.remove(el)
 
 
@@ -66,7 +66,6 @@ if __name__ == "__main__":
         fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
     window = ApplicationWindow(fpd_app, dark_mode_config)
     logger.setup(window._ui.log_text, window)
-
     window.show()
     sys.exit(fpd_app.exec_())
     # qApp.exec_()
