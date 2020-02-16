@@ -15,7 +15,7 @@ from PySide2.QtWidgets import (
     QDoubleSpinBox,
     QDialogButtonBox
 )
-
+from . import config_handler as config
 
 class UI_Generator(QtWidgets.QDialog):
     """
@@ -37,9 +37,12 @@ class UI_Generator(QtWidgets.QDialog):
         self.application_window = application_window
         self.key_ignore = key_ignore
         self.key_add = key_add
-        self.param = self._get_param(fnct)
         self.items_per_column = items_per_column
         self.default = {}
+        # This must always be last and in that order
+        self.fnct = fnct.__name__
+        self.config_val = config.get_dict(self.fnct)
+        self.param = self._get_param(fnct)
         self._setup_ui()
         self.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint) & ~Qt.WindowContextHelpButtonHint)
 
@@ -77,6 +80,7 @@ class UI_Generator(QtWidgets.QDialog):
             [result.pop(x, None) for x in self.key_ignore]
         if self.key_add is not None:
             [result.update(self.key_add)]
+
         return result
 
     def _setup_ui(self):
@@ -103,22 +107,27 @@ class UI_Generator(QtWidgets.QDialog):
                 default_val = val[1] if val[1] is not None else key
                 widget = QLineEdit()
                 widget.setPlaceholderText(self._set_default(widget, default_val))
+                tmp_val = self.config_val.get(key, None)
+                if tmp_val is not None:
+                    widget.SetText(tmp_val)
                 param_type = "str"
             elif "int" in val[0] or "scalar" in val[0] or "float" in val[0]:
-                widget = self._create_int_float(val, True if "float" in val[0] else False)
+                widget = self._create_int_float(val, True if "float" in val[0] else False, key=key)
                 param_type = "int"
-
             elif "bool" in val[0]:
                 default_val = val[1] if val[1] is not None else False
                 widget = QCheckBox()
                 widget.setChecked(self._set_default(widget, default_val))
+                tmp_val = self.config_val.get(key, None)
+                if tmp_val is not None:
+                    widget.setChecked(tmp_val)
                 param_type = "bool"
             elif "iterable" in val[0]:
                 iter_ran = int(''.join(x for x in val[0] if x.isdigit()))
                 widget = QtWidgets.QWidget()
                 lay = QVBoxLayout()
                 for el in range(iter_ran):
-                    lay.addWidget(self._create_int_float(val))
+                    lay.addWidget(self._create_int_float(val, key=key+'_'+str(el)))
                 widget.setLayout(lay)
                 param_type = "iterable_" + str(iter_ran)
 
@@ -132,36 +141,51 @@ class UI_Generator(QtWidgets.QDialog):
             self.widgets[param_type].append([key, widget, none_possible])
         self._format_layout()
 
-    def _create_int_float(self, val, is_float=False):
+    def _create_int_float(self, val, is_float=False, key=None):
         default_val = val[1] if val[1] is not None else 0
         if is_float:
             widget = QDoubleSpinBox()
         else:
             widget = QSpinBox()
+        # Needed to return to default if they ever want it
         widget.setValue(self._set_default(widget, default_val))
+        tmp_val = self.config_val.get(key, None)
+        if tmp_val is not None and tmp_val not in 'None':
+            widget.setValue(float(tmp_val))
         widget.setMinimum(-1000)
         widget.setMaximum(1000)
         return widget
 
     def _save(self):
+        """
+        Save is the function called to get the parameter out of the widget and save them to the file
+        It saves everything inside self.result
+        It also creates a saved_result dict to save to file as iterable are not handled otherwise
+        """
+        saved_result = {}
         for param_type, widgets in self.widgets.items():
             for key, widget, none_possible in widgets:
                 if param_type == "bool":
                     self.result[key] = widget.isChecked()
+                    saved_result[key] = str(widget.isChecked())
                 elif param_type == "int":
                     tmp = widget.value()
                     if none_possible and tmp == 0:
                         tmp = None
                     self.result[key] = tmp
+                    saved_result[key] = str(tmp)
                 elif "iterable" in param_type:
                     val_ls = []
                     iter_ran = int(param_type.split("_")[1])
                     for el in range(iter_ran):
-                        val_ls.append(self.sub_ls[widget][el].value())
+                        val = self.sub_ls[widget][el].value()
+                        val_ls.append(val)
+                        saved_result[key+"_"+str(el)] = val
                     self.result[key] = val_ls
                 else:
                     self.result[key] = widget.text()
-        # print(self.result)
+                    saved_result[key] = widget.text()
+        config.add_config({self.fnct:saved_result})
         self.accept()
 
     def get_result(self):

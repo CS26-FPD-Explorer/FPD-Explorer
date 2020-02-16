@@ -32,7 +32,12 @@ def get_config(key_to_get: str):
                     return item
     return _finditem(key_to_get)
 
-
+def get_dict(key_to_get: str)-> dict: 
+    """
+    Return either the dict for the given key or an empty dict
+    """
+    return _data_to_save.get(key_to_get, {})
+    
 def add_config(config: dict):
     """
     Add some config to the save file
@@ -57,11 +62,9 @@ def add_config(config: dict):
         if isinstance(list(config.values())[0], dict):
             # already have a section so we can just update
             _data_to_save.update(config)
-            print(_data_to_save)
             return True
         else:
             _data_to_save["Default"].update(config)
-            print(_data_to_save)
             return True
     return False
 
@@ -100,7 +103,6 @@ def load_config():
     config.read(path_to_read)
     print("Loading configs")
     _data_to_save.update(as_dict(config))
-    print(_data_to_save)
 
 
 def save_config():
@@ -124,7 +126,6 @@ def save_config():
             else:
                 tmp_dict = _data_to_save
 
-            print(tmp_dict)
             config = configparser.ConfigParser()
             config.read_dict(tmp_dict)
             config.write(f)
