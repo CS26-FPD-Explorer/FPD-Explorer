@@ -421,7 +421,6 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
 
     # Possible alternative was not as fast in tests:
     # from scipy.ndimage.measurements import center_of_mass
-
     if nrnc_are_chunks:
         nr, nc = _condition_nrnc_if_chunked(data, nr, nc, print_stats)
 
@@ -541,10 +540,13 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                 #print(d_shape, com_im[ri:rf,ci:cf,...].shape, rslt.shape)
                 rslt.shape = d_shape[:-2] + (2,)
                 com_im[ri:rf, ci:cf, ...] = rslt
+
                 if progress_callback:
-                    progress_callback.emit(pbar.update(np.prod(d.shape[:-2])), "center of mass")
+                    progress_callback.emit((np.prod(d.shape[:-2]), "center_of_mass"))
+
                 else:
                     pbar.update(np.prod(d.shape[:-2]))
+
     if print_stats:
         print('\n')
     com_im = (com_im) / rebinf**2

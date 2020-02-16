@@ -257,13 +257,39 @@ class CustomInputFormCenterOfMass(QtWidgets.QDialog):
 
 
 class CustomLoadingFormCenterOfMass(QtWidgets.QDialog):
-    def __init__(self):
+    def __init__(self, ds_sel):
         """
         Set up a loading form with 1 progress bar parameters
         """
         super(CustomLoadingFormCenterOfMass, self).__init__()
         self._ui = Ui_LoadingBoxCenterOfMass()
         self._ui.setupUi(self)
+        self.ds_sel = ds_sel
+
+        self._center_of_mass = None
+        self._ui.centerProgress.setValue(0)
+        self._ui.centerProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
+        worker = GuiUpdater(fpdp_new.center_of_mass, self.ds_sel, 16, 16)
+        print(self._ui.centerProgress.value())
+        worker.signals.finished.connect(self.completed)
+        worker.signals.progress.connect(self.progress_fn)
+        print(self._ui.centerProgress.value())
+        worker.signals.result.connect(self.center_of_mass)
+
+    @Slot()
+    def center_of_mass(self, value):
+        print("self._center_of_mass")
+        self._center_of_mass = value
+
+    @Slot()
+    def completed(self):
+        return super().done(True)
+
+    @Slot(tuple)
+    def progress_fn(self, value):
+        self._ui.centerProgress.setValue(
+            self._ui.centerProgress.value() + value[0])
+        print(self._ui.centerProgress.value())
 
 
 class CustomLoadingForm(QtWidgets.QDialog):
@@ -326,6 +352,7 @@ class CustomLoadingForm(QtWidgets.QDialog):
         if value[1] == "sum_diff":
             self._ui.recipProgress.setValue(
                 self._ui.recipProgress.value() + value[0])
+
         else:
             self._ui.realProgress.setValue(
                 self._ui.realProgress.value() + value[0])
