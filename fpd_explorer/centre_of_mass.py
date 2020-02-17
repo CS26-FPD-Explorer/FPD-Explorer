@@ -71,11 +71,12 @@ def centre_of_mass(ApplicationWindow):
         widget.exec()
         nr = widget._ui.nr.value()
         nc = widget._ui.nc.value()
-        com_yx = fpdp.center_of_mass(ApplicationWindow.mm_sel, nr, nc, thr='otsu',
-                                     aperture=ApplicationWindow._ap, parallel=False)
+        # com_yx = fpdp.center_of_mass(ApplicationWindow.mm_sel, nr, nc, thr='otsu',
+        #                             aperture=ApplicationWindow._ap, parallel=False)
         loading_widget = CustomLoadingFormCenterOfMass(ApplicationWindow.mm_sel)
         loading_widget.exec()
-
+        print("Whatever")
+        com_yx = loading_widget.com_yx
         # TODO: Fix the mess in another feature
         # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
         # com_yx_cor = com_yx - fit

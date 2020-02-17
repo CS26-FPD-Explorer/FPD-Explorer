@@ -266,27 +266,30 @@ class CustomLoadingFormCenterOfMass(QtWidgets.QDialog):
         self._ui.setupUi(self)
         self.ds_sel = ds_sel
 
-        self._center_of_mass = None
+        self.com_yx = None
         self._ui.centerProgress.setValue(0)
         self._ui.centerProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
-        worker = GuiUpdater(fpdp_new.center_of_mass, self.ds_sel, 16, 16)
+        self.threadpool = QThreadPool()
+        worker = GuiUpdater(fpdp_new.center_of_mass, self.ds_sel, 16, 16, parallel=False)
         print(self._ui.centerProgress.value())
         worker.signals.finished.connect(self.completed)
-        worker.signals.progress.connect(self.progress_fn)
+        worker.signals.progress.connect(self.progress_func)
         print(self._ui.centerProgress.value())
         worker.signals.result.connect(self.center_of_mass)
+        self.threadpool.start(worker)
 
     @Slot()
     def center_of_mass(self, value):
         print("self._center_of_mass")
-        self._center_of_mass = value
+        self.com_yx = value
 
     @Slot()
     def completed(self):
+        print("Done-completed")
         return super().done(True)
 
     @Slot(tuple)
-    def progress_fn(self, value):
+    def progress_func(self, value):
         self._ui.centerProgress.setValue(
             self._ui.centerProgress.value() + value[0])
         print(self._ui.centerProgress.value())
@@ -412,10 +415,11 @@ class GuiUpdater(QRunnable):
         """
         # Retrieve args/kwargs here; and fire processing using them
         try:
+            print(self._kwargs)
             result_val = self._fn(
                 *self._args, **self._kwargs
             )
-            print(result_val)
+            print("Result : ", result_val)
         except BaseException:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
