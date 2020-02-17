@@ -8,7 +8,7 @@ from PySide2.QtWidgets import QFileDialog, QMainWindow
 import qdarkgraystyle
 
 # FPD Explorer
-from . import logger, dpc_explorer, centre_of_mass
+from . import logger, dpc_explorer, fpd_function
 from . import config_handler as config
 from . import data_browser_explorer
 from .logger import Flags
@@ -132,15 +132,19 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def find_circular_centre(self):
-        centre_of_mass.find_circular_centre(self)
+        fpd_function.find_circular_centre(self)
 
     @Slot()
     def remove_aperture(self):
-        centre_of_mass.remove_aperture(self)
+        fpd_function.remove_aperture(self)
 
     @Slot()
     def centre_of_mass(self):
-        centre_of_mass.centre_of_mass(self)
+        fpd_function.centre_of_mass(self)
+
+    @Slot()
+    def ransac_im_fit(self):
+        fpd_function.ransac_im_fit(self)
 
     @Slot()
     def clear_files(self):

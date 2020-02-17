@@ -2,6 +2,7 @@
 from . import logger
 from .logger import Flags
 from .gui_generator import UI_Generator
+from .custom_fpd_lib import ransac_tools as rt
 from .custom_fpd_lib import fpd_processing as fpdp
 from .custom_widgets import Pop_Up_Widget
 
@@ -80,7 +81,7 @@ def centre_of_mass(ApplicationWindow):
         else:
             # Remove aperture in this case since its a bool and they expect an array
             results.pop("aperture")
-        com_yx = fpdp.center_of_mass(ApplicationWindow.mm_sel, **results, thr='otsu')
+        ApplicationWindow.com_yx = fpdp.center_of_mass(ApplicationWindow.mm_sel, **results, thr='otsu')
 
         # TODO: Fix the mess in another feature
         # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
@@ -91,4 +92,38 @@ def centre_of_mass(ApplicationWindow):
         # cyx_sp, r_sp = fpdp.find_circ_centre(ApplicationWindow._sum_dif, sigma=2,
         #                                     rmms=(ApplicationWindow.radius-8, ApplicationWindow.radius+8, 1), spf=4)
         logger.log("Center of mass has now been found", Flags.center_mass)
-        ApplicationWindow.com_yx_beta = com_yx
+        ApplicationWindow.com_yx_beta = ApplicationWindow.com_yx
+
+
+def ransac_im_fit(ApplicationWindow):
+    """
+    Calculate **add here when you know**
+    for the users input, and brings up two figures based on that input on the UI
+    """
+
+    # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
+    if logger.check_if_all_needed(Flags.center_mass):
+        # FIXME: Dirty fix to prevent float overloading the int and messing it up
+        # Will be fixed by next commit in another branch
+        key_add = {
+            "min_samples": ["int", 10, """
+            The minimum number of data points to fit a model to.\n
+            If an int, the value is the number of pixels.\n
+            If a float, the value is a fraction (0.0, 1.0] of the total number of pixels."""]
+        }
+        canvas = Pop_Up_Widget(ApplicationWindow, "Aperture")
+        params = UI_Generator(
+            ApplicationWindow,
+            rt.ransac_im_fit,
+            key_ignore=[
+                "im",
+                "plot",
+                "min_samples"],
+            key_add=key_add)
+        if not params.exec():
+            # Procedure was cancelled so just give up
+            return
+        results = params.get_result()
+        fit, inliers, _ = rt.ransac_im_fit(ApplicationWindow.com_yx, **results, plot=True, widget=canvas)
+        ApplicationWindow.com_yx_cor = ApplicationWindow.com_yx - fit
+        logger.log("Image has now been fitted using ransac")

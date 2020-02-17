@@ -6,13 +6,13 @@ import numpy as np
 from scipy.interpolate import SmoothBivariateSpline
 from scipy.interpolate import UnivariateSpline
 from tqdm import tqdm
-from .utils import seq_image_array, unseq_image_array
-
+from fpd.utils import seq_image_array, unseq_image_array
+from fpd import ransac_tools as rt 
 
 def ransac_im_fit(im, mode=1, residual_threshold=0.1, min_samples=10,
                   max_trials=1000, model_f=None, p0=None, mask=None,
                   scale=False, fract=1, param_dict=None, plot=False,
-                  axes=(-2, -1)):
+                  axes=(-2, -1), widget=None):
     '''
     Fits a plane, polynomial, convex paraboloid, arbitrary function, or
     smoothing spline to an image using the RANSAC algorithm.
@@ -21,7 +21,7 @@ def ransac_im_fit(im, mode=1, residual_threshold=0.1, min_samples=10,
     ----------
     im : ndarray
         ndarray with images to fit to.
-    mode : integer [0:4]
+    mode : integer [0-4]
         Specifies model used for fit.
         0 is function defined by `model_f`.
         1 is plane.
@@ -42,7 +42,6 @@ def ransac_im_fit(im, mode=1, residual_threshold=0.1, min_samples=10,
     fract : scalar (0, 1]
         Fraction of data used for fitting, chosen randomly. Non-used data
         locations are set as nans in `inliers`.
-
     residual_threshold : float
         Maximum distance for a data point to be classified as an inlier.
     min_samples : int or float
@@ -60,6 +59,8 @@ def ransac_im_fit(im, mode=1, residual_threshold=0.1, min_samples=10,
         If True, the data, including inliers, model, etc are plotted.
     axes : length 2 iterable
         Indices of the input array with images.
+    widget : QtWidget
+        A qt widget that must contain as many widgets or dock widget as there is popup window
 
     Returns
     -------
@@ -162,16 +163,16 @@ def ransac_im_fit(im, mode=1, residual_threshold=0.1, min_samples=10,
         # generate model_class with passed function
         if p0 is None:
             raise NotImplementedError('p0 must be specified.')
-        model_class = _model_class_gen(model_f, p0, param_dict)
+        model_class = rt._model_class_gen(model_f, p0, param_dict)
     elif mode == 1:
         # linear
-        model_class = _Plane3dModel
+        model_class = rt._Plane3dModel
     elif mode == 2:
         # quadratic
-        model_class = _Poly3dModel
+        model_class = rt._Poly3dModel
     elif mode == 3:
         # concave paraboloid
-        model_class = _Poly3dParaboloidModel
+        model_class = rt._Poly3dParaboloidModel
     elif mode == 4:
         # spline
         class _Spline3dModel_monkeypatched(_Spline3dModel):
@@ -272,8 +273,13 @@ def ransac_im_fit(im, mode=1, residual_threshold=0.1, min_samples=10,
             cor_im = imi - fit
             pct = 0.1
             vmin, vmax = np.percentile(cor_im, [pct, 100 - pct])
+            if widget is None:
+                fig = plt.figure()
+            else:
+                docked = widget.setup_docking("Circular Center", "Bottom")
+                fig = docked.get_fig()
+                fig.clf()
 
-            fig = plt.figure()
             grid = ImageGrid(fig, 111,
                              nrows_ncols=(1, 4),
                              axes_pad=0.1,

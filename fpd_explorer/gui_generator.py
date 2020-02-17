@@ -151,8 +151,15 @@ class UI_Generator(QtWidgets.QDialog):
                 iter_ran = int(''.join(x for x in val[0] if x.isdigit()))
                 widget = QWidget()
                 lay = QVBoxLayout()
+                unpack = False
+                if isinstance(val[1], tuple) or isinstance(val[1], list):
+                    # Expect to have as many value in the tuple as there is required by the iterable
+                    unpack = True
                 for el in range(iter_ran):
-                    lay.addWidget(self._create_int_float(val, key=key + '_' + str(el)))
+                    new_val = list(val)
+                    if unpack:
+                        new_val[1] = val[1][el]
+                    lay.addWidget(self._create_int_float(new_val, key=key + '_' + str(el)))
                 widget.setLayout(lay)
                 param_type = "iterable_" + str(iter_ran)
             elif "multipleinput" in val[0]:
@@ -195,6 +202,8 @@ class UI_Generator(QtWidgets.QDialog):
         else:
             widget = QSpinBox()
         # Needed to return to default if they ever want it
+        widget.setMinimum(-1000)
+        widget.setMaximum(1000)
         widget.setValue(self._set_default(widget, default_val))
         tmp_val = self.config_val.get(key, None)
         if isinstance(tmp_val, str):
@@ -202,8 +211,6 @@ class UI_Generator(QtWidgets.QDialog):
                 widget.setValue(float(tmp_val))
         elif tmp_val is not None:
             widget.setValue(float(tmp_val))
-        widget.setMinimum(-1000)
-        widget.setMaximum(1000)
         return widget
 
     def _save(self):
@@ -255,7 +262,7 @@ class UI_Generator(QtWidgets.QDialog):
         """
         return self.result
 
-    def _set_default(self, widget: QWidget, default_val: str) -> str:
+    def _set_default(self, widget: QWidget, default_val: object) -> object:
         """
         Saves the default value in a dict used to restore to default
 
@@ -263,12 +270,12 @@ class UI_Generator(QtWidgets.QDialog):
         ----------
         widget : QWidget
             The widget that should have this default value
-        default_val : str
+        default_val : object
             The default value
 
         Returns
         -------
-        str
+        object
             returns the input
         """
         self.default[widget] = default_val
@@ -287,7 +294,8 @@ class UI_Generator(QtWidgets.QDialog):
                 elif "iterable" in param_type:
                     iter_ran = int(param_type.split("_")[1])
                     for el in range(iter_ran):
-                        self.sub_ls[widget][el].setValue(0)
+                        sub_widget = self.sub_ls[widget][el]
+                        self.sub_ls[widget][el].setValue(self.default[sub_widget])
                 elif param_type == "multipleinput":
                     widget.setCurrentIndex(0)
                 else:
