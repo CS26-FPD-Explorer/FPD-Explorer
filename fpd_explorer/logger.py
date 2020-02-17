@@ -42,6 +42,11 @@ global_flags = {
         "error": "<b>The center of mass must be calculated</b> before this step can be taken.<br><br>",
         "needing": [Flags.files_loaded, Flags.circular_center, Flags.aperture]
     }
+    Flags.ransac_tools: {
+        "bool": False,
+        "error": "<b>The center of mass must be calculated</b> before this step can be taken.<br><br>",
+        "needing": [Flags.files_loaded, Flags.circular_center, Flags.aperture, Flags.center_mass]
+    }
 }
 
 
