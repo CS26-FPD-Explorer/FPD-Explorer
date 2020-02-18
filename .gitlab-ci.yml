@@ -17,8 +17,8 @@ variables:
 cache:
   key: one-key-to-rule-them-all
   paths:
-    - .cache/pip
-    - venv/
+    - ~/.cache/pip
+    - ~/venv/
 
 stages:
  - build
