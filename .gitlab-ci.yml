@@ -39,6 +39,7 @@ flake8:
  script:
   - source ~/venv/bin/activate
   - python3 -m flake8
+ allow_failure: true
 
 test:
  stage: test
