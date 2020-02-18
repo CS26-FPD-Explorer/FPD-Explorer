@@ -6,7 +6,7 @@ image: python:3.7
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 variables:
-  PIP_CACHE_DIR: "/home/gitlab-runner/.cache/pip"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
@@ -17,8 +17,8 @@ variables:
 cache:
   key: one-key-to-rule-them-all
   paths:
-    - ~/.cache/pip
-    - ~/venv/
+    - .cache/pip
+    - venv/
 
 stages:
  - build
