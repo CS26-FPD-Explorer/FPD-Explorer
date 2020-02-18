@@ -147,7 +147,6 @@ class ApplicationWindow(QMainWindow):
         if self._ui.mib_line.text():
             print("mibline=" + str(self._ui.mib_line.text()))
             del self._mib_path
-            print(self._mib_path)
             self._ui.mib_line.clear()
         if self._ui.dm3_line.text():
             del self._dm3_path
