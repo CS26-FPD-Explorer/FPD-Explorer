@@ -26,10 +26,10 @@ def find_circular_centre(ApplicationWindow):
         if not params.exec():
             # Procedure was cancelled so just give up
             return
-        ApplicationWindow._cyx, ApplicationWindow.radius = fpdp.find_circ_centre(**params.get_result(), widget=canvas)
+        ApplicationWindow.cyx, ApplicationWindow.radius = fpdp.find_circ_centre(**params.get_result(), widget=canvas)
         logger.log("Circular center has now been initialized", Flags.circular_center)
         logger.log("Radius is : " + str(ApplicationWindow.radius))
-        logger.log("Center (y, x) is : " + str(ApplicationWindow._cyx))
+        logger.log("Center (y, x) is : " + str(ApplicationWindow.cyx))
 
 
 def remove_aperture(ApplicationWindow):

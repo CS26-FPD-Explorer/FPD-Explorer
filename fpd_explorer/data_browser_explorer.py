@@ -1,6 +1,3 @@
-# Standard Library
-from collections import OrderedDict
-
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QDockWidget, QMainWindow
@@ -17,11 +14,11 @@ class DataBrowserWidget(QtWidgets.QWidget):
     Initialize the required widget needed by Data Browser tab
     """
 
-    def __init__(self):
+    def __init__(self, ApplicationWindow):
         super(DataBrowserWidget, self).__init__()
         self._ui = Ui_DataBrowser()
         self._ui.setupUi(self)
-
+        self.application_window = ApplicationWindow
         self._data_browser = None
         self._init_color_map()
 
@@ -61,31 +58,8 @@ class DataBrowserWidget(QtWidgets.QWidget):
         Create the dictionnary to fill the color map index
         Values given by matplotlib wiki
         """
-        cmaps = OrderedDict()
-        cmaps['Perceptually Uniform Sequential'] = [
-            'viridis', 'plasma', 'inferno', 'magma', 'cividis']
-        cmaps['Sequential'] = [
-            'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds',
-            'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
-            'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn']
-        cmaps['Sequential (2)'] = [
-            'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
-            'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia',
-            'hot', 'afmhot', 'gist_heat', 'copper']
-        cmaps['Diverging'] = [
-            'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
-            'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
-        cmaps['Cyclic'] = ['twilight', 'twilight_shifted', 'hsv']
 
-        cmaps['Qualitative'] = ['Pastel1', 'Pastel2', 'Paired', 'Accent',
-                                'Dark2', 'Set1', 'Set2', 'Set3',
-                                'tab10', 'tab20', 'tab20b', 'tab20c']
-        cmaps['Miscellaneous'] = [
-            'flag', 'prism', 'ocean', 'gist_earth', 'terrain', 'gist_stern',
-            'gnuplot', 'gnuplot2', 'CMRmap', 'cubehelix', 'brg',
-            'gist_rainbow', 'rainbow', 'jet', 'nipy_spectral', 'gist_ncar']
-
-        for el in cmaps.values():
+        for el in self.application_window.cmaps.values():
             for cmaps in el:
                 self._ui.colorMap.addItem(cmaps)
 
@@ -118,11 +92,11 @@ class DataBrowserWidget(QtWidgets.QWidget):
         else:
             self.sender().setValue(1)
 
-    def close_handler(self, ApplicationWindow):
+    def close_handler(self):
         self.get_nav().parentWidget().close()
         self.get_diff().parentWidget().close()
-        ApplicationWindow._data_browser = None
-        ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
+        self.aplication_window._data_browser = None
+        self.aplication_window._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
 
 
 def start_dbrowser(ApplicationWindow):
@@ -142,7 +116,7 @@ def start_dbrowser(ApplicationWindow):
     if logger.check_if_all_needed(Flags.files_loaded):
         mainwindow = QMainWindow()
         mainwindow.setObjectName("DataBrowserTab")
-        db_widget = DataBrowserWidget()
+        db_widget = DataBrowserWidget(ApplicationWindow)
 
         dock = QDockWidget("Navigation", ApplicationWindow)
         dock.setWidget(db_widget.get_nav())
@@ -160,7 +134,7 @@ def start_dbrowser(ApplicationWindow):
             ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
             widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
 
-        ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(lambda: db_widget.close_handler(ApplicationWindow))
+        ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(db_widget.close_handler)
         db_widget.set_data_browser(ApplicationWindow._data_browser)
         db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
 

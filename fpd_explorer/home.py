@@ -1,4 +1,7 @@
 
+# Standard Library
+from collections import OrderedDict
+
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
@@ -39,11 +42,28 @@ class ApplicationWindow(QMainWindow):
         self._data_browser = None
         self._cyx = None
         self._ap = None
-
+        self._setup_cmaps()
         # makes all tabs except Home closable
         self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
         # PySide2.QtWidgets.QTabBar.ButtonPosition for 2nd argument, LeftSide doesn't work
         self._ui.tabWidget.tabBar().setTabButton(0, QtWidgets.QTabBar.RightSide, None)
+
+    def _setup_cmaps(self):
+        self.cmaps = OrderedDict()
+        self.cmaps['Perceptually Uniform Sequential'] = [
+            'viridis', 'plasma', 'inferno', 'magma', 'cividis']
+        self.cmaps['Sequential'] = [
+            'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds',
+            'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
+            'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn']
+        self.cmaps['Sequential (2)'] = [
+            'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
+            'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia',
+            'hot', 'afmhot', 'gist_heat', 'copper']
+        self.cmaps['Diverging'] = [
+            'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
+            'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
+        self.cmaps['Cyclic'] = ['twilight', 'twilight_shifted', 'hsv']
 
     @Slot()
     def function_mib(self):

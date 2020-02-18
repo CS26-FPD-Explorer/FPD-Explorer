@@ -128,6 +128,13 @@ class UI_Generator(QtWidgets.QDialog):
                 # skip input that could be an array because its too hard to find a way to handle them
                 print("skipping : ", val[0])
                 continue
+            if "cmap" in val[0] or "colormap" in val[0].lower():
+                param_type = "multipleinput"
+                widget = QComboBox()
+                for el in self.application_window.cmaps.values():
+                    for cmaps in el:
+                        widget.addItem(cmaps)
+
             elif "str" in val[0]:
                 default_val = val[1] if val[1] is not None else key
                 widget = QLineEdit()
@@ -136,8 +143,13 @@ class UI_Generator(QtWidgets.QDialog):
                 if tmp_val is not None:
                     widget.setText(tmp_val)
                 param_type = "str"
-            elif "int" in val[0] or "scalar" in val[0] or "float" in val[0]:
-                widget = self._create_int_float(val, True if "float" in val[0] else False, key=key)
+            elif "tuple" in val[0]:
+                param_type, widget = self._handle_iterable(val, key)
+            elif "scalar" in val[0] or "float" in val[0]:
+                widget = self._create_int_float(val, is_float=True, key=key)
+                param_type = "int"
+            elif "int" in val[0]:
+                widget = self._create_int_float(val, key=key)
                 param_type = "int"
             elif "bool" in val[0]:
                 default_val = val[1] if val[1] is not None else False
@@ -148,13 +160,8 @@ class UI_Generator(QtWidgets.QDialog):
                     widget.setChecked(tmp_val)
                 param_type = "bool"
             elif "iterable" in val[0]:
-                iter_ran = int(''.join(x for x in val[0] if x.isdigit()))
-                widget = QWidget()
-                lay = QVBoxLayout()
-                for el in range(iter_ran):
-                    lay.addWidget(self._create_int_float(val, key=key + '_' + str(el)))
-                widget.setLayout(lay)
-                param_type = "iterable_" + str(iter_ran)
+                # Repetition needed because int should be prioritized over iterable and tuple over scalar
+                param_type, widget = self._handle_iterable(val, key)
             elif "multipleinput" in val[0]:
                 param_type = "multipleinput"
                 widget = QComboBox()
@@ -170,6 +177,23 @@ class UI_Generator(QtWidgets.QDialog):
             widget.setToolTip(val[2])
             self.widgets[param_type].append([key, widget, none_possible])
         self._format_layout()
+
+    def _handle_iterable(self, val, key):
+        iter_ran = int(''.join(x for x in val[0] if x.isdigit()))
+        widget = QWidget()
+        lay = QVBoxLayout()
+        unpack = False
+        if isinstance(val[1], tuple) or isinstance(val[1], list):
+            # Expect to have as many value in the tuple as there is required by the iterable
+            unpack = True
+        for el in range(iter_ran):
+            new_val = list(val)
+            if unpack:
+                new_val[1] = val[1][el]
+            lay.addWidget(self._create_int_float(new_val, key=key + '_' + str(el)))
+        widget.setLayout(lay)
+        param_type = "iterable_" + str(iter_ran)
+        return param_type, widget
 
     def _create_int_float(self, val, is_float: bool = False, key: str = None) -> QWidget:
         """
@@ -194,6 +218,8 @@ class UI_Generator(QtWidgets.QDialog):
             widget = QDoubleSpinBox()
         else:
             widget = QSpinBox()
+        widget.setMinimum(-1000)
+        widget.setMaximum(1000)
         # Needed to return to default if they ever want it
         widget.setValue(self._set_default(widget, default_val))
         tmp_val = self.config_val.get(key, None)
@@ -202,8 +228,6 @@ class UI_Generator(QtWidgets.QDialog):
                 widget.setValue(float(tmp_val))
         elif tmp_val is not None:
             widget.setValue(float(tmp_val))
-        widget.setMinimum(-1000)
-        widget.setMaximum(1000)
         return widget
 
     def _save(self):
