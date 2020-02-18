@@ -28,6 +28,7 @@ stages:
 setup:
  stage: build
  script:
+  - python3 -m virtualenv ~/venv --python=python3.7
   - source ~/venv/bin/activate
   - pip3 install --upgrade pip
   - pip3 install -r requirements.txt
