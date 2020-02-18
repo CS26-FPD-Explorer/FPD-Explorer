@@ -136,9 +136,11 @@ class UI_Generator(QtWidgets.QDialog):
                         widget.addItem(cmaps)
 
             elif "str" in val[0]:
-                default_val = val[1] if val[1] is not None else key
                 widget = QLineEdit()
-                widget.setPlaceholderText(self._set_default(widget, default_val))
+                if val[1] is None:
+                    widget.setPlaceholderText(self._set_default(widget, key))
+                else:
+                    widget.setText(self._set_default(widget, val[1]))
                 tmp_val = self.config_val.get(key, None)
                 if tmp_val is not None:
                     widget.setText(tmp_val)
@@ -168,6 +170,10 @@ class UI_Generator(QtWidgets.QDialog):
                 for idx, el in enumerate(val[1]):
                     widget.addItem(el[0])
                     widget.setItemData(idx, el[1])
+                tmp_val = self.config_val.get(key, None)
+                if tmp_val is not None:
+                    # Float needed because otherwise Python throws a fit
+                    widget.setCurrentIndex(int(float(tmp_val)))
             else:
                 print("TODO : Implement : ", val[0])
                 continue
@@ -228,6 +234,7 @@ class UI_Generator(QtWidgets.QDialog):
                 widget.setValue(float(tmp_val))
         elif tmp_val is not None:
             widget.setValue(float(tmp_val))
+        widget.setToolTip(val[2])
         return widget
 
     def _save(self):
@@ -249,21 +256,33 @@ class UI_Generator(QtWidgets.QDialog):
                         val = None
                 elif "iterable" in param_type:
                     val = []
+                    none_list = False
                     iter_ran = int(param_type.split("_")[1])
                     for el in range(iter_ran):
                         value = self.sub_ls[widget][el].value()
                         val.append(value)
-                        saved_result[key + "_" + str(el)] = value
+                        if none_possible and (value == 0 or value == 0.0):
+                            none_list = True
+                            value = None
+                        saved_result[key + "_" + str(el)] = str(value)
+                    if none_list:
+                        val = None
                     skip = True
                 elif param_type == "multipleinput":
                     val = widget.itemData(widget.currentIndex())
+                    # Repeated code because val should be the index and not the data
+                    saved_result[key] = str(widget.currentIndex())
                     skip = True
                 else:
                     val = widget.text()
+                    if none_possible and val == '':
+                        val = None
+
                 self.result[key] = val
                 if not skip:
                     if param_type != "bool":
                         val = str(val)
+                    print(key, val, param_type)
                     saved_result[key] = val
         config.add_config({self.fnct: saved_result})
         self.accept()

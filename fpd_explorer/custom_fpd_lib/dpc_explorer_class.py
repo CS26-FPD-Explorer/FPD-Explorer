@@ -516,7 +516,7 @@ class DPC_Explorer:
                                          figsize=(6.4, 4),
                                          subplot_kw=kwd)
 
-            f.canvas.set_window_title(window_title)
+            f.canvas.set_window_title(window_name)
             self.fig = plt
 
         ims = []
