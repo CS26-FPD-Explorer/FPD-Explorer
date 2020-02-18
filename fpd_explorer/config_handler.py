@@ -118,7 +118,6 @@ def save_config():
         with open(CONFIGFILE_NAME, "r") as f:
             prev_config = f.read()
     print("Saving....")
-    print(_data_to_save)
     # Create the configuration file as it doesn't exist yet
     with open(CONFIGFILE_NAME, "w") as f:
         try:

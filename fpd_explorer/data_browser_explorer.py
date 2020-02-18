@@ -95,8 +95,8 @@ class DataBrowserWidget(QtWidgets.QWidget):
     def close_handler(self):
         self.get_nav().parentWidget().close()
         self.get_diff().parentWidget().close()
-        self.aplication_window._data_browser = None
-        self.aplication_window._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
+        self.application_window._data_browser = None
+        self.application_window._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
 
 
 def start_dbrowser(ApplicationWindow):

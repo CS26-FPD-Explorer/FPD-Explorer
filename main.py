@@ -22,11 +22,13 @@ error_logger = logging.getLogger('fpd_logger')
 
 
 def fpd_except_handler(type, value, tb):
-    tmp_str = "Uncaught exception: {0}".format(str(value))
-    error_logger.exception(value, tb)
+    tmp_str = "An Exception has occured: \n{0}".format(str(value))
+    err = ""
+    for el in traceback.format_tb(tb):
+        err += el + "\n"
+    print(f"{value} \n {err}")
     widget = QtWidgets.QMessageBox.critical(window, "ERROR", tmp_str)
-    write_log(tmp_str, tb)
-    logger.clear()
+    write_log(tmp_str, err)
 
 
 def write_log(error, tb):
@@ -38,8 +40,7 @@ def write_log(error, tb):
     with open(".log/" + current_time + ".txt", "w") as f:
         f.write("Error occured at : " + current_time + "\n\n")
         f.write(error + "\n\n")
-        for el in traceback.format_tb(tb):
-            f.write(el)
+        f.write(tb)
 
 
 def remove_old_log():
