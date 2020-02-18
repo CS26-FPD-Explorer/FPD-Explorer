@@ -55,7 +55,7 @@ def remove_old_log():
             os.remove(el)
 
 
-#sys.excepthook = fpd_except_handler
+sys.excepthook = fpd_except_handler
 
 if __name__ == "__main__":
     config.load_config()
