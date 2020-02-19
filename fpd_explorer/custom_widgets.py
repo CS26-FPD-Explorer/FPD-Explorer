@@ -174,125 +174,39 @@ class CustomInputForm(QtWidgets.QDialog):
         self.restore_default()
         return super().reject()
 
-
-class CustomInputFormCircularCenter(QtWidgets.QDialog):
-    def __init__(self):
-        super(CustomInputFormCircularCenter, self).__init__()
-        self._ui = Ui_CircularCenterInput()
-        self._ui.setupUi(self)
-
-    @Slot()
-    def restore_default(self):
-        """
-        Restore all values to initial state
-        """
-        print("restoring to default")
-        self._ui.rmms1st.setValue(10)
-        self._ui.rmms2nd.setValue(60)
-        self._ui.rmms3rd.setValue(1)
-        self._ui.sigma_value.setValue(2)
-
-    @Slot()
-    def reject(self):
-        """
-        Overload of the reject function
-        Reset the value to its default to not mesys up the loading
-        DO NOT RENAME: Overloading function
-        """
-        self.restore_default()
-        return super().reject()
-
-
-class CustomInputRemoveAperture(QtWidgets.QDialog):
-    def __init__(self):
-        super(CustomInputRemoveAperture, self).__init__()
-        self._ui = Ui_RemoveAperture()
-        self._ui.setupUi(self)
-
-    @Slot()
-    def restore_default(self):
-        """
-        Restore all values to initial state
-        """
-        print("restoring to default")
-        self._ui.sigma_val.setValue(0)
-        self._ui.add_radius.setValue(8)
-        self._ui.aaf.setValue(2)
-
-    @Slot()
-    def reject(self):
-        """
-        Overload of the reject function
-        Reset the value to its default to not mess up the loading
-        DO NOT RENAME: Overloading function
-        """
-        self.restore_default()
-        return super().reject()
-
-
-class CustomInputFormCenterOfMass(QtWidgets.QDialog):
-    def __init__(self):
-        super(CustomInputFormCenterOfMass, self).__init__()
-        self._ui = Ui_CenterofMass()
-        self._ui.setupUi(self)
-
-    @Slot()
-    def restore_default(self):
-        """
-        Restore all values to initial state
-        """
-        print("restoring to default")
-        self._ui.nr.setValue(16)
-        self._ui.nc.setValue(16)
-
-    @Slot()
-    def reject(self):
-        """
-        Overload of the reject function
-        Reset the value to its default to not mess up the loading
-        DO NOT RENAME: Overloading function
-        """
-        self.restore_default()
-        return super().reject()
-
-
-class CustomLoadingFormCenterOfMass(QtWidgets.QDialog):
-    def __init__(self, ds_sel):
+# TODO : Figure out a way to merge this 2 classes way too much repeated code
+class SingleLoadingForm(QtWidgets.QDialog):
+    def __init__(self,fnct,  *args, **kwargs):
         """
         Set up a loading form with 1 progress bar parameters
         """
-        super(CustomLoadingFormCenterOfMass, self).__init__()
+        super(SingleLoadingForm, self).__init__()
         self._ui = Ui_LoadingBoxCenterOfMass()
         self._ui.setupUi(self)
-        self.ds_sel = ds_sel
 
         self.com_yx = None
         self._ui.centerProgress.setValue(0)
-        self._ui.centerProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
+        self._ui.centerProgress.setMaximum(np.prod(kwargs['data'].shape[:-2]))
+
         self.threadpool = QThreadPool()
-        worker = GuiUpdater(fpdp_new.center_of_mass, self.ds_sel, 16, 16, parallel=False)
-        print(self._ui.centerProgress.value())
+        worker = GuiUpdater(fnct,*args, **kwargs)
         worker.signals.finished.connect(self.completed)
         worker.signals.progress.connect(self.progress_func)
-        print(self._ui.centerProgress.value())
         worker.signals.result.connect(self.center_of_mass)
         self.threadpool.start(worker)
 
     @Slot()
     def center_of_mass(self, value):
-        print("self._center_of_mass")
         self.com_yx = value
 
     @Slot()
     def completed(self):
-        print("Done-completed")
         return super().done(True)
 
     @Slot(tuple)
     def progress_func(self, value):
         self._ui.centerProgress.setValue(
             self._ui.centerProgress.value() + value[0])
-        print(self._ui.centerProgress.value())
 
 
 class CustomLoadingForm(QtWidgets.QDialog):
