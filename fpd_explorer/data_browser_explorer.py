@@ -6,7 +6,6 @@ from PySide2.QtWidgets import QDockWidget, QMainWindow
 
 from .custom_fpd_lib.data_browser import DataBrowser
 from .res.ui_data_browser import Ui_DataBrowser
-
 from . import logger
 from .logger import Flags
 
@@ -42,6 +41,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
         """
         self._data_browser = data_browser
         print(self._data_browser)
+
 
     def get_nav(self):
         """
