@@ -60,13 +60,12 @@ class change_scale(object):
         dx = event.x - xprev
         dy = event.y - yprev
         self.press = event.x,event.y
-        #print 'x0=%f, xpress=%f, event.xdata=%f, dx=%f, x0+dx=%f'%(x0, xpress, event.xdata, dx, x0+dx)
+        
         scale = self.cbar.norm.vmax - self.cbar.norm.vmin
         self.cbar.norm.vmin>0
         self.cbar.norm.vmax>0
         perc = 0.03
-        #a=self.cbar.norm.vmin -= (perc*scale)*np.sign(dy)
-        #b=self.cbar.norm.vmax -= (perc*scale)*np.sign(dy)
+        
         if event.button==1 and self.cbar.norm.vmin>0:
             self.cbar.norm.vmin -= (perc*scale)*np.sign(dy)
             self.cbar.norm.vmax -= (perc*scale)*np.sign(dy)
@@ -75,8 +74,6 @@ class change_scale(object):
             self.cbar.norm.vmin -= (perc*scale)*np.sign(dy)
             self.cbar.norm.vmax += (perc*scale)*np.sign(dy)
         
-        if self.cbar.norm.vmin>0 and self.cbar.norm.vmax>0:
-            print(self.cbar.norm.vmin,self.cbar.norm.vmax)
         if self.cbar.norm.vmin<0 :
             self.cbar.norm.vmin += (perc*scale)*np.sign(dy)
             self.cbar.norm.vmax -= (perc*scale)*np.sign(dy)
