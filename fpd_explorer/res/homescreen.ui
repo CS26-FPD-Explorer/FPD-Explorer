@@ -176,7 +176,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Ransac Im Fit</string>
+              <string>Ransac Tools</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -197,7 +197,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Not center of mass</string>
+              <string> Center of mass</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -260,7 +260,7 @@
               </font>
              </property>
              <property name="text">
-              <string>synthetic aperture</string>
+              <string>Synthetic aperture</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -669,7 +669,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -782,8 +782,8 @@
    <slot>load_files()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>254</x>
-     <y>298</y>
+     <x>213</x>
+     <y>300</y>
     </hint>
     <hint type="destinationlabel">
      <x>382</x>
@@ -814,8 +814,8 @@
    <slot>clear_files()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>527</x>
-     <y>298</y>
+     <x>462</x>
+     <y>300</y>
     </hint>
     <hint type="destinationlabel">
      <x>505</x>
@@ -862,8 +862,8 @@
    <slot>centre_of_mass()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>812</x>
-     <y>290</y>
+     <x>724</x>
+     <y>295</y>
     </hint>
     <hint type="destinationlabel">
      <x>789</x>
@@ -887,22 +887,6 @@
     </hint>
    </hints>
   </connection>
-  <connection>
-   <sender>ransac_tools_button</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>ransac_im_fit()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>930</x>
-     <y>189</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1093</x>
-     <y>216</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
  <slots>
   <slot>load_files()</slot>
@@ -915,6 +899,5 @@
   <slot>remove_aperture()</slot>
   <slot>centre_of_mass()</slot>
   <slot>start_dpc_explorer()</slot>
-  <slot>ransac_im_fit()</slot>
  </slots>
 </ui>
