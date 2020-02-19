@@ -27,11 +27,12 @@ def start_dpc(ApplicationWindow):
     try:
         avail_input.append(("com_yx_beta", ApplicationWindow.com_yx_beta))
         avail_input.append(("beta2bt", fpd.mag_tools.beta2bt(
-                    ApplicationWindow.com_yx_beta) * 1e9))
+            ApplicationWindow.com_yx_beta) * 1e9))
     except AttributeError:
         pass
     if len(avail_input) == 0:
-        raise Exception("No data found that could be used with DPC Explorer.\nPlease run some function before trying again")
+        raise Exception("""No data found that could be used with DPC Explorer.\n
+        Please run some function before trying again""")
     key_add = {
         "d": [
             "multipleinput", avail_input, """If array-like, yx data. If length 2 iterable or ndarray of \n

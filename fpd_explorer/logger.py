@@ -13,6 +13,7 @@ class Flags(Enum):
     circular_center = auto()
     aperture = auto()
     center_mass = auto()
+    ransac_fit = auto()
 
     def __lt__(self, other):
         return self.value < other.value
@@ -41,6 +42,11 @@ global_flags = {
         "bool": False,
         "error": "<b>The center of mass must be calculated</b> before this step can be taken.<br><br>",
         "needing": [Flags.files_loaded, Flags.circular_center, Flags.aperture]
+    },
+    Flags.ransac_fit: {
+        "bool": False,
+        "error": "<b>The image must be fitted using ransac</b> before this step can be taken.<br><br>",
+        "needing": [Flags.files_loaded, Flags.circular_center, Flags.aperture, Flags.center_mass]
     }
 }
 
