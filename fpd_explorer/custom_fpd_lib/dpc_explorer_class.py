@@ -42,182 +42,183 @@ except:
 
 
 class DPC_Explorer:
+    """
+    Interactive plots of vector field using matplotlib.
+
+    Returns class from which the save method can be used to 
+    programmatically save the analysis.
+
+    Parameters
+    ----------
+    d : array-like or int
+        If array-like, yx data. If length 2 iterable or ndarray of
+        shape (2, M, N), data is single yx dataset. If shape is 
+        (S, 2, M, N), a sequence yx data of length S can be plotted.
+        If int, width of array of synthetic data.
+        If int is negative, synthetic data has noise added.
+    r_min : scalar
+        Initial value of `r_min`.
+        If supplied, takes precedence over `r_min_pct`.
+    r_max : scalar
+        Initial value of `r_max`.
+        If supplied, takes precedence over `r_max_pct`.
+    r_min_pct : scalar
+        [0 100] used for initial setting of `r_min`.
+    r_max_pct : scalar
+        [0 100] used for initial setting of `r_max`.
+    descan : length 4 iterable
+        Plane descan correction.
+        [Yy, Yx, Xy, Xx] entered in 1/1000 for for convenience.
+    cyx : length 2 iterable
+        y, x centre coordinates.
+    vectrot : scalar
+        Rotation of data vector (not CW) in degrees.
+    gaus : scalar
+        Sigma of Gaussian smoothing used on yx data.
+    pct : None, scalar or iterable
+        Percentile used to apply to separately to x and y.
+        If None, no percentile.
+        If scalar, used for all values.
+        If iterable, used as [y, x], then [[ylow, yhigh], [ylow, yhigh]].
+    dt : scalar
+        Rotation of colourwheel (not data) in degrees.
+    gaus_lim : scalar
+        Sets max scale on gaus sigma slider.
+    cw_rmin : scalar
+        Inner radius of colourwheel, [0:1].
+    cmap : mpl.colors.Colormap, string, or integer
+        Colour map for r-theta plot.
+        If string, must be name of matplotlib.Colormap.
+        If integer, selects n'th built-in cmaps. 
+    median : bool
+        If True, apply median line correction to data vertically.
+        This assumes scan is sequence of horizontal lines.
+    median_mode : int
+        Median line correction mode. 
+        0 : median
+        1 : median of differences
+    ransac : bool
+        If True, ransac background subtraction is applied to x and y data.
+        This is computationally expensive and so is only run once, then
+        stored for reuse, unless GUI button is toggled.
+    ransac_dict : dictionary or None
+        Ransac parameter dictionary passed as keyword dict to ransac function.
+        See fpd.ransac_tools.ransac_im_fit for details of parameters.
+        If None, plane background is used.
+    nbins : int or None
+        Number of bins to use for histogram.
+        If None, the number of bins is calculated from the data size.
+        The bin widths are always equal in x and y.
+    hist_lims : length 4 tuple of scalars, or None
+        Histogram limits in order of xmin, xmax, ymin, ymax.
+        If None, limits are taken from data.
+    flip_y : bool
+        If True, flip y beam shifts.
+    flip_x : bool
+        If True, flip x beam shifts.
+    origin : str
+        Controls y-origin of supplied shift arrays. If origin='top', pythonic
+        indexing is used. If origin='bottom', increasing y is up.
+    yx_range_from_r : bool
+        If True, the y and x plot ranges are set from the maximum radius. The
+        centre is always set from the centre.
+    widget : DPC_Explorer_Widget
+        A qt widget that must contain either 4 widget or 4 dock widgets.
+
+    Attributes
+    ----------
+    x : 2-D array
+        Processed x values.
+    y : 2-D array
+        Processed y values.
+    r : 2-D array
+        Radius values.
+    rn : 2-D array
+        Radius values, normalised and clipped at `r_max`, in [0, 1].
+    tn : 2-D array
+        Theta values in radians, in range [0, 2pi].
+    t_im : 3-D array
+        Theta RGB float [0, 1] image of shape (..., 3).
+    tr_im : 3-D array
+        Magnitude scaled theta RGB float [0, 1] image of shape (..., 3).
+
+    Notes
+    -----        
+    On histogram:
+        right / left arrows for sequence navigation.
+        Ctrl+arrows for Y descan.
+        Alt+arrows for X descan.
+        Increment is fraction of r_max.
+
+        Ctrl+ mouse drag on circle is rotate angle.
+        Mouse drag on circle sets r_max.
+        Shift+ mouse drag on circle sets r_min.
+        Mouse drag on square moves centre.
+
+    On xy plots:
+        Click+drag in y for histogram region select.
+
+    Order of process operations:
+        1. median
+        2. ransac background
+        3. manual descan
+        4. flip displacements
+        5. percentile
+        6. gaussian smoothing
+        7. vector rotation
+
+    Descan correction happens early so that manual or programmatic 
+    correction can be used without affecting other parameters.
+
+    The histogram is generated from processed x-y data.
+
+    The x and y data are plotted relative to chosen centre on histogram 
+    with same range on each so relative magnitudes can easily be seen.
+
+    Examples
+    --------
+    A noiseless plot:
+
+    >>> import matplotlib.pylab as plt
+    >>> plt.ion()
+    >>> import fpd
+    >>> b = fpd.DPC_Explorer(64)
+    >>> save_dir = b.save('Test')     
+
+    A plot with random noise:
+
+    >>> ransac_dict = {'mode': 1, 'residual_threshold': 0.1}
+    >>> b = fpd.DPC_Explorer(-64, ransac=True, ransac_dict=ransac_dict)
+
+    A sequence of 3 datasets:
+
+    >>> import matplotlib.pylab as plt
+    >>> import fpd
+    >>> import numpy as np
+    >>> plt.ion()
+    >>> yx = np.random.rand(3, 2, 64, 64)
+    >>> yx -= yx.mean((2,3))[..., None, None]
+    >>> yx[-2,0] += 0.5
+    >>> yx[-1,0] += 1.0
+    >>> b = fpd.DPC_Explorer(d=yx)
+
+
+    TODO
+    ----
+    Reset hist regions / plot limits on updates?
+
+    Avoid rare issues of small radii by updating rwh size or
+    by making centre click move circle, not rectangle drag?
+
+    """
+
+
     def __init__(self, d, r_min=0, r_max=None, r_min_pct=0, r_max_pct=95,
                  descan=[0, 0, 0, 0], cyx=None, vectrot=0, gaus=0, pct=None,
                  dt=0, gaus_lim=16, cw_rmin=1.0 / 3, cmap=None, median=False,
                  median_mode=0, ransac=False, ransac_dict=None, nbins=None,
                  hist_lims=None, flip_y=False, flip_x=False, origin='top',
                  yx_range_from_r=True, widget=None):
-        '''
-        Interactive plots of vector field using matplotlib.
-
-        Returns class from which the save method can be used to 
-        programmatically save the analysis.
-
-        Parameters
-        ----------
-        d : array-like or int
-            If array-like, yx data. If length 2 iterable or ndarray of
-            shape (2, M, N), data is single yx dataset. If shape is 
-            (S, 2, M, N), a sequence yx data of length S can be plotted.
-            If int, width of array of synthetic data.
-            If int is negative, synthetic data has noise added.
-        r_min : scalar
-            Initial value of `r_min`.
-            If supplied, takes precedence over `r_min_pct`.
-        r_max : scalar
-            Initial value of `r_max`.
-            If supplied, takes precedence over `r_max_pct`.
-        r_min_pct : scalar
-            [0 100] used for initial setting of `r_min`.
-        r_max_pct : scalar
-            [0 100] used for initial setting of `r_max`.
-        descan : length 4 iterable
-            Plane descan correction.
-            [Yy, Yx, Xy, Xx] entered in 1/1000 for for convenience.
-        cyx : length 2 iterable
-            y, x centre coordinates.
-        vectrot : scalar
-            Rotation of data vector (not CW) in degrees.
-        gaus : scalar
-            Sigma of Gaussian smoothing used on yx data.
-        pct : None, scalar or iterable
-            Percentile used to apply to separately to x and y.
-            If None, no percentile.
-            If scalar, used for all values.
-            If iterable, used as [y, x], then [[ylow, yhigh], [ylow, yhigh]].
-        dt : scalar
-            Rotation of colourwheel (not data) in degrees.
-        gaus_lim : scalar
-            Sets max scale on gaus sigma slider.
-        cw_rmin : scalar
-            Inner radius of colourwheel, [0:1].
-        cmap : mpl.colors.Colormap, string, or integer
-            Colour map for r-theta plot.
-            If string, must be name of matplotlib.Colormap.
-            If integer, selects n'th built-in cmaps. 
-        median : bool
-            If True, apply median line correction to data vertically.
-            This assumes scan is sequence of horizontal lines.
-        median_mode : int
-            Median line correction mode. 
-            0 : median
-            1 : median of differences
-        ransac : bool
-            If True, ransac background subtraction is applied to x and y data.
-            This is computationally expensive and so is only run once, then
-            stored for reuse, unless GUI button is toggled.
-        ransac_dict : dictionary or None
-            Ransac parameter dictionary passed as keyword dict to ransac function.
-            See fpd.ransac_tools.ransac_im_fit for details of parameters.
-            If None, plane background is used.
-        nbins : int or None
-            Number of bins to use for histogram.
-            If None, the number of bins is calculated from the data size.
-            The bin widths are always equal in x and y.
-        hist_lims : length 4 tuple of scalars, or None
-            Histogram limits in order of xmin, xmax, ymin, ymax.
-            If None, limits are taken from data.
-        flip_y : bool
-            If True, flip y beam shifts.
-        flip_x : bool
-            If True, flip x beam shifts.
-        origin : str
-            Controls y-origin of supplied shift arrays. If origin='top', pythonic
-            indexing is used. If origin='bottom', increasing y is up.
-        yx_range_from_r : bool
-            If True, the y and x plot ranges are set from the maximum radius. The
-            centre is always set from the centre.
-        widgte : DPC_Explorer_Widget
-            A qt widget that must contain either 4 widget or 4 dock widgets.
-
-        Attributes
-        ----------
-        x : 2-D array
-            Processed x values.
-        y : 2-D array
-            Processed y values.
-        r : 2-D array
-            Radius values.
-        rn : 2-D array
-            Radius values, normalised and clipped at `r_max`, in [0, 1].
-        tn : 2-D array
-            Theta values in radians, in range [0, 2pi].
-        t_im : 3-D array
-            Theta RGB float [0, 1] image of shape (..., 3).
-        tr_im : 3-D array
-            Magnitude scaled theta RGB float [0, 1] image of shape (..., 3).
-
-        Notes
-        -----        
-        On histogram:
-            right / left arrows for sequence navigation.
-            Ctrl+arrows for Y descan.
-            Alt+arrows for X descan.
-            Increment is fraction of r_max.
-
-            Ctrl+ mouse drag on circle is rotate angle.
-            Mouse drag on circle sets r_max.
-            Shift+ mouse drag on circle sets r_min.
-            Mouse drag on square moves centre.
-
-        On xy plots:
-            Click+drag in y for histogram region select.
-
-        Order of process operations:
-            1. median
-            2. ransac background
-            3. manual descan
-            4. flip displacements
-            5. percentile
-            6. gaussian smoothing
-            7. vector rotation
-
-        Descan correction happens early so that manual or programmatic 
-        correction can be used without affecting other parameters.
-
-        The histogram is generated from processed x-y data.
-
-        The x and y data are plotted relative to chosen centre on histogram 
-        with same range on each so relative magnitudes can easily be seen.
-
-        Examples
-        --------
-        A noiseless plot:
-
-        >>> import matplotlib.pylab as plt
-        >>> plt.ion()
-        >>> import fpd
-        >>> b = fpd.DPC_Explorer(64)
-        >>> save_dir = b.save('Test')     
-
-        A plot with random noise:
-
-        >>> ransac_dict = {'mode': 1, 'residual_threshold': 0.1}
-        >>> b = fpd.DPC_Explorer(-64, ransac=True, ransac_dict=ransac_dict)
-
-        A sequence of 3 datasets:
-
-        >>> import matplotlib.pylab as plt
-        >>> import fpd
-        >>> import numpy as np
-        >>> plt.ion()
-        >>> yx = np.random.rand(3, 2, 64, 64)
-        >>> yx -= yx.mean((2,3))[..., None, None]
-        >>> yx[-2,0] += 0.5
-        >>> yx[-1,0] += 1.0
-        >>> b = fpd.DPC_Explorer(d=yx)
-
-
-        TODO
-        ----
-        Reset hist regions / plot limits on updates?
-
-        Avoid rare issues of small radii by updating rwh size or
-        by making centre click move circle, not rectangle drag?
-
-        '''
-
         self.widget = widget
         plt.ion()
 
@@ -515,7 +516,7 @@ class DPC_Explorer:
                                          figsize=(6.4, 4),
                                          subplot_kw=kwd)
 
-            f.canvas.set_window_title(window_title)
+            f.canvas.set_window_title(window_name)
             self.fig = plt
 
         ims = []

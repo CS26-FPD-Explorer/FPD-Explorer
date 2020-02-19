@@ -128,16 +128,30 @@ class UI_Generator(QtWidgets.QDialog):
                 # skip input that could be an array because its too hard to find a way to handle them
                 print("skipping : ", val[0])
                 continue
+            if "cmap" in val[0] or "colormap" in val[0].lower():
+                param_type = "multipleinput"
+                widget = QComboBox()
+                for el in self.application_window.cmaps.values():
+                    for cmaps in el:
+                        widget.addItem(cmaps)
+
             elif "str" in val[0]:
-                default_val = val[1] if val[1] is not None else key
                 widget = QLineEdit()
-                widget.setPlaceholderText(self._set_default(widget, default_val))
+                if val[1] is None:
+                    widget.setPlaceholderText(self._set_default(widget, key))
+                else:
+                    widget.setText(self._set_default(widget, val[1]))
                 tmp_val = self.config_val.get(key, None)
                 if tmp_val is not None:
                     widget.setText(tmp_val)
                 param_type = "str"
-            elif "int" in val[0] or "scalar" in val[0] or "float" in val[0]:
-                widget = self._create_int_float(val, True if "float" in val[0] else False, key=key)
+            elif "tuple" in val[0]:
+                param_type, widget = self._handle_iterable(val, key)
+            elif "scalar" in val[0] or "float" in val[0]:
+                widget = self._create_int_float(val, is_float=True, key=key)
+                param_type = "int"
+            elif "int" in val[0]:
+                widget = self._create_int_float(val, key=key)
                 param_type = "int"
             elif "bool" in val[0]:
                 default_val = val[1] if val[1] is not None else False
@@ -148,26 +162,18 @@ class UI_Generator(QtWidgets.QDialog):
                     widget.setChecked(tmp_val)
                 param_type = "bool"
             elif "iterable" in val[0]:
-                iter_ran = int(''.join(x for x in val[0] if x.isdigit()))
-                widget = QWidget()
-                lay = QVBoxLayout()
-                unpack = False
-                if isinstance(val[1], tuple) or isinstance(val[1], list):
-                    # Expect to have as many value in the tuple as there is required by the iterable
-                    unpack = True
-                for el in range(iter_ran):
-                    new_val = list(val)
-                    if unpack:
-                        new_val[1] = val[1][el]
-                    lay.addWidget(self._create_int_float(new_val, key=key + '_' + str(el)))
-                widget.setLayout(lay)
-                param_type = "iterable_" + str(iter_ran)
+                # Repetition needed because int should be prioritized over iterable and tuple over scalar
+                param_type, widget = self._handle_iterable(val, key)
             elif "multipleinput" in val[0]:
                 param_type = "multipleinput"
                 widget = QComboBox()
                 for idx, el in enumerate(val[1]):
                     widget.addItem(el[0])
                     widget.setItemData(idx, el[1])
+                tmp_val = self.config_val.get(key, None)
+                if tmp_val is not None:
+                    # Float needed because otherwise Python throws a fit
+                    widget.setCurrentIndex(int(float(tmp_val)))
             else:
                 print("TODO : Implement : ", val[0])
                 continue
@@ -177,6 +183,23 @@ class UI_Generator(QtWidgets.QDialog):
             widget.setToolTip(val[2])
             self.widgets[param_type].append([key, widget, none_possible])
         self._format_layout()
+
+    def _handle_iterable(self, val, key):
+        iter_ran = int(''.join(x for x in val[0] if x.isdigit()))
+        widget = QWidget()
+        lay = QVBoxLayout()
+        unpack = False
+        if isinstance(val[1], tuple) or isinstance(val[1], list):
+            # Expect to have as many value in the tuple as there is required by the iterable
+            unpack = True
+        for el in range(iter_ran):
+            new_val = list(val)
+            if unpack:
+                new_val[1] = val[1][el]
+            lay.addWidget(self._create_int_float(new_val, key=key + '_' + str(el)))
+        widget.setLayout(lay)
+        param_type = "iterable_" + str(iter_ran)
+        return param_type, widget
 
     def _create_int_float(self, val, is_float: bool = False, key: str = None) -> QWidget:
         """
@@ -201,6 +224,8 @@ class UI_Generator(QtWidgets.QDialog):
             widget = QDoubleSpinBox()
         else:
             widget = QSpinBox()
+        widget.setMinimum(-1000)
+        widget.setMaximum(1000)
         # Needed to return to default if they ever want it
         widget.setMinimum(-1000)
         widget.setMaximum(1000)
@@ -232,21 +257,33 @@ class UI_Generator(QtWidgets.QDialog):
                         val = None
                 elif "iterable" in param_type:
                     val = []
+                    none_list = False
                     iter_ran = int(param_type.split("_")[1])
                     for el in range(iter_ran):
                         value = self.sub_ls[widget][el].value()
                         val.append(value)
-                        saved_result[key + "_" + str(el)] = value
+                        if none_possible and (value == 0 or value == 0.0):
+                            none_list = True
+                            value = None
+                        saved_result[key + "_" + str(el)] = str(value)
+                    if none_list:
+                        val = None
                     skip = True
                 elif param_type == "multipleinput":
                     val = widget.itemData(widget.currentIndex())
+                    # Repeated code because val should be the index and not the data
+                    saved_result[key] = str(widget.currentIndex())
                     skip = True
                 else:
                     val = widget.text()
+                    if none_possible and val == '':
+                        val = None
+
                 self.result[key] = val
                 if not skip:
                     if param_type != "bool":
                         val = str(val)
+                    print(key, val, param_type)
                     saved_result[key] = val
         config.add_config({self.fnct: saved_result})
         self.accept()
