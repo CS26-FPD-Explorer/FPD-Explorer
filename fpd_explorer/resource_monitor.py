@@ -1,8 +1,9 @@
-import psutil
 import numpy as np
+import psutil
 from matplotlib.animation import FuncAnimation
+from matplotlib.backends.backend_qt5agg import \
+    FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
 class CpuFreqGraph(FigureCanvas, FuncAnimation):

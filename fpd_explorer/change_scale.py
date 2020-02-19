@@ -1,16 +1,13 @@
-import numpy as np
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-from matplotlib import ticker
-from scipy.ndimage import gaussian_filter
+import numpy as np
+
 
 class change_scale(object):
     def __init__(self, cbar, mappable):
         self.cbar = cbar
         self.mappable = mappable
         self.press = None
-        self.cycle = sorted([i for i in dir(plt.cm) if hasattr(getattr(plt.cm,i),'N')])
+        self.cycle = sorted([i for i in dir(plt.cm) if hasattr(getattr(plt.cm, i), 'N')])
         self.index = self.cycle.index(cbar.get_cmap().name)
 
     def connect(self):
@@ -23,27 +20,28 @@ class change_scale(object):
             'motion_notify_event', self.C_on_motion)
         self.keypress = self.cbar.patch.figure.canvas.mpl_connect(
             'key_press_event', self.key_press)
-   
+
     def restore_default(self):
-            """
-            Restore the colorbar to its initial state.
-            """
-            print("restoring to default")
-            self.cbar.set_norm.vmin(0)
+        """
+        Restore the colorbar to its initial state.
+        """
+        print("restoring to default")
+        self.cbar.set_norm.vmin(0)
+
     def C_on_press(self, event):
         """on button press we will see if the mouse is over us and store some data"""
-        if event.inaxes != self.cbar.ax: 
+        if event.inaxes != self.cbar.ax:
             return
         self.press = event.x, event.y
 
     def key_press(self, event):
-        if event.key=='down':
+        if event.key == 'down':
             self.index += 1
-        elif event.key=='up':
+        elif event.key == 'up':
             self.index -= 1
-        if self.index<0:
+        if self.index < 0:
             self.index = len(self.cycle)
-        elif self.index>=len(self.cycle):
+        elif self.index >= len(self.cycle):
             self.index = 0
         cmap = self.cycle[self.index]
         self.cbar.set_cmap(cmap)
@@ -54,33 +52,34 @@ class change_scale(object):
 
     def C_on_motion(self, event):
         'on motion we will move the rect if the mouse is over us'
-        if self.press is None: return
-        if event.inaxes != self.cbar.ax: return
+        if self.press is None:
+            return
+        if event.inaxes != self.cbar.ax:
+            return
         xprev, yprev = self.press
         dx = event.x - xprev
         dy = event.y - yprev
-        self.press = event.x,event.y
-        
+        self.press = event.x, event.y
+
         scale = self.cbar.norm.vmax - self.cbar.norm.vmin
-        self.cbar.norm.vmin>0
-        self.cbar.norm.vmax>0
+        self.cbar.norm.vmin > 0
+        self.cbar.norm.vmax > 0
         perc = 0.03
-        
-        if event.button==1 and self.cbar.norm.vmin>0:
-            self.cbar.norm.vmin -= (perc*scale)*np.sign(dy)
-            self.cbar.norm.vmax -= (perc*scale)*np.sign(dy)
-        
-        elif event.button==3 and self.cbar.norm.vmin>0:
-            self.cbar.norm.vmin -= (perc*scale)*np.sign(dy)
-            self.cbar.norm.vmax += (perc*scale)*np.sign(dy)
-        
-        if self.cbar.norm.vmin<0 :
-            self.cbar.norm.vmin += (perc*scale)*np.sign(dy)
-            self.cbar.norm.vmax -= (perc*scale)*np.sign(dy)
+
+        if event.button == 1 and self.cbar.norm.vmin > 0:
+            self.cbar.norm.vmin -= (perc * scale) * np.sign(dy)
+            self.cbar.norm.vmax -= (perc * scale) * np.sign(dy)
+
+        elif event.button == 3 and self.cbar.norm.vmin > 0:
+            self.cbar.norm.vmin -= (perc * scale) * np.sign(dy)
+            self.cbar.norm.vmax += (perc * scale) * np.sign(dy)
+
+        if self.cbar.norm.vmin < 0:
+            self.cbar.norm.vmin += (perc * scale) * np.sign(dy)
+            self.cbar.norm.vmax -= (perc * scale) * np.sign(dy)
         self.cbar.draw_all()
         self.mappable.set_norm(self.cbar.norm)
         self.cbar.patch.figure.canvas.draw()
-
 
     def C_on_release(self, event):
         """on release we reset the press data"""
@@ -93,5 +92,3 @@ class change_scale(object):
         self.cbar.patch.figure.canvas.mpl_disconnect(self.cidpress)
         self.cbar.patch.figure.canvas.mpl_disconnect(self.cidrelease)
         self.cbar.patch.figure.canvas.mpl_disconnect(self.cidmotion)
-    
-    

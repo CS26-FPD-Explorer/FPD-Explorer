@@ -2,11 +2,10 @@ import fpd
 import fpd.fpd_processing as fpdp
 import matplotlib.pyplot as plot
 
+from . import logger
 from .custom_widgets import (CustomInputFormCenterOfMass,
                              CustomInputFormCircularCenter,
                              CustomInputRemoveAperture)
-
-from . import logger
 from .logger import Flags
 
 # NEED TO GO THROUGH PRIVATE VARIABLES

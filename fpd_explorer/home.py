@@ -7,12 +7,10 @@ import qdarkgraystyle
 
 from . import centre_of_mass
 from . import config_handler as config
-from . import logger
-from . import data_browser_explorer
-from . import dpc_explorer
+from . import data_browser_explorer, dpc_explorer, logger
 from .custom_widgets import CustomInputForm, CustomLoadingForm
-from .res.ui_homescreen import Ui_MainWindow
 from .logger import Flags
+from .res.ui_homescreen import Ui_MainWindow
 
 
 class ApplicationWindow(QMainWindow):

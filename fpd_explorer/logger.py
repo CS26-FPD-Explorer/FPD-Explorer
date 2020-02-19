@@ -1,6 +1,7 @@
-from PySide2 import QtWidgets
-from enum import Enum, auto
 import operator
+from enum import Enum, auto
+
+from PySide2 import QtWidgets
 
 
 class Flags(Enum):
