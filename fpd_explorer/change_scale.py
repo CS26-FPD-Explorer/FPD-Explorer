@@ -79,6 +79,7 @@ class change_scale(object):
             print(self.cbar.norm.vmin,self.cbar.norm.vmax)
         if self.cbar.norm.vmin<0 :
             self.cbar.norm.vmin += (perc*scale)*np.sign(dy)
+            self.cbar.norm.vmax -= (perc*scale)*np.sign(dy)
         self.cbar.draw_all()
         self.mappable.set_norm(self.cbar.norm)
         self.cbar.patch.figure.canvas.draw()
