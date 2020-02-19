@@ -1,12 +1,14 @@
 
-import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QFileDialog, QMainWindow
 
+# First Party
+import qdarkgraystyle
+
 # FPD Explorer
-from . import logger, dpc_explorer, centre_of_mass
+from . import logger, dpc_explorer, fpd_functions
 from . import config_handler as config
 from . import data_browser_explorer
 from .logger import Flags
@@ -130,15 +132,19 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def find_circular_centre(self):
-        centre_of_mass.find_circular_centre(self)
+        fpd_functions.find_circular_centre(self)
 
     @Slot()
     def remove_aperture(self):
-        centre_of_mass.remove_aperture(self)
+        fpd_functions.remove_aperture(self)
 
     @Slot()
     def centre_of_mass(self):
-        centre_of_mass.centre_of_mass(self)
+        fpd_functions.centre_of_mass(self)
+
+    @Slot()
+    def ransac_im_fit(self):
+        fpd_functions.ransac_im_fit(self)
 
     @Slot()
     def clear_files(self):
@@ -248,14 +254,21 @@ class ApplicationWindow(QMainWindow):
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
         """
         create an input form with the given value
+
         Parameters
         ----------
-        initial_x int value the top value should start from
-        initial_y int value the bottom value should start from
-        minimum int minimum value the spin box should be allowed to go
-        maximum int maximum value the spin box should be allowed to go
-        text_x str Text to set in the top screen
-        text_y str Text to set in the bottom screen
+        initial_x : int
+            Value the top value should start from
+        initial_y : int
+            Value the bottom value should start from
+        minimum : int
+            Minimum value the spin box should be allowed to go
+        maximum : int
+            Maximum value the spin box should be allowed to go
+        text_x : str
+            Text to set in the top screen
+        text_y : str
+            Text to set in the bottom screen
 
         """
 

@@ -422,8 +422,8 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
     # Possible alternative was not as fast in tests:
     # from scipy.ndimage.measurements import center_of_mass
     if nrnc_are_chunks:
-        nr, nc = _condition_nrnc_if_chunked(data, nr, nc, print_stats)
-
+        nr, nc = fpdp._condition_nrnc_if_chunked(data, nr, nc, print_stats)
+        
     if ncores is None:
         ncores = mp.cpu_count()
 
@@ -465,11 +465,11 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
         ciic, cifc = cii + ext_pix_pads[0], cif + ext_pix_pads[1]
         if riic < 0 or rifc > detY - 1 or ciic < 0 or cifc > detX - 1:
             # change rebin
-            f, fs = _find_nearest_int_factor(data_square_len, rebin)
+            f, fs = fpdp._find_nearest_int_factor(data_square_len, rebin)
             if rebin != f:
                 if print_stats:
-                    print('Image data cropped to:', cropped_im_shape)
-                    print('Requested rebin (%d) changed to nearest value: %d. Possible values are:' % (rebin, f), fs)
+                    print('Image data cropped to:', fpdp.cropped_im_shape)
+                    print('Requested rebin (%d) changed to nearest value: %d. Possible values are:' %(rebin, f), fs)
                 rebin = f
         else:
             rii, rif = riic, rifc
@@ -502,7 +502,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
         print('Calculating centre-of-mass')
         tqdm_file = sys.stderr
     else:
-        tqdm_file = DummyFile()
+        tqdm_file = fpdp.DummyFile()
     total_nims = np.prod(nondet)
     with tqdm(total=total_nims, file=tqdm_file, mininterval=0, leave=True, unit='images') as pbar:
         for i, (ri, rf) in enumerate(r_if):
@@ -510,9 +510,9 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                 d = data[ri:rf, ci:cf, ..., rii:rif + 1, cii:cif + 1]  # .astype(np.float)
                 d = np.ascontiguousarray(d)
                 if rebinning:
-                    ns = d.shape[:-2] + tuple([int(x / rebin) for x in d.shape[-2:]])
-                    d = rebinA(d, *ns)
-
+                    ns = d.shape[:-2] + tuple([int(x/rebin) for x in d.shape[-2:]])
+                    d = fpdp.rebinA(d, *ns)
+                
                 # modify with function
                 if pre_func is not None:
                     d = pre_func(d.reshape((-1,) + d.shape[-2:]))
@@ -665,7 +665,7 @@ def synthetic_aperture(shape, cyx, rio, sigma=1, dt=np.float, aaf=3, ds_method='
             mi = np.ones(shape) * np.nan
         if aaf != 1:
             if ds_method == 'rebin':
-                mi = rebinA(mi, *im_shape) / float(aaf**2)
+                mi = fpdp.rebinA(mi, *im_shape)/ float(aaf**2)
             elif ds_method == 'interp':
                 mi = sp.ndimage.interpolation.zoom(mi,
                                                    1.0 / aaf,

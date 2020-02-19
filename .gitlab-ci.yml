@@ -23,24 +23,26 @@ cache:
 stages:
  - build
  - static analysis
- - run
+ - test
 
 setup:
  stage: build
  script:
+  - python3 -m virtualenv ~/venv --python=python3.7
   - source ~/venv/bin/activate
-  - pip install --upgrade pip
-  - pip install -r requirements.txt
-  - pip install git+git://github.com/09ubberboy90/qdarkgraystyle.git
+  - pip3 install --upgrade pip
+  - pip3 install -r requirements.txt
+  - pip3 install git+git://github.com/09ubberboy90/qdarkgraystyle.git
 
 flake8:
  stage: static analysis
  script:
   - source ~/venv/bin/activate
-  - python -m flake8
+  - python3 -m flake8
+ allow_failure: true
 
-run:
- stage: run
+test:
+ stage: test
  script:
   - source ~/venv/bin/activate
-  - python compile_ui.py
+  - python3 compile_ui.py

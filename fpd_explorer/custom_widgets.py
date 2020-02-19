@@ -1,3 +1,7 @@
+# Standard Library
+import sys
+import traceback
+
 import numpy as np
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot, Signal, QObject, QRunnable, QThreadPool
@@ -9,10 +13,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from .custom_fpd_lib import fpd_processing as fpdp_new
 from .res.ui_inputbox import Ui_InputBox
 from .res.ui_loadingbox import Ui_LoadingBox
-from .res.ui_inputBoxCenterOfMass import Ui_CenterofMass
-from .res.ui_inputBoxCircularCenter import Ui_CircularCenterInput
-from .res.ui_inputBoxRemoveAperture import Ui_RemoveAperture
-from .res.ui_loadingboxCenterOfMass import Ui_LoadingBoxCenterOfMass
+from .res.ui_singleloadingbox import Ui_SingleLoadingBox
 
 
 class MyMplCanvas(FigureCanvas):
@@ -175,21 +176,23 @@ class CustomInputForm(QtWidgets.QDialog):
         return super().reject()
 
 # TODO : Figure out a way to merge this 2 classes way too much repeated code
+
+
 class SingleLoadingForm(QtWidgets.QDialog):
-    def __init__(self,fnct,  *args, **kwargs):
+    def __init__(self, fnct, data, *args, **kwargs):
         """
         Set up a loading form with 1 progress bar parameters
         """
         super(SingleLoadingForm, self).__init__()
-        self._ui = Ui_LoadingBoxCenterOfMass()
+        self._ui = Ui_SingleLoadingBox()
         self._ui.setupUi(self)
 
         self.com_yx = None
         self._ui.centerProgress.setValue(0)
-        self._ui.centerProgress.setMaximum(np.prod(kwargs['data'].shape[:-2]))
+        self._ui.centerProgress.setMaximum(np.prod(data.shape[:-2]))
 
         self.threadpool = QThreadPool()
-        worker = GuiUpdater(fnct,*args, **kwargs)
+        worker = GuiUpdater(fnct, data, *args, **kwargs)
         worker.signals.finished.connect(self.completed)
         worker.signals.progress.connect(self.progress_func)
         worker.signals.result.connect(self.center_of_mass)
@@ -213,9 +216,10 @@ class CustomLoadingForm(QtWidgets.QDialog):
     def __init__(self, ds_sel):
         """
         Set up a new loading form with 2 progress bar
+
         Parameters
         ----------
-        ds_sel : MerlinBinary Memory Map
+        ds_sel : Merlin Binary Memory Map
 
         """
         super(CustomLoadingForm, self).__init__()
