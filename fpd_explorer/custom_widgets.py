@@ -1,3 +1,7 @@
+# Standard Library
+import sys
+import traceback
+
 import numpy as np
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot, Signal, QObject, QRunnable, QThreadPool
@@ -9,6 +13,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from .custom_fpd_lib import fpd_processing as fpdp_new
 from .res.ui_inputbox import Ui_InputBox
 from .res.ui_loadingbox import Ui_LoadingBox
+from .res.ui_singleloadingbox import Ui_SingleLoadingBox
 
 
 class MyMplCanvas(FigureCanvas):
@@ -170,6 +175,42 @@ class CustomInputForm(QtWidgets.QDialog):
         self.restore_default()
         return super().reject()
 
+# TODO : Figure out a way to merge this 2 classes way too much repeated code
+
+
+class SingleLoadingForm(QtWidgets.QDialog):
+    def __init__(self, fnct, data, *args, **kwargs):
+        """
+        Set up a loading form with 1 progress bar parameters
+        """
+        super(SingleLoadingForm, self).__init__()
+        self._ui = Ui_SingleLoadingBox()
+        self._ui.setupUi(self)
+
+        self.com_yx = None
+        self._ui.centerProgress.setValue(0)
+        self._ui.centerProgress.setMaximum(np.prod(data.shape[:-2]))
+
+        self.threadpool = QThreadPool()
+        worker = GuiUpdater(fnct, data, *args, **kwargs)
+        worker.signals.finished.connect(self.completed)
+        worker.signals.progress.connect(self.progress_func)
+        worker.signals.result.connect(self.center_of_mass)
+        self.threadpool.start(worker)
+
+    @Slot()
+    def center_of_mass(self, value):
+        self.com_yx = value
+
+    @Slot()
+    def completed(self):
+        return super().done(True)
+
+    @Slot(tuple)
+    def progress_func(self, value):
+        self._ui.centerProgress.setValue(
+            self._ui.centerProgress.value() + value[0])
+
 
 class CustomLoadingForm(QtWidgets.QDialog):
     def __init__(self, ds_sel):
@@ -232,6 +273,7 @@ class CustomLoadingForm(QtWidgets.QDialog):
         if value[1] == "sum_diff":
             self._ui.recipProgress.setValue(
                 self._ui.recipProgress.value() + value[0])
+
         else:
             self._ui.realProgress.setValue(
                 self._ui.realProgress.value() + value[0])
@@ -291,10 +333,11 @@ class GuiUpdater(QRunnable):
         """
         # Retrieve args/kwargs here; and fire processing using them
         try:
+            print(self._kwargs)
             result_val = self._fn(
                 *self._args, **self._kwargs
             )
-            print(result_val)
+            print("Result : ", result_val)
         except BaseException:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]

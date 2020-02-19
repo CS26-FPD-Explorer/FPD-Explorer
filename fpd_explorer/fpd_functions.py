@@ -4,7 +4,7 @@ from .logger import Flags
 from .gui_generator import UI_Generator
 from .custom_fpd_lib import ransac_tools as rt
 from .custom_fpd_lib import fpd_processing as fpdp
-from .custom_widgets import Pop_Up_Widget
+from .custom_widgets import Pop_Up_Widget, SingleLoadingForm
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
 
@@ -81,7 +81,9 @@ def centre_of_mass(ApplicationWindow):
         else:
             # Remove aperture in this case since its a bool and they expect an array
             results.pop("aperture")
-        ApplicationWindow.com_yx = fpdp.center_of_mass(ApplicationWindow.mm_sel, **results, thr='otsu')
+        loading_widget = SingleLoadingForm(fpdp.center_of_mass, ApplicationWindow.mm_sel, **results, thr='otsu')
+        loading_widget.exec()
+        ApplicationWindow.com_yx = loading_widget.com_yx
 
         # TODO: Fix the mess in another feature
         # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
