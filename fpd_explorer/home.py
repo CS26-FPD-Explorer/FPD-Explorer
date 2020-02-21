@@ -120,7 +120,6 @@ class ApplicationWindow(QMainWindow):
         Display a pop-up describing how to use the 
         functions within the UI.
         """
-        print('reached')
         content = get_content('Help')
         functions_help = QtWidgets.QMessageBox()
         functions_help.setText(content)

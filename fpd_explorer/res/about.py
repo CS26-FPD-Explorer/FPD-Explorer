@@ -3,7 +3,6 @@ def get_content(content):
     if content == 'Nav/Load':
         return content_nav_load
     if content == 'Help':
-        print('reahced2')
         return content_help_func
 
 
