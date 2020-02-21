@@ -16,8 +16,8 @@ from . import config_handler as config
 from . import data_browser_explorer
 from .logger import Flags
 from .custom_widgets import CustomInputForm, CustomLoadingForm
-from .res.ui_homescreen import Ui_MainWindow
 from .res.about import get_content
+from .res.ui_homescreen import Ui_MainWindow
 
 
 class ApplicationWindow(QMainWindow):
@@ -117,8 +117,7 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def function_help_with_functions(self):
         """
-        Display a pop-up describing how to use the 
-        functions within the UI.
+        Display a pop-up describing how to use the functions within the UI.
         """
         content = get_content('Help')
         functions_help = QtWidgets.QMessageBox()
