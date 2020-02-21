@@ -17,6 +17,7 @@ from . import data_browser_explorer
 from .logger import Flags
 from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
+from .res.about import get_content
 
 
 class ApplicationWindow(QMainWindow):
@@ -33,7 +34,8 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_dm3.triggered.connect(self.function_dm3)
         # self._ui.action_hdf5.triggered.connect(self.function_hdf5)
-        self._ui.action_about.triggered.connect(self.function_about)
+        self._ui.action_navigating_loading.triggered.connect(self.function_nav_load)
+        self._ui.action_functions.triggered.connect(self.function_help_with_functions)
 
         self._ui.dark_mode_button.setChecked(dark_mode_config)
         self._last_path = config.get_config("file_path")
@@ -102,26 +104,27 @@ class ApplicationWindow(QMainWindow):
         return False
 
     @Slot()
-    def function_about(self):
+    def function_nav_load(self):
         """
-        Display a pop-up describing the software.
+        Display a pop-up describing how to help users with
+        loading files, navigating the UI etc.
         """
+        content = get_content('Nav/Load')
         about = QtWidgets.QMessageBox()
-        about.setText("""<p><u>Help</u></p><p>This software allows users to process electron
-        microscopy images, you can import 3 different types of files: .dm3,.mib and .hdf5 by Clicking
-         'File-&gt;Open-&gt;Filetype'.</p><p>Once the files have been loaded in, click the Pushbutton
-         in the bottom right, the next window displayed will have defaultvalue for downsampling which
-         is 2^3 by default, but can be modified to change the downsampling rate. After the
-         downsampling rate has been selected, press OK and this will bring you to a window in which a
-         selection can be made, if sum real image is selected then the real image will be shown on
-         the left. if sum recip space is selected then an inverted image will be shown.</p><p>Once
-         'OK' is clicked the images will load in to the window docks and a progress bar is present to
-         show the progress of this process. The dm3. image on the left can be navigated around
-         byclicking on a certain pixel within the image and this will show the diffraction Image on
-         the right at this point.</p><p><u>About</u></p><p>This software was created using QT,PySide
-         2, and the FPD library.</p><p>The creators are Florent Audonnet, Michal Broos, Bruce Kerr,
-         Ruize Shen and Ewan Pandelus.</p><p> <br></p>""")
+        about.setText(content)
         about.exec()
+
+    @Slot()
+    def function_help_with_functions(self):
+        """
+        Display a pop-up describing how to use the 
+        functions within the UI.
+        """
+        print('reached')
+        content = get_content('Help')
+        functions_help = QtWidgets.QMessageBox()
+        functions_help.setText(content)
+        functions_help.exec()
 
     def _update_last_path(self, new_path):
         self._last_path = "/".join(new_path.split("/")[:-1]) + "/"

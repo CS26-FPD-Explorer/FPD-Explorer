@@ -669,7 +669,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -690,7 +690,8 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="action_about"/>
+    <addaction name="action_navigating_loading"/>
+    <addaction name="action_functions"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -711,9 +712,14 @@
     <string>.hdf5</string>
    </property>
   </action>
-  <action name="action_about">
+  <action name="action_navigating_loading">
    <property name="text">
-    <string>About</string>
+    <string>Navigating/Loading</string>
+   </property>
+  </action>
+  <action name="action_functions">
+   <property name="text">
+    <string>Help with Functions</string>
    </property>
   </action>
  </widget>
