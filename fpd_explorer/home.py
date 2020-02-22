@@ -35,7 +35,6 @@ class ApplicationWindow(QMainWindow):
         # self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         self._ui.action_navigating_loading.triggered.connect(self.function_nav_load)
         self._ui.action_functions.triggered.connect(self.function_help_with_functions)
-        self._ui.action_navigating_loading.triggered.connect(self.function_nav_load)
         self._ui.action_about_us.triggered.connect(self.function_about_us)
         self._ui.action_about_software.triggered.connect(self.function_about_software)
 
