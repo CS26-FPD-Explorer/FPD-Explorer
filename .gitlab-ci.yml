@@ -20,6 +20,9 @@ cache:
     - .cache/pip
     - venv/
 
+job:
+  
+
 stages:
  - build
  - static analysis
@@ -35,6 +38,7 @@ setup:
   - pip3 install git+git://github.com/09ubberboy90/qdarkgraystyle.git
 
 flake8:
+ cache: {}
  stage: static analysis
  script:
   - source ~/venv/bin/activate
@@ -42,6 +46,7 @@ flake8:
  allow_failure: true
 
 test:
+ cache: {}
  stage: test
  script:
   - source ~/venv/bin/activate
