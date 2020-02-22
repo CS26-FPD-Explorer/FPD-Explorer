@@ -693,8 +693,16 @@
     <addaction name="action_navigating_loading"/>
     <addaction name="action_functions"/>
    </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="action_about_software"/>
+    <addaction name="action_about_us"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_dm3">
@@ -720,6 +728,16 @@
   <action name="action_functions">
    <property name="text">
     <string>Help with Functions</string>
+   </property>
+  </action>
+  <action name="action_about_software">
+   <property name="text">
+    <string>About the Software</string>
+   </property>
+  </action>
+  <action name="action_about_us">
+   <property name="text">
+    <string>About us</string>
    </property>
   </action>
  </widget>

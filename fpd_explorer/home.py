@@ -2,22 +2,20 @@
 # Standard Library
 from collections import OrderedDict
 
+import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QFileDialog, QMainWindow
-
-# First Party
-import qdarkgraystyle
 
 # FPD Explorer
 from . import logger, dpc_explorer, fpd_functions
 from . import config_handler as config
 from . import data_browser_explorer
 from .logger import Flags
+from .res.about import get_content
 from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
-from .res.about import get_content
 
 
 class ApplicationWindow(QMainWindow):
@@ -36,6 +34,9 @@ class ApplicationWindow(QMainWindow):
         # self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         self._ui.action_navigating_loading.triggered.connect(self.function_nav_load)
         self._ui.action_functions.triggered.connect(self.function_help_with_functions)
+        self._ui.action_navigating_loading.triggered.connect(self.function_nav_load)
+        self._ui.action_about_us.triggered.connect(self.function_about_us)
+        self._ui.action_about_software.triggered.connect(self.function_about_software)
 
         self._ui.dark_mode_button.setChecked(dark_mode_config)
         self._last_path = config.get_config("file_path")
@@ -115,10 +116,29 @@ class ApplicationWindow(QMainWindow):
         about.exec()
 
     @Slot()
+    def function_about_software(self):
+        """
+        Display a pop-up, telling users some info about the project/software.
+        """
+        content = get_content('software')
+        about = QtWidgets.QMessageBox()
+        about.setText(content)
+        about.exec()
+
+    @Slot()
+    def function_about_us(self):
+        """
+        Display a pop-up telling the users who made the software.
+        """
+        content = get_content('us')
+        about = QtWidgets.QMessageBox()
+        about.setText(content)
+        about.exec()
+
+    @Slot()
     def function_help_with_functions(self):
         """
-        Display a pop-up describing how to use the 
-        functions within the UI.
+        Display a pop-up describing how to use the functions within the UI.
         """
         content = get_content('Help')
         functions_help = QtWidgets.QMessageBox()

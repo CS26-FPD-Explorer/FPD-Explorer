@@ -2,10 +2,20 @@
 def get_content(content):
     if content == 'Nav/Load':
         return content_nav_load
-    if content == 'Help':
+    elif content == 'Help':
         return content_help_func
+    elif content == 'us':
+        return content_about_us
+    else:
+        return content_about_software
 
 
+content_about_software = """<p><strong><u>About the Software</u></strong></p>
+<p>The software was created using QT, Pyside 2 and the FPD library. 
+It is also an open source software.</p>"""
+content_about_us = """<p><strong><u>About us</u></strong></p>
+<p>The creators of this software are Florent Audonnet,
+Bruce Kerr,Michal Miko Broos, Ewan Pandelus and Ruize Shen.</p>"""
 content_help_func = """<p><strong><u>Data Browser</u></strong></p>
 <p>To use Data Browser, look for the &lsquo;DataBrowser&rsquo; 
 button underneath the &lsquo;functions&rsquo; heading in the top 
