@@ -20,9 +20,6 @@ cache:
     - .cache/pip
     - venv/
 
-job:
-  
-
 stages:
  - build
  - static analysis
