@@ -15,7 +15,6 @@ from . import data_browser_explorer
 from .logger import Flags
 from .res.about import get_content
 from .custom_widgets import CustomInputForm, CustomLoadingForm
-from .res.about import get_content
 from .res.ui_homescreen import Ui_MainWindow
 
 
