@@ -26,6 +26,7 @@ stages:
  - test
 
 setup:
+ cache: {}
  stage: build
  script:
   - python3 -m virtualenv ~/venv --python=python3.7
