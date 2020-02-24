@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 from distutils.version import LooseVersion
-
+from fpd_explorer.change_scale import change_scale
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -240,6 +240,8 @@ class DataBrowser:
                              vmin=0.01)
         # plt.sca(ax)
         self.cbar = plt.colorbar(self.im)
+        self.cbar = change_scale(self.cbar,self.im)
+        self.cbar.connect()
         ax.format_coord = self.format_coord
         self.update_dif_plot()
 
