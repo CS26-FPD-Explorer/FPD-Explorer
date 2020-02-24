@@ -197,7 +197,7 @@
               </font>
              </property>
              <property name="text">
-              <string> Center of mass</string>
+              <string>center of mass</string>
              </property>
              <property name="checkable">
               <bool>false</bool>

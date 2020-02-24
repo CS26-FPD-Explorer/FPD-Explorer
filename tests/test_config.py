@@ -14,14 +14,6 @@ def test_if_default_exist():
         assert 0
 
 
-def test_if_normal_exist():
-    config.load_config()
-    if os.path.isfile(config.CONFIGFILE_NAME):
-        assert 1
-    else:
-        assert 0
-
-
 def test_save_config():
 
     config.CONFIGFILE_NAME = test_file
