@@ -30,6 +30,11 @@ def start_dpc(ApplicationWindow):
             ApplicationWindow.com_yx_beta) * 1e9))
     except AttributeError:
         pass
+    try:
+        avail_input.append(("ransac", ApplicationWindow.com_yx_cor))
+    except AttributeError:
+        pass
+
     if len(avail_input) == 0:
         raise Exception("""No data found that could be used with DPC Explorer.\n
         Please run some function before trying again""")

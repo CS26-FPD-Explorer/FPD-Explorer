@@ -6,7 +6,7 @@ import configparser
 CONFIGFILE_NAME = "config.ini"
 DEFAULT_NAME = "default.ini"
 
-_data_to_save = {}
+_data_to_save = {'Default': {}}
 
 
 def get_config(key_to_get: str):
@@ -60,6 +60,7 @@ def add_config(config: dict):
         }
     """
     print("Saving new value")
+    print(_data_to_save)
     if isinstance(config, dict):
         if isinstance(list(config.values())[0], dict):
             # already have a section so we can just update
