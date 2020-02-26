@@ -4,7 +4,7 @@ from .logger import Flags
 from .gui_generator import UI_Generator
 from .custom_fpd_lib import virtual_annular as va
 from .custom_widgets import Pop_Up_Widget
-
+import matplotlib.pyplot as plt
 VADF = None
 
 
@@ -41,4 +41,12 @@ def plot_vadf(ApplicationWindow):
 
 
 def annular_slice(ApplicationWindow):
-    pass
+    if logger.check_if_all_needed(Flags.vadf_init):
+        params = UI_Generator(ApplicationWindow, VADF.annular_slice)
+        if not params.exec():
+            # Procedure was cancelled so just give up
+            return
+        results = params.get_result()
+
+        vadf = VADF.annular_slice(**results)
+        imgplot = plt.matshow(vadf)
