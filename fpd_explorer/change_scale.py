@@ -7,8 +7,6 @@ class change_scale(object):
         self.cbar = cbar
         self.mappable = mappable
         self.press = None
-        self.cycle = sorted([i for i in dir(plt.cm) if hasattr(getattr(plt.cm, i), 'N')])
-        self.index = self.cycle.index(cbar.get_cmap().name)
 
     def connect(self):
         """connect to all the events we need"""
@@ -18,8 +16,6 @@ class change_scale(object):
             'button_release_event', self.C_on_release)
         self.cidmotion = self.cbar.patch.figure.canvas.mpl_connect(
             'motion_notify_event', self.C_on_motion)
-        self.keypress = self.cbar.patch.figure.canvas.mpl_connect(
-            'key_press_event', self.key_press)
 
     def restore_default(self):
         """
@@ -33,22 +29,6 @@ class change_scale(object):
         if event.inaxes != self.cbar.ax:
             return
         self.press = event.x, event.y
-
-    def key_press(self, event):
-        if event.key == 'down':
-            self.index += 1
-        elif event.key == 'up':
-            self.index -= 1
-        if self.index < 0:
-            self.index = len(self.cycle)
-        elif self.index >= len(self.cycle):
-            self.index = 0
-        cmap = self.cycle[self.index]
-        self.cbar.set_cmap(cmap)
-        self.cbar.draw_all()
-        self.mappable.set_cmap(cmap)
-        self.mappable.get_axes().set_title(cmap)
-        self.cbar.patch.figure.canvas.draw()
 
     def C_on_motion(self, event):
         'on motion we will move the rect if the mouse is over us'
