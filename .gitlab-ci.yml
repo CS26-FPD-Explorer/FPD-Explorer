@@ -49,3 +49,4 @@ test:
  script:
   - source ~/venv/bin/activate
   - python3 compile_ui.py
+  - xvfb-run pytest

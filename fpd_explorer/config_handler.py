@@ -6,7 +6,7 @@ import configparser
 CONFIGFILE_NAME = "config.ini"
 DEFAULT_NAME = "default.ini"
 
-_data_to_save = {'Default':{}}
+_data_to_save = {'Default': {}}
 
 
 def get_config(key_to_get: str):
