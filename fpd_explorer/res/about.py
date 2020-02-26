@@ -13,9 +13,17 @@ def get_content(content):
 content_about_software = """<p><strong><u>About the Software</u></strong></p>
 <p>The software was created using QT, Pyside 2 and the FPD library. 
 It is also an open source software.</p>"""
-content_about_us = """<p><strong><u>About us</u></strong></p>
-<p>The creators of this software are Florent Audonnet,
-Bruce Kerr,Michal Miko Broos, Ewan Pandelus and Ruize Shen.</p>"""
+content_about_us = """
+<p><strong><u>About us</u></strong></p>
+<p>This software was created by:</p>
+<ul>
+  <li>Bruce Kerr</li>
+  <li>Ewan Pandelus</li>
+  <li>Florent Audonnet</li>
+  <li>Michal Broos</li>
+  <li>Ruize Shen</li>
+</ul>
+"""
 content_help_func = """<p><strong><u>Data Browser</u></strong></p>
 <p>To use Data Browser, look for the &lsquo;DataBrowser&rsquo; 
 button underneath the &lsquo;functions&rsquo; heading in the top 
