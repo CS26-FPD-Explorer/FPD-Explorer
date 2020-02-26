@@ -15,7 +15,7 @@ content_about_software = """<p><strong><u>About the Software</u></strong></p>
 It is also an open source software.</p>"""
 content_about_us = """
 <p><strong><u>About us</u></strong></p>
-<p>This software was created by:</p>
+<p>This software was created by:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 <ul>
   <li>Bruce Kerr</li>
   <li>Ewan Pandelus</li>
