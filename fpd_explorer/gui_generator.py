@@ -283,7 +283,6 @@ class UI_Generator(QtWidgets.QDialog):
                 if not skip:
                     if param_type != "bool":
                         val = str(val)
-                    print(key, val, param_type)
                     saved_result[key] = val
         config.add_config({self.fnct: saved_result})
         self.accept()

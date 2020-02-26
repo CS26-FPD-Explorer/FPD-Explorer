@@ -16,6 +16,7 @@ class Flags(Enum):
     aperture = auto()
     center_mass = auto()
     ransac_fit = auto()
+    vadf_init = auto()
 
     def __lt__(self, other):
         return self.value < other.value
@@ -59,6 +60,11 @@ global_flags = {
         "bool": False,
         "error": "<b>The image must be fitted using ransac</b> before this step can be taken.<br><br>",
         "needing": [Flags.files_loaded, Flags.circular_center, Flags.aperture, Flags.center_mass]
+    },
+    Flags.vadf_init: {
+        "bool": False,
+        "error": "<b>The Virtual Annular Dark Field must be initialised </b> before this step can be taken.<br><br>",
+        "needing": []
     }
 }
 

@@ -116,8 +116,7 @@ def start_dbrowser(ApplicationWindow):
         ApplicationWindow._ui.tabWidget.setCurrentWidget(
             ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab"))
         return
-    hdf5_usage = logger.check_if_all_needed(Flags.hdf5_usage, display=False)
-    if hdf5_usage or logger.check_if_all_needed(Flags.files_loaded):
+    if logger.check_if_all_needed(Flags.files_loaded):
         mainwindow = QMainWindow()
         mainwindow.setObjectName("DataBrowserTab")
         db_widget = DataBrowserWidget(ApplicationWindow)
@@ -133,7 +132,7 @@ def start_dbrowser(ApplicationWindow):
         tab_index = ApplicationWindow._ui.tabWidget.addTab(mainwindow, "DataBrowser")
         ApplicationWindow._ui.tabWidget.setCurrentIndex(tab_index)
         ApplicationWindow._ui.tabWidget.setTabToolTip(tab_index, ApplicationWindow._ui.mib_line.text())
-
+        hdf5_usage = logger.check_if_all_needed(Flags.hdf5_usage, display=False)
         if hdf5_usage:
             ApplicationWindow._data_browser = DataBrowser(
                 ApplicationWindow.hdf5_path, widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)

@@ -291,7 +291,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Annular Slice</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -333,7 +333,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Plot VADF</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -1259,6 +1259,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>plot_vadf()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>980</x>
+     <y>196</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1095</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>annular_slice_vadf()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>959</x>
+     <y>241</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1073</x>
+     <y>259</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>load_files()</slot>
@@ -1275,5 +1307,7 @@
   <slot>function_npz()</slot>
   <slot>ransac_im_fit()</slot>
   <slot>start_vadf()</slot>
+  <slot>plot_vadf()</slot>
+  <slot>annular_slice_vadf()</slot>
  </slots>
 </ui>

@@ -129,6 +129,7 @@ class ApplicationWindow(QMainWindow):
                 self._sum_im = f['fpd_expt/fpd_sum_im/data'].value
                 self._sum_dif = f['fpd_expt/fpd_sum_dif/data'].value
                 logger.log("HDF5 file correctly loaded", Flags.hdf5_usage)
+                logger.add_flag(Flags.files_loaded)
                 return True
         return False
 
@@ -202,6 +203,14 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def start_vadf(self):
         virtual_adf.start_vadf(self)
+
+    @Slot()
+    def plot_vadf(self):
+        virtual_adf.plot_vadf(self)
+
+    @Slot()
+    def annular_slice_vadf(self):
+        virtual_adf.annular_slice(self)
 
     @Slot()
     def find_circular_centre(self):
