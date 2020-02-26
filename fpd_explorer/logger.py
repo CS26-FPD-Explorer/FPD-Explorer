@@ -10,6 +10,8 @@ class Flags(Enum):
     Order of the lines matter. It should match the order of the flow decided
     """
     files_loaded = auto()
+    hdf5_usage = auto()
+    npz_loaded = auto()
     circular_center = auto()
     aperture = auto()
     center_mass = auto()
@@ -25,7 +27,17 @@ app = None
 global_flags = {
     Flags.files_loaded: {
         "bool": False,
-        "error": "<b>The files must be loaded</b> before the aperture can be generated.<br><br>",
+        "error": "<b>The files must be loaded</b> before this step can be taken.<br><br>",
+        "needing": []
+    },
+    Flags.hdf5_usage: {
+        "bool": False,
+        "error": "",
+        "needing": []
+    },
+    Flags.npz_loaded: {
+        "bool": False,
+        "error": "",
         "needing": []
     },
     Flags.circular_center: {
