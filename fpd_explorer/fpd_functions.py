@@ -1,5 +1,4 @@
 # FPD Explorer
-import numpy as np
 
 from . import logger
 from .logger import Flags
@@ -86,41 +85,9 @@ def centre_of_mass(ApplicationWindow):
         loading_widget = SingleLoadingForm(fpdp.center_of_mass, ApplicationWindow.mm_sel, **results, thr='otsu')
         loading_widget.exec()
         ApplicationWindow.com_yx = loading_widget.com_yx
-
-        # TODO: Fix the mess in another feature
-        # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
-        # com_yx_cor = com_yx - fit
-        # Convert to beta using the BF disc and calibration.
-        # The pixel value radius from before could be used for the calibration, or we can do a subpixel equivalent.
-        # You may see that the aperture is not a perfect circle - error bars
-        # cyx_sp, r_sp = fpdp.find_circ_centre(ApplicationWindow._sum_dif, sigma=2,
-        #                                     rmms=(ApplicationWindow.radius-8, ApplicationWindow.radius+8, 1), spf=4)
         logger.log("Center of mass has now been found", Flags.center_mass)
-        logger.log(print_shift_stats(ApplicationWindow.com_yx, to_str=True))
+        logger.log(fpdp.print_shift_stats(ApplicationWindow.com_yx, to_str=True))
         ApplicationWindow.com_yx_beta = ApplicationWindow.com_yx
-
-
-def print_shift_stats(shift_yx, to_str=False):
-    ''' Prints statistics of 'shift_yx' array'''
-    shift_yx_mag = (shift_yx**2).sum(0)**0.5
-    shift_yxm = np.concatenate((shift_yx, shift_yx_mag[None, ...]), axis=0)
-
-    non_yx_axes = tuple(range(1, len(shift_yxm.shape)))
-    yxm_mn, yxm_std = shift_yxm.mean(non_yx_axes), shift_yxm.std(non_yx_axes)
-    yxm_min, yxm_max = shift_yxm.min(non_yx_axes), shift_yxm.max(non_yx_axes)
-    yxm_ptp = yxm_max - yxm_min
-    out = ""
-    out += '{:10s}{:>8s}{:>11s}{:>11s}\n'.format('Statistics', 'y', 'x', 'm')
-    out += '{:s} \n'.format('-' * 40)
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Mean',) + tuple(yxm_mn)))
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Min',) + tuple(yxm_min)))
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Max',) + tuple(yxm_max)))
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Std',) + tuple(yxm_std)))
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Range',) + tuple(yxm_ptp)))
-    out += '\n'
-    if to_str:
-        return out
-    print(out)
 
 
 def ransac_im_fit(ApplicationWindow):
@@ -128,12 +95,13 @@ def ransac_im_fit(ApplicationWindow):
     Calculate **add here when you know**
     for the users input, and brings up two figures based on that input on the UI
     """
-
     # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
     if logger.check_if_all_needed(Flags.center_mass):
-        # FIXME: Dirty fix to prevent float overloading the int and messing it up
-        # Will be fixed by next commit in another branch
+
+        avail_input = [("com_yx", ApplicationWindow.com_yx)]
         key_add = {
+            "im": [
+                "multipleinput", avail_input, "ndarray with images to fit to."],
             "min_samples": ["int", 10, """
             The minimum number of data points to fit a model to.\n
             If an int, the value is the number of pixels.\n

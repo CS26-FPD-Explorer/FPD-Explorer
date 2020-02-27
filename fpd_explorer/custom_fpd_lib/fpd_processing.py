@@ -530,7 +530,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                 # (scanY, scanX, ...), detY, detX
 
                 if parallel:
-                    pool = mp.Pool(processes=ncores)
+                    pool = mp.dummy.Pool(processes=ncores)
                     rslt = pool.map(partial_comf, d)
                     pool.close()
                 else:
@@ -560,7 +560,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
 
     # print some stats
     if print_stats:
-        fpdp._print_shift_stats(com_im)
+        print_shift_stats(com_im)
 
     return com_im
 
@@ -687,3 +687,199 @@ def synthetic_aperture(shape, cyx, rio, sigma=1, dt=np.float, aaf=3, ds_method='
             print("WARNING: Aperture extends beyond image (max r = %0.1f). Consider setting norm to True. 'rio':" % (ri_min), rio)
         m[i, :, :] = mi
     return m
+
+def print_shift_stats(shift_yx, to_str=False):
+    ''' Prints statistics of 'shift_yx' array'''
+    shift_yx_mag = (shift_yx**2).sum(0)**0.5
+    shift_yxm = np.concatenate((shift_yx, shift_yx_mag[None, ...]), axis=0)
+
+    non_yx_axes = tuple(range(1, len(shift_yxm.shape)))
+    yxm_mn, yxm_std = shift_yxm.mean(non_yx_axes), shift_yxm.std(non_yx_axes)
+    yxm_min, yxm_max = shift_yxm.min(non_yx_axes), shift_yxm.max(non_yx_axes)
+    yxm_ptp = yxm_max - yxm_min
+    out = ""
+    out += '{:10s}{:>8s}{:>11s}{:>11s}\n'.format('Statistics', 'y', 'x', 'm')
+    out += '{:s} \n'.format('-' * 40)
+    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Mean',) + tuple(yxm_mn)))
+    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Min',) + tuple(yxm_min)))
+    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Max',) + tuple(yxm_max)))
+    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Std',) + tuple(yxm_std)))
+    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Range',) + tuple(yxm_ptp)))
+    out += '\n'
+    if to_str:
+        return out
+    print(out)
+
+
+def map_image_function(data, nr, nc, cyx=None, crop_r=None, func=None, params=None,
+                       rebin=None, parallel=True, ncores=None, print_stats=True,
+                       nrnc_are_chunks=False):
+    '''
+    Map an arbitrary function over a multidimensional dataset.
+    
+    Parameters
+    ----------
+    data : array_like
+        Mutidimensional data of shape (scanY, scanX, ..., detY, detX).
+    nr : integer or None
+        Number of rows to process at once (see Notes).
+    nc : integer or None
+        Number of columns to process at once (see Notes).
+    cyx : length 2 iterable or None
+        Centre of disk in pixels (cy, cx).
+        If None, the centre is used.
+    crop_r : scalar or None
+        Radius of circle about `cyx` defining square crop limits used for
+        cross-corrolation, in pixels.
+        If None, the maximum square array about cyx is used.
+    func : callable
+        Function that operates (out-of-place) on an image: out = pre_func(im),
+        where `im` is an ndarray of shape (detY, detX).
+    params : None or dictionary
+        If not None, a dictionary of parameters passed to the function.
+    rebin : integer or None
+        Rebinning factor for detector dimensions. None or 1 for none. 
+        If the value is incompatible with the cropped array shape, the
+        nearest compatible value will be used instead. 
+        'cyx' and 'crop_r' are for the original image and need not be modified.
+    parallel : bool
+        If True, the calculations are multiprocessed.
+    ncores : None or int
+        Number of cores to use for mutliprocessing. If None, all cores
+        are used.
+    print_stats : bool
+        If True, calculation progress is printed to stdout.
+    nrnc_are_chunks : bool
+        If True, `nr` and `nc` are interpreted as the number of chunks to
+        process at once. If `data` is not chunked, `nr` and `nc` are used
+        directly.
+        
+    Returns
+    -------
+    rtn : ndarray
+        The result of mapping the function over the dataset. If the output of
+        the function is non-uniform, the dimensions are those of the nondet axes
+        and the dtype is object. If the function output is uniform, the first
+        axis is of the length of the function return, unless it is singular, in
+        which case it is removed.
+    
+    Notes
+    -----
+    
+    If `nr` or `nc` are None, the entire dimension is processed at once.
+    For chunked data, setting `nrnc_are_chunks` to True, and `nr` and `nc`
+    to a suitable values can improve performance.
+    
+    Specifying 'crop_r' (and appropriate cyx) can speed up calculation significantly.
+    
+    Examples
+    --------
+    Center of mass:
+    >>> import scipy as sp
+    >>> import numpy as np
+    >>> import fpd.fpd_processing as fpdp
+    >>> from fpd.synthetic_data import disk_image, fpd_data_view
+    
+    >>> radius = 32
+    >>> im = disk_image(intensity=1e3, radius=radius, size=256, upscale=8, dtype='u4')
+    >>> data = fpd_data_view(im, (32,)*2, colours=0)
+    >>> func = sp.ndimage.center_of_mass
+    >>> com_y, com_x = fpdp.map_image_function(data, nr=9, nc=9, func=func)
+    
+    Non-uniform return:
+    >>> def f(image):
+    ...    l = np.random.randint(4)+1
+    ...    return np.arange(l)
+    >>> r = fpdp.map_image_function(data, nr=9, nc=9, func=f)
+
+    Parameter passing:
+    >>> def f(image, v):
+    ...    return (image >= v).sum()
+    >>> r = fpdp.map_image_function(data, nr=9, nc=9, func=f, params={'v' : 2})
+    
+    Doing very little (when reading from file, this is a measure of access
+    and decompression overhead):
+    >>> def f(image):
+    ...    return None
+    >>> data_chunk = data[:16, :16]
+    >>> r = fpdp.map_image_function(data_chunk, nr=None, nc=None, func=f)
+    
+    '''
+    
+    if params is None:
+        params = {}
+    
+    if nrnc_are_chunks:
+        nr, nc = fpdp._condition_nrnc_if_chunked(data, nr, nc, print_stats)
+    
+    if ncores is None:
+        ncores = mp.cpu_count()
+    
+    nondet = data.shape[:-2]
+    nonscan = data.shape[2:]
+    scanY, scanX = data.shape[:2]
+    detY, detX = data.shape[-2:]
+    
+    r_if, c_if = fpdp._block_indices((scanY, scanX), (nr, nc))
+    
+    rtn = fpdp._parse_crop_rebin(crop_r, detY, detX, cyx, rebin, print_stats)
+    cropped_im_shape, rebinf, rebinning, rii, rif, cii, cif = rtn
+
+    rebinned_im_shape = tuple([x//rebinf for x in cropped_im_shape])
+    #print('Cropped shape: ', cropped_im_shape)
+    #if rebinning:
+        #print('Rebinned cropped shape: ', rebinned_im_shape)
+    
+    
+    rd = np.empty(nondet, dtype=object)
+    
+    if print_stats:
+        print('\nMapping image function')
+        tqdm_file = sys.stderr
+    else:
+        tqdm_file = fpdp.DummyFile()
+    total_nims = np.prod(nondet)
+    with tqdm(total=total_nims, file=tqdm_file, mininterval=0, leave=True, unit='images') as pbar:
+        for i, (ri, rf) in enumerate(r_if):
+            for j, (ci, cf) in enumerate(c_if):               
+                # read selected data (into memory if hdf5)  
+                d = data[ri:rf, ci:cf, ..., rii:rif+1, cii:cif+1]
+                d = np.ascontiguousarray(d)
+                if rebinning:
+                    ns = d.shape[:-2] + tuple([int(x/rebinf) for x in d.shape[-2:]])
+                    d = fpdp.rebinA(d, *ns)
+                
+                partial_func = partial(func, **params)
+                d_shape = d.shape
+                d.shape = (np.prod(d_shape[:-2]),)+d_shape[-2:]
+                
+                if parallel:
+                    pool = mp.dummy.Pool(processes=ncores)
+                    rslt = pool.map(partial_func, d)
+                    pool.close()
+                else:
+                    rslt = list(map(partial_func, d))
+                
+                t = np.empty(len(rslt), dtype=object)
+                t[:] = rslt
+                rd[ri:rf, ci:cf].flat = t 
+                
+                pbar.update(np.prod(d.shape[:-2]))
+    if print_stats:
+        print('')
+        sys.stdout.flush()
+    
+    # convert dtype from object to more appropriate type if possible
+    try:
+        rdf = rd.ravel()
+        rdfa = np.vstack(rdf).reshape(rd.shape + (-1,))
+        rtn = np.rollaxis(rdfa, -1, 0)
+    except ValueError:
+        rtn = rd
+
+    # remove return axis if singular
+    if rtn.ndim > rd.ndim:
+        if rtn.shape[0] == 1:
+            rtn = rtn[0]
+    
+    return rtn

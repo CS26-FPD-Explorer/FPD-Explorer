@@ -1,10 +1,12 @@
 # FPD Explorer
+import matplotlib.pyplot as plt
+
 from . import logger
 from .logger import Flags
 from .gui_generator import UI_Generator
 from .custom_fpd_lib import virtual_annular as va
 from .custom_widgets import Pop_Up_Widget
-import matplotlib.pyplot as plt
+
 VADF = None
 
 
