@@ -60,7 +60,6 @@ def add_config(config: dict):
         }
     """
     print("Saving new value")
-    print(_data_to_save)
     if isinstance(config, dict):
         if isinstance(list(config.values())[0], dict):
             # already have a section so we can just update
