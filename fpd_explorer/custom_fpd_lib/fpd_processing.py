@@ -14,7 +14,7 @@ import multiprocessing as mp
 import sys
 from functools import partial
 import scipy as sp
-from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing.dummy import Pool
 
 
 def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=None):
@@ -531,7 +531,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                 # (scanY, scanX, ...), detY, detX
 
                 if parallel:
-                    pool = ThreadPool(ncores)
+                    pool = Pool(ncores)
                     rslt = pool.map(partial_comf, d)
                     pool.close()
                     pool.join()
