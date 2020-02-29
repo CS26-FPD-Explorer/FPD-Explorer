@@ -45,11 +45,12 @@ def start_dpc(ApplicationWindow):
                     (S, 2, M, N), a sequence yx data of length S can be plotted."""], "rotate": [
             "bool", False, "rotate image if needed. This can make data interpretation easier"]}
 
-    params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=["d"], key_add=key_add)
+    params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=["d", "r_min", "r_max"], key_add=key_add)
     if not params.exec():
         # Procedure was cancelled so just give up
         return
     results = params.get_result()
+    print(results)
     # bt = fpd.mag_tools.beta2bt(ApplicationWindow.com_yx_beta) * 1e9  # T*nm
 
     # rotate image if needed. This can make data interpretation easier.

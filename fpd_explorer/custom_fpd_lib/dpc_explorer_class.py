@@ -56,10 +56,10 @@ class DPC_Explorer:
         (S, 2, M, N), a sequence yx data of length S can be plotted.
         If int, width of array of synthetic data.
         If int is negative, synthetic data has noise added.
-    r_min : scalar
+    r_min : scalar or None
         Initial value of `r_min`.
         If supplied, takes precedence over `r_min_pct`.
-    r_max : scalar
+    r_max : scalar or None
         Initial value of `r_max`.
         If supplied, takes precedence over `r_max_pct`.
     r_min_pct : scalar
@@ -527,8 +527,9 @@ class DPC_Explorer:
             vmin, vmax = -self._r_max, self._r_max
         else:
             vmin, vmax = np.percentile(np.column_stack([y, x]), [0, 100])
-
+        print(x, y)
         for ax, d, t in zip((ax1, ax2), [y, x], ['y', 'x']):
+            print(d)
             im = ax.imshow(d,
                            interpolation='nearest',
                            cmap='gray',
@@ -683,8 +684,12 @@ class DPC_Explorer:
             # all other calls use r_max, r_min
             # r_min = 0   # self._r_max
             pass
+        print(r_min_pct,r_max_pct)
+        print(self._r_min, self._r_max)
         # Could check r_min < r_max, but allowed so inversion of values
         # will plot removed regions.
+        if self._r_max - self._r_min == 0.0:
+            raise RuntimeError("Division by zero. Rmin and Rmax should not be both 0")
         self.rn = (self.r - self._r_min) / (self._r_max - self._r_min)
         self.rn = self.rn.clip(0, 1)
 
