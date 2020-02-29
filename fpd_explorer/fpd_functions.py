@@ -111,12 +111,12 @@ def ransac_im_fit(ApplicationWindow):
         params = UI_Generator(
             ApplicationWindow,
             rt.ransac_im_fit,
-            key_ignore=["im", "plot", "min_samples", "p0"],
+            key_ignore=["plot", "min_samples", "p0"],
             key_add=key_add)
         if not params.exec():
             # Procedure was cancelled so just give up
             return
         results = params.get_result()
-        fit, inliers, _ = rt.ransac_im_fit(ApplicationWindow.com_yx, **results, plot=True, widget=canvas)
+        fit, inliers, _ = rt.ransac_im_fit(**results, plot=True, widget=canvas)
         ApplicationWindow.com_yx_cor = ApplicationWindow.com_yx - fit
         logger.log("Image has now been fitted using ransac")

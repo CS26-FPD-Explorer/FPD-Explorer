@@ -343,6 +343,8 @@ class UI_Generator(QtWidgets.QDialog):
                     saved_result[key] = str(widget.currentIndex())
                     skip = True
                 elif param_type == "togglevalue":
+                    if not widget.isChecked():
+                        continue
                     val = []
                     none_list = False
                     counter = 0
