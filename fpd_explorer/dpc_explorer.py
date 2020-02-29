@@ -56,7 +56,8 @@ def start_dpc(ApplicationWindow):
             """Check if you want to manually set the descan"""
         ]}
 
-    params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=["r_min", "r_max"], key_add=key_add)
+    params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=[
+                          "r_min", "r_max", "median", "flip_y", "flip_x", "ransac"], key_add=key_add)
     if not params.exec():
         # Procedure was cancelled so just give up
         return

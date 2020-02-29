@@ -211,7 +211,7 @@ class UI_Generator(QtWidgets.QDialog):
             new_val = list(val)
             if unpack:
                 new_val[1] = val[1][el]
-            lay.addWidget(self._create_int_float(new_val, key=key + '_' + str(el)))
+            lay.addWidget(self._create_int_float(new_val, key=key + '_' + str(el), is_float=True))
         widget.setLayout(lay)
         param_type = "iterable_" + str(iter_ran)
         return param_type, widget

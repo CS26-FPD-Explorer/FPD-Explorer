@@ -20,15 +20,8 @@
    <string>fpd gui</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="1" column="0">
-     <widget class="QCheckBox" name="dark_mode_button">
-      <property name="text">
-       <string>Dark Mode</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="minimumSize">
        <size>
@@ -396,7 +389,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Matching Images</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -417,7 +410,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Disc edge sigma</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -444,7 +437,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Make ref im</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -465,7 +458,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Phase correlation</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -531,59 +524,8 @@
            <string>Resource monitor</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
+           <item row="0" column="1">
             <widget class="CpuFreqGraph" name="resMonitor" native="true"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QGroupBox" name="workflow_groupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>500</width>
-            <height>300</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-            <underline>false</underline>
-           </font>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="title">
-           <string>Workflow help</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_5">
-           <item row="0" column="0">
-            <widget class="QPlainTextEdit" name="log_text">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="plainText">
-              <string>Start by loading files</string>
-             </property>
-            </widget>
            </item>
           </layout>
          </widget>
@@ -692,6 +634,7 @@
                  <pointsize>11</pointsize>
                  <weight>50</weight>
                  <bold>false</bold>
+                 <underline>false</underline>
                 </font>
                </property>
                <property name="text">
@@ -855,8 +798,76 @@
           </property>
          </spacer>
         </item>
+        <item row="3" column="1">
+         <widget class="QTabWidget" name="tabWidget_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+            <underline>false</underline>
+           </font>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <property name="documentMode">
+           <bool>false</bool>
+          </property>
+          <property name="tabBarAutoHide">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>Workflow help</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item row="0" column="0">
+             <widget class="QPlainTextEdit" name="log_text">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+              <property name="plainText">
+               <string>Start by loading files</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_2">
+           <attribute name="title">
+            <string>Live Coding</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0">
+             <widget class="QTextEdit" name="codeEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="pushButton_5">
+              <property name="text">
+               <string>Submit</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="dark_mode_button">
+      <property name="text">
+       <string>Dark Mode</string>
+      </property>
      </widget>
     </item>
    </layout>
@@ -867,7 +878,7 @@
      <x>0</x>
      <y>0</y>
      <width>1072</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1022,8 +1033,6 @@
   <tabstop>hdf5_line</tabstop>
   <tabstop>pushButton_41</tabstop>
   <tabstop>dm3_line</tabstop>
-  <tabstop>dark_mode_button</tabstop>
-  <tabstop>log_text</tabstop>
   <tabstop>pushButton_2</tabstop>
   <tabstop>pushButton_3</tabstop>
   <tabstop>pushButton_4</tabstop>
@@ -1128,22 +1137,6 @@
     <hint type="destinationlabel">
      <x>505</x>
      <y>74</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dark_mode_button</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>change_color_mode()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>52</x>
-     <y>684</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>103</x>
-     <y>720</y>
     </hint>
    </hints>
   </connection>
@@ -1270,7 +1263,7 @@
      <y>196</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1095</x>
+     <x>1071</x>
      <y>214</y>
     </hint>
    </hints>
@@ -1286,8 +1279,104 @@
      <y>241</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1073</x>
+     <x>1071</x>
      <y>259</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dark_mode_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>change_color_mode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>63</x>
+     <y>698</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>720</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_42</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>match_image()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>848</x>
+     <y>199</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1018</x>
+     <y>28</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_41</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>disc_edge()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>823</x>
+     <y>240</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1067</x>
+     <y>383</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_6</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>make_ref_im()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>801</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1061</x>
+     <y>40</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_7</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>phase_correlation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>820</x>
+     <y>320</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1065</x>
+     <y>371</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>eval_code()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>634</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>709</y>
     </hint>
    </hints>
   </connection>
@@ -1309,5 +1398,10 @@
   <slot>start_vadf()</slot>
   <slot>plot_vadf()</slot>
   <slot>annular_slice_vadf()</slot>
+  <slot>eval_code()</slot>
+  <slot>match_image()</slot>
+  <slot>disc_edge()</slot>
+  <slot>make_ref_im()</slot>
+  <slot>phase_correlation()</slot>
  </slots>
 </ui>

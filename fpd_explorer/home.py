@@ -232,6 +232,32 @@ class ApplicationWindow(QMainWindow):
         fpd_functions.ransac_im_fit(self)
 
     @Slot()
+    def eval_code(self):
+        code = self._ui.codeEdit.toPlainText()
+        exec(code)
+        self._ui.codeEdit.setPlainText("")
+
+    @Slot()
+    def match_image(self):
+        fpd_functions.centre_of_mass(self)
+
+
+    @Slot()
+    def disc_edge(self):
+            fpd_functions.centre_of_mass(self)
+
+    @Slot()
+    def make_ref_im(self):
+            fpd_functions.centre_of_mass(self)
+
+    @Slot()
+    def phase_correlation(self):
+            fpd_functions.centre_of_mass(self)
+
+
+
+
+    @Slot()
     def clear_files(self):
         """
         Clears all provided files and resets the file_loaded flag

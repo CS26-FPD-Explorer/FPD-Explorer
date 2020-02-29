@@ -682,8 +682,6 @@ class DPC_Explorer:
             # all other calls use r_max, r_min
             # r_min = 0   # self._r_max
             pass
-        print(r_min_pct,r_max_pct)
-        print(self._r_min, self._r_max)
         # Could check r_min < r_max, but allowed so inversion of values
         # will plot removed regions.
         if self._r_max - self._r_min == 0.0:
