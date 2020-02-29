@@ -527,9 +527,7 @@ class DPC_Explorer:
             vmin, vmax = -self._r_max, self._r_max
         else:
             vmin, vmax = np.percentile(np.column_stack([y, x]), [0, 100])
-        print(x, y)
         for ax, d, t in zip((ax1, ax2), [y, x], ['y', 'x']):
-            print(d)
             im = ax.imshow(d,
                            interpolation='nearest',
                            cmap='gray',
