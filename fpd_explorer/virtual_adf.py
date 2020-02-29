@@ -38,7 +38,6 @@ def plot_vadf(ApplicationWindow):
         hdf5_usage = logger.check_if_all_needed(Flags.hdf5_usage, display=False)
         if hdf5_usage or logger.check_if_all_needed(Flags.files_loaded):
             vadf_explorer = Pop_Up_Widget(ApplicationWindow, "VADF_Explorer")
-            print(VADF)
             VADF.plot(nav_im=ApplicationWindow._sum_dif, widget=vadf_explorer)
 
 

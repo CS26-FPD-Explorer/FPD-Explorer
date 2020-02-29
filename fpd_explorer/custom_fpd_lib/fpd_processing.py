@@ -11,6 +11,7 @@ from skimage.morphology import disk, binary_closing, binary_opening
 from scipy.ndimage.filters import gaussian_filter, gaussian_filter1d
 import matplotlib.pyplot as plt
 import multiprocessing as mp
+from multiprocessing.dummy import Pool
 import sys
 from functools import partial
 import scipy as sp
@@ -530,7 +531,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                 # (scanY, scanX, ...), detY, detX
 
                 if parallel:
-                    pool = mp.dummy.Pool(processes=ncores)
+                    pool = Pool(ncores)
                     rslt = pool.map(partial_comf, d)
                     pool.close()
                 else:
@@ -854,7 +855,7 @@ def map_image_function(data, nr, nc, cyx=None, crop_r=None, func=None, params=No
                 d.shape = (np.prod(d_shape[:-2]),)+d_shape[-2:]
                 
                 if parallel:
-                    pool = mp.dummy.Pool(processes=ncores)
+                    pool = Pool(ncores)
                     rslt = pool.map(partial_func, d)
                     pool.close()
                 else:
