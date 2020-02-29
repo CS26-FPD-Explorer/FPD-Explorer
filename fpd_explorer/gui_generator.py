@@ -4,7 +4,7 @@ from inspect import signature
 from collections import defaultdict
 
 from PySide2 import QtWidgets
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import (
     QWidget,
     QSpinBox,
@@ -103,8 +103,11 @@ class UI_Generator(QtWidgets.QDialog):
         if self.key_ignore is not None:
             [result.pop(x, None) for x in self.key_ignore]
         if self.key_add is not None:
-            result.update(self.key_add)
-
+            for key, el in self.key_add.items():
+                # Remove all key already present in the dict so no key gets processed twice
+                if result.get(key, None) is not None:
+                    result.pop(key)
+        result.update(self.key_add)
         return result
 
     def _setup_ui(self):
@@ -121,6 +124,7 @@ class UI_Generator(QtWidgets.QDialog):
         """
         self.result = {}
         self.widgets = defaultdict(list)
+        self.toggle_widget = defaultdict(list)
         for key, val in self.param.items():
             widget = None
             param_type = None
@@ -174,6 +178,17 @@ class UI_Generator(QtWidgets.QDialog):
                 if tmp_val is not None:
                     # Float needed because otherwise Python throws a fit
                     widget.setCurrentIndex(int(float(tmp_val)))
+                else:
+                    widget.setCurrentIndex(0)
+            elif "togglevalue" in val[0]:
+                param_type = "togglevalue"
+                widget = QCheckBox()
+                widget.setChecked(False)
+                widget.stateChanged.connect(self._handle_togglevalue)
+                sub_param_type, new_widget = self._handle_iterable(val[1], key)
+                self.toggle_widget[key].extend([sub_param_type, new_widget])
+                if val[1][1] is None:
+                    val[0] += "None"
             else:
                 print("TODO : Implement : ", val[0])
                 continue
@@ -238,6 +253,59 @@ class UI_Generator(QtWidgets.QDialog):
             widget.setValue(float(tmp_val))
         return widget
 
+    @Slot(int)
+    def _handle_togglevalue(self, state: int):
+        caller = self.sender()
+        if state == 2:
+            flatten_widget = []
+            already_placed = 0
+            correct_key = None
+            for key, widget, none_possible in self.widgets["togglevalue"]:
+                if widget == caller:
+                    correct_key = key
+                    out = self.toggle_widget[key]
+                    # Handle unpacking with variable amount
+                    param_type = out[0]
+                    sub_widget = out[1]
+                    self.layout_iterable(key, sub_widget, param_type, flatten_widget)
+            self.toggle_widget[correct_key].append(list(flatten_widget))
+            for name, widget, _ in flatten_widget[:self.number_space]:
+                self.last_colums[self.last_n].layout().addRow(name, widget)
+                already_placed += 1
+            self.number_space -= already_placed
+            del flatten_widget[:already_placed]
+            while len(flatten_widget) > 0:
+                print("Adding new el", self.last_n)
+                self.last_n += 1
+                self.last_colums.append(self.add_forms(flatten_widget, self.grid_layout,
+                                                       0, self.items_per_column, self.last_n))
+                self.number_space = self.items_per_column - len(flatten_widget)
+                del flatten_widget[:self.items_per_column]
+
+        else:
+            print("deleting")
+            self._delete_toggle_value(caller)
+
+    def _delete_toggle_value(self, caller):
+        for key, widget, none_possible in self.widgets["togglevalue"]:
+            if widget == caller:
+                lay = self.toggle_widget[key][1].layout()
+                param_type, sub_widget, widget_ls = self.toggle_widget[key]
+                for name, sub_sub_widget, param_type in widget_ls:
+                    sub_sub_widget.parent().layout().labelForField(sub_sub_widget).deleteLater()
+                    # sub_sub_widget.deleteLater()
+                    lay.addWidget(sub_sub_widget)
+                    print(self.number_space, self.last_n, self.last_colums)
+                    if self.number_space != 10:
+                        self.number_space += 1
+                    else:
+                        self.number_space = 1
+                        self.grid_layout.removeWidget(self.last_colums[self.last_n])
+                        self.last_colums[self.last_n].deleteLater()
+                        del self.last_colums[self.last_n]
+                        self.last_n -= 1
+                del self.toggle_widget[key][2]
+
     def _save(self):
         """
         Save is the function called to get the parameter out of the widget and save them to the file
@@ -274,6 +342,22 @@ class UI_Generator(QtWidgets.QDialog):
                     # Repeated code because val should be the index and not the data
                     saved_result[key] = str(widget.currentIndex())
                     skip = True
+                elif param_type == "togglevalue":
+                    val = []
+                    none_list = False
+                    counter = 0
+                    for name, sub_sub_widget, _ in self.toggle_widget[key][2]:
+                        value = sub_sub_widget.value()
+                        val.append(value)
+                        if none_possible and (value == 0 or value == 0.0):
+                            none_list = True
+                            value = None
+                        saved_result[name + "_" + str(counter)] = str(value)
+                        counter += 1
+                    if none_list:
+                        val = None
+                    skip = True
+
                 else:
                     val = widget.text()
                     if none_possible and val == '':
@@ -334,9 +418,22 @@ class UI_Generator(QtWidgets.QDialog):
                         self.sub_ls[widget][el].setValue(self.default[sub_widget])
                 elif param_type == "multipleinput":
                     widget.setCurrentIndex(0)
+                elif param_type == "togglevalue":
+                    if widget.isChecked():
+                        self._delete_toggle_value(widget)
+                    widget.setChecked(False)
                 else:
                     widget.clear()
                     widget.setPlaceholderText(self.default[widget])
+
+    def layout_iterable(self, key, widget, param_type, append_ls):
+        iter_ran = int(param_type.split("_")[1])
+        for idx in range(iter_ran):
+            sub_widget = widget.layout().itemAt(idx).widget()
+            self.sub_ls[widget].append(sub_widget)
+            sub_widget.setFixedWidth(100)
+            sub_widget.setFixedHeight(30)
+            append_ls.append((key.replace("_", " ").capitalize() + " " + str(idx), sub_widget, param_type))
 
     def _format_layout(self):
         """
@@ -347,35 +444,29 @@ class UI_Generator(QtWidgets.QDialog):
         self.sub_ls = defaultdict(list)
         for param_type, widgets in self.widgets.items():
             for key, widget, none_possible in widgets:
-                if param_type == "bool":
-                    widget.setFixedWidth(20)
-                if param_type != "bool":
-                    widget.setFixedWidth(100)
+                # if param_type == "bool":
+                # widget.setFixedWidth(20)
+                # if param_type != "bool":
+                widget.setFixedWidth(100)
                 widget.setFixedHeight(30)
                 if "iterable" in param_type:
-                    iter_ran = int(param_type.split("_")[1])
-                    for el in range(iter_ran):
-                        # Loop for all children and add them as single child
-                        sub_widget = widget.layout().itemAt(el).widget()
-                        self.sub_ls[widget].append(sub_widget)
-                        sub_widget.setFixedWidth(100)
-                        sub_widget.setFixedHeight(30)
-                        all_widget.append((key.replace("_", " ").capitalize() + " " + str(el), sub_widget, param_type))
+                    # Loop for all children and add them as single child
+                    self.layout_iterable(key, widget, param_type, all_widget)
                 else:
                     all_widget.append((key.replace("_", " ").capitalize(), widget, param_type))
                 # self.layout.addRow(key.replace("_", " ").capitalize(), widget)
-        layout = QGridLayout()
+        self.grid_layout = QGridLayout()
         all_widget.sort(key=lambda x: x[2], reverse=True)
-        self._create_colums(all_widget, layout)
-
+        self.last_colums = []
+        self.number_space, self.last_n = self._create_colums(all_widget, self.grid_layout)
         buttonBox = QDialogButtonBox(QDialogButtonBox.Save |
                                      QDialogButtonBox.Cancel |
                                      QDialogButtonBox.RestoreDefaults)
         buttonBox.accepted.connect(self._save)
         buttonBox.rejected.connect(self.reject)
         buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self._restore_default)
-        layout.addWidget(buttonBox, 1, 0, 1, len(all_widget) // self.items_per_column + 1, Qt.AlignRight)
-        self.setLayout(layout)
+        self.grid_layout.addWidget(buttonBox, 1, 0, 1, len(all_widget) // self.items_per_column + 1, Qt.AlignRight)
+        self.setLayout(self.grid_layout)
         self.setFixedSize(self.minimumWidth(), self.minimumHeight())
 
     def _create_colums(self, widget_list: list, grid_layout: QtWidgets.QGridLayout, n=0):
@@ -392,14 +483,21 @@ class UI_Generator(QtWidgets.QDialog):
         n : int, optional
             Used for recursion to keep track on how many items have already been added, by default 0
         """
+        slice_bottom = 0 + self.items_per_column * n
+        slice_top = self.items_per_column + self.items_per_column * n
+
+        layout = self.add_forms(widget_list, grid_layout, slice_bottom, slice_top, n)
+        self.last_colums.append(layout)
+        if self.items_per_column * (n + 1) >= len(widget_list):
+            return self.items_per_column - len(widget_list[slice_bottom:slice_top]), n
+        return self._create_colums(widget_list, grid_layout, n=n + 1)
+
+    def add_forms(self, widget_list: list, grid_layout: QtWidgets.QGridLayout, slice_bottom: int, slice_top: int, n=0):
         tmp = QWidget()
         layout = QFormLayout()
-        for name, widget, _ in widget_list[0 + self.items_per_column *
-                                           n:self.items_per_column + self.items_per_column * n]:
+        for name, widget, _ in widget_list[slice_bottom:slice_top]:
             layout.addRow(name, widget)
         tmp.setLayout(layout)
         tmp.setFixedWidth(110 + layout.itemAt(0, QFormLayout.FieldRole).geometry().width())
         grid_layout.addWidget(tmp, 0, n)
-        if self.items_per_column * (n + 1) >= len(widget_list):
-            return
-        self._create_colums(widget_list, grid_layout, n=n + 1)
+        return tmp

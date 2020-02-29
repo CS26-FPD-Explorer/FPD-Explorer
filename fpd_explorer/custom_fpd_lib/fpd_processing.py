@@ -15,6 +15,7 @@ from multiprocessing.dummy import Pool
 import sys
 from functools import partial
 import scipy as sp
+from multiprocessing.dummy import Pool
 
 
 def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=None):
@@ -424,7 +425,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
     # from scipy.ndimage.measurements import center_of_mass
     if nrnc_are_chunks:
         nr, nc = fpdp._condition_nrnc_if_chunked(data, nr, nc, print_stats)
-        
+
     if ncores is None:
         ncores = mp.cpu_count()
 
@@ -470,7 +471,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
             if rebin != f:
                 if print_stats:
                     print('Image data cropped to:', fpdp.cropped_im_shape)
-                    print('Requested rebin (%d) changed to nearest value: %d. Possible values are:' %(rebin, f), fs)
+                    print('Requested rebin (%d) changed to nearest value: %d. Possible values are:' % (rebin, f), fs)
                 rebin = f
         else:
             rii, rif = riic, rifc
@@ -511,9 +512,9 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                 d = data[ri:rf, ci:cf, ..., rii:rif + 1, cii:cif + 1]  # .astype(np.float)
                 d = np.ascontiguousarray(d)
                 if rebinning:
-                    ns = d.shape[:-2] + tuple([int(x/rebin) for x in d.shape[-2:]])
+                    ns = d.shape[:-2] + tuple([int(x / rebin) for x in d.shape[-2:]])
                     d = fpdp.rebinA(d, *ns)
-                
+
                 # modify with function
                 if pre_func is not None:
                     d = pre_func(d.reshape((-1,) + d.shape[-2:]))
@@ -534,6 +535,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                     pool = Pool(ncores)
                     rslt = pool.map(partial_comf, d)
                     pool.close()
+                    pool.join()
                 else:
                     rslt = list(map(partial_comf, d))
                 rslt = np.asarray(rslt)
@@ -666,7 +668,7 @@ def synthetic_aperture(shape, cyx, rio, sigma=1, dt=np.float, aaf=3, ds_method='
             mi = np.ones(shape) * np.nan
         if aaf != 1:
             if ds_method == 'rebin':
-                mi = fpdp.rebinA(mi, *im_shape)/ float(aaf**2)
+                mi = fpdp.rebinA(mi, *im_shape) / float(aaf**2)
             elif ds_method == 'interp':
                 mi = sp.ndimage.interpolation.zoom(mi,
                                                    1.0 / aaf,
