@@ -3,18 +3,16 @@
 from collections import OrderedDict
 
 import h5py
+import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QFileDialog, QMainWindow
 
-# First Party
-import qdarkgraystyle
-
 # FPD Explorer
 from . import logger, virtual_adf, dpc_explorer, fpd_functions
 from . import config_handler as config
-from . import data_browser_explorer
+from . import data_browser_explorer, phase_correlation_fncts
 from .logger import Flags
 from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
@@ -238,24 +236,20 @@ class ApplicationWindow(QMainWindow):
         self._ui.codeEdit.setPlainText("")
 
     @Slot()
-    def match_image(self):
-        fpd_functions.centre_of_mass(self)
-
+    def find_matching_images(self):
+        phase_correlation_fncts.find_matching_images(self)
 
     @Slot()
     def disc_edge(self):
-            fpd_functions.centre_of_mass(self)
+        phase_correlation_fncts.disc_edge_sigma(self)
 
     @Slot()
     def make_ref_im(self):
-            fpd_functions.centre_of_mass(self)
+        phase_correlation_fncts.make_ref_im(self)
 
     @Slot()
     def phase_correlation(self):
-            fpd_functions.centre_of_mass(self)
-
-
-
+        phase_correlation_fncts.phase_correlation(self)
 
     @Slot()
     def clear_files(self):

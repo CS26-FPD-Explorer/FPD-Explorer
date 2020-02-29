@@ -215,7 +215,7 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
                 partial_reg = fpdp.partial(fpdp.register_translation, ref, upsample_factor=spf)
                 
                 if parallel:
-                    pool = mp.dummy.Pool(processes=ncores)
+                    pool = mp.dummy.Pool(ncores)
                     rslt = pool.map(partial_reg, gm)
                     pool.close()
                 else:
@@ -255,3 +255,200 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
         fpdp_new.print_shift_stats(shift_yx)
 
     return shift_yx, shift_err, shift_difp, ref
+
+
+def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=True):
+    '''
+    Finds matching images using euclidean normalised mean square error through
+    all combinations of a given number of images.
+    
+    Parameters
+    ----------
+    images : ndarray
+        Array of images with image axes in last 2 dimensions.
+    aperture : 2D array
+        An aperture to apply to the images.
+    avg_nims : int
+        The number of images in a combination.
+    cut_len : int
+        The number of combinations in which to look for common images.
+    
+    Returns
+    -------
+    named tuple 'matching' containing:
+    
+    yxi_combos : tuple of two 2-D arrays
+        y- and x-indices of combinations, sorted by match quality.
+    yxi_common :
+        y- and x-indices of most common image in ``cut_len`` combinations.
+    ims_common : 3-D array
+        All images in in ``cut_len`` combinations matched with most common image.
+    ims_best : 3-D array
+        Best matching ``avg_nims`` images.
+    
+    Notes
+    -----
+    The number of combinations increases very rapidly with ``avg_nims`` and
+    the number of images. Using around 100 or so images runs relatively quickly.
+    
+    Examples
+    --------
+    >>> from fpd.synthetic_data import disk_image, shift_array, shift_images
+    >>> import fpd.fpd_processing as fpdp
+
+    Generate synthetic data.
+    >>> disc = disk_image(radius=32, intensity=64)
+    >>> shift_array = shift_array(6, shift_min=-1, shift_max=1)
+
+    Set shifts on diagonal to zero.
+    >>> diag_inds = [np.diag(x) for x in np.indices(shift_array[0].shape)]
+    >>> shift_array[0][diag_inds] = 0
+    >>> shift_array[1][diag_inds] = 0
+    
+    Generate shifted images.
+    >>> images = shift_images(shift_array, disc, noise=False)
+    >>> aperture = fpdp.synthetic_aperture(images.shape[-2:], cyx=(128,)*2, rio=(0, 48), sigma=0, aaf=1)[0]
+    
+    Find matching images.
+    >>> matching = fpdp.find_matching_images(images, aperture, plot=True)
+    >>> ims_best = matching.ims_best.mean(0)
+    
+    '''
+
+    # convert dask and other out-of-core to numpy
+    ims_orig = np.ascontiguousarray(images)
+
+    # flatten original images
+    ims_orig_shape = ims_orig.shape
+    ims_orig.shape = (-1,) + ims_orig.shape[-2:]
+    n_ims = ims_orig.shape[0]
+
+    # apply aperture and crop
+    if aperture is not None:
+        ri, rf = np.where(aperture.sum(0))[0][[0, -1]]
+        ci, cf = np.where(aperture.sum(1))[0][[0, -1]]
+        sr = slice(ri, rf + 1)
+        sc = slice(ci, cf + 1)
+        aperture = aperture[sr, sc]
+        ims = ims_orig[:, sr, sc] * (aperture[None, ...].astype(int))
+    else:
+        ims = ims_orig
+
+    # calculate nrsme for all combinations in one half diagonal
+    err = np.ones((n_ims, n_ims), dtype=float)
+    err[:] = np.nan
+    print('Calculating NRSME for all image combinations')
+    for ri, ref_im in enumerate(tqdm(ims)):
+        test_ims = ims[:ri]
+        err_col = nrmse(ref_im, test_ims)
+        err[:ri, ri] = err_col
+    if plot:
+        f, (ax1, ax2) = plt.subplots(1, 2, sharex=False, sharey=False, figsize=(8, 4))
+        ax1.imshow(err, interpolation="nearest")
+        ax1.set_xlabel('Flattened image index')
+        ax1.set_ylabel('Flattened image index')
+        ax1.set_title('NRSME')
+
+        '''
+        import hyperspy.api as hs
+        err_ims = np.reshape(err, (-1,) + ims_orig_shape[:2])
+        hs.signals.Signal2D(err_ims).plot()
+        '''
+    # loop over all combinations
+    print('Calculating combined NRSME for all combinations of %d images' % (avg_nims))
+    combs_tot = int(np.math.factorial(n_ims) / (np.math.factorial(avg_nims) * np.math.factorial(n_ims - avg_nims)))
+    comb_vals = np.empty(combs_tot, dtype=float)
+    comb_inds = np.empty((combs_tot, avg_nims), dtype=int)
+    for i, inds in enumerate(tqdm(combinations(range(n_ims), avg_nims), total=combs_tot)):
+        # calculate rmse from values at intercepts of row and column slices
+        ind_perms = np.array(list(combinations(inds, 2))).T
+        intercept_vals = err[ind_perms[0], ind_perms[1]]
+        comb_vals[i] = np.nansum(intercept_vals**2).sum()**0.5
+        comb_inds[i] = inds
+
+    # sort perms by rmse
+    si = np.argsort(comb_vals)
+    comb_vals = comb_vals[si]
+    comb_inds = comb_inds[si]
+
+    if plot:
+        # Combined NRSME
+        ax2.semilogx(comb_vals)
+        ax2.set_xlabel('Combination index')
+        ax2.set_ylabel('Combined NRSME')
+        ax2.set_title('%d combinations of %d images' % (combs_tot, avg_nims))
+        plt.tight_layout()
+
+        # map of scan locations
+        gri, gci = np.unravel_index(comb_inds, ims_orig_shape[:2])
+        map_im = np.zeros(ims_orig_shape[:2])
+        for i in range(cut_len):
+            map_im[gri[i], gci[i]] += 1
+        f, (ax1, ax2) = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 4))
+        ax1.imshow(map_im)
+        ax1.set_xlabel('Scan X index')
+        ax1.set_ylabel('Scan Y index')
+        ax1.set_title('First %d combinations of %d images' % (cut_len, avg_nims))
+
+    # find most common scan index within cut
+    common_im_ind = np.bincount(comb_inds[:cut_len].flat).argmax()
+    print('Most common scan index in 1st %d combinations of %d images:' %
+          (cut_len, avg_nims), np.unravel_index(common_im_ind, ims_orig_shape[:2]))
+    contains_common_im = (comb_inds[:cut_len] == common_im_ind).sum(1) > 0
+
+    # unique image indices within cut with most popular image in common
+    common_im_inds = np.unique(comb_inds[:cut_len][contains_common_im].flatten())
+    print('Number of unique images in these combinations sharing this index: %d' % (len(common_im_inds)))
+    if plot:
+        # plot unique points
+        sel_im = np.zeros(ims_orig_shape[:2])
+        sel_im.flat[common_im_inds] = 1
+        ax2.imshow(sel_im)
+        ax2.set_xlabel('Scan X index')
+        #plt.ylabel('Scan Y index')
+        plt.title('Unique images in 1st %d combinations of %d images\nsharing most common image' % (cut_len, avg_nims))
+
+    # calculate means and stds with mask if specified
+    if plot:
+        f, axs = plt.subplots(3, 2, sharex=True, sharey=True, figsize=(5, 8))
+        ax1, ax2, ax3, ax4, ax5, ax6 = axs.flatten()
+
+        im_common = ims[common_im_inds]
+        im_common_mean = im_common.mean(0)
+        im_common_std = im_common.std(0)
+        ax1.imshow(im_common_mean)
+        ax2.imshow(im_common_std)
+        ax1.set_title('Most common %d best' % (len(common_im_inds)))
+
+        im_best = ims[comb_inds[0]]
+        im_best_mean = im_best.mean(0)
+        im_best_std = im_best.std(0)
+        ax3.imshow(im_best_mean)
+        ax4.imshow(im_best_std)
+        ax3.set_title('Best combination of %d' % (avg_nims))
+
+        im_worst = ims[comb_inds[-1]]
+        im_worst_mean = im_worst.mean(0)
+        im_worst_std = im_worst.std(0)
+        ax5.imshow(im_worst_mean)
+        ax6.imshow(im_worst_std)
+        ax5.set_title('Worst combination of %d' % (avg_nims))
+    print('')
+
+    # return data (without masks)
+    yxi_combos = np.unravel_index(comb_inds, ims_orig_shape[:2])
+    yxi_common = np.unravel_index(common_im_inds, ims_orig_shape[:2])
+
+    ims_common = ims_orig[common_im_inds]
+    ims_common_mean = ims_common.mean(0)
+    ims_common_std = ims_common.std(0)
+
+    ims_best = ims_orig[comb_inds[0]]
+    ims_best_mean = ims_best.mean(0)
+    ims_best_std = ims_best.std(0)
+
+    # reshape original, in case ascontiguousarray returns view
+    ims_orig.shape = ims_orig_shape
+
+    rtn = namedtuple('matching', ['yxi_combos', 'yxi_common', 'ims_common', 'ims_best'])
+    return rtn(yxi_combos, yxi_common, ims_common, ims_best)
