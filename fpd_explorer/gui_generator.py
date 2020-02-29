@@ -444,10 +444,10 @@ class UI_Generator(QtWidgets.QDialog):
         self.sub_ls = defaultdict(list)
         for param_type, widgets in self.widgets.items():
             for key, widget, none_possible in widgets:
-                if param_type == "bool":
-                    widget.setFixedWidth(20)
-                if param_type != "bool":
-                    widget.setFixedWidth(100)
+                # if param_type == "bool":
+                # widget.setFixedWidth(20)
+                # if param_type != "bool":
+                widget.setFixedWidth(100)
                 widget.setFixedHeight(30)
                 if "iterable" in param_type:
                     # Loop for all children and add them as single child
