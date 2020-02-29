@@ -27,7 +27,7 @@ def find_matching_images(ApplicationWindow):
         if not params.exec():
             # Procedure was cancelled so just give up
             return
-        ApplicationWindow.matching = fpdp.find_matching_images(**params.get_result())
+        ApplicationWindow.matching = fpdp.find_matching_images(**params.get_result(),widget=canvas)
 
 
 def disc_edge_sigma(ApplicationWindow):

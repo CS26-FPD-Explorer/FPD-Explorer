@@ -257,7 +257,7 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
     return shift_yx, shift_err, shift_difp, ref
 
 
-def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=True):
+def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=True, widget=None):
     '''
     Finds matching images using euclidean normalised mean square error through
     all combinations of a given number of images.
@@ -343,11 +343,21 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
         err_col = nrmse(ref_im, test_ims)
         err[:ri, ri] = err_col
     if plot:
-        f, (ax1, ax2) = plt.subplots(1, 2, sharex=False, sharey=False, figsize=(8, 4))
+        windowname = 'Unique images in 1st %d combinations of %d images\nsharing most common image' % (
+            cut_len, avg_nims)
+        if widget is not None:
+            docked = self.widget.setup_docking("NRSME", "Top", figsize=(8, 4))
+            self.fig = docked.get_fig()
+            self.fig.clf()
+            (ax1, ax2) = self.fig.subplots(1, 2, sharex=False, sharey=False)
+            f = self.fig.canvas
+
+        else:
+            f, (ax1, ax2) = plt.subplots(1, 2, sharex=False, sharey=False, figsize=(8, 4))
         ax1.imshow(err, interpolation="nearest")
         ax1.set_xlabel('Flattened image index')
         ax1.set_ylabel('Flattened image index')
-        ax1.set_title('NRSME')
+        ax1.set_title("NRSME")
 
         '''
         import hyperspy.api as hs
@@ -384,11 +394,20 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
         map_im = np.zeros(ims_orig_shape[:2])
         for i in range(cut_len):
             map_im[gri[i], gci[i]] += 1
-        f, (ax1, ax2) = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 4))
+
+        if widget is not None:
+            docked = self.widget.setup_docking(window_name, "Top", figsize=(8, 4))
+            self.fig = docked.get_fig()
+            self.fig.clf()
+            (ax1, ax2) = self.fig.subplots(1, 2, sharex=False, sharey=False)
+            f = self.fig.canvas
+
+        else:
+            f, (ax1, ax2) = plt.subplots(1, 2, sharex=False, sharey=False, figsize=(8, 4))
         ax1.imshow(map_im)
         ax1.set_xlabel('Scan X index')
         ax1.set_ylabel('Scan Y index')
-        ax1.set_title('First %d combinations of %d images' % (cut_len, avg_nims))
+        ax1.set_title('First % d combinations of % d images' % (cut_len, avg_nims))
 
     # find most common scan index within cut
     common_im_ind = np.bincount(comb_inds[:cut_len].flat).argmax()
@@ -406,11 +425,19 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
         ax2.imshow(sel_im)
         ax2.set_xlabel('Scan X index')
         #plt.ylabel('Scan Y index')
-        plt.title('Unique images in 1st %d combinations of %d images\nsharing most common image' % (cut_len, avg_nims))
+        if widget is None:
+            plt.title(windowname)
 
     # calculate means and stds with mask if specified
     if plot:
-        f, axs = plt.subplots(3, 2, sharex=True, sharey=True, figsize=(5, 8))
+        if widget is not None:
+            docked = self.widget.setup_docking(window_name, "Top", figsize=(5,8))
+            self.fig = docked.get_fig()
+            self.fig.clf()
+            axs = plt.subplots(3, 2, sharex=True, sharey=True)
+            f = self.fig.canvas
+        else:
+            f, axs = plt.subplots(3, 2, sharex=True, sharey=True, figsize=(5, 8))
         ax1, ax2, ax3, ax4, ax5, ax6 = axs.flatten()
 
         im_common = ims[common_im_inds]

@@ -240,7 +240,7 @@ class ApplicationWindow(QMainWindow):
         phase_correlation_fncts.find_matching_images(self)
 
     @Slot()
-    def disc_edge(self):
+    def disc_edge_sigma(self):
         phase_correlation_fncts.disc_edge_sigma(self)
 
     @Slot()
