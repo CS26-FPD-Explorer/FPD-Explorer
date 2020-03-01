@@ -58,9 +58,13 @@ navigate to the &lsquo;Center of Mass&rsquo; button underneath the functions tab
 click this button. Input the specific parameters you want and click &lsquo;Save&rsquo;, 
 this will calculate the center of mass based on the previous data and the files provided
  and generate the statistics on the &lsquo;Workflow help&rsquo; subsection.</p>
-<p><strong><u>Ransac Tools+DPC</u></strong></p>
-<p>to be completed&hellip;</p>
-<p>&nbsp;</p>"""
+<p><strong><u>Ransac Tools</u></strong></p>
+<p>The &lsquo;Ransac Tools&rsquo; function must have center 
+of mass ran before it can output data.</p>
+<p><strong><u>DPC Explorer</u></strong></p>
+<p>DPC Explorer will output different data depending
+ on what is run before, as certain parameters will have a 
+ different effect on the output.</p>"""
 
 content_nav_load = """<p><strong><u>What this Software is used for</u></strong></p>
         <p>This software allows users to process electron microscopy 
