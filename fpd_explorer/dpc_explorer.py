@@ -19,23 +19,22 @@ def start_dpc(ApplicationWindow):
 
     """
     dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
-    ApplicationWindow.dpc_input = []
     try:
-        ApplicationWindow.dpc_input.append(("cyx", ApplicationWindow.cyx))
+        ApplicationWindow.dpc_input.update({"cyx", ApplicationWindow.cyx})
     except AttributeError:
         pass
     try:
-        ApplicationWindow.dpc_input.append(("com_yx_beta", ApplicationWindow.com_yx_beta))
+        ApplicationWindow.dpc_input.update({"com_yx_beta", ApplicationWindow.com_yx_beta})
     except AttributeError:
         pass
 
     try:
-        ApplicationWindow.dpc_input.append(("ransac", ApplicationWindow.com_yx_cor))
+        ApplicationWindow.dpc_input.update({"ransac", ApplicationWindow.com_yx_cor})
     except AttributeError:
         pass
     try:
-        ApplicationWindow.dpc_input.append(("beta2bt", fpd.mag_tools.beta2bt(
-            ApplicationWindow.com_yx_cor) * 1e9))
+        ApplicationWindow.dpc_input.update({"beta2bt", fpd.mag_tools.beta2bt(
+            ApplicationWindow.com_yx_cor) * 1e9})
 
     except AttributeError:
         pass
@@ -45,7 +44,7 @@ def start_dpc(ApplicationWindow):
         Please run some function before trying again""")
     key_add = {
         "d": [
-            "multipleinput", ApplicationWindow.dpc_input, """If array-like, yx data. If length 2 iterable or ndarray of \n
+            "multipleinput", list(ApplicationWindow.dpc_input.items()), """If array-like, yx data. If length 2 iterable or ndarray of \n
                     shape (2, M, N), data is single yx dataset. If shape is \n
                     (S, 2, M, N), a sequence yx data of length S can be plotted."""],
         "rotate": [
@@ -67,7 +66,6 @@ def start_dpc(ApplicationWindow):
         # Procedure was cancelled so just give up
         return
     results = params.get_result()
-    print(results)
     # bt = fpd.mag_tools.beta2bt(ApplicationWindow.com_yx_beta) * 1e9  # T*nm
 
     # rotate image if needed. This can make data interpretation easier.

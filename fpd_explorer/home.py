@@ -28,10 +28,10 @@ class ApplicationWindow(QMainWindow):
         self._setup_slot()
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
-
+        self._init_arrays()
+        self._setup_actions()
         self.app = app
         self.dark_mode_config = dark_mode_config
-        self._setup_actions()
         self._ui.dark_mode_button.setChecked(dark_mode_config)
         self._last_path = config.get_config("file_path")
         self._files_loaded = False
@@ -95,6 +95,12 @@ class ApplicationWindow(QMainWindow):
     def _update_last_path(self, new_path):
         self._last_path = "/".join(new_path.split("/")[:-1]) + "/"
         config.add_config({"file_path": self._last_path})
+
+    def _init_arrays(self):
+        self.dpc_input = {}
+        self.circular_input = {}
+        self.mass_input = {}
+        self.ransac_input = {}        
 
     @Slot()
     def change_color_mode(self):

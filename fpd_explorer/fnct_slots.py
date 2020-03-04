@@ -59,3 +59,14 @@ def start_live_coding(self):
     ipy_console = QIPythonWidget(self)
     console_tab = Pop_Up_Widget(self, "Live Coding")
     console_tab.setup_docking_default(ipy_console)
+
+def add_data(self, location, name, data):
+    location = location.lower()
+    if "dpc" in location:
+        self.dpc_input.update({name: data})
+    elif "circular" in location:
+        self.circular_input.update({name: data})
+    elif "mass" in location:
+        self.mass_input.update({name: data})
+    elif "ransac" in location:
+        self.ransac_input.update({name: data})
