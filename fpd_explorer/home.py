@@ -100,7 +100,10 @@ class ApplicationWindow(QMainWindow):
         self.dpc_input = {}
         self.circular_input = {}
         self.mass_input = {}
-        self.ransac_input = {}        
+        self.ransac_input = {}
+        self.matching_input = {}
+        self.edge_input = {}  
+        self.ref_input = {}
 
     @Slot()
     def change_color_mode(self):

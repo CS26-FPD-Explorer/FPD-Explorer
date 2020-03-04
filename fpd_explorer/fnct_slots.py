@@ -74,3 +74,11 @@ def add_data(self, location, name, data):
         self.mass_input.update({name: data})
     elif "ransac" in location:
         self.ransac_input.update({name: data})
+    elif "matching" in location:
+        self.matching_input.update({name:data})    
+    elif "edge" in location:
+        self.edge_input.update({name: data})
+    elif "ref" in location:
+        self.ref_input.update({name: data})
+
+        

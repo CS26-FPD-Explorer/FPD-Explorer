@@ -422,7 +422,8 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
         ax2.set_xlabel('Combination index')
         ax2.set_ylabel('Combined NRSME')
         ax2.set_title('%d combinations of %d images' % (combs_tot, avg_nims))
-        plt.tight_layout()
+        if widget is None:
+            plt.tight_layout()
 
         # map of scan locations
         gri, gci = np.unravel_index(comb_inds, ims_orig_shape[:2])
@@ -469,7 +470,7 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
             docked = widget.setup_docking("", "Top", figsize=(5,8))
             fig = docked.get_fig()
             fig.clf()
-            axs = plt.subplots(3, 2, sharex=True, sharey=True)
+            axs = fig.subplots(3, 2, sharex=True, sharey=True)
             f = fig.canvas
         else:
             f, axs = plt.subplots(3, 2, sharex=True, sharey=True, figsize=(5, 8))
@@ -598,11 +599,26 @@ def disc_edge_sigma(im, sigma=2, cyx=None, r=None, use_hyperspy=False, plot=True
     rt_val = rt_val.reshape(rr.shape)
 
     if plot:
-        plt.matshow(rt_val)
-        plt.figure()
-        plt.plot(rt_val[:,::18])
-        plt.xlabel('Interp pixels')
-        plt.ylabel('Intensity')
+        if widget is not None:
+            fig = widget.setup_docking("Aperture")
+            ax = fig.get_fig().subplots()
+            ax.matshow(rt_val)
+            docked = widget.setup_docking("", "Top", figsize=(6, 8))
+            fig = docked.get_fig()
+            fig.clf()
+            ax = fig.subplots(1, 1)
+            f = fig.canvas
+
+            ax.plot(rt_val[:,::18])
+            ax.set_xlabel('Interp pixels')
+            ax.set_ylabel('Intensity')
+
+        else:
+            plt.matshow(rt_val)
+            plt.figure()
+            plt.plot(rt_val[:,::18])
+            plt.xlabel('Interp pixels')
+            plt.ylabel('Intensity')
     
     
     # Fit edge
@@ -705,7 +721,14 @@ def disc_edge_sigma(im, sigma=2, cyx=None, r=None, use_hyperspy=False, plot=True
             fits = np.array([function(x, *pi) for pi in popts])
             
             inds = np.arange(len(sigma_vals))[::10]
-            f, ax = plt.subplots(1, 1, figsize=(6, 8))
+            if widget is not None:
+                docked = widget.setup_docking("", "Top", figsize=(6,8))
+                fig = docked.get_fig()
+                fig.clf()
+                ax = fig.subplots(1, 1)
+                f = fig.canvas
+            else:
+                f, ax = plt.subplots(1, 1, figsize=(6, 8))
             pad = 0.2 * A
             for j,i in enumerate(inds):
                 ax.plot(x, rt_val[:, i] + pad*j, 'x')
@@ -735,7 +758,8 @@ def disc_edge_sigma(im, sigma=2, cyx=None, r=None, use_hyperspy=False, plot=True
     
     return(sigma_wt_avg, sigma_wt_std, sigma_std, (sigma_vals, sigma_stds))
 
-def make_ref_im(image, edge_sigma, aperture=None, upscale=4, bin_opening=None, bin_closing=None, crop_pad=False, threshold=None, plot=True):
+def make_ref_im(image, edge_sigma, aperture=None, upscale=4, bin_opening=None, bin_closing=None, 
+    crop_pad=False, threshold=None, plot=True, widget=None):
     '''
     Generate a cleaned version of the image supplied for use as a reference.
     
@@ -850,8 +874,14 @@ def make_ref_im(image, edge_sigma, aperture=None, upscale=4, bin_opening=None, b
         pct = 0.1
         vmin_max = np.percentile(err, [pct, 100-pct])
         vmin, vmax = np.abs(vmin_max).max() * np.array([-1, 1])
-        
-        f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(9,3))
+        if widget is not None:
+            docked = widget.setup_docking("", "Top", figsize=(9,3))
+            fig = docked.get_fig()
+            fig.clf()
+            ax1, ax2, ax3 = fig.subplots(1, 3, sharex=True, sharey=True)
+            f = fig.canvas
+        else:
+            f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(9,3))
         ax1.imshow(im)
         ax2.imshow(processed)
         ax3.imshow(err, vmin=vmin, vmax=vmax, cmap='bwr')

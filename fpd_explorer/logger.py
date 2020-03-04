@@ -17,7 +17,7 @@ class Flags(Enum):
     center_mass = auto()
     ransac_fit = auto()
     vadf_init = auto()
-
+    phase_matching = auto()
     def __lt__(self, other):
         return self.value < other.value
 
@@ -65,6 +65,11 @@ global_flags = {
         "bool": False,
         "error": "<b>The Virtual Annular Dark Field must be initialised </b> before this step can be taken.<br><br>",
         "needing": []
+    },
+    Flags.phase_matching: {
+        "bool": False,
+        "error": "<b>Matching images must have been found </b> before this step can be taken.<br><br>",
+        "needing": [Flags.files_loaded]
     }
 }
 

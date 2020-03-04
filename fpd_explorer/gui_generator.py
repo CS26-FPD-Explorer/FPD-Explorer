@@ -79,7 +79,7 @@ class UI_Generator(QtWidgets.QDialog):
         result = {}
         # result is a dict with the variable name as key and a list composed of type, default value, description
         param = doc.split('Parameters')[1].replace(',', '').replace(
-            '-', '').split("Return")[0].split("Attributes")[0].split('\n')
+            '-', '').split("Return")[0].split("Attributes")[0].split("Notes")[0].split('\n')
         current_name = ""
         global_space = -1
         for idx, el in enumerate(param):
@@ -88,6 +88,7 @@ class UI_Generator(QtWidgets.QDialog):
                 if global_space == -1 and el.find(':') != -1:
                     global_space = nb_space
                 if nb_space == global_space:
+                    print(el)
                     current_name, type = el.replace(' ', '').split(':')
                     default = sig.parameters[current_name]
                     if default is not None:
