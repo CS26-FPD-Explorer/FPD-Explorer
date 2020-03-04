@@ -12,6 +12,8 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/../")
 def test_clear_files(qtbot):
     aw = ApplicationWindow()
     qtbot.addWidget(aw)
+    logger.setup(aw._ui.log_text, aw)
+
     aw.clear_files()
     assert aw._files_loaded == False
     assert aw._cyx == None

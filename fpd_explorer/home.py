@@ -2,6 +2,7 @@
 # Standard Library
 from collections import OrderedDict
 
+import h5py
 import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
@@ -9,7 +10,7 @@ from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QFileDialog, QMainWindow
 
 # FPD Explorer
-from . import logger, dpc_explorer, fpd_functions
+from . import logger, virtual_adf, dpc_explorer, fpd_functions
 from . import config_handler as config
 from . import data_browser_explorer
 from .about import get_content
@@ -29,17 +30,9 @@ class ApplicationWindow(QMainWindow):
         self._ui.setupUi(self)
         self.app = app
         self.dark_mode_config = dark_mode_config
-        self._ui.action_mib.triggered.connect(self.function_mib)
-        self._ui.action_dm3.triggered.connect(self.function_dm3)
-        # self._ui.action_hdf5.triggered.connect(self.function_hdf5)
-        self._ui.action_navigating_loading.triggered.connect(self.function_nav_load)
-        self._ui.action_functions.triggered.connect(self.function_help_with_functions)
-        self._ui.action_about_us.triggered.connect(self.function_about_us)
-        self._ui.action_about_software.triggered.connect(self.function_about_software)
-
+        self._setup_actions()
         self._ui.dark_mode_button.setChecked(dark_mode_config)
         self._last_path = config.get_config("file_path")
-
         self._files_loaded = False
         self._data_browser = None
         self._cyx = None
@@ -49,6 +42,23 @@ class ApplicationWindow(QMainWindow):
         self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
         # PySide2.QtWidgets.QTabBar.ButtonPosition for 2nd argument, LeftSide doesn't work
         self._ui.tabWidget.tabBar().setTabButton(0, QtWidgets.QTabBar.RightSide, None)
+
+    def _setup_actions(self):
+        self._ui.action_mib.triggered.connect(self.function_mib)
+        self._ui.action_dm3.triggered.connect(self.function_dm3)
+        self._ui.action_hdf5.triggered.connect(self.function_hdf5)
+        self._ui.action_npz.triggered.connect(self.function_npz)
+        self._ui.actionCenter_of_Mass.triggered.connect(self.centre_of_mass)
+        self._ui.actionCircular_center.triggered.connect(self.find_circular_centre)
+        self._ui.actionDPC_Explorer.triggered.connect(self.start_dpc_explorer)
+        self._ui.actionData_Browser.triggered.connect(self.start_dbrowser)
+        self._ui.actionLoad.triggered.connect(self.load_files)
+        self._ui.actionRansac_Tool.triggered.connect(self.ransac_im_fit)
+        self._ui.actionVADF_Explorer.triggered.connect(self.start_vadf)
+        self._ui.action_navigating_loading.triggered.connect(self.function_nav_load)
+        self._ui.action_functions.triggered.connect(self.function_help_with_functions)
+        self._ui.action_about_us.triggered.connect(self.function_about_us)
+        self._ui.action_about_software.triggered.connect(self.function_about_software)
 
     def _setup_cmaps(self):
         self.cmaps = OrderedDict()
@@ -82,6 +92,49 @@ class ApplicationWindow(QMainWindow):
                 self._ui.mib_line.clear()
                 self._ui.mib_line.insert(fname[fname.rfind('/') + 1:])
                 logger.log("MIB file correctly loaded")
+                return True
+        return False
+
+    @Slot()
+    def function_npz(self):
+        """
+        Spawn a file dialog to open an npz file
+        """
+        fname, _ = QFileDialog.getOpenFileName(
+            self, 'Open file', self._last_path,
+            "NPZ file (*.npz)")
+        print(fname)
+        if fname:
+            if fname[-3:] == "npz":  # empty string means user cancelled
+                self._update_last_path(fname)
+                self.npz_path = fname
+                self._ui.npz_line.clear()
+                self._ui.npz_line.insert(fname[fname.rfind('/') + 1:])
+                logger.log("NPZ file correctly loaded", Flags.npz_loaded)
+                return True
+        return False
+
+    @Slot()
+    def function_hdf5(self):
+        """
+        Spawn a file dialog to open an hdf5 file
+        """
+        fname, _ = QFileDialog.getOpenFileName(
+            self, 'Open file', self._last_path,
+            "MERLIN binary files (*.hdf5)")
+        if fname:
+            if fname[-4:] == "hdf5":  # empty string means user cancelled
+                self._update_last_path(fname)
+                self.hdf5_path = fname
+                self._ui.hdf5_line.clear()
+                self._ui.hdf5_line.insert(fname[fname.rfind('/') + 1:])
+                f = h5py.File(fname, 'r')
+                self._ds = f['fpd_expt/fpd_data/data']
+                self.ds_sel = self._ds
+                self._sum_im = f['fpd_expt/fpd_sum_im/data'].value
+                self._sum_dif = f['fpd_expt/fpd_sum_dif/data'].value
+                logger.log("HDF5 file correctly loaded", Flags.hdf5_usage)
+                logger.add_flag(Flags.files_loaded)
                 return True
         return False
 
@@ -172,6 +225,18 @@ class ApplicationWindow(QMainWindow):
         dpc_explorer.start_dpc(self)
 
     @Slot()
+    def start_vadf(self):
+        virtual_adf.start_vadf(self)
+
+    @Slot()
+    def plot_vadf(self):
+        virtual_adf.plot_vadf(self)
+
+    @Slot()
+    def annular_slice_vadf(self):
+        virtual_adf.annular_slice(self)
+
+    @Slot()
     def find_circular_centre(self):
         fpd_functions.find_circular_centre(self)
 
@@ -200,8 +265,11 @@ class ApplicationWindow(QMainWindow):
             del self._dm3_path
             self._ui.dm3_line.clear()
         if self._ui.hdf5_line.text():
-            # TO DO: ADD hdf5 RELEVANT CODE ONCE hdf5 OPENING ADDED
-            pass
+            del self.hdf5_path
+            self._ui.hdf5_line.clear()
+        if self._ui.npz_line.text():
+            del self.npz_path
+            self._ui.npz_line.clear()
         self._files_loaded = False
         self._cyx = None
         self._ap = None
@@ -220,6 +288,9 @@ class ApplicationWindow(QMainWindow):
         """
         x_value = None
         y_value = None
+        if logger.check_if_all_needed(Flags.hdf5_usage, display=False):
+            logger.log("Files Loaded correctly", Flags.files_loaded)
+            return
         # Cherk if Mib exist
         try:
             mib = self._mib_path
@@ -266,7 +337,6 @@ class ApplicationWindow(QMainWindow):
                                 scanXalu=x_value, row_end_skip=1)
 
         self._ds = self._mb.get_memmap()
-
         x, y = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
                                text_y="Amount to skip for Diffraction Image")  # Check what is the maximum value
         real_skip = x
@@ -274,7 +344,6 @@ class ApplicationWindow(QMainWindow):
         print("skipping : " + str(x) + " " + str(y))
         # real_skip, an integer, real_skip=1 loads all pixels, real_skip=n an even integer downsamples
         # Obvious values are 1 (no down-sample), 2, 4
-
         # Assign the down-sampled dataset
         self.ds_sel = self._ds[::real_skip,
                                ::real_skip, ::recip_skip, ::recip_skip]
@@ -286,11 +355,8 @@ class ApplicationWindow(QMainWindow):
         loading_widget.exec()
         self._sum_dif = loading_widget._sum_dif
         self._sum_im = loading_widget._sum_im
-
         self._files_loaded = True
-        logger.add_flag(Flags.files_loaded)
-        print("files_loaded=" + str(self._files_loaded))
-        print("end")
+        logger.log("Files Loaded correctly", Flags.files_loaded)
 
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
         """

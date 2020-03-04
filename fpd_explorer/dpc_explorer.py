@@ -30,6 +30,11 @@ def start_dpc(ApplicationWindow):
             ApplicationWindow.com_yx_beta) * 1e9))
     except AttributeError:
         pass
+    try:
+        avail_input.append(("ransac", ApplicationWindow.com_yx_cor))
+    except AttributeError:
+        pass
+
     if len(avail_input) == 0:
         raise Exception("""No data found that could be used with DPC Explorer.\n
         Please run some function before trying again""")
@@ -37,14 +42,26 @@ def start_dpc(ApplicationWindow):
         "d": [
             "multipleinput", avail_input, """If array-like, yx data. If length 2 iterable or ndarray of \n
                     shape (2, M, N), data is single yx dataset. If shape is \n
-                    (S, 2, M, N), a sequence yx data of length S can be plotted."""], "rotate": [
-            "bool", False, "rotate image if needed. This can make data interpretation easier"]}
+                    (S, 2, M, N), a sequence yx data of length S can be plotted."""],
+        "rotate": [
+            "bool", False, "rotate image if needed. This can make data interpretation easier"],
+        "hist_lims": [
+            "togglevalue", ["length4tupleofscalars,orNone", None,
+                            """Histogram limits in order of xmin, xmax, ymin, ymax.\n
+                                If None, limits are taken from data."""],
+            """Check if you want to manually set the hist lim"""],
+        "descan": [
+            "togglevalue", ["length 4 iterable", [0, 0, 0, 0], """Plane descan correction.\n
+                            [Yy, Yx, Xy, Xx] entered in 1/1000 for for convenience."""],
+            """Check if you want to manually set the descan"""
+        ]}
 
-    params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=["d"], key_add=key_add)
+    params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=["r_min", "r_max"], key_add=key_add)
     if not params.exec():
         # Procedure was cancelled so just give up
         return
     results = params.get_result()
+    print(results)
     # bt = fpd.mag_tools.beta2bt(ApplicationWindow.com_yx_beta) * 1e9  # T*nm
 
     # rotate image if needed. This can make data interpretation easier.

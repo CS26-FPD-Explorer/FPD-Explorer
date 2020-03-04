@@ -19,8 +19,8 @@ from .res.ui_singleloadingbox import Ui_SingleLoadingBox
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
-    def __init__(self, parent=None):
-        self._fig = Figure()
+    def __init__(self, parent=None, figsize=None):
+        self._fig = Figure(figsize=figsize)
 
         FigureCanvas.__init__(self, self._fig)
         self.setParent(parent)
@@ -67,7 +67,7 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self._docked_widgets = []
         # self.application_window._ui.tabWidget.tabCloseRequested.connect(self.close_handler)
 
-    def setup_docking(self, name, location="Top"):
+    def setup_docking(self, name, location="Top", figsize=None):
         """
         Initialize a dock widget with the given name
         Parameters
@@ -78,7 +78,7 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         ---------
         widget : QWidget the widget inside of the dock widget
         """
-        widget = MyMplCanvas(self)
+        widget = MyMplCanvas(self, figsize)
 
         dock = QDockWidget(self)
         dock.setWidget(widget)
