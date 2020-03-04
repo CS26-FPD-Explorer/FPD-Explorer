@@ -7,6 +7,8 @@ from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot, Signal, QObject, QRunnable, QThreadPool
 from matplotlib.figure import Figure
 from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout
+from qtconsole.inprocess import QtInProcessKernelManager
+from qtconsole.rich_ipython_widget import RichIPythonWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 # FPD Explorer
@@ -353,30 +355,36 @@ class GuiUpdater(QRunnable):
 
 class QIPythonWidget(RichIPythonWidget):
     """ Convenience class for a live IPython console widget."""
-    def __init__(self, ApplicationWindow=None,customBanner=None,*args,**kwargs):
-        super(QIPythonWidget, self).__init__(*args,**kwargs)
-        if customBanner!=None: self.banner=customBanner
+
+    def __init__(self, ApplicationWindow=None, customBanner=None, *args, **kwargs):
+        super(QIPythonWidget, self).__init__(*args, **kwargs)
+        if customBanner is not None:
+            self.banner = customBanner
         self.kernel_manager = QtInProcessKernelManager()
         self.kernel_manager.start_kernel()
         self.kernel_manager.kernel.gui = 'qt'
         self.kernel_client = self._kernel_manager.client()
         self.kernel_client.start_channels()
-        self.kernel_manager.kernel.shell.push({"fpd_app":ApplicationWindow})
+        self.kernel_manager.kernel.shell.push({"fpd_app": ApplicationWindow})
+
         def stop():
             self.kernel_client.stop_channels()
             self.kernel_manager.shutdown_kernel()
         self.exit_requested.connect(stop)
 
-    def pushVariables(self,variableDict):
+    def pushVariables(self, variableDict):
         """ Given a dictionary containing name / value pairs, push those variables to the IPython console widget """
         print(variableDict)
         self.kernel_manager.kernel.shell.push(variableDict)
+
     def clearTerminal(self):
         """ Clears the terminal """
-        self._control.clear()    
-    def printText(self,text):
+        self._control.clear()
+
+    def printText(self, text):
         """ Prints some plain text to the console """
-        self._append_plain_text(text)        
-    def executeCommand(self,command):
+        self._append_plain_text(text)
+
+    def executeCommand(self, command):
         """ Execute a command in the frame of the console widget """
-        self._execute(command,True)
+        self._execute(command, True)

@@ -107,7 +107,7 @@ class UI_Generator(QtWidgets.QDialog):
                 # Remove all key already present in the dict so no key gets processed twice
                 if result.get(key, None) is not None:
                     result.pop(key)
-        result.update(self.key_add)
+            result.update(self.key_add)
         return result
 
     def _setup_ui(self):

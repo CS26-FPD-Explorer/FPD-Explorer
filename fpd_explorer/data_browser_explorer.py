@@ -1,10 +1,11 @@
 from PySide2 import QtWidgets
-from PySide2.QtCore import Qt, Slot
-from PySide2.QtWidgets import QDockWidget, QMainWindow
+from PySide2.QtCore import Slot
+from PySide2.QtWidgets import QMainWindow
 
 # FPD Explorer
 from . import logger
 from .logger import Flags
+from .custom_widgets import Pop_Up_Widget
 from .res.ui_data_browser import Ui_DataBrowser
 from .custom_fpd_lib.data_browser import DataBrowser
 from .custom_widgets import Pop_Up_Widget
