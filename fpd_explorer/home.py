@@ -55,10 +55,10 @@ class ApplicationWindow(QMainWindow):
         self._ui.actionLoad.triggered.connect(self.load_files)
         self._ui.actionRansac_Tool.triggered.connect(self.ransac_im_fit)
         self._ui.actionVADF_Explorer.triggered.connect(self.start_vadf)
-        self._ui.action_navigating_loading.triggered.connect(self.function_nav_load)
-        self._ui.action_functions.triggered.connect(self.function_help_with_functions)
-        self._ui.action_about_us.triggered.connect(self.function_about_us)
-        self._ui.action_about_software.triggered.connect(self.function_about_software)
+        self._ui.action_navigating_loading.triggered.connect(lambda: self.guide_me("Nav/Load"))
+        self._ui.action_functions.triggered.connect(lambda: self.guide_me("Help"))
+        self._ui.action_about_software.triggered.connect(lambda: self.guide_me(""))
+        self._ui.action_about_us.triggered.connect(lambda: self.guide_me("us"))
 
     def _setup_cmaps(self):
         self.cmaps = OrderedDict()
@@ -157,45 +157,10 @@ class ApplicationWindow(QMainWindow):
         return False
 
     @Slot()
-    def function_nav_load(self):
-        """
-        Display a pop-up describing how to help users with
-        loading files, navigating the UI etc.
-        """
-        content = get_content('Nav/Load')
-        about = QtWidgets.QMessageBox()
-        about.setText(content)
-        about.exec()
-
-    @Slot()
-    def function_about_software(self):
-        """
-        Display a pop-up, telling users some info about the project/software.
-        """
-        content = get_content('software')
-        about = QtWidgets.QMessageBox()
-        about.setText(content)
-        about.exec()
-
-    @Slot()
-    def function_about_us(self):
-        """
-        Display a pop-up telling the users who made the software.
-        """
-        content = get_content('us')
-        about = QtWidgets.QMessageBox()
-        about.setText(content)
-        about.exec()
-
-    @Slot()
-    def function_help_with_functions(self):
-        """
-        Display a pop-up describing how to use the functions within the UI.
-        """
-        content = get_content('Help')
-        functions_help = QtWidgets.QMessageBox()
-        functions_help.setText(content)
-        functions_help.exec()
+    def guide_me(self, topic):
+        message = QtWidgets.QMessageBox()
+        message.setText(get_content(topic))
+        message.exec()
 
     def _update_last_path(self, new_path):
         self._last_path = "/".join(new_path.split("/")[:-1]) + "/"
