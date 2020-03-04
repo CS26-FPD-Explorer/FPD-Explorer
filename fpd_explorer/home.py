@@ -59,6 +59,7 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_functions.triggered.connect(lambda: self.guide_me("functions_help"))
         self._ui.action_about_us.triggered.connect(lambda: self.guide_me("about_us"))
         self._ui.action_about_software.triggered.connect(lambda: self.guide_me("about_software"))
+        self._ui.action_live_coding.triggered.connect(lambda: self.guide_me("live_coding"))
 
     def _setup_cmaps(self):
         self.cmaps = OrderedDict()

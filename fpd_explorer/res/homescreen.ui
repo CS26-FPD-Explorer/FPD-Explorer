@@ -891,6 +891,7 @@
     </property>
     <addaction name="action_navigating_loading"/>
     <addaction name="action_functions"/>
+    <addaction name="action_live_coding"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -949,17 +950,26 @@
   </action>
   <action name="action_navigating_loading">
    <property name="text">
-    <string>Navigating/Loading</string>
+    <string>Navigating and loading</string>
+   </property>
+   <property name="toolTip">
+    <string>Navigating and loading help</string>
    </property>
   </action>
   <action name="action_functions">
    <property name="text">
-    <string>Help with Functions</string>
+    <string>Functions</string>
+   </property>
+   <property name="toolTip">
+    <string>FPD functions help</string>
    </property>
   </action>
   <action name="action_about_software">
    <property name="text">
-    <string>About the Software</string>
+    <string>About software</string>
+   </property>
+   <property name="toolTip">
+    <string>About software</string>
    </property>
   </action>
   <action name="action_about_us">
@@ -1016,6 +1026,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_live_coding">
+   <property name="text">
+    <string>Live coding</string>
    </property>
   </action>
  </widget>

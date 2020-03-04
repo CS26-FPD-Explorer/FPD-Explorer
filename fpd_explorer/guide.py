@@ -1,13 +1,16 @@
 
 def get_guide(topic):
     topics = {"navigating_and_loading": navigating_and_loading, "functions_help": functions_help,
-              "about_us": about_us, "about_software": about_software}
+              "about_us": about_us, "about_software": about_software, "live_coding": live_coding}
     return topics[topic]
 
+
+live_coding = """<strong>TO BE UPDATED</strong>"""
 
 about_software = """<p><strong><u>About software</u></strong></p>
 <p>The software was created using Qt, Pyside2 and the FPD library.
 <br>It is an open source software.</p>"""
+
 about_us = """
 <p><strong><u>About us</u></strong></p>
 <p>This software was created by:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
@@ -19,6 +22,7 @@ about_us = """
   <li>Ruize Shen</li>
 </ul>
 """
+
 functions_help = """<p><strong><u>Data Browser</u></strong></p>
 <p>To use Data Browser, look for the &lsquo;DataBrowser&rsquo;
 button underneath the &lsquo;functions&rsquo; heading in the top
@@ -62,7 +66,7 @@ of mass ran before it can output data.</p>
  different effect on the output.</p>"""
 
 navigating_and_loading = """<p><strong><u>What this software is used for</u></strong></p>
-        <p>This software allows users to process electron microscopy
+        <p>This software allows users to analyse and visualise electron microscopy
         images through a range of different functions.</p>
         <p><strong><u>Loading files</u></strong></p>
         <p>You can load 2 types of files .dm3 and. mib,
