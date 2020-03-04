@@ -12,8 +12,8 @@ from PySide2.QtWidgets import QFileDialog, QMainWindow
 from . import logger, dpc_explorer, fpd_functions
 from . import config_handler as config
 from . import data_browser_explorer
+from .about import get_content
 from .logger import Flags
-from .res.about import get_content
 from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
 
