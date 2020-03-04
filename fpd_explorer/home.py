@@ -35,15 +35,26 @@ class ApplicationWindow(QMainWindow):
         self._ui.dark_mode_button.setChecked(dark_mode_config)
         self._last_path = config.get_config("file_path")
         self._files_loaded = False
-        self._data_browser = None
-        self._cyx = None
-        self._ap = None
+        self.data_browser = None
+        self.cyx = None
+        self.ap = None
         self._setup_cmaps()
         # makes all tabs except Home closable
-        self._ui.tabWidget.tabCloseRequested.connect(self._ui.tabWidget.removeTab)
+        self._ui.tabWidget.tabCloseRequested.connect(self._handle_tab_close)
         # PySide2.QtWidgets.QTabBar.ButtonPosition for 2nd argument, LeftSide doesn't work
         self._ui.tabWidget.tabBar().setTabButton(0, QtWidgets.QTabBar.RightSide, None)
 
+    @Slot(int)
+    def _handle_tab_close(self, idx):
+        name = self._ui.tabWidget.tabBar().tabText(idx)
+        print(f"Tab {name} at {idx} has been closed")
+        if name == "Data Browser":
+            self.data_browser = None
+        while self._ui.tabWidget.widget(idx).layout().count():
+            self._ui.tabWidget.widget(idx).layout().takeAt(0).widget().deleteLater()
+        self._ui.tabWidget.removeTab(idx)
+        self._ui.tabWidget.setCurrentIndex(0)
+    
     def _setup_actions(self):
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_dm3.triggered.connect(self.function_dm3)
@@ -127,10 +138,10 @@ class ApplicationWindow(QMainWindow):
                 self._ui.hdf5_line.clear()
                 self._ui.hdf5_line.insert(fname[fname.rfind('/') + 1:])
                 f = h5py.File(fname, 'r')
-                self._ds = f['fpd_expt/fpd_data/data']
-                self.ds_sel = self._ds
-                self._sum_im = f['fpd_expt/fpd_sum_im/data'].value
-                self._sum_dif = f['fpd_expt/fpd_sum_dif/data'].value
+                self.ds = f['fpd_expt/fpd_data/data']
+                self.ds_sel = self.ds
+                self.sum_im = f['fpd_expt/fpd_sum_im/data'].value
+                self.sum_dif = f['fpd_expt/fpd_sum_dif/data'].value
                 logger.log("HDF5 file correctly loaded", Flags.hdf5_usage)
                 logger.add_flag(Flags.files_loaded)
                 return True
@@ -272,13 +283,13 @@ class ApplicationWindow(QMainWindow):
             del self.npz_path
             self._ui.npz_line.clear()
         self._files_loaded = False
-        self._cyx = None
-        self._ap = None
+        self.cyx = None
+        self.ap = None
         for _ in range(self._ui.tabWidget.count() - 1):
             # 1 because every time a tab is removed, indices are reassigned
             self._ui.tabWidget.removeTab(1)
-        if self._data_browser:
-            self._data_browser = None
+        if self.data_browser:
+            self.data_browser = None
             self._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
         logger.clear()
 
@@ -294,7 +305,7 @@ class ApplicationWindow(QMainWindow):
             return
         # Cherk if Mib exist
         try:
-            mib = self._mib_path
+            mib = self.mib_path
         except AttributeError:
             response = QtWidgets.QMessageBox.warning(
                 self, "Warning",
@@ -334,10 +345,10 @@ class ApplicationWindow(QMainWindow):
                 return
 
         hdr = self._mib_path[:-4] + ".hdr"
-        self._mb = MerlinBinary(mib, hdr, dm3, scanYalu=y_value,
+        self.mb = MerlinBinary(mib, hdr, dm3, scanYalu=y_value,
                                 scanXalu=x_value, row_end_skip=1)
 
-        self._ds = self._mb.get_memmap()
+        self.ds = self.mb.get_memmap()
         x, y = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
                                text_y="Amount to skip for Diffraction Image")  # Check what is the maximum value
         real_skip = x
@@ -346,7 +357,7 @@ class ApplicationWindow(QMainWindow):
         # real_skip, an integer, real_skip=1 loads all pixels, real_skip=n an even integer downsamples
         # Obvious values are 1 (no down-sample), 2, 4
         # Assign the down-sampled dataset
-        self.ds_sel = self._ds[::real_skip,
+        self.ds_sel = self.ds[::real_skip,
                                ::real_skip, ::recip_skip, ::recip_skip]
         # remove # above to reduce total file loading - last indice is amount to skip by
         # Coordinate order is y,x,ky,kx
@@ -354,8 +365,8 @@ class ApplicationWindow(QMainWindow):
 
         loading_widget = CustomLoadingForm(self.ds_sel)
         loading_widget.exec()
-        self._sum_dif = loading_widget._sum_dif
-        self._sum_im = loading_widget._sum_im
+        self.sum_dif = loading_widget._sum_dif
+        self.sum_im = loading_widget._sum_im
         self._files_loaded = True
         logger.log("Files Loaded correctly", Flags.files_loaded)
 

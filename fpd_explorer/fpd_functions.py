@@ -21,7 +21,7 @@ def find_circular_centre(ApplicationWindow):
         key_add = {
             "im": [
                 "multipleinput", [
-                    ("Image", ApplicationWindow._sum_im), ("Diffraction", ApplicationWindow._sum_dif)], "Test"]}
+                    ("Image", ApplicationWindow.sum_im), ("Diffraction", ApplicationWindow.sum_dif)], "Test"]}
 
         params = UI_Generator(ApplicationWindow, fpdp.find_circ_centre, key_ignore=["im"], key_add=key_add)
 
@@ -78,7 +78,7 @@ def centre_of_mass(ApplicationWindow):
         results = params.get_result()
         if results["aperture"] == True:
             # Replace the bool with the variable
-            results["aperture"] = ApplicationWindow._ap
+            results["aperture"] = ApplicationWindow.ap
         else:
             # Remove aperture in this case since its a bool and they expect an array
             results.pop("aperture")
