@@ -16,7 +16,7 @@ from . import logger, virtual_adf, dpc_explorer, fpd_functions
 from . import config_handler as config
 from . import data_browser_explorer, phase_correlation_fncts
 from .logger import Flags
-from .custom_widgets import CustomInputForm, CustomLoadingForm
+from .custom_widgets import CustomInputForm, CustomLoadingForm, QIPythonWidget,Pop_Up_Widget
 from .res.ui_homescreen import Ui_MainWindow
 
 
@@ -57,6 +57,7 @@ class ApplicationWindow(QMainWindow):
         self._ui.actionLoad.triggered.connect(self.load_files)
         self._ui.actionRansac_Tool.triggered.connect(self.ransac_im_fit)
         self._ui.actionVADF_Explorer.triggered.connect(self.start_vadf)
+        self._ui.actionLive_Coding.triggered.connect(self.start_live_coding)
 
     def _setup_cmaps(self):
         self.cmaps = OrderedDict()
@@ -385,6 +386,11 @@ class ApplicationWindow(QMainWindow):
         x = pow(2, widget._ui.Xsize.value())
         y = pow(2, widget._ui.Ysize.value())
         return x, y
+
+    def start_live_coding(self):
+        ipy_console = QIPythonWidget(self)
+        console_tab = Pop_Up_Widget(self, "Live Coding")
+        console_tab.setup_docking_default(ipy_console)
 
     def closeEvent(self, event):
         config.save_config()

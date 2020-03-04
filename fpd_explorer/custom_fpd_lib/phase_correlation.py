@@ -41,7 +41,7 @@ from tqdm import tqdm
 from itertools import combinations
 from collections import namedtuple
 
-from . import _p3
+from fpd.fpd_processing import _p3
 
 def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
                       spf=100, pre_func=None, post_func=None, mode='2d',

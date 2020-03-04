@@ -15,6 +15,8 @@ from .res.ui_inputbox import Ui_InputBox
 from .res.ui_loadingbox import Ui_LoadingBox
 from .res.ui_singleloadingbox import Ui_SingleLoadingBox
 
+from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
+from IPython.qt.inprocess import QtInProcessKernelManager
 
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
@@ -79,7 +81,9 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         widget : QWidget the widget inside of the dock widget
         """
         widget = MyMplCanvas(self, figsize)
+        self.setup_docking(widget, location)
 
+    def setup_docking_default(self, widget, location="Top"):
         dock = QDockWidget(self)
         dock.setWidget(widget)
         dock.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea |
@@ -96,8 +100,8 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self._docked_widgets.append(dock)
         self.tab_index = self.application_window._ui.tabWidget.addTab(self.main_widget, self.tab_name)
         self.application_window._ui.tabWidget.setCurrentIndex(self.tab_index)
-
         return widget
+
 
     def close_handler(self):
         self.application_window._ui.tabWidget.removeTab(self.tab_index)
@@ -345,3 +349,33 @@ class GuiUpdater(QRunnable):
         finally:
             self.signals.result.emit(result_val)  # Done
             self.signals.finished.emit()  # Done
+
+class QIPythonWidget(RichIPythonWidget):
+    """ Convenience class for a live IPython console widget."""
+    def __init__(self, ApplicationWindow=None,customBanner=None,*args,**kwargs):
+        super(QIPythonWidget, self).__init__(*args,**kwargs)
+        if customBanner!=None: self.banner=customBanner
+        self.kernel_manager = QtInProcessKernelManager()
+        self.kernel_manager.start_kernel()
+        self.kernel_manager.kernel.gui = 'qt'
+        self.kernel_client = self._kernel_manager.client()
+        self.kernel_client.start_channels()
+        self.kernel_manager.kernel.shell.push({"fpd_app":ApplicationWindow})
+        def stop():
+            self.kernel_client.stop_channels()
+            self.kernel_manager.shutdown_kernel()
+        self.exit_requested.connect(stop)
+
+    def pushVariables(self,variableDict):
+        """ Given a dictionary containing name / value pairs, push those variables to the IPython console widget """
+        print(variableDict)
+        self.kernel_manager.kernel.shell.push(variableDict)
+    def clearTerminal(self):
+        """ Clears the terminal """
+        self._control.clear()    
+    def printText(self,text):
+        """ Prints some plain text to the console """
+        self._append_plain_text(text)        
+    def executeCommand(self,command):
+        """ Execute a command in the frame of the console widget """
+        self._execute(command,True)

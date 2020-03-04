@@ -20,8 +20,15 @@
    <string>fpd gui</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="1" column="0">
+     <widget class="QCheckBox" name="dark_mode_button">
+      <property name="text">
+       <string>Dark Mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="minimumSize">
        <size>
@@ -33,7 +40,7 @@
        <number>0</number>
       </property>
       <property name="tabsClosable">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <widget class="QWidget" name="home_tab">
        <attribute name="title">
@@ -723,6 +730,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
                <property name="placeholderText">
                 <string>.npz filename</string>
                </property>
@@ -799,84 +809,32 @@
          </spacer>
         </item>
         <item row="3" column="1">
-         <widget class="QTabWidget" name="tabWidget_2">
+         <widget class="QGroupBox" name="groupBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-            <underline>false</underline>
-           </font>
+          <property name="title">
+           <string>Workflow Help</string>
           </property>
-          <property name="currentIndex">
-           <number>1</number>
-          </property>
-          <property name="documentMode">
-           <bool>false</bool>
-          </property>
-          <property name="tabBarAutoHide">
-           <bool>false</bool>
-          </property>
-          <widget class="QWidget" name="tab">
-           <attribute name="title">
-            <string>Workflow help</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_6">
-            <item row="0" column="0">
-             <widget class="QPlainTextEdit" name="log_text">
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-              <property name="plainText">
-               <string>Start by loading files</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tab_2">
-           <attribute name="title">
-            <string>Live Coding</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0">
-             <widget class="QTextEdit" name="codeEdit">
-              <property name="font">
-               <font>
-                <pointsize>13</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-                <underline>false</underline>
-               </font>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QPushButton" name="pushButton_5">
-              <property name="text">
-               <string>Submit</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPlainTextEdit" name="log_text">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="plainText">
+              <string>Start by loading files</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
       </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="dark_mode_button">
-      <property name="text">
-       <string>Dark Mode</string>
-      </property>
      </widget>
     </item>
    </layout>
@@ -887,7 +845,7 @@
      <x>0</x>
      <y>0</y>
      <width>1072</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -927,6 +885,7 @@
     <addaction name="actionData_Browser"/>
     <addaction name="actionDPC_Explorer"/>
     <addaction name="actionVADF_Explorer"/>
+    <addaction name="actionLive_Coding"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuExplorer"/>
@@ -1012,6 +971,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionLive_Coding">
+   <property name="text">
+    <string>Live Coding</string>
    </property>
   </action>
  </widget>
@@ -1370,22 +1334,6 @@
     <hint type="destinationlabel">
      <x>1065</x>
      <y>371</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_5</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>eval_code()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>634</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>467</x>
-     <y>709</y>
     </hint>
    </hints>
   </connection>
