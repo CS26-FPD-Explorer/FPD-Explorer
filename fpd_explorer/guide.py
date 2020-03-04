@@ -8,7 +8,7 @@ def get_guide(topic):
     topic : str
         Key to look up in the dictionary of guide topics.
     """
-    topics = {"navigating_and_loading": navigating_and_loading, "functions_help": functions_help,
+    topics = {"navigating_and_loading": navigating_and_loading, "functions": functions,
               "about_us": about_us, "about_software": about_software, "live_coding": live_coding}
     return topics[topic]
 
@@ -31,7 +31,7 @@ about_us = """
 </ul>
 """
 
-functions_help = """<p><strong><u>Data Browser</u></strong></p>
+functions = """<p><strong><u>Data Browser</u></strong></p>
 <p>To use Data Browser, look for the &lsquo;DataBrowser&rsquo;
 button underneath the &lsquo;functions&rsquo; heading in the top
 right of the user interface. Click this button and the DataBrowser
