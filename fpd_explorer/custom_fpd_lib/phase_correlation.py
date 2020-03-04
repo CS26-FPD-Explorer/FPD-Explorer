@@ -7,6 +7,41 @@ import tqdm
 import numpy as np
 from . import fpd_processing as fpdp_new
 
+import numpy as np
+import scipy as sp
+from scipy.ndimage.filters import gaussian_filter, gaussian_filter1d
+#from scipy.ndimage.measurements import center_of_mass
+from scipy.signal import fftconvolve
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+from skimage.feature import canny, peak_local_max
+from skimage.transform import hough_circle
+from skimage import color
+from skimage.draw import circle_perimeter
+from skimage.feature import register_translation
+#from skimage.transform import pyramid_expand
+from skimage.filters import threshold_otsu
+from skimage.morphology import disk, binary_closing, binary_opening
+
+import h5py
+import datetime
+import os
+import multiprocessing as mp
+from functools import partial
+import sys
+import itertools
+import collections
+import time
+import warnings
+from numbers import Number
+from tqdm import tqdm
+
+from itertools import combinations
+from collections import namedtuple
+
+from . import _p3
 
 def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
                       spf=100, pre_func=None, post_func=None, mode='2d',
@@ -340,17 +375,17 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
     print('Calculating NRSME for all image combinations')
     for ri, ref_im in enumerate(tqdm(ims)):
         test_ims = ims[:ri]
-        err_col = nrmse(ref_im, test_ims)
+        err_col = fpdp.nrmse(ref_im, test_ims)
         err[:ri, ri] = err_col
     if plot:
         windowname = 'Unique images in 1st %d combinations of %d images\nsharing most common image' % (
             cut_len, avg_nims)
         if widget is not None:
-            docked = self.widget.setup_docking("NRSME", "Top", figsize=(8, 4))
-            self.fig = docked.get_fig()
-            self.fig.clf()
-            (ax1, ax2) = self.fig.subplots(1, 2, sharex=False, sharey=False)
-            f = self.fig.canvas
+            docked = widget.setup_docking("NRSME", "Top", figsize=(8, 4))
+            fig = docked.get_fig()
+            fig.clf()
+            (ax1, ax2) = fig.subplots(1, 2, sharex=False, sharey=False)
+            f = fig.canvas
 
         else:
             f, (ax1, ax2) = plt.subplots(1, 2, sharex=False, sharey=False, figsize=(8, 4))
@@ -396,11 +431,11 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
             map_im[gri[i], gci[i]] += 1
 
         if widget is not None:
-            docked = self.widget.setup_docking(window_name, "Top", figsize=(8, 4))
-            self.fig = docked.get_fig()
-            self.fig.clf()
-            (ax1, ax2) = self.fig.subplots(1, 2, sharex=False, sharey=False)
-            f = self.fig.canvas
+            docked = widget.setup_docking("", "Top", figsize=(8, 4))
+            fig = docked.get_fig()
+            fig.clf()
+            (ax1, ax2) = fig.subplots(1, 2, sharex=False, sharey=False)
+            f = fig.canvas
 
         else:
             f, (ax1, ax2) = plt.subplots(1, 2, sharex=False, sharey=False, figsize=(8, 4))
@@ -431,11 +466,11 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
     # calculate means and stds with mask if specified
     if plot:
         if widget is not None:
-            docked = self.widget.setup_docking(window_name, "Top", figsize=(5,8))
-            self.fig = docked.get_fig()
-            self.fig.clf()
+            docked = widget.setup_docking("", "Top", figsize=(5,8))
+            fig = docked.get_fig()
+            fig.clf()
             axs = plt.subplots(3, 2, sharex=True, sharey=True)
-            f = self.fig.canvas
+            f = fig.canvas
         else:
             f, axs = plt.subplots(3, 2, sharex=True, sharey=True, figsize=(5, 8))
         ax1, ax2, ax3, ax4, ax5, ax6 = axs.flatten()
@@ -479,3 +514,349 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
 
     rtn = namedtuple('matching', ['yxi_combos', 'yxi_common', 'ims_common', 'ims_best'])
     return rtn(yxi_combos, yxi_common, ims_common, ims_best)
+
+def disc_edge_sigma(im, sigma=2, cyx=None, r=None, use_hyperspy=False, plot=True, widget=None):
+    '''
+    Calculates disc edge width by averaging sigmas from fitting Erfs to unwrapped disc.
+    
+    Parameters
+    ----------
+    im : 2-D array
+        Image of disc.
+    sigma : scalar
+        Estimate of edge stdev.
+    cyx : length 2 iterable or None
+        Centre coordinates of disc. If None, these are calculated.
+    r : scalar or None
+        Disc radius in pixels. If None, the value is calculated.
+    use_hyperspy : bool
+        If True, HyperSpy is used for fitting and plotting. If False,
+        scipy and matplotlib are used.
+    plot : bool
+        Determines if images are plotted.
+    
+    Returns
+    -------
+    sigma_wt_avg : scalar
+        Average sigma value, weighted if possible by fit error.
+    sigma_wt_std : scalar
+        Average sigma standard deviation, weighted if possible by fit error.
+        Nan if no weighting is posible.
+    sigma_std : scalar
+        Standard deviation of all sigma values.
+    (sigma_vals, sigma_stds) : tuple of 1-D arrays
+        Sigma values and standard deviations from fit.
+    
+    Notes
+    -----
+    `sigma` is used for initial value and for setting range of fit.
+    Increasing value widens region fitted to.
+    
+    Examples
+    --------
+    >>> import fpd
+    >>> import matplotlib.pylab as plt
+    >>>
+    >>> plt.ion()
+    >>>
+    >>> im = fpd.synthetic_data.disk_image(intensity=16, radius=32, sigma=5.0, size=256, noise=True)
+    >>> cyx, r = fpd.fpd_processing.find_circ_centre(im, 2, (22, int(256/2.0), 1), spf=1, plot=False)
+    >>>
+    >>> returns = fpd.fpd_processing.disc_edge_sigma(im, sigma=6, cyx=cyx, r=r, plot=True)
+    >>> sigma_wt_avg, sigma_wt_std, sigma_std, (sigma_vals, sigma_stds) = returns
+
+    '''
+    
+
+    detY, detX = im.shape
+    
+    if cyx is None or r is None:
+        cyx_, r_ = fpdp.find_circ_centre(im, 2, (3, int(detY/2.0), 1), spf=1, plot=plot)
+    if cyx is None:
+        cyx = cyx_
+    if r is None:
+        r = r_
+    cy, cx = cyx
+    
+    # set up coordinated
+    yi, xi = np.indices((detY, detX), dtype=float)
+    yi-=cy
+    xi-=cx
+    ri2d = (yi**2+xi**2)**0.5
+    ti2d = np.arctan2(yi, xi)
+
+    interp_pix = 0.25   # interpolation resolution
+    rr, tt = np.meshgrid(np.arange(0, 2.5*r, interp_pix), 
+                         np.arange(-180,180,1*4)/180.0*np.pi, 
+                         indexing='ij')
+    xx = rr*np.sin(tt)+cx
+    yy = rr*np.cos(tt)+cy
+
+    # MAP TO RT  
+    rt_val = sp.ndimage.interpolation.map_coordinates(im.astype(float), 
+                                                      np.vstack([yy.flatten(), xx.flatten()]) )
+    rt_val = rt_val.reshape(rr.shape)
+
+    if plot:
+        plt.matshow(rt_val)
+        plt.figure()
+        plt.plot(rt_val[:,::18])
+        plt.xlabel('Interp pixels')
+        plt.ylabel('Intensity')
+    
+    
+    # Fit edge
+    der = -np.diff(rt_val, axis=0)
+    
+    # fit range
+    ri2d_edge_min = np.concatenate((ri2d[[0, -1], :], ri2d[:, [0, -1]].T), axis=1).min()
+    rmin = max( (r-3*sigma), 0 )
+    rmax = min( (r+3*sigma), ri2d_edge_min )
+    
+    if use_hyperspy:
+        from hyperspy.signals import EELSSpectrum
+        from hyperspy.component import Component
+        s = EELSSpectrum(rt_val.T)
+        #s.align1D()
+        #s.plot()
+        
+        s_av = s#.sum(0)
+        #s_av.plot()
+    
+        s_av.metadata.set_item("Acquisition_instrument.TEM.Detector.EELS.collection_angle", 1)
+        s_av.metadata.set_item("Acquisition_instrument.TEM.beam_energy ", 1)
+        s_av.metadata.set_item("Acquisition_instrument.TEM.convergence_angle", 1)
+    
+        m = s_av.create_model(auto_background=False)
+    
+        # http://hyperspy.org/hyperspy-doc/v0.8/user_guide/model.html   
+        class My_Component(Component):
+            """
+            """
+            def __init__(self, origin=0, A=1, sigma=1):
+                # Define the parameters
+                Component.__init__(self, ('origin', 'A', 'sigma'))
+                #self.name = 'Erf'
+
+                # Optionally we can set the initial values
+                self.origin.value = origin
+                self.A.value = A
+                self.sigma.value = sigma
+
+            # Define the function as a function of the already defined parameters, x
+            # being the independent variable value
+            def function(self, x):
+                p1 = self.origin.value
+                p2 = self.A.value
+                p3 = self.sigma.value
+                #return p1 + x * p2 + p3
+                return p2*( sp.special.erf( (x-p1)/(np.sqrt(2)*p3) )+1.0 ) /2.0
+
+        g = My_Component()
+        m.append(g)
+        
+        # set defaults
+        sigma = sigma
+        m.set_parameters_value('sigma',  sigma/interp_pix, component_list=[g])
+        m.set_parameters_value('A', -np.percentile(rt_val, 90), component_list=[g])
+        m.set_parameters_value('origin', r/interp_pix, component_list=[g])
+        
+        # set fit range
+        m.set_signal_range(rmin/interp_pix, rmax/interp_pix)
+        
+        m.multifit()
+        if plot:
+            m.plot()
+
+        sigma_vals = np.abs(g.sigma.map['values'])*interp_pix
+        sigma_stds = np.abs(g.sigma.map['std'])*interp_pix
+    else:
+        # non-hyperspy
+        from scipy.optimize import curve_fit
+        
+        def function(x, p1, p2, p3):
+            #p1, p2, p3 = origin, A, sigma
+            return p2*( sp.special.erf( (x-p1)/(np.sqrt(2)*p3) )+1.0 ) /2.0
+        
+        # fit range
+        x = np.arange(len(rt_val))
+        xmin, xmax = rmin/interp_pix, rmax/interp_pix
+        b = np.logical_and(x >= xmin, x <= xmax) 
+        
+        p0 = (r/interp_pix, -np.percentile(rt_val, 90), sigma/interp_pix)
+        popts = []
+        perrs = []
+        for rt_vali in rt_val.T:
+            yi = rt_vali[b]
+            xi = x[b]
+            popt, pcov = curve_fit(f=function, xdata=xi, ydata=yi, p0=p0)
+            perr = np.sqrt(np.diag(pcov))
+            
+            popts.append(popt)
+            perrs.append(perr)
+        popts = np.array(popts)
+        perrs = np.array(perrs)
+        
+        sigma_vals = np.abs(popts[:, 2])*interp_pix
+        sigma_stds = np.abs(perrs[:, 2])*interp_pix
+        
+        if plot:
+            A = np.percentile(popts[:, 1], 50)
+            fits = np.array([function(x, *pi) for pi in popts])
+            
+            inds = np.arange(len(sigma_vals))[::10]
+            f, ax = plt.subplots(1, 1, figsize=(6, 8))
+            pad = 0.2 * A
+            for j,i in enumerate(inds):
+                ax.plot(x, rt_val[:, i] + pad*j, 'x')
+                ax.plot(x[b], fits[i][b] + pad*j, 'b-')
+            pass
+    
+    # calculate averages
+    sigma_std = sigma_vals.std()
+    
+    err_is = np.where(np.isfinite(sigma_stds))[0]
+    if err_is.size > 1:
+        print('Calculating weighted average...')
+        vs = sigma_vals[err_is]
+        ws = 1.0/sigma_stds[err_is]**2
+        sigma_wt_avg = (vs*ws).sum()/ws.sum()
+        sigma_wt_std = (1.0/ws.sum())**0.5
+    else:
+        print('Calculating unweighted average...')
+        sigma_wt_avg = sigma_vals.mean()
+        sigma_wt_std = np.nan
+    print('Avg: %0.3f +/- %0.3f' %(sigma_wt_avg, sigma_wt_std))
+    print('Std: %0.3f' %(sigma_std))
+    
+    
+    sigma_pcts = np.percentile(sigma_vals, [10, 50, 90])
+    print('Percentiles (10, 50, 90): %0.3f, %0.3f, %0.3f' %tuple(sigma_pcts))
+    
+    return(sigma_wt_avg, sigma_wt_std, sigma_std, (sigma_vals, sigma_stds))
+
+def make_ref_im(image, edge_sigma, aperture=None, upscale=4, bin_opening=None, bin_closing=None, crop_pad=False, threshold=None, plot=True):
+    '''
+    Generate a cleaned version of the image supplied for use as a reference.
+    
+    Parameters
+    ----------
+    image : 2-D array
+        Image to process.
+    edge_sigma : float
+        Edge width in pixels.
+    aperture : None or 2-D array
+        If not None, the data will be multiplied by the aperture mask.
+    upscale : int
+        Upscaling factor.
+    bin_opening : None or int
+        Circular element radius used for binary opening.
+    bin_closing : None or int
+        Circular element radius used for binary closing.
+    crop_pad : bool
+        If True and ``aperture`` is not None, the image is cropped before
+        upscaling and padded in returned image for efficiency.
+    threshold : scalar or None
+        Image threshold. If None, Otsu's method is used. Otherwise, the scalar
+        value is used.
+    plot : bool
+        If True, the images are plotted.
+    
+    Notes
+    -----
+    The sequence of operation is:
+        apply aperture
+        upscale
+        threshold
+        bin_opening
+        bin_closing
+        edge_sigma
+        downscale
+        scale magnitude
+    
+    Examples
+    --------
+    >>> from fpd.synthetic_data import disk_image
+    >>> import fpd.fpd_processing as fpdp
+
+    Generate synthetic image
+    >>> image = disk_image(radius=32, intensity=64)
+    
+    Get centre and edge, and make aperture
+    >>> cyx, cr = fpdp.find_circ_centre(image, sigma=6, rmms=(2, int(image.shape[0]/2.0), 1), plot=False)
+    >>> edge_sigma = fpdp.disc_edge_sigma(image, sigma=2, cyx=cyx, r=cr, plot=False)[0]
+    >>> aperture = fpdp.synthetic_aperture(image.shape[-2:], cyx=cyx, rio=(0, cr+16), sigma=0, aaf=1)[0]
+    
+    Make reference image
+    >>> ref_im = fpdp.make_ref_im(image, edge_sigma, aperture)
+    
+    '''
+    
+    # float
+    im = image.astype(float)
+    im_shape = image.shape
+    
+    # mask
+    if aperture is not None:
+        im = im*aperture
+        if crop_pad:
+            #crop and pad for efficiency
+            ci, cf = np.where((aperture>0.5).sum(0)>0)[0][[0, -1]]
+            ri, rf = np.where((aperture>0.5).sum(0)>0)[0][[0, -1]]
+            im = im[ri:rf+1, ci:cf+1]
+        
+    
+    # upscale and threshold
+    ref_imu = sp.ndimage.interpolation.zoom(im, zoom=4, output=None,
+                                            order=3, mode='constant',
+                                            cval=0.0, prefilter=True)
+    if threshold is None:
+        thresh = threshold_otsu(ref_imu)
+    else:
+        thresh = float(threshold)
+    processed = ref_imu >= thresh
+    
+    # binary opening / closing
+    if bin_opening is not None:
+        el = disk(bin_opening*upscale)
+        processed = binary_opening(processed, el)
+    if bin_closing is not None:
+        el = disk(bin_closing*upscale)
+        processed = binary_closing(processed, el)
+
+    # smooth and downscale
+    processed = sp.ndimage.filters.gaussian_filter(processed*1.0, edge_sigma*upscale)
+    processed = sp.ndimage.interpolation.zoom(processed, zoom=1.0/upscale,
+                                              output=None, order=3,
+                                              mode='constant', cval=0.0,
+                                              prefilter=True)
+
+    # scale mag
+    mag_scale = np.percentile(im[processed>0.5], 50)
+    processed = processed*mag_scale
+    
+    if aperture is not None and crop_pad:
+        im_pad = np.zeros_like(image, dtype=float)
+        im_pad[ri:rf+1, ci:cf+1] = im
+        im = im_pad
+        
+        im_pad = np.zeros_like(image, dtype=float)
+        im_pad[ri:rf+1, ci:cf+1] = processed
+        processed = im_pad
+
+    # plot
+    if plot:
+        err = processed-im
+        pct = 0.1
+        vmin_max = np.percentile(err, [pct, 100-pct])
+        vmin, vmax = np.abs(vmin_max).max() * np.array([-1, 1])
+        
+        f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(9,3))
+        ax1.imshow(im)
+        ax2.imshow(processed)
+        ax3.imshow(err, vmin=vmin, vmax=vmax, cmap='bwr')
+        ax1.set_title('Original')
+        ax2.set_title('Processed')
+        ax3.set_title('Processed : Original\n%0.3f - %0.3f' %(vmin_max[0], vmin_max[1]))
+    
+    return processed

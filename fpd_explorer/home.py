@@ -3,11 +3,13 @@
 from collections import OrderedDict
 
 import h5py
-import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QFileDialog, QMainWindow
+
+# First Party
+import qdarkgraystyle
 
 # FPD Explorer
 from . import logger, virtual_adf, dpc_explorer, fpd_functions
@@ -99,7 +101,6 @@ class ApplicationWindow(QMainWindow):
         fname, _ = QFileDialog.getOpenFileName(
             self, 'Open file', self._last_path,
             "NPZ file (*.npz)")
-        print(fname)
         if fname:
             if fname[-3:] == "npz":  # empty string means user cancelled
                 self._update_last_path(fname)

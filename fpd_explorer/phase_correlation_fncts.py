@@ -27,16 +27,16 @@ def find_matching_images(ApplicationWindow):
         if not params.exec():
             # Procedure was cancelled so just give up
             return
-        ApplicationWindow.matching = fpdp.find_matching_images(**params.get_result(),widget=canvas)
+        ApplicationWindow.matching = pc.find_matching_images(**params.get_result(), widget=canvas)
 
 
 def disc_edge_sigma(ApplicationWindow):
 
-    ApplicationWindow.edge_sigma = fpdp.disc_edge_sigma(image, sigma=2, cyx=cyx, r=cr, plot=True)[0]
+    ApplicationWindow.edge_sigma = pc.disc_edge_sigma(image, sigma=2, cyx=cyx, r=cr, plot=True)[0]
 
 
 def make_ref_im(ApplicationWindow):
-    ApplicationWindow.ref_im = fpdp.make_ref_im(
+    ApplicationWindow.ref_im = pc.make_ref_im(
         ApplicationWindow.image, edge_sigma=1.0, aperture=None, bin_opening=0, bin_closing=4, plot=True)
 
 

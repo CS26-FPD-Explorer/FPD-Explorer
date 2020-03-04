@@ -62,7 +62,6 @@ def start_dpc(ApplicationWindow):
         # Procedure was cancelled so just give up
         return
     results = params.get_result()
-    print(results)
     # bt = fpd.mag_tools.beta2bt(ApplicationWindow.com_yx_beta) * 1e9  # T*nm
 
     # rotate image if needed. This can make data interpretation easier.
