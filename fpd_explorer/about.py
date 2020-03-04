@@ -1,19 +1,14 @@
 
-def get_content(content):
-    if content == 'Nav/Load':
-        return content_nav_load
-    elif content == 'Help':
-        return content_help_func
-    elif content == 'us':
-        return content_about_us
-    else:
-        return content_about_software
+def get_content(topic):
+    topics = {"navigating_and_loading": navigating_and_loading, "functions_help": functions_help,
+              "about_us": about_us, "about_software": about_software}
+    return topics[topic]
 
 
-content_about_software = """<p><strong><u>About the Software</u></strong></p>
+about_software = """<p><strong><u>About the Software</u></strong></p>
 <p>The software was created using QT, Pyside 2 and the FPD library.
 It is also an open source software.</p>"""
-content_about_us = """
+about_us = """
 <p><strong><u>About us</u></strong></p>
 <p>This software was created by:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 <ul>
@@ -24,7 +19,7 @@ content_about_us = """
   <li>Ruize Shen</li>
 </ul>
 """
-content_help_func = """<p><strong><u>Data Browser</u></strong></p>
+functions_help = """<p><strong><u>Data Browser</u></strong></p>
 <p>To use Data Browser, look for the &lsquo;DataBrowser&rsquo;
 button underneath the &lsquo;functions&rsquo; heading in the top
 right of the user interface. Click this button and the DataBrowser
@@ -66,7 +61,7 @@ of mass ran before it can output data.</p>
  on what is run before, as certain parameters will have a
  different effect on the output.</p>"""
 
-content_nav_load = """<p><strong><u>What this Software is used for</u></strong></p>
+navigating_and_loading = """<p><strong><u>What this Software is used for</u></strong></p>
         <p>This software allows users to process electron microscopy
         images through a range of different functions.</p>
         <p><strong><u>Loading Files</u></strong></p>

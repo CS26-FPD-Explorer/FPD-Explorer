@@ -55,10 +55,10 @@ class ApplicationWindow(QMainWindow):
         self._ui.actionLoad.triggered.connect(self.load_files)
         self._ui.actionRansac_Tool.triggered.connect(self.ransac_im_fit)
         self._ui.actionVADF_Explorer.triggered.connect(self.start_vadf)
-        self._ui.action_navigating_loading.triggered.connect(lambda: self.guide_me("Nav/Load"))
-        self._ui.action_functions.triggered.connect(lambda: self.guide_me("Help"))
-        self._ui.action_about_software.triggered.connect(lambda: self.guide_me(""))
-        self._ui.action_about_us.triggered.connect(lambda: self.guide_me("us"))
+        self._ui.action_navigating_loading.triggered.connect(lambda: self.guide_me("navigating_and_loading"))
+        self._ui.action_functions.triggered.connect(lambda: self.guide_me("functions_help"))
+        self._ui.action_about_us.triggered.connect(lambda: self.guide_me("about_us"))
+        self._ui.action_about_software.triggered.connect(lambda: self.guide_me("about_software"))
 
     def _setup_cmaps(self):
         self.cmaps = OrderedDict()
