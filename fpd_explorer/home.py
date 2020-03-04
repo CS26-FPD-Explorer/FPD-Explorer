@@ -13,7 +13,7 @@ from PySide2.QtWidgets import QFileDialog, QMainWindow
 from . import logger, virtual_adf, dpc_explorer, fpd_functions
 from . import config_handler as config
 from . import data_browser_explorer
-from .about import get_content
+from .guide import get_guide
 from .logger import Flags
 from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
@@ -159,7 +159,7 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def guide_me(self, topic):
         message = QtWidgets.QMessageBox()
-        message.setText(get_content(topic))
+        message.setText(get_guide(topic))
         message.setWindowTitle(topic.replace("_", " ").capitalize())
         message.exec()
 

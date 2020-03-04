@@ -1,5 +1,5 @@
 
-def get_content(topic):
+def get_guide(topic):
     topics = {"navigating_and_loading": navigating_and_loading, "functions_help": functions_help,
               "about_us": about_us, "about_software": about_software}
     return topics[topic]
