@@ -1,22 +1,20 @@
 
 # Standard Library
+import inspect
 from collections import OrderedDict
 
-import h5py
+import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QFileDialog, QMainWindow
-
-# First Party
-import qdarkgraystyle
+from PySide2.QtWidgets import QMainWindow
 
 # FPD Explorer
-from . import logger, virtual_adf, dpc_explorer, fpd_functions
+from . import logger, fnct_slots, files_fncts, virtual_adf, dpc_explorer, fpd_functions
 from . import config_handler as config
 from . import data_browser_explorer, phase_correlation_fncts
 from .logger import Flags
-from .custom_widgets import CustomInputForm, CustomLoadingForm, QIPythonWidget,Pop_Up_Widget
+from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
 
 
@@ -27,8 +25,10 @@ class ApplicationWindow(QMainWindow):
 
     def __init__(self, app=None, dark_mode_config=False):
         super(ApplicationWindow, self).__init__()
+        self._setup_slot()
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
+
         self.app = app
         self.dark_mode_config = dark_mode_config
         self._setup_actions()
@@ -44,6 +44,12 @@ class ApplicationWindow(QMainWindow):
         # PySide2.QtWidgets.QTabBar.ButtonPosition for 2nd argument, LeftSide doesn't work
         self._ui.tabWidget.tabBar().setTabButton(0, QtWidgets.QTabBar.RightSide, None)
 
+    def _setup_slot(self):
+        fncts = [(x.__name__, x) for x in fnct_slots.__dict__.values() if inspect.isfunction(x)]
+        fncts.extend([(x.__name__, x) for x in files_fncts.__dict__.values() if inspect.isfunction(x)])
+        for name, fnct in fncts:
+            setattr(ApplicationWindow, name, fnct)
+
     @Slot(int)
     def _handle_tab_close(self, idx):
         name = self._ui.tabWidget.tabBar().tabText(idx)
@@ -54,13 +60,12 @@ class ApplicationWindow(QMainWindow):
             self._ui.tabWidget.widget(idx).layout().takeAt(0).widget().deleteLater()
         self._ui.tabWidget.removeTab(idx)
         self._ui.tabWidget.setCurrentIndex(0)
-    
+
     def _setup_actions(self):
         self._ui.action_mib.triggered.connect(self.function_mib)
         self._ui.action_dm3.triggered.connect(self.function_dm3)
         self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         self._ui.action_npz.triggered.connect(self.function_npz)
-        self._ui.action_about.triggered.connect(self.function_about)
         self._ui.actionCenter_of_Mass.triggered.connect(self.centre_of_mass)
         self._ui.actionCircular_center.triggered.connect(self.find_circular_centre)
         self._ui.actionDPC_Explorer.triggered.connect(self.start_dpc_explorer)
@@ -87,106 +92,6 @@ class ApplicationWindow(QMainWindow):
             'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
         self.cmaps['Cyclic'] = ['twilight', 'twilight_shifted', 'hsv']
 
-    @Slot()
-    def function_mib(self):
-        """
-        Spawn a file dialog to open an mib file
-        """
-        fname, _ = QFileDialog.getOpenFileName(
-            self, 'Open file', self._last_path,
-            "MERLIN binary files (*.mib)")
-        if fname:
-            if fname[-3:] == "mib":  # empty string means user cancelled
-                self._update_last_path(fname)
-                self._mib_path = fname
-                self._ui.mib_line.clear()
-                self._ui.mib_line.insert(fname[fname.rfind('/') + 1:])
-                logger.log("MIB file correctly loaded")
-                return True
-        return False
-
-    @Slot()
-    def function_npz(self):
-        """
-        Spawn a file dialog to open an npz file
-        """
-        fname, _ = QFileDialog.getOpenFileName(
-            self, 'Open file', self._last_path,
-            "NPZ file (*.npz)")
-        if fname:
-            if fname[-3:] == "npz":  # empty string means user cancelled
-                self._update_last_path(fname)
-                self.npz_path = fname
-                self._ui.npz_line.clear()
-                self._ui.npz_line.insert(fname[fname.rfind('/') + 1:])
-                logger.log("NPZ file correctly loaded", Flags.npz_loaded)
-                return True
-        return False
-
-    @Slot()
-    def function_hdf5(self):
-        """
-        Spawn a file dialog to open an hdf5 file
-        """
-        fname, _ = QFileDialog.getOpenFileName(
-            self, 'Open file', self._last_path,
-            "MERLIN binary files (*.hdf5)")
-        if fname:
-            if fname[-4:] == "hdf5":  # empty string means user cancelled
-                self._update_last_path(fname)
-                self.hdf5_path = fname
-                self._ui.hdf5_line.clear()
-                self._ui.hdf5_line.insert(fname[fname.rfind('/') + 1:])
-                f = h5py.File(fname, 'r')
-                self.ds = f['fpd_expt/fpd_data/data']
-                self.ds_sel = self.ds
-                self.sum_im = f['fpd_expt/fpd_sum_im/data'].value
-                self.sum_dif = f['fpd_expt/fpd_sum_dif/data'].value
-                logger.log("HDF5 file correctly loaded", Flags.hdf5_usage)
-                logger.add_flag(Flags.files_loaded)
-                return True
-        return False
-
-    @Slot()
-    def function_dm3(self):
-        """
-        Spawn a file dialog to open a dm3 file
-        """
-        fname, _ = QFileDialog.getOpenFileName(
-            self, 'Open file', self._last_path,
-            "Digital Micrograph files (*.dm3)")
-        if fname:
-            if fname[-3:] == "dm3":
-                self._update_last_path(fname)
-                self._dm3_path = fname
-                self._ui.dm3_line.clear()
-                self._ui.dm3_line.insert(fname[fname.rfind('/') + 1:])
-                logger.log("DM3 file correctly loaded")
-                return True
-        return False
-
-    @Slot()
-    def function_about(self):
-        """
-        Display a pop-up describing the software.
-        """
-        about = QtWidgets.QMessageBox()
-        about.setText("""<p><u>Help</u></p><p>This software allows users to process electron
-        microscopy images, you can import 3 different types of files: .dm3,.mib and .hdf5 by Clicking
-         'File-&gt;Open-&gt;Filetype'.</p><p>Once the files have been loaded in, click the Pushbutton
-         in the bottom right, the next window displayed will have defaultvalue for downsampling which
-         is 2^3 by default, but can be modified to change the downsampling rate. After the
-         downsampling rate has been selected, press OK and this will bring you to a window in which a
-         selection can be made, if sum real image is selected then the real image will be shown on
-         the left. if sum recip space is selected then an inverted image will be shown.</p><p>Once
-         'OK' is clicked the images will load in to the window docks and a progress bar is present to
-         show the progress of this process. The dm3. image on the left can be navigated around
-         byclicking on a certain pixel within the image and this will show the diffraction Image on
-         the right at this point.</p><p><u>About</u></p><p>This software was created using QT,PySide
-         2, and the FPD library.</p><p>The creators are Florent Audonnet, Michal Broos, Bruce Kerr,
-         Ruize Shen and Ewan Pandelus.</p><p> <br></p>""")
-        about.exec()
-
     def _update_last_path(self, new_path):
         self._last_path = "/".join(new_path.split("/")[:-1]) + "/"
         config.add_config({"file_path": self._last_path})
@@ -205,64 +110,6 @@ class ApplicationWindow(QMainWindow):
                                           """Your settings have correctly been applied
         Note that some changes will need a restart""")
         config.add_config({"Appearence": {"dark_mode": dark_mode_config}})
-
-    @Slot()
-    def start_dbrowser(self):
-        data_browser_explorer.start_dbrowser(self)
-
-    @Slot()
-    def start_dpc_explorer(self):
-        dpc_explorer.start_dpc(self)
-
-    @Slot()
-    def start_vadf(self):
-        virtual_adf.start_vadf(self)
-
-    @Slot()
-    def plot_vadf(self):
-        virtual_adf.plot_vadf(self)
-
-    @Slot()
-    def annular_slice_vadf(self):
-        virtual_adf.annular_slice(self)
-
-    @Slot()
-    def find_circular_centre(self):
-        fpd_functions.find_circular_centre(self)
-
-    @Slot()
-    def remove_aperture(self):
-        fpd_functions.remove_aperture(self)
-
-    @Slot()
-    def centre_of_mass(self):
-        fpd_functions.centre_of_mass(self)
-
-    @Slot()
-    def ransac_im_fit(self):
-        fpd_functions.ransac_im_fit(self)
-
-    @Slot()
-    def eval_code(self):
-        code = self._ui.codeEdit.toPlainText()
-        exec(code)
-        self._ui.codeEdit.setPlainText("")
-
-    @Slot()
-    def find_matching_images(self):
-        phase_correlation_fncts.find_matching_images(self)
-
-    @Slot()
-    def disc_edge_sigma(self):
-        phase_correlation_fncts.disc_edge_sigma(self)
-
-    @Slot()
-    def make_ref_im(self):
-        phase_correlation_fncts.make_ref_im(self)
-
-    @Slot()
-    def phase_correlation(self):
-        phase_correlation_fncts.phase_correlation(self)
 
     @Slot()
     def clear_files(self):
@@ -346,7 +193,7 @@ class ApplicationWindow(QMainWindow):
 
         hdr = self._mib_path[:-4] + ".hdr"
         self.mb = MerlinBinary(mib, hdr, dm3, scanYalu=y_value,
-                                scanXalu=x_value, row_end_skip=1)
+                               scanXalu=x_value, row_end_skip=1)
 
         self.ds = self.mb.get_memmap()
         x, y = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
@@ -358,7 +205,7 @@ class ApplicationWindow(QMainWindow):
         # Obvious values are 1 (no down-sample), 2, 4
         # Assign the down-sampled dataset
         self.ds_sel = self.ds[::real_skip,
-                               ::real_skip, ::recip_skip, ::recip_skip]
+                              ::real_skip, ::recip_skip, ::recip_skip]
         # remove # above to reduce total file loading - last indice is amount to skip by
         # Coordinate order is y,x,ky,kx
         # i.e. reduce real and recip space pixel count in memory
@@ -397,11 +244,6 @@ class ApplicationWindow(QMainWindow):
         x = pow(2, widget._ui.Xsize.value())
         y = pow(2, widget._ui.Ysize.value())
         return x, y
-
-    def start_live_coding(self):
-        ipy_console = QIPythonWidget(self)
-        console_tab = Pop_Up_Widget(self, "Live Coding")
-        console_tab.setup_docking_default(ipy_console)
 
     def closeEvent(self, event):
         config.save_config()
