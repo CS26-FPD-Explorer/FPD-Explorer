@@ -1,5 +1,13 @@
 
 def get_guide(topic):
+    """
+    Returns the html-formatted guide text based on the parameter topic.
+
+    Parameters
+    ----------
+    topic : str
+        Key to look up in the dictionary of guide topics.
+    """
     topics = {"navigating_and_loading": navigating_and_loading, "functions_help": functions_help,
               "about_us": about_us, "about_software": about_software, "live_coding": live_coding}
     return topics[topic]
