@@ -160,6 +160,7 @@ class ApplicationWindow(QMainWindow):
     def guide_me(self, topic):
         message = QtWidgets.QMessageBox()
         message.setText(get_content(topic))
+        message.setWindowTitle(topic.replace("_"," ").capitalize())
         message.exec()
 
     def _update_last_path(self, new_path):
