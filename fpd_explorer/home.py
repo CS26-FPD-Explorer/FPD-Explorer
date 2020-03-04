@@ -158,6 +158,14 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def guide_me(self, topic):
+        """
+        Displays a guide pop-up with the text based on the parameter topic.
+
+        Parameters
+        ----------
+        topic : str
+            Key to look up in the dictionary of guide topics.
+        """
         message = QtWidgets.QMessageBox()
         message.setText(get_guide(topic))
         message.setWindowTitle(topic.replace("_", " ").capitalize())
