@@ -5,9 +5,9 @@ def get_guide(topic):
     return topics[topic]
 
 
-about_software = """<p><strong><u>About the Software</u></strong></p>
-<p>The software was created using QT, Pyside 2 and the FPD library.
-It is also an open source software.</p>"""
+about_software = """<p><strong><u>About software</u></strong></p>
+<p>The software was created using Qt, Pyside2 and the FPD library.
+<br>It is an open source software.</p>"""
 about_us = """
 <p><strong><u>About us</u></strong></p>
 <p>This software was created by:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
@@ -45,7 +45,7 @@ above the image there is a drop
 <p>The &lsquo;Remove Aperture&rsquo; function works in the exact same way as the
 &lsquo;find circular center function, however, the find circular center function
 must be used/calculated before using the remove aperture function.</p>
-<p>&nbsp;<strong><u>Center Of Mass</u></strong></p>
+<p>&nbsp;<strong><u>Center of Mass</u></strong></p>
 <p>The &lsquo;Center of Mass&rsquo; function requires both the &lsquo;
 Find circular center&rsquo; and &lsquo;Remove Aperture&rsquo; functions to have
 been used/calculated before using this function. If they have been carried out then
@@ -61,10 +61,10 @@ of mass ran before it can output data.</p>
  on what is run before, as certain parameters will have a
  different effect on the output.</p>"""
 
-navigating_and_loading = """<p><strong><u>What this Software is used for</u></strong></p>
+navigating_and_loading = """<p><strong><u>What this software is used for</u></strong></p>
         <p>This software allows users to process electron microscopy
         images through a range of different functions.</p>
-        <p><strong><u>Loading Files</u></strong></p>
+        <p><strong><u>Loading files</u></strong></p>
         <p>You can load 2 types of files .dm3 and. mib,
         to do this navigate to the top left of the user
         interface, under the &lsquo;loading files&rsquo; heading.
@@ -80,7 +80,7 @@ navigating_and_loading = """<p><strong><u>What this Software is used for</u></st
         increasing this value will allow for faster load speeds but lower
         quality of data to work with. Increase or decrease this value by using the
         up and down buttons to the right of the box which holds the value 2^3.</p>
-        <p><strong><u>Navigating Tabs</u></strong></p>
+        <p><strong><u>Navigating tabs</u></strong></p>
         <p>Tabs are produced through the usage of the functions,
         you will automatically be brought to a new tab screen within the GUI
         upon using one of the functions, if you wish to return to the home screen
@@ -89,7 +89,7 @@ navigating_and_loading = """<p><strong><u>What this Software is used for</u></st
         to remain but you want the tab to be removed, either click the red cross on the
         tab or press the enter button. If you wish to navigate through the tabs, left or
         right, the left and right arrow keys can also be used.</p>
-        <p><strong><u>Workflow Help</u></strong></p>
+        <p><strong><u>Workflow help</u></strong></p>
         <p>The workflow help subsection is used to help the user,
         it will notify you when a certain step has been taken,
         for example &lsquo;MIB file loaded correctly&rsquo; or &lsquo;Circular center
