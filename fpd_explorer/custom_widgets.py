@@ -15,8 +15,8 @@ from .res.ui_inputbox import Ui_InputBox
 from .res.ui_loadingbox import Ui_LoadingBox
 from .res.ui_singleloadingbox import Ui_SingleLoadingBox
 
-from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
-from IPython.qt.inprocess import QtInProcessKernelManager
+from qtconsole.rich_ipython_widget import RichIPythonWidget
+from qtconsole.inprocess import QtInProcessKernelManager
 
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
