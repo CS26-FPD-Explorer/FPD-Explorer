@@ -81,7 +81,7 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         widget : QWidget the widget inside of the dock widget
         """
         widget = MyMplCanvas(self, figsize)
-        self.setup_docking(widget, location)
+        return self.setup_docking_default(widget, location)
 
     def setup_docking_default(self, widget, location="Top"):
         dock = QDockWidget(self)
