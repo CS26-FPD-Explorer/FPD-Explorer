@@ -183,6 +183,7 @@ def ransac_im_fit(im, mode=1, residual_threshold=0.1, min_samples=10,
     multiim = False
     if im.ndim > 2:
         multiim = True
+        axes = [int(el) for el in axes]
         ims, unflat_shape = seq_image_array(im, axes)
         pbar = tqdm(total=ims.shape[0])
     else:

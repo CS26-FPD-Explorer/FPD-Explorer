@@ -51,13 +51,13 @@ def remove_aperture(ApplicationWindow):
             return
 
         ApplicationWindow.mm_sel = ApplicationWindow.ds_sel
-        ApplicationWindow._ap = fpdp.synthetic_aperture(
+        ApplicationWindow.ap = fpdp.synthetic_aperture(
             ApplicationWindow.mm_sel.shape[-2:], **params.get_result())[0]
-        print(ApplicationWindow._ap)
+        print(ApplicationWindow.ap)
         canvas = Pop_Up_Widget(ApplicationWindow, "Aperture")
         fig = canvas.setup_docking("Aperture")
         ax = fig.get_fig().subplots()
-        ax.matshow(ApplicationWindow._ap)
+        ax.matshow(ApplicationWindow.ap)
         logger.log("Aperture has now been correctly initialized", Flags.aperture)
 
 
@@ -111,12 +111,12 @@ def ransac_im_fit(ApplicationWindow):
         params = UI_Generator(
             ApplicationWindow,
             rt.ransac_im_fit,
-            key_ignore=["im", "plot", "min_samples", "p0"],
+            key_ignore=["plot", "min_samples", "p0"],
             key_add=key_add)
         if not params.exec():
             # Procedure was cancelled so just give up
             return
         results = params.get_result()
-        fit, inliers, _ = rt.ransac_im_fit(ApplicationWindow.com_yx, **results, plot=True, widget=canvas)
+        fit, inliers, _ = rt.ransac_im_fit(**results, plot=True, widget=canvas)
         ApplicationWindow.com_yx_cor = ApplicationWindow.com_yx - fit
         logger.log("Image has now been fitted using ransac")

@@ -3,18 +3,16 @@
 from collections import OrderedDict
 
 import h5py
+import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QFileDialog, QMainWindow
 
-# First Party
-import qdarkgraystyle
-
 # FPD Explorer
 from . import logger, virtual_adf, dpc_explorer, fpd_functions
 from . import config_handler as config
-from . import data_browser_explorer
+from . import data_browser_explorer, phase_correlation_fncts
 from .logger import Flags
 from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
@@ -128,6 +126,7 @@ class ApplicationWindow(QMainWindow):
                 self._ui.hdf5_line.insert(fname[fname.rfind('/') + 1:])
                 f = h5py.File(fname, 'r')
                 self._ds = f['fpd_expt/fpd_data/data']
+                self.ds_sel = self._ds
                 self._sum_im = f['fpd_expt/fpd_sum_im/data'].value
                 self._sum_dif = f['fpd_expt/fpd_sum_dif/data'].value
                 logger.log("HDF5 file correctly loaded", Flags.hdf5_usage)
@@ -229,6 +228,28 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def ransac_im_fit(self):
         fpd_functions.ransac_im_fit(self)
+
+    @Slot()
+    def eval_code(self):
+        code = self._ui.codeEdit.toPlainText()
+        exec(code)
+        self._ui.codeEdit.setPlainText("")
+
+    @Slot()
+    def find_matching_images(self):
+        phase_correlation_fncts.find_matching_images(self)
+
+    @Slot()
+    def disc_edge_sigma(self):
+        phase_correlation_fncts.disc_edge_sigma(self)
+
+    @Slot()
+    def make_ref_im(self):
+        phase_correlation_fncts.make_ref_im(self)
+
+    @Slot()
+    def phase_correlation(self):
+        phase_correlation_fncts.phase_correlation(self)
 
     @Slot()
     def clear_files(self):
