@@ -56,7 +56,11 @@ def phase_correlation(self):
 
 
 def start_live_coding(self):
-    ipy_console = QIPythonWidget(self)
+    if self.dark_mode_config:
+        theme = "linux"
+    else:
+        theme = "LightBG"
+    ipy_console = QIPythonWidget(self, colors=theme, font_size=11, kind='rich', syntax_styl='monokai')
     console_tab = Pop_Up_Widget(self, "Live Coding")
     console_tab.setup_docking_default(ipy_console)
 
