@@ -415,6 +415,8 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
     combs_tot = int(np.math.factorial(n_ims) / (np.math.factorial(avg_nims) * np.math.factorial(n_ims - avg_nims)))
     comb_vals = np.empty(combs_tot, dtype=float)
     comb_inds = np.empty((combs_tot, avg_nims), dtype=int)
+    if callback is not None:
+        callback.maximum.emit(("NRSME", combs_tot))
 
     for i, inds in enumerate(tqdm(combinations(range(n_ims), avg_nims), total=combs_tot)):
         # calculate rmse from values at intercepts of row and column slices

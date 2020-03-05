@@ -343,7 +343,7 @@ def find_circ_centre(im, sigma, rmms, mask=None, plot=True, spf=1, low_threshold
 
 def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                    rebin=None, parallel=True, ncores=None, print_stats=True,
-                   nrnc_are_chunks=False, origin='top', widget=None, progress_callback=None):
+                   nrnc_are_chunks=False, origin='top', widget=None, callback=None):
     '''
     Calculate a centre of mass image from fpd data. The results are
     naturally sub-pixel resolution.
@@ -512,6 +512,9 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
     else:
         tqdm_file = fpdp.DummyFile()
     total_nims = np.prod(nondet)
+    if callback is not None:
+        callback.maximum.emit(("com_yx", total_nims))
+
     with tqdm(total=total_nims, file=tqdm_file, mininterval=0, leave=True, unit='images') as pbar:
         for i, (ri, rf) in enumerate(r_if):
             for j, (ci, cf) in enumerate(c_if):
@@ -550,8 +553,8 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                 rslt.shape = d_shape[:-2] + (2,)
                 com_im[ri:rf, ci:cf, ...] = rslt
 
-                if progress_callback:
-                    progress_callback.emit(("com_yx",np.prod(d.shape[:-2])))
+                if callback:
+                    callback.progress.emit(("com_yx", np.prod(d.shape[:-2])))
                 else:
                     pbar.update(np.prod(d.shape[:-2]))
 

@@ -89,7 +89,6 @@ def centre_of_mass(ApplicationWindow):
             results.pop("aperture")
         loading_widget = LoadingForm(1, ["com_yx"])
         loading_widget.setup_multi_loading("com_yx", fpdp.center_of_mass, **results)
-        loading_widget.set_max("com_yx", np.prod(results["data"].shape[:-2]))
         loading_widget.exec()
         ApplicationWindow.com_yx = loading_widget.get_result("com_yx")
         logger.log("Center of mass has now been found", Flags.center_mass)

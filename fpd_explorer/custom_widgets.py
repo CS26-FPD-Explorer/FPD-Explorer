@@ -14,8 +14,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 # FPD Explorer
 from .custom_fpd_lib import fpd_processing as fpdp_new
 from .res.ui_inputbox import Ui_InputBox
-from .res.ui_loadingbox import Ui_LoadingBox
-from .res.ui_singleloadingbox import Ui_SingleLoadingBox
 
 from qtconsole.rich_ipython_widget import RichIPythonWidget
 from qtconsole.inprocess import QtInProcessKernelManager
