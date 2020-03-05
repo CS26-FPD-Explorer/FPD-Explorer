@@ -40,7 +40,7 @@ def disc_edge_sigma(ApplicationWindow):
         try:
             assert ApplicationWindow.ap is not None
             ApplicationWindow.edge_input.update(
-                {"mean with aperture", ApplicationWindow.ap * ApplicationWindow.matching.ims_common.mean(0)})
+                {"mean with aperture": ApplicationWindow.ap * ApplicationWindow.matching.ims_common.mean(0)})
         except (AttributeError, AssertionError):
             pass
         key_add = {
@@ -52,7 +52,7 @@ def disc_edge_sigma(ApplicationWindow):
             # Procedure was cancelled so just give up
             return
 
-        ApplicationWindow.edge_sigma = pc.disc_edge_sigma(**params.get_result(), widget=canvas)[0]
+        ApplicationWindow.edge_sigma = pc.disc_edge_sigma(**params.get_result(), widget=canvas, logger=logger)[0]
 
 
 def make_ref_im(ApplicationWindow):
@@ -62,7 +62,7 @@ def make_ref_im(ApplicationWindow):
         try:
             assert ApplicationWindow.ap is not None
             ApplicationWindow.ref_input.update(
-                {"mean with aperture", ApplicationWindow.ap * ApplicationWindow.matching.ims_common.mean(0)})
+                {"mean with aperture": ApplicationWindow.ap * ApplicationWindow.matching.ims_common.mean(0)})
         except (AttributeError, AssertionError):
             pass
         key_add = {
@@ -87,7 +87,7 @@ def phase_correlation(ApplicationWindow):
             pass
 
         key_add = {
-            "ref_im": ["multipleinput", ref_image, """2-D image used as reference.\n
+            "ref_im": ["multipleinput", list(ref_image.items()), """2-D image used as reference.\n
                 If None, the first probe position is used."""],
             "data": ["multipleinput", list(ApplicationWindow.phase_input.items()),
                 "Mutidimensional data of shape (scanY, scanX, ..., detY, detX)"]}
@@ -98,6 +98,6 @@ def phase_correlation(ApplicationWindow):
             # Procedure was cancelled so just give up
             return
         print(params.get_result())
-        out = pc.phase_correlation(**params.get_result())
+        out = pc.phase_correlation(**params.get_result(), logger=logger)
         ApplicationWindow.shift_yx, ApplicationWindow.shift_err = out[:2]
         ApplicationWindow.shift_difp, ApplicationWindow.ref = out[2:]

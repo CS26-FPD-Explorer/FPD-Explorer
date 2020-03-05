@@ -347,9 +347,9 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
     data : array_like
         Mutidimensional data of shape (scanY, scanX, ..., detY, detX).
     nr : integer or None
-        Number of rows to process at once (see Notes).
+        Number of rows to process at once.
     nc : integer or None
-        Number of columns to process at once (see Notes).
+        Number of columns to process at once.
     aperture : array_like
         Mask of shape (detY, detX), applied to diffraction data after
         `pre_func` processing. Note, the data is automatically cropped

@@ -47,7 +47,8 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
                       spf=100, pre_func=None, post_func=None, mode='2d',
                       ref_im=None, rebin=None, der_clip_fraction=0.0,
                       der_clip_max_pct=99.9, truncate=4.0, parallel=True,
-                      ncores=None, print_stats=True, nrnc_are_chunks=False, origin='top'):
+                      ncores=None, print_stats=True, nrnc_are_chunks=False, origin='top', 
+                      logger=None):
     '''
     Perform phase correlation on 4-D data using efficient upscaling to
     achieve sub-pixel resolution.
@@ -57,9 +58,9 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
     data : array_like
         Mutidimensional data of shape (scanY, scanX, ..., detY, detX).
     nr : integer or None
-        Number of rows to process at once (see Notes).
+        Number of rows to process at once.
     nc : integer or None
-        Number of columns to process at once (see Notes).
+        Number of columns to process at once.
     cyx : length 2 iterable or None
         Centre of disk in pixels (cy, cx).
         If None, centre is used.
@@ -287,7 +288,10 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
     
     # print stats
     if print_stats:
-        fpdp_new.print_shift_stats(shift_yx)
+        if logger is not None:
+            logger.log(fpdp_new.print_shift_stats(shift_yx, to_str=True))
+        else:
+            fpdp_new.print_shift_stats(shift_yx)
 
     return shift_yx, shift_err, shift_difp, ref
 
@@ -516,7 +520,7 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
     rtn = namedtuple('matching', ['yxi_combos', 'yxi_common', 'ims_common', 'ims_best'])
     return rtn(yxi_combos, yxi_common, ims_common, ims_best)
 
-def disc_edge_sigma(im, sigma=2, cyx=None, r=None, use_hyperspy=False, plot=True, widget=None):
+def disc_edge_sigma(im, sigma=2, cyx=None, r=None, use_hyperspy=False, plot=True, widget=None, logger=None):
     '''
     Calculates disc edge width by averaging sigmas from fitting Erfs to unwrapped disc.
     
@@ -572,7 +576,7 @@ def disc_edge_sigma(im, sigma=2, cyx=None, r=None, use_hyperspy=False, plot=True
     detY, detX = im.shape
     
     if cyx is None or r is None:
-        cyx_, r_ = fpdp.find_circ_centre(im, 2, (3, int(detY/2.0), 1), spf=1, plot=plot)
+        cyx_, r_ = fpdp_new.find_circ_centre(im, 2, (3, int(detY / 2.0), 1), spf=1, plot=plot, widget=widget)
     if cyx is None:
         cyx = cyx_
     if r is None:
@@ -740,21 +744,34 @@ def disc_edge_sigma(im, sigma=2, cyx=None, r=None, use_hyperspy=False, plot=True
     
     err_is = np.where(np.isfinite(sigma_stds))[0]
     if err_is.size > 1:
-        print('Calculating weighted average...')
+        if logger is not None:
+            logger.log('Calculating weighted average...')
+        else:
+            print('Calculating weighted average...')
         vs = sigma_vals[err_is]
         ws = 1.0/sigma_stds[err_is]**2
         sigma_wt_avg = (vs*ws).sum()/ws.sum()
         sigma_wt_std = (1.0/ws.sum())**0.5
     else:
-        print('Calculating unweighted average...')
+        if logger is not None:
+            logger.log('Calculating unweighted average...')
+        else:
+            print('Calculating unweighted average...')
+
         sigma_wt_avg = sigma_vals.mean()
         sigma_wt_std = np.nan
-    print('Avg: %0.3f +/- %0.3f' %(sigma_wt_avg, sigma_wt_std))
-    print('Std: %0.3f' %(sigma_std))
+    
     
     
     sigma_pcts = np.percentile(sigma_vals, [10, 50, 90])
-    print('Percentiles (10, 50, 90): %0.3f, %0.3f, %0.3f' %tuple(sigma_pcts))
+    if logger is not None:
+        logger.log('Avg: %0.3f +/- %0.3f' % (sigma_wt_avg, sigma_wt_std))
+        logger.log('Std: %0.3f' % (sigma_std))
+        logger.log('Percentiles (10, 50, 90): %0.3f, %0.3f, %0.3f' % tuple(sigma_pcts))
+    else:
+        print('Avg: %0.3f +/- %0.3f' % (sigma_wt_avg, sigma_wt_std))
+        print('Std: %0.3f' % (sigma_std))
+        print('Percentiles (10, 50, 90): %0.3f, %0.3f, %0.3f' %tuple(sigma_pcts))
     
     return(sigma_wt_avg, sigma_wt_std, sigma_std, (sigma_vals, sigma_stds))
 

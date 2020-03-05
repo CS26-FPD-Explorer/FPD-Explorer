@@ -59,9 +59,9 @@ class VirtualAnnularImages(object):
         filename of a npz file with the parameters saved from the `save_data`
         method. If a dictionary, it must contain the same parameters.
     nr : integer or None
-        Number of rows to process at once (see Notes).
+        Number of rows to process at once.
     nc : integer or None
-        Number of columns to process at once (see Notes).
+        Number of columns to process at once.
     cyx : length 2 iterable or None
         The centre y and x coordinates of the direct beam in pixels.
         This value must be specified unless `data` is an object to be loaded. 
