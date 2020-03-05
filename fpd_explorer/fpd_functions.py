@@ -87,10 +87,11 @@ def centre_of_mass(ApplicationWindow):
         else:
             # Remove aperture in this case since its a bool and they expect an array
             results.pop("aperture")
-        loading_widget = LoadingForm(1)
-        loading_widget.show()
-        callback = loading_widget.setup_loading("com_yx", np.prod(results["data"].shape[:-2]))
-        ApplicationWindow.com_yx = fpdp.center_of_mass(**results, progress_callback=callback)
+        loading_widget = LoadingForm(1, ["com_yx"])
+        loading_widget.setup_multi_loading("com_yx", fpdp.center_of_mass, **results)
+        loading_widget.set_max("com_yx", np.prod(results["data"].shape[:-2]))
+        loading_widget.exec()
+        ApplicationWindow.com_yx = loading_widget.get_result("com_yx")
         logger.log("Center of mass has now been found", Flags.center_mass)
         logger.log(fpdp.print_shift_stats(ApplicationWindow.com_yx, to_str=True))
         ApplicationWindow.com_yx_beta = ApplicationWindow.com_yx

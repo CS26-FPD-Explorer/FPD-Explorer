@@ -185,7 +185,7 @@ class CustomInputForm(QtWidgets.QDialog):
 
 
 class LoadingForm(QtWidgets.QDialog):
-    def __init__(self, nb_bar, *args, **kwargs):
+    def __init__(self, nb_bar, name, *args, **kwargs):
         """
         Set up a loading form with 1 progress bar parameters
         """
@@ -196,38 +196,48 @@ class LoadingForm(QtWidgets.QDialog):
         self.threadpool = QThreadPool()
         # self._ui.centerProgress.setMaximum(np.prod(data.shape[:-2]))
         self.nb_threads = nb_bar
+        for el in range(nb_bar):
+            self.setup_ui(name[el])
 
-    def setup_ui(self,name, max_size):
+    def setup_ui(self,name):
         widget = QtWidgets.QWidget()
         form = QtWidgets.QFormLayout()
-        self.data_out[name].append(None)
+        self.data_out[name].insert(0,None)
         bar = QtWidgets.QProgressBar()
         bar.setValue(0)
-        bar.setMaximum(max_size)
-        self.data_out[name].append(bar)
+        self.data_out[name].insert(1, bar)
         form.addRow(name, bar)
         widget.setLayout(form)
         self.v_layout.addWidget(widget)
 
-    def setup_multi_loading(self, name, fnct, max_size, *args, **kwargs):
-        self.setup_ui(name, max_size)
-        worker = GuiUpdater(fnct,name, *args, **kwargs)
+    def setup_multi_loading(self, name, fnct,  *args, **kwargs):
+        worker = GuiUpdater(fnct, name, *args, **kwargs)
         worker.signals.finished.connect(self.completed)
         worker.signals.progress.connect(self.progress_func)
         worker.signals.result.connect(self.set_value)
+        worker.signals.maximum.connect(self.set_max)
+        if isinstance(name, str):
+            name = [name]
+        for el in range(len(name)):
+            self.data_out[name[el]].append(worker)
         self.threadpool.start(worker)
-
-    def setup_loading(self, name, max_size):
-        self.setup_ui(name, max_size)
-        self.signals = CustomSignals()
-        self.signals.finished.connect(self.completed)
-        self.signals.progress.connect(self.progress_func)
-        self.signals.result.connect(self.set_value)
-        return self.signals.progress
+        
+    @Slot()
+    def set_max(self, obj):
+        name, max_size = obj
+        print("setting maxi ", obj)
+        self.data_out[name][1].setMaximum(max_size)
 
     @Slot()
     def set_value(self, obj):
+        print("setting value ", obj)
         self.data_out[obj[0]][0] = obj[1]
+
+    def setup_loading(self, name, max_size):
+        self.set_max(name, max_size)
+        print(self.data_out)
+        print(name)
+        return self.data_out[name][-1].signals.progress
 
     @Slot()
     def completed(self):
@@ -266,7 +276,7 @@ class CustomSignals(QObject):
     error = Signal(tuple)
     result = Signal(object)
     progress = Signal(tuple)
-
+    maximum = Signal(tuple)
 
 class GuiUpdater(QRunnable):
     """
@@ -283,7 +293,7 @@ class GuiUpdater(QRunnable):
         self.signals = CustomSignals()
 
         # Add the callback to our kwargs
-        self._kwargs['progress_callback'] = self.signals.progress
+        self._kwargs['callback'] = self.signals
 
     @Slot()  # QtCore.Slot
     def run(self):

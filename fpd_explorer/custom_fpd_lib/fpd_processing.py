@@ -18,7 +18,7 @@ import scipy as sp
 from multiprocessing.dummy import Pool
 
 
-def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=None):
+def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, callback=None):
     '''
     Return a real-space sum image from data. 
 
@@ -69,6 +69,9 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=Non
 
     sum_im = np.empty(nondet)
     total_ims = np.prod(nondet)
+    if callback is not None:
+        callback.maximum.emit(("sum_im", total_ims))
+
     with tqdm(total=total_ims, mininterval=0, leave=True, unit='images') as pbar:
         for i, (ri, rf) in enumerate(r_if):
             for j, (ci, cf) in enumerate(c_if):
@@ -77,8 +80,8 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=Non
                 else:
                     d = (data[ri:rf, ci:cf, ...] * mask)
                 sum_im[ri:rf, ci:cf, ...] = d.sum((-2, -1))
-                if progress_callback:
-                    progress_callback.emit(("sum_im", np.prod(d.shape[:-2])))
+                if callback:
+                    callback.progress.emit(("sum_im", np.prod(d.shape[:-2])))
                 else:
                     pbar.update(np.prod(d.shape[:-2]))
 
@@ -87,7 +90,7 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=Non
 
 
 # --------------------------------------------------
-def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=None):
+def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, callback=None):
     '''
     Return a summed diffraction image from data. 
 
@@ -138,6 +141,9 @@ def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=No
     sum_dif = np.zeros(nonscan)
     print('Calculating diffraction sum images.')
     total_ims = np.prod(nondet)
+    if callback is not None:
+        callback.maximum.emit(("sum_im", total_ims))
+
     with tqdm(total=total_ims, mininterval=0, leave=True, unit='images') as pbar:
         for i, (ri, rf) in enumerate(r_if):
             for j, (ci, cf) in enumerate(c_if):
@@ -146,8 +152,8 @@ def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=No
                 if mask is not None:
                     d = d * mask
                 sum_dif += d.sum((0, 1))
-                if progress_callback:
-                    progress_callback.emit(("sum_dif",np.prod(d.shape[:-2])))
+                if callback:
+                    callback.progress.emit(("sum_dif",np.prod(d.shape[:-2])))
                 else:
                     pbar.update(np.prod(d.shape[:-2]))
 

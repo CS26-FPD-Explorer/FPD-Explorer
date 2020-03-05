@@ -296,7 +296,7 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
     return shift_yx, shift_err, shift_difp, ref
 
 
-def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=True, widget=None):
+def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=True, widget=None, callback=None):
     '''
     Finds matching images using euclidean normalised mean square error through
     all combinations of a given number of images.
@@ -311,7 +311,8 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
         The number of images in a combination.
     cut_len : int
         The number of combinations in which to look for common images.
-    
+    plot : bool
+        Should a plot be drawn or not
     Returns
     -------
     named tuple 'matching' containing:
@@ -377,10 +378,17 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
     err = np.ones((n_ims, n_ims), dtype=float)
     err[:] = np.nan
     print('Calculating NRSME for all image combinations')
+    if callback is not None:
+        callback.maximum.emit(("NRSME-all", 100))
+
     for ri, ref_im in enumerate(tqdm(ims)):
         test_ims = ims[:ri]
         err_col = fpdp.nrmse(ref_im, test_ims)
         err[:ri, ri] = err_col
+        print(ri)
+        if callback is not None:
+            callback.progress.emit(("NRSME-all", 1))
+
     if plot:
         windowname = 'Unique images in 1st %d combinations of %d images\nsharing most common image' % (
             cut_len, avg_nims)
@@ -408,12 +416,17 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
     combs_tot = int(np.math.factorial(n_ims) / (np.math.factorial(avg_nims) * np.math.factorial(n_ims - avg_nims)))
     comb_vals = np.empty(combs_tot, dtype=float)
     comb_inds = np.empty((combs_tot, avg_nims), dtype=int)
+
     for i, inds in enumerate(tqdm(combinations(range(n_ims), avg_nims), total=combs_tot)):
         # calculate rmse from values at intercepts of row and column slices
         ind_perms = np.array(list(combinations(inds, 2))).T
         intercept_vals = err[ind_perms[0], ind_perms[1]]
         comb_vals[i] = np.nansum(intercept_vals**2).sum()**0.5
+        if callback is not None:
+            callback.progress.emit(("NRSME", 1))
         comb_inds[i] = inds
+
+
 
     # sort perms by rmse
     si = np.argsort(comb_vals)
@@ -518,6 +531,9 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
     ims_orig.shape = ims_orig_shape
 
     rtn = namedtuple('matching', ['yxi_combos', 'yxi_common', 'ims_common', 'ims_best'])
+    if callback is not None:
+        callback.progress.emit("matching", (rtn(yxi_combos, yxi_common, ims_common, ims_best)))
+
     return rtn(yxi_combos, yxi_common, ims_common, ims_best)
 
 def disc_edge_sigma(im, sigma=2, cyx=None, r=None, use_hyperspy=False, plot=True, widget=None, logger=None):

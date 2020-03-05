@@ -220,11 +220,9 @@ class ApplicationWindow(QMainWindow):
         # Coordinate order is y,x,ky,kx
         # i.e. reduce real and recip space pixel count in memory
 
-        loading_widget = LoadingForm(2)
-        loading_widget.setup_multi_loading("sum_im", fpdp_new.sum_im,
-                                           np.prod(self.ds_sel.shape[:-2]), self.ds_sel, 16, 16)
-        loading_widget.setup_multi_loading("sum_dif", fpdp_new.sum_dif,
-                                           np.prod(self.ds_sel.shape[:-2]),self.ds_sel, 16, 16)
+        loading_widget = LoadingForm(2, ["sum_im", "sum_dif"])
+        loading_widget.setup_multi_loading("sum_im", fpdp_new.sum_im, self.ds_sel, 16, 16)
+        loading_widget.setup_multi_loading("sum_dif", fpdp_new.sum_dif, self.ds_sel, 16, 16)
         loading_widget.exec()
         self.sum_dif = loading_widget.get_result("sum_dif")
         self.sum_im = loading_widget.get_result("sum_im")

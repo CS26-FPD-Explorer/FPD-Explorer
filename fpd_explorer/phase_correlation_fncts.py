@@ -5,8 +5,8 @@ from . import logger
 from .logger import Flags
 from .gui_generator import UI_Generator
 from .custom_fpd_lib import phase_correlation as pc
-from .custom_widgets import Pop_Up_Widget
-
+from .custom_widgets import Pop_Up_Widget, LoadingForm
+import threading
 
 def find_matching_images(ApplicationWindow):
     if logger.check_if_all_needed(Flags.files_loaded):
@@ -29,7 +29,12 @@ def find_matching_images(ApplicationWindow):
         if not params.exec():
             # Procedure was cancelled so just give up
             return
-        ApplicationWindow.matching = pc.find_matching_images(**params.get_result(), widget=canvas)
+        loading_widget = LoadingForm(2, ["NRSME", "NRSME-all"])
+        results = params.get_result()
+        results["widget"] = canvas
+        loading_widget.setup_multi_loading(["NRSME", "NRSME-all"], pc.find_matching_images, **results)
+        loading_widget.exec()
+        ApplicationWindow.matching = loading_widget.get_result("matching")
         logger.log("Found Matching images", Flags.phase_matching)
 
 
