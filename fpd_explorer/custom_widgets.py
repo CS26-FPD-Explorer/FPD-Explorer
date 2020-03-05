@@ -20,6 +20,7 @@ from .res.ui_singleloadingbox import Ui_SingleLoadingBox
 from qtconsole.rich_ipython_widget import RichIPythonWidget
 from qtconsole.inprocess import QtInProcessKernelManager
 
+from collections import defaultdict
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
@@ -182,114 +183,64 @@ class CustomInputForm(QtWidgets.QDialog):
         self.restore_default()
         return super().reject()
 
-# TODO : Figure out a way to merge this 2 classes way too much repeated code
 
-
-class SingleLoadingForm(QtWidgets.QDialog):
-    def __init__(self, fnct, data, *args, **kwargs):
+class LoadingForm(QtWidgets.QDialog):
+    def __init__(self, nb_bar, *args, **kwargs):
         """
         Set up a loading form with 1 progress bar parameters
         """
-        super(SingleLoadingForm, self).__init__()
-        self._ui = Ui_SingleLoadingBox()
-        self._ui.setupUi(self)
-
-        self.com_yx = None
-        self._ui.centerProgress.setValue(0)
-        self._ui.centerProgress.setMaximum(np.prod(data.shape[:-2]))
-
+        super(LoadingForm, self).__init__()
+        self.v_layout = QtWidgets.QVBoxLayout()
+        self.setLayout(self.v_layout)
+        self.data_out = defaultdict(list)
         self.threadpool = QThreadPool()
-        worker = GuiUpdater(fnct, data, *args, **kwargs)
+        # self._ui.centerProgress.setMaximum(np.prod(data.shape[:-2]))
+        self.nb_threads = nb_bar
+
+    def setup_ui(self,name, max_size):
+        widget = QtWidgets.QWidget()
+        form = QtWidgets.QFormLayout()
+        self.data_out[name].append(None)
+        bar = QtWidgets.QProgressBar()
+        bar.setValue(0)
+        bar.setMaximum(max_size)
+        self.data_out[name].append(bar)
+        form.addRow(name, bar)
+        widget.setLayout(form)
+        self.v_layout.addWidget(widget)
+
+    def setup_multi_loading(self, name, fnct, max_size, *args, **kwargs):
+        self.setup_ui(name, max_size)
+        worker = GuiUpdater(fnct,name, *args, **kwargs)
         worker.signals.finished.connect(self.completed)
         worker.signals.progress.connect(self.progress_func)
-        worker.signals.result.connect(self.center_of_mass)
+        worker.signals.result.connect(self.set_value)
         self.threadpool.start(worker)
 
+    def setup_loading(self, name, max_size):
+        self.setup_ui(name, max_size)
+        self.signals = CustomSignals()
+        self.signals.finished.connect(self.completed)
+        self.signals.progress.connect(self.progress_func)
+        self.signals.result.connect(self.set_value)
+        return self.signals.progress
+
     @Slot()
-    def center_of_mass(self, value):
-        self.com_yx = value
+    def set_value(self, obj):
+        self.data_out[obj[0]][0] = obj[1]
 
     @Slot()
     def completed(self):
-        return super().done(True)
-
-    @Slot(tuple)
-    def progress_func(self, value):
-        self._ui.centerProgress.setValue(
-            self._ui.centerProgress.value() + value[0])
-
-
-class CustomLoadingForm(QtWidgets.QDialog):
-    def __init__(self, ds_sel):
-        """
-        Set up a new loading form with 2 progress bar
-
-        Parameters
-        ----------
-        ds_sel : Merlin Binary Memory Map
-
-        """
-        super(CustomLoadingForm, self).__init__()
-        self._ui = Ui_LoadingBox()
-        self._ui.setupUi(self)
-        self.ds_sel = ds_sel
-        self._sum_im = None
-        self._sum_dif = None
-        # set min and max value (Based on their code)
-        self._ui.realProgress.setValue(0)
-        self._ui.realProgress.setMinimum(0)
-        self._ui.realProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
-        self._ui.recipProgress.setValue(0)
-        self._ui.recipProgress.setMinimum(0)
-        self._ui.recipProgress.setMaximum(np.prod(self.ds_sel.shape[:-2]))
-
-        # create 2 thread and assign them signals based on the custum signals classes
-        # First paramenter is the return value and second the fnct to call
-        # Other are argument to pass to the function
-        self._nb_thread = 2
-        self.threadpool = QThreadPool()
-        worker = GuiUpdater(fpdp_new.sum_im, self.ds_sel, 16, 16)
-        worker.signals.finished.connect(self.thread_complete)
-        worker.signals.progress.connect(self.progress_fn)
-        worker.signals.result.connect(self.sum_im)
-
-        self.threadpool.start(worker)
-
-        worker2 = GuiUpdater(fpdp_new.sum_dif, self.ds_sel, 16, 16)
-        worker2.signals.finished.connect(self.thread_complete)
-        worker2.signals.progress.connect(self.progress_fn)
-        worker2.signals.result.connect(self.sum_dif)
-
-        self.threadpool.start(worker2)
-
-    @Slot()
-    def sum_im(self, value):
-        print("self._sum_im")
-        self._sum_im = value
-
-    @Slot()
-    def sum_dif(self, value):
-        print("self._sum_dif")
-        self._sum_dif = value
-
-    @Slot(tuple)
-    def progress_fn(self, value):
-        """
-        Update the progress on the bar depending on which function called it
-        """
-        if value[1] == "sum_diff":
-            self._ui.recipProgress.setValue(
-                self._ui.recipProgress.value() + value[0])
-
-        else:
-            self._ui.realProgress.setValue(
-                self._ui.realProgress.value() + value[0])
-
-    @Slot()
-    def thread_complete(self):
-        self._nb_thread -= 1
-        if self._nb_thread == 0:  # Make sure both thread are done
+        self.nb_threads -= 1
+        if self.nb_threads == 0:
             return super().done(True)
+
+    @Slot(tuple)
+    def progress_func(self, obj):
+        self.data_out[obj[0]][1].setValue(self.data_out[obj[0]][1].value() +obj[1])
+
+    def get_result(self, name):
+        return self.data_out[name][0]
 
 
 class CustomSignals(QObject):
@@ -322,10 +273,11 @@ class GuiUpdater(QRunnable):
     Worker thread
     """
 
-    def __init__(self, fn, *args, **kwargs):
+    def __init__(self, fn, name, *args, **kwargs):
         super(GuiUpdater, self).__init__()
         # Store constructor arguments (re-used for processing)
         self._fn = fn
+        self._name = name
         self._args = args
         self._kwargs = kwargs
         self.signals = CustomSignals()
@@ -340,17 +292,15 @@ class GuiUpdater(QRunnable):
         """
         # Retrieve args/kwargs here; and fire processing using them
         try:
-            print(self._kwargs)
             result_val = self._fn(
                 *self._args, **self._kwargs
             )
-            print("Result : ", result_val)
         except BaseException:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
         finally:
-            self.signals.result.emit(result_val)  # Done
+            self.signals.result.emit((self._name,result_val))  # Done
             self.signals.finished.emit()  # Done
 
 class QIPythonWidget(RichIPythonWidget):
