@@ -13,6 +13,7 @@ from PySide2.QtWidgets import QFileDialog, QMainWindow
 from . import logger, virtual_adf, dpc_explorer, fpd_functions
 from . import config_handler as config
 from . import data_browser_explorer
+from .guide import get_guide
 from .logger import Flags
 from .custom_widgets import CustomInputForm, CustomLoadingForm
 from .res.ui_homescreen import Ui_MainWindow
@@ -47,7 +48,6 @@ class ApplicationWindow(QMainWindow):
         self._ui.action_dm3.triggered.connect(self.function_dm3)
         self._ui.action_hdf5.triggered.connect(self.function_hdf5)
         self._ui.action_npz.triggered.connect(self.function_npz)
-        self._ui.action_about.triggered.connect(self.function_about)
         self._ui.actionCenter_of_Mass.triggered.connect(self.centre_of_mass)
         self._ui.actionCircular_center.triggered.connect(self.find_circular_centre)
         self._ui.actionDPC_Explorer.triggered.connect(self.start_dpc_explorer)
@@ -55,6 +55,11 @@ class ApplicationWindow(QMainWindow):
         self._ui.actionLoad.triggered.connect(self.load_files)
         self._ui.actionRansac_Tool.triggered.connect(self.ransac_im_fit)
         self._ui.actionVADF_Explorer.triggered.connect(self.start_vadf)
+        self._ui.action_navigating_loading.triggered.connect(lambda: self.guide_me("navigating_and_loading"))
+        self._ui.action_functions.triggered.connect(lambda: self.guide_me("functions"))
+        self._ui.action_about_us.triggered.connect(lambda: self.guide_me("about_us"))
+        self._ui.action_about_software.triggered.connect(lambda: self.guide_me("about_software"))
+        self._ui.action_live_coding.triggered.connect(lambda: self.guide_me("live_coding"))
 
     def _setup_cmaps(self):
         self.cmaps = OrderedDict()
@@ -153,26 +158,19 @@ class ApplicationWindow(QMainWindow):
         return False
 
     @Slot()
-    def function_about(self):
+    def guide_me(self, topic):
         """
-        Display a pop-up describing the software.
+        Displays a guide pop-up with the text based on the parameter topic.
+
+        Parameters
+        ----------
+        topic : str
+            Key to look up in the dictionary of guide topics.
         """
-        about = QtWidgets.QMessageBox()
-        about.setText("""<p><u>Help</u></p><p>This software allows users to process electron
-        microscopy images, you can import 3 different types of files: .dm3,.mib and .hdf5 by Clicking
-         'File-&gt;Open-&gt;Filetype'.</p><p>Once the files have been loaded in, click the Pushbutton
-         in the bottom right, the next window displayed will have defaultvalue for downsampling which
-         is 2^3 by default, but can be modified to change the downsampling rate. After the
-         downsampling rate has been selected, press OK and this will bring you to a window in which a
-         selection can be made, if sum real image is selected then the real image will be shown on
-         the left. if sum recip space is selected then an inverted image will be shown.</p><p>Once
-         'OK' is clicked the images will load in to the window docks and a progress bar is present to
-         show the progress of this process. The dm3. image on the left can be navigated around
-         byclicking on a certain pixel within the image and this will show the diffraction Image on
-         the right at this point.</p><p><u>About</u></p><p>This software was created using QT,PySide
-         2, and the FPD library.</p><p>The creators are Florent Audonnet, Michal Broos, Bruce Kerr,
-         Ruize Shen and Ewan Pandelus.</p><p> <br></p>""")
-        about.exec()
+        message = QtWidgets.QMessageBox()
+        message.setText(get_guide(topic))
+        message.setWindowTitle(topic.replace("_", " ").capitalize())
+        message.exec()
 
     def _update_last_path(self, new_path):
         self._last_path = "/".join(new_path.split("/")[:-1]) + "/"

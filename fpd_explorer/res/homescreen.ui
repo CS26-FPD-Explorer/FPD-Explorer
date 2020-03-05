@@ -889,7 +889,16 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="action_about"/>
+    <addaction name="action_navigating_loading"/>
+    <addaction name="action_functions"/>
+    <addaction name="action_live_coding"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="action_about_software"/>
+    <addaction name="action_about_us"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -912,6 +921,7 @@
    <addaction name="menuExplorer"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_dm3">
@@ -938,9 +948,33 @@
     <string>Ctrl+H</string>
    </property>
   </action>
-  <action name="action_about">
+  <action name="action_navigating_loading">
    <property name="text">
-    <string>About</string>
+    <string>Navigating and loading</string>
+   </property>
+   <property name="toolTip">
+    <string>Navigating and loading help</string>
+   </property>
+  </action>
+  <action name="action_functions">
+   <property name="text">
+    <string>Functions</string>
+   </property>
+   <property name="toolTip">
+    <string>FPD functions help</string>
+   </property>
+  </action>
+  <action name="action_about_software">
+   <property name="text">
+    <string>About software</string>
+   </property>
+   <property name="toolTip">
+    <string>About software</string>
+   </property>
+  </action>
+  <action name="action_about_us">
+   <property name="text">
+    <string>About us</string>
    </property>
   </action>
   <action name="action_npz">
@@ -992,6 +1026,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_live_coding">
+   <property name="text">
+    <string>Live coding</string>
    </property>
   </action>
  </widget>
