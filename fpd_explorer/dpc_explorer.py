@@ -20,20 +20,20 @@ def start_dpc(ApplicationWindow):
     """
     dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
     try:
-        ApplicationWindow.dpc_input.update({"cyx", ApplicationWindow.cyx})
+        ApplicationWindow.dpc_input.update({"cyx": ApplicationWindow.cyx})
     except AttributeError:
         pass
     try:
-        ApplicationWindow.dpc_input.update({"com_yx_beta", ApplicationWindow.com_yx_beta})
+        ApplicationWindow.dpc_input.update({"com_yx_beta": ApplicationWindow.com_yx_beta})
     except AttributeError:
         pass
 
     try:
-        ApplicationWindow.dpc_input.update({"ransac", ApplicationWindow.com_yx_cor})
+        ApplicationWindow.dpc_input.update({"ransac": ApplicationWindow.com_yx_cor})
     except AttributeError:
         pass
     try:
-        ApplicationWindow.dpc_input.update({"beta2bt", fpd.mag_tools.beta2bt(
+        ApplicationWindow.dpc_input.update({"beta2bt": fpd.mag_tools.beta2bt(
             ApplicationWindow.com_yx_cor) * 1e9})
 
     except AttributeError:

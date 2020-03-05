@@ -18,10 +18,10 @@ def find_matching_images(ApplicationWindow):
             avail_input.append(("aperture", ApplicationWindow.ap))
         except (AttributeError, AssertionError):
             pass
-        
+
         key_add = {
             "aperture": ["multipleinput", avail_input, "An aperture to apply to the images."],
-            "images": ["multipleinput", list(ApplicationWindow.matching_input.items()), 
+            "images": ["multipleinput", list(ApplicationWindow.matching_input.items()),
                        "Array of images with image axes in last 2 dimensions."]}
 
         params = UI_Generator(ApplicationWindow, pc.find_matching_images, key_add=key_add)
@@ -77,5 +77,27 @@ def make_ref_im(ApplicationWindow):
 
 
 def phase_correlation(ApplicationWindow):
-    ApplicationWindow.shift_yx, ApplicationWindow.shift_err, ApplicationWindow.shift_difp, ApplicationWindow.ref = pc.phase_correlation(
-        ds_sel, nc=None, nr=None, spf=100, ref_im=ref_im, cyx=cyx, crop_r=cr + 3, sigma=si)
+    if logger.check_if_all_needed(Flags.files_loaded):
+        canvas = Pop_Up_Widget(ApplicationWindow, "Phase Corelation")
+        ApplicationWindow.phase_input.update({"ds_sel": ApplicationWindow.ds_sel})
+        ref_image = {"None":None}
+        try:
+            ref_image.update({"Ref_im":ApplicationWindow.ref_im})
+        except (AttributeError):
+            pass
+
+        key_add = {
+            "ref_im": ["multipleinput", ref_image, """2-D image used as reference.\n
+                If None, the first probe position is used."""],
+            "data": ["multipleinput", list(ApplicationWindow.phase_input.items()),
+                "Mutidimensional data of shape (scanY, scanX, ..., detY, detX)"]}
+
+        params = UI_Generator(ApplicationWindow, pc.phase_correlation, key_add=key_add)
+
+        if not params.exec():
+            # Procedure was cancelled so just give up
+            return
+        print(params.get_result())
+        out = pc.phase_correlation(**params.get_result())
+        ApplicationWindow.shift_yx, ApplicationWindow.shift_err = out[:2]
+        ApplicationWindow.shift_difp, ApplicationWindow.ref = out[2:]

@@ -80,5 +80,7 @@ def add_data(self, location, name, data):
         self.edge_input.update({name: data})
     elif "ref" in location:
         self.ref_input.update({name: data})
-
+    elif "phase" in location:
+        self.phase_input.update({name: data})
+    
         

@@ -51,6 +51,7 @@ def remove_aperture(ApplicationWindow):
             # Procedure was cancelled so just give up
             return
 
+
         ApplicationWindow.mm_sel = ApplicationWindow.ds_sel
         ApplicationWindow.ap = fpdp.synthetic_aperture(
             ApplicationWindow.mm_sel.shape[-2:], **params.get_result())[0]

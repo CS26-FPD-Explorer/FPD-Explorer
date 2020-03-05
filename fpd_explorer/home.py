@@ -104,6 +104,7 @@ class ApplicationWindow(QMainWindow):
         self.matching_input = {}
         self.edge_input = {}  
         self.ref_input = {}
+        self.phase_input = {}
 
     @Slot()
     def change_color_mode(self):

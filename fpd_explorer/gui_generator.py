@@ -79,7 +79,7 @@ class UI_Generator(QtWidgets.QDialog):
         result = {}
         # result is a dict with the variable name as key and a list composed of type, default value, description
         param = doc.split('Parameters')[1].replace(',', '').replace(
-            '-', '').split("Return")[0].split("Attributes")[0].split("Notes")[0].split('\n')
+            '-', '').split("Return")[0].split("Attributes")[0].split('\n')
         current_name = ""
         global_space = -1
         for idx, el in enumerate(param):
@@ -88,7 +88,6 @@ class UI_Generator(QtWidgets.QDialog):
                 if global_space == -1 and el.find(':') != -1:
                     global_space = nb_space
                 if nb_space == global_space:
-                    print(el)
                     current_name, type = el.replace(' ', '').split(':')
                     default = sig.parameters[current_name]
                     if default is not None:
@@ -109,6 +108,7 @@ class UI_Generator(QtWidgets.QDialog):
                 if result.get(key, None) is not None:
                     result.pop(key)
             result.update(self.key_add)
+        print(result)
         return result
 
     def _setup_ui(self):
@@ -296,7 +296,7 @@ class UI_Generator(QtWidgets.QDialog):
                     sub_sub_widget.parent().layout().labelForField(sub_sub_widget).deleteLater()
                     # sub_sub_widget.deleteLater()
                     lay.addWidget(sub_sub_widget)
-                    print(self.number_space, self.last_n, self.last_colums)
+                    # print(self.number_space, self.last_n, self.last_colums)
                     if self.number_space != 10:
                         self.number_space += 1
                     else:
