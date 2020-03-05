@@ -385,7 +385,6 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
         test_ims = ims[:ri]
         err_col = fpdp.nrmse(ref_im, test_ims)
         err[:ri, ri] = err_col
-        print(ri)
         if callback is not None:
             callback.progress.emit(("NRSME-all", 1))
 

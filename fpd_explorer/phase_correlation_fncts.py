@@ -29,12 +29,15 @@ def find_matching_images(ApplicationWindow):
         if not params.exec():
             # Procedure was cancelled so just give up
             return
-        loading_widget = LoadingForm(2, ["NRSME", "NRSME-all"])
         results = params.get_result()
         results["widget"] = canvas
-        loading_widget.setup_multi_loading(["NRSME", "NRSME-all"], pc.find_matching_images, **results)
-        loading_widget.exec()
-        ApplicationWindow.matching = loading_widget.get_result("matching")
+        if not results["plot"]:
+            loading_widget = LoadingForm(2, ["NRSME", "NRSME-all"])
+            loading_widget.setup_multi_loading(["NRSME", "NRSME-all"], pc.find_matching_images, **results)
+            loading_widget.exec()
+            ApplicationWindow.matching = loading_widget.get_result("matching")
+        else:
+            ApplicationWindow.matching = pc.find_matching_images(**results)
         logger.log("Found Matching images", Flags.phase_matching)
 
 
