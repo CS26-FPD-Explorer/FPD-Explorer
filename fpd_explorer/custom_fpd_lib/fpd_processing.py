@@ -78,7 +78,7 @@ def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=Non
                     d = (data[ri:rf, ci:cf, ...] * mask)
                 sum_im[ri:rf, ci:cf, ...] = d.sum((-2, -1))
                 if progress_callback:
-                    progress_callback.emit((np.prod(d.shape[:-2]), "sum_im"))
+                    progress_callback.emit(("sum_im", np.prod(d.shape[:-2])))
                 else:
                     pbar.update(np.prod(d.shape[:-2]))
 
@@ -147,7 +147,7 @@ def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, progress_callback=No
                     d = d * mask
                 sum_dif += d.sum((0, 1))
                 if progress_callback:
-                    progress_callback.emit((np.prod(d.shape[:-2]), "sum_diff"))
+                    progress_callback.emit(("sum_dif",np.prod(d.shape[:-2])))
                 else:
                     pbar.update(np.prod(d.shape[:-2]))
 
@@ -545,8 +545,7 @@ def center_of_mass(data, nr, nc, aperture=None, pre_func=None, thr=None,
                 com_im[ri:rf, ci:cf, ...] = rslt
 
                 if progress_callback:
-                    progress_callback.emit((np.prod(d.shape[:-2]), "center_of_mass"))
-
+                    progress_callback.emit(("com_yx",np.prod(d.shape[:-2])))
                 else:
                     pbar.update(np.prod(d.shape[:-2]))
 

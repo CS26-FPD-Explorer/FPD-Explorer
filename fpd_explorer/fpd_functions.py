@@ -5,8 +5,8 @@ from .logger import Flags
 from .gui_generator import UI_Generator
 from .custom_fpd_lib import ransac_tools as rt
 from .custom_fpd_lib import fpd_processing as fpdp
-from .custom_widgets import Pop_Up_Widget, SingleLoadingForm
-
+from .custom_widgets import Pop_Up_Widget, LoadingForm
+import numpy as np
 # NEED TO GO THROUGH PRIVATE VARIABLES
 
 
@@ -87,9 +87,10 @@ def centre_of_mass(ApplicationWindow):
         else:
             # Remove aperture in this case since its a bool and they expect an array
             results.pop("aperture")
-        loading_widget = SingleLoadingForm(fpdp.center_of_mass, **results, thr='otsu')
-        loading_widget.exec()
-        ApplicationWindow.com_yx = loading_widget.com_yx
+        loading_widget = LoadingForm(1)
+        loading_widget.show()
+        callback = loading_widget.setup_loading("com_yx", np.prod(results["data"].shape[:-2]))
+        ApplicationWindow.com_yx = fpdp.center_of_mass(**results, progress_callback=callback)
         logger.log("Center of mass has now been found", Flags.center_mass)
         logger.log(fpdp.print_shift_stats(ApplicationWindow.com_yx, to_str=True))
         ApplicationWindow.com_yx_beta = ApplicationWindow.com_yx

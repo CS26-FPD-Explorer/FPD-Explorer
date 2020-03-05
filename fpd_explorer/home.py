@@ -14,10 +14,10 @@ from . import logger, fnct_slots, files_fncts, virtual_adf, dpc_explorer, fpd_fu
 from . import config_handler as config
 from . import data_browser_explorer, phase_correlation_fncts
 from .logger import Flags
-from .custom_widgets import CustomInputForm, CustomLoadingForm
+from .custom_widgets import CustomInputForm, LoadingForm
 from .res.ui_homescreen import Ui_MainWindow
-
-
+from .custom_fpd_lib import fpd_processing as fpdp_new
+import numpy as np
 class ApplicationWindow(QMainWindow):
     """
     Create the main window and connect the menu bar slots
@@ -220,10 +220,14 @@ class ApplicationWindow(QMainWindow):
         # Coordinate order is y,x,ky,kx
         # i.e. reduce real and recip space pixel count in memory
 
-        loading_widget = CustomLoadingForm(self.ds_sel)
+        loading_widget = LoadingForm(2)
+        loading_widget.setup_multi_loading("sum_im", fpdp_new.sum_im,
+                                           np.prod(self.ds_sel.shape[:-2]), self.ds_sel, 16, 16)
+        loading_widget.setup_multi_loading("sum_dif", fpdp_new.sum_dif,
+                                           np.prod(self.ds_sel.shape[:-2]),self.ds_sel, 16, 16)
         loading_widget.exec()
-        self.sum_dif = loading_widget._sum_dif
-        self.sum_im = loading_widget._sum_im
+        self.sum_dif = loading_widget.get_result("sum_dif")
+        self.sum_im = loading_widget.get_result("sum_im")
         self._files_loaded = True
         logger.log("Files Loaded correctly", Flags.files_loaded)
 
