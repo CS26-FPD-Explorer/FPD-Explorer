@@ -74,12 +74,17 @@ class DataBrowserWidget(QtWidgets.QWidget):
         value : str name of the color map
 
         """
+        print("color_map")
         if self.data_browser:
             return self.data_browser.update_color_map(value)
         else:
             print("else=" + str(self.sender()))
             self.sender().setCurrentIndex(-1)
 
+    @Slot()
+    def recenter_dif_plot(self):
+        return self.data_browser.recenter_dif_plot()
+    
     @Slot(int)
     def update_rect(self, value: int):
         """

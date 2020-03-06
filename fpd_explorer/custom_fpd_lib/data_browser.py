@@ -250,6 +250,9 @@ class DataBrowser:
             plt.draw()
         else:
             self.widget_2.get_canvas().draw()
+        self.dif_xlim = self.im.axes.get_xlim()
+        self.dif_ylim = self.im.axes.get_ylim()
+
 
     def connect(self):
         'connect to all the events we need'
@@ -328,6 +331,11 @@ class DataBrowser:
             return 'x=%d, y=%d, z=%d' % (x, y, z)
         else:
             return 'x=%d, y=%d' % (x, y)
+
+    def recenter_dif_plot(self):
+        self.im.axes.set_xlim(self.dif_xlim)
+        self.im.axes.set_ylim(self.dif_ylim)
+        self.im.axes.figure.canvas.draw()
 
     def update_dif_plot(self):
         zooming = False
