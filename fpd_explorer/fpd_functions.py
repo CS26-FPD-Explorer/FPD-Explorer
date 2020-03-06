@@ -11,11 +11,18 @@ from .custom_widgets import LoadingForm, Pop_Up_Widget
 
 
 def find_circular_centre(ApplicationWindow):
-    """
-    Calculate the circular centre for the users input
+    """ Calculate the circular centre for the users input
     parameters, when function is used it will
-    bring up a figure on the UI.
+    bring up a figure on a new tab, and switch to this
+    tab.
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+        intialises the application with the user's desktop settings,
+        performs event handling
     """
+
     if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Circular Center")
         ApplicationWindow.circular_input.update({"Image": ApplicationWindow.sum_im,
@@ -39,7 +46,14 @@ def remove_aperture(ApplicationWindow):
     """
     Generates a synthetic aperture for the users input
     parameters, when function is used it will
-    bring up a figure on the UI.
+    bring up a figure on the UI in a new tab, and switch
+    to this tab.
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+        intialises the application with the user's desktop settings,
+        performs event handling
     """
 
     if logger.check_if_all_needed(Flags.circular_center):
@@ -63,7 +77,14 @@ def remove_aperture(ApplicationWindow):
 
 def centre_of_mass(ApplicationWindow):
     """
-    ADD DOCSTRING
+    calculates center of mass statistics based on the
+    data set provided and the previous functions run.
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+        intialises the application with the user's desktop settings,
+        performs event handling
     """
     if logger.check_if_all_needed(Flags.aperture):
         ApplicationWindow.mass_input.update({"mm_sel": ApplicationWindow.mm_sel})
@@ -102,8 +123,17 @@ def centre_of_mass(ApplicationWindow):
 
 def ransac_im_fit(ApplicationWindow):
     """
-    Calculate **add here when you know**
-    for the users input, and brings up two figures based on that input on the UI
+    once center of mass has been run, function runs
+    with the users input, and brings up a figure on
+    based on that input on the UI, switches to tab
+    showing the data.
+
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+        intialises the application with the user's desktop settings,
+        performs event handling
     """
     # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
     if logger.check_if_all_needed(Flags.center_mass):

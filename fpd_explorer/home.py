@@ -13,6 +13,7 @@ from PySide2.QtWidgets import QMainWindow
 from . import logger, fnct_slots, files_fncts, virtual_adf, dpc_explorer, fpd_functions
 from . import config_handler as config
 from . import data_browser_explorer, phase_correlation_fncts
+from .guide import get_guide
 from .logger import Flags
 from .custom_fpd_lib import fpd_processing as fpdp_new
 from .custom_widgets import LoadingForm, CustomInputForm
@@ -74,7 +75,8 @@ class ApplicationWindow(QMainWindow):
         self._ui.actionLoad.triggered.connect(self.load_files)
         self._ui.actionRansac_Tool.triggered.connect(self.ransac_im_fit)
         self._ui.actionVADF_Explorer.triggered.connect(self.start_vadf)
-        self._ui.actionLive_Coding.triggered.connect(self.start_live_coding)
+        self._ui.action_navigating_loading.triggered.connect(lambda: self.guide_me("navigating_and_loading"))
+        self._ui.action_live_coding.triggered.connect(lambda: self.guide_me("live_coding"))
 
     def _setup_cmaps(self):
         self.cmaps = OrderedDict()
@@ -92,6 +94,21 @@ class ApplicationWindow(QMainWindow):
             'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
             'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
         self.cmaps['Cyclic'] = ['twilight', 'twilight_shifted', 'hsv']
+
+    @Slot()
+    def guide_me(self, topic):
+        """
+        Displays a guide pop-up with the text based on the parameter topic.
+
+        Parameters
+        ----------
+        topic : str
+            Key to look up in the dictionary of guide topics.
+        """
+        message = QtWidgets.QMessageBox()
+        message.setText(get_guide(topic))
+        message.setWindowTitle(topic.replace("_", " ").capitalize())
+        message.exec()
 
     def _update_last_path(self, new_path):
         self._last_path = "/".join(new_path.split("/")[:-1]) + "/"
