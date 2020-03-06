@@ -11,12 +11,11 @@ from skimage.morphology import disk, binary_closing, binary_opening
 from scipy.ndimage.filters import gaussian_filter, gaussian_filter1d
 import matplotlib.pyplot as plt
 import multiprocessing as mp
-from multiprocessing.dummy import Pool
 import sys
 from functools import partial
 import scipy as sp
 from multiprocessing.dummy import Pool
-
+from fpd.fpd_processing import _grad
 
 def sum_im(data, nr, nc, mask=None, nrnc_are_chunks=False, callback=None):
     '''
@@ -894,3 +893,47 @@ def map_image_function(data, nr, nc, cyx=None, crop_r=None, func=None, params=No
             rtn = rtn[0]
     
     return rtn
+
+
+def _process_grad(d, pre_func, mode, sigma, truncate, gxy,
+                  parallel, ncores, der_clip_fraction, der_clip_max_pct,
+                  post_func):
+    ''' Calculate gradients. '''
+
+    if pre_func is not None:
+        d = pre_func(d)
+
+    if mode == '1d':
+        # ok for small sigma, poor at diagonals at high sigma
+        df = d.astype(float)
+        gy = gaussian_filter1d(df, sigma=sigma, axis=-2, order=1,
+                               mode='reflect', truncate=truncate)
+        gx = gaussian_filter1d(df, sigma=sigma, axis=-1, order=1,
+                               mode='reflect', truncate=truncate)
+        gm = (gy**2 + gx**2)**0.5
+    elif mode == '2d':
+        partial_grad = partial(_grad, gxy=gxy, mode='same')
+        d_shape = d.shape
+        d.shape = (np.prod(d_shape[:-2]),) + d_shape[-2:]
+
+        if parallel:
+            pool = Pool(ncores)
+            rslt = pool.map(partial_grad, d)
+            pool.close()
+            pool.join()
+        else:
+            rslt = list(map(partial_grad, d))
+        gm = np.asarray(rslt)
+    else:
+        raise ValueError('Mode value unknown.')
+
+    if der_clip_fraction != 0:
+        ref = np.percentile(gm, der_clip_max_pct, axis=(-2, -1))
+        clip_low = der_clip_fraction * ref
+        gm[gm < clip_low[:, None, None]] = 0
+
+    if post_func is not None:
+        gm = post_func(gm)
+
+    gm = gm.reshape((-1,) + gm.shape[-2:])
+    return gm

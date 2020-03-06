@@ -61,6 +61,7 @@ def disc_edge_sigma(ApplicationWindow):
             return
 
         ApplicationWindow.edge_sigma = pc.disc_edge_sigma(**params.get_result(), widget=canvas, logger=logger)[0]
+        logger.log("Found disk edge sigma")
 
 
 def make_ref_im(ApplicationWindow):
@@ -82,6 +83,7 @@ def make_ref_im(ApplicationWindow):
             # Procedure was cancelled so just give up
             return
         ApplicationWindow.ref_im = pc.make_ref_im(**params.get_result(), widget=canvas)
+        logger.log("Reference image created successfully")
 
 
 def phase_correlation(ApplicationWindow):
@@ -109,3 +111,4 @@ def phase_correlation(ApplicationWindow):
         out = pc.phase_correlation(**params.get_result(), logger=logger)
         ApplicationWindow.shift_yx, ApplicationWindow.shift_err = out[:2]
         ApplicationWindow.shift_difp, ApplicationWindow.ref = out[2:]
+        logger.log("Phase Correlation finished sucessfully")

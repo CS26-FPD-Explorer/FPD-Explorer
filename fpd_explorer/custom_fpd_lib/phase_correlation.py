@@ -42,6 +42,7 @@ from itertools import combinations
 from collections import namedtuple
 
 from fpd.fpd_processing import _p3
+from multiprocessing.dummy import Pool
 
 def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
                       spf=100, pre_func=None, post_func=None, mode='2d',
@@ -211,7 +212,7 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
     if rebinning:
         ns = ref.shape[:-2] + tuple([int(x/rebin) for x in ref.shape[-2:]])
         ref = fpdp.rebinA(ref, *ns)
-    ref = fpdp._process_grad(ref, pre_func, mode, sigma, truncate, gxy,
+    ref = fpdp_new._process_grad(ref, pre_func, mode, sigma, truncate, gxy,
                         parallel, ncores, der_clip_fraction, der_clip_max_pct,
                         post_func)[0]
     
@@ -237,7 +238,7 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
                     d = fpdp.rebinA(d, *ns)
                 
                 # calc grad
-                gm = fpdp._process_grad(d, pre_func, mode, sigma, truncate, gxy,
+                gm = fpdp_new._process_grad(d, pre_func, mode, sigma, truncate, gxy,
                                    parallel, ncores, der_clip_fraction, der_clip_max_pct,
                                    post_func)
                 
@@ -251,9 +252,10 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
                 partial_reg = fpdp.partial(fpdp.register_translation, ref, upsample_factor=spf)
                 
                 if parallel:
-                    pool = mp.dummy.Pool(ncores)
+                    pool = Pool(ncores)
                     rslt = pool.map(partial_reg, gm)
                     pool.close()
+                    pool.join()
                 else:
                     rslt = list(map(partial_reg, gm))
                 shift, error, phasediff = np.asarray(rslt).T
