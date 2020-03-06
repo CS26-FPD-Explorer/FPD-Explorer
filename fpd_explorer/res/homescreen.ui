@@ -921,7 +921,7 @@
     <addaction name="actionData_Browser"/>
     <addaction name="actionDPC_Explorer"/>
     <addaction name="actionVADF_Explorer"/>
-    <addaction name="actionLive_Coding"/>
+    <addaction name="actionLive_Code"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuExplorer"/>
@@ -1034,12 +1034,17 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="action_live_coding">
+  <action name="actionLive_Code">
    <property name="text">
     <string>Live Coding</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="action_live_coding">
+   <property name="text">
+    <string>Live Coding</string>
    </property>
   </action>
  </widget>
@@ -1136,8 +1141,8 @@
    <slot>load_files()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>324</y>
+     <x>277</x>
+     <y>355</y>
     </hint>
     <hint type="destinationlabel">
      <x>382</x>
@@ -1169,7 +1174,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>517</x>
-     <y>324</y>
+     <y>355</y>
     </hint>
     <hint type="destinationlabel">
      <x>505</x>
@@ -1264,8 +1269,8 @@
    <slot>ransac_im_fit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>697</x>
-     <y>316</y>
+     <x>710</x>
+     <y>349</y>
     </hint>
     <hint type="destinationlabel">
      <x>652</x>
@@ -1392,8 +1397,8 @@
    <slot>phase_correlation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>858</x>
-     <y>316</y>
+     <x>870</x>
+     <y>349</y>
     </hint>
     <hint type="destinationlabel">
      <x>1065</x>

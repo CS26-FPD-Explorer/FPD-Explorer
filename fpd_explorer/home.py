@@ -77,6 +77,7 @@ class ApplicationWindow(QMainWindow):
         self._ui.actionVADF_Explorer.triggered.connect(self.start_vadf)
         self._ui.action_navigating_loading.triggered.connect(lambda: self.guide_me("navigating_and_loading"))
         self._ui.action_live_coding.triggered.connect(lambda: self.guide_me("live_coding"))
+        self._ui.actionLive_Code.triggered.connect(self.start_live_coding)
 
     def _setup_cmaps(self):
         self.cmaps = OrderedDict()
