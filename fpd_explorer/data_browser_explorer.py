@@ -41,7 +41,6 @@ class DataBrowserWidget(QtWidgets.QWidget):
         Secure setter for the databrowser variable
         """
         self.data_browser = data_browser
-        print("Data browser set up")
 
     def get_nav(self):
         """
@@ -74,11 +73,9 @@ class DataBrowserWidget(QtWidgets.QWidget):
         value : str name of the color map
 
         """
-        print("color_map")
         if self.data_browser:
             return self.data_browser.update_color_map(value)
         else:
-            print("else=" + str(self.sender()))
             self.sender().setCurrentIndex(0)
 
     @Slot()

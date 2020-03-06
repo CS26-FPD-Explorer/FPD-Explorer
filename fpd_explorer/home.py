@@ -251,7 +251,8 @@ class ApplicationWindow(QMainWindow):
 
         widget = CustomInputForm(initial_x, initial_y,
                                  minimum, maximum, text_x, text_y)
-        widget.exec()
+        if not widget.exec();
+            return
         x = pow(2, widget._ui.Xsize.value())
         y = pow(2, widget._ui.Ysize.value())
         return x, y
