@@ -1,5 +1,4 @@
 # FPD Explorer
-import matplotlib.pyplot as plt
 
 from . import logger
 from .logger import Flags

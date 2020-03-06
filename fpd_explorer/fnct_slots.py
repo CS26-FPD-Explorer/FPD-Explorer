@@ -64,6 +64,7 @@ def start_live_coding(self):
     console_tab = Pop_Up_Widget(self, "Live Coding")
     console_tab.setup_docking_default(ipy_console)
 
+
 def add_data(self, location, name, data):
     location = location.lower()
     if "dpc" in location:
@@ -75,12 +76,10 @@ def add_data(self, location, name, data):
     elif "ransac" in location:
         self.ransac_input.update({name: data})
     elif "matching" in location:
-        self.matching_input.update({name:data})    
+        self.matching_input.update({name: data})
     elif "edge" in location:
         self.edge_input.update({name: data})
     elif "ref" in location:
         self.ref_input.update({name: data})
     elif "phase" in location:
         self.phase_input.update({name: data})
-    
-        

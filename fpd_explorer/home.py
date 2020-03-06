@@ -14,10 +14,11 @@ from . import logger, fnct_slots, files_fncts, virtual_adf, dpc_explorer, fpd_fu
 from . import config_handler as config
 from . import data_browser_explorer, phase_correlation_fncts
 from .logger import Flags
-from .custom_widgets import CustomInputForm, LoadingForm
-from .res.ui_homescreen import Ui_MainWindow
 from .custom_fpd_lib import fpd_processing as fpdp_new
-import numpy as np
+from .custom_widgets import LoadingForm, CustomInputForm
+from .res.ui_homescreen import Ui_MainWindow
+
+
 class ApplicationWindow(QMainWindow):
     """
     Create the main window and connect the menu bar slots
@@ -102,7 +103,7 @@ class ApplicationWindow(QMainWindow):
         self.mass_input = {}
         self.ransac_input = {}
         self.matching_input = {}
-        self.edge_input = {}  
+        self.edge_input = {}
         self.ref_input = {}
         self.phase_input = {}
 
@@ -251,7 +252,7 @@ class ApplicationWindow(QMainWindow):
 
         widget = CustomInputForm(initial_x, initial_y,
                                  minimum, maximum, text_x, text_y)
-        if not widget.exec();
+        if not widget.exec():
             return
         x = pow(2, widget._ui.Xsize.value())
         y = pow(2, widget._ui.Ysize.value())

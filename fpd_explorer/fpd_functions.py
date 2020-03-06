@@ -5,8 +5,8 @@ from .logger import Flags
 from .gui_generator import UI_Generator
 from .custom_fpd_lib import ransac_tools as rt
 from .custom_fpd_lib import fpd_processing as fpdp
-from .custom_widgets import Pop_Up_Widget, LoadingForm
-import numpy as np
+from .custom_widgets import LoadingForm, Pop_Up_Widget
+
 # NEED TO GO THROUGH PRIVATE VARIABLES
 
 
@@ -19,7 +19,7 @@ def find_circular_centre(ApplicationWindow):
     if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Circular Center")
         ApplicationWindow.circular_input.update({"Image": ApplicationWindow.sum_im,
-                                                "Diffraction": ApplicationWindow.sum_dif})
+                                                 "Diffraction": ApplicationWindow.sum_dif})
         key_add = {
             "im": [
                 "multipleinput", list(ApplicationWindow.circular_input.items()), "Image data"]}
@@ -51,7 +51,6 @@ def remove_aperture(ApplicationWindow):
             # Procedure was cancelled so just give up
             return
 
-
         ApplicationWindow.mm_sel = ApplicationWindow.ds_sel
         ApplicationWindow.ap = fpdp.synthetic_aperture(
             ApplicationWindow.mm_sel.shape[-2:], **params.get_result())[0]
@@ -70,11 +69,16 @@ def centre_of_mass(ApplicationWindow):
         ApplicationWindow.mass_input.update({"mm_sel": ApplicationWindow.mm_sel})
 
         key_add = {
-            "aperture": ["bool", True, """Should an aperture be provided \n
-            If yes then the output of remove aperture shall be used"""], 
+            "aperture": [
+                "bool",
+                True,
+                """Should an aperture be provided \n
+            If yes then the output of remove aperture shall be used"""],
             "data": [
-                "multipleinput", list(ApplicationWindow.mass_input.items()), "Mutidimensional data of shape (scanY, scanX, ..., detY, detX)"]
-        }
+                "multipleinput",
+                list(
+                    ApplicationWindow.mass_input.items()),
+                "Mutidimensional data of shape (scanY, scanX, ..., detY, detX)"]}
 
         params = UI_Generator(ApplicationWindow, fpdp.center_of_mass, key_add=key_add)
         if not params.exec():

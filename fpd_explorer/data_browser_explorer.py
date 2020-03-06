@@ -1,6 +1,5 @@
 from PySide2 import QtWidgets
 from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QMainWindow
 
 # FPD Explorer
 from . import logger
@@ -8,7 +7,6 @@ from .logger import Flags
 from .custom_widgets import Pop_Up_Widget
 from .res.ui_data_browser import Ui_DataBrowser
 from .custom_fpd_lib.data_browser import DataBrowser
-from .custom_widgets import Pop_Up_Widget
 
 
 class DataBrowserWidget(QtWidgets.QWidget):
@@ -81,7 +79,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
     @Slot()
     def recenter_dif_plot(self):
         return self.data_browser.recenter_dif_plot()
-    
+
     @Slot(int)
     def update_rect(self, value: int):
         """
@@ -120,13 +118,17 @@ def start_dbrowser(ApplicationWindow):
         if hdf5_usage:
             ApplicationWindow.db_widget.setup_ui(ApplicationWindow.ds.shape[:2])
             ApplicationWindow.data_browser = DataBrowser(
-                ApplicationWindow.hdf5_path, widget_1=ApplicationWindow.db_widget._ui.navCanvas, widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
+                ApplicationWindow.hdf5_path,
+                widget_1=ApplicationWindow.db_widget._ui.navCanvas,
+                widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
 
         else:
             ApplicationWindow.db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
             ApplicationWindow.data_browser = DataBrowser(
-                ApplicationWindow.ds_sel, nav_im=ApplicationWindow.sum_im,
-                widget_1=ApplicationWindow.db_widget._ui.navCanvas, widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
+                ApplicationWindow.ds_sel,
+                nav_im=ApplicationWindow.sum_im,
+                widget_1=ApplicationWindow.db_widget._ui.navCanvas,
+                widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
 
         ApplicationWindow.db_widget.set_data_browser(ApplicationWindow.data_browser)
         logger.log("Data Browser has been opened")

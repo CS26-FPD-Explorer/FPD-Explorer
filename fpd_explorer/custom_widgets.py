@@ -1,8 +1,8 @@
 # Standard Library
 import sys
 import traceback
+from collections import defaultdict
 
-import numpy as np
 from PySide2 import QtWidgets
 from PySide2.QtCore import Qt, Slot, Signal, QObject, QRunnable, QThreadPool
 from matplotlib.figure import Figure
@@ -12,13 +12,9 @@ from qtconsole.rich_ipython_widget import RichIPythonWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 # FPD Explorer
-from .custom_fpd_lib import fpd_processing as fpdp_new
 from .res.ui_inputbox import Ui_InputBox
 
-from qtconsole.rich_ipython_widget import RichIPythonWidget
-from qtconsole.inprocess import QtInProcessKernelManager
 
-from collections import defaultdict
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
@@ -103,7 +99,6 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self.tab_index = self.application_window._ui.tabWidget.addTab(self.main_widget, self.tab_name)
         self.application_window._ui.tabWidget.setCurrentIndex(self.tab_index)
         return widget
-
 
     def close_handler(self):
         self.application_window._ui.tabWidget.removeTab(self.tab_index)
@@ -197,10 +192,10 @@ class LoadingForm(QtWidgets.QDialog):
         for el in range(nb_bar):
             self.setup_ui(name[el])
 
-    def setup_ui(self,name):
+    def setup_ui(self, name):
         widget = QtWidgets.QWidget()
         form = QtWidgets.QFormLayout()
-        self.data_out[name].insert(0,None)
+        self.data_out[name].insert(0, None)
         bar = QtWidgets.QProgressBar()
         bar.setValue(0)
         self.data_out[name].insert(1, bar)
@@ -208,7 +203,7 @@ class LoadingForm(QtWidgets.QDialog):
         widget.setLayout(form)
         self.v_layout.addWidget(widget)
 
-    def setup_multi_loading(self, name, fnct,  *args, **kwargs):
+    def setup_multi_loading(self, name, fnct, *args, **kwargs):
         worker = GuiUpdater(fnct, name, *args, **kwargs)
         worker.signals.finished.connect(self.completed)
         worker.signals.progress.connect(self.progress_func)
@@ -219,7 +214,7 @@ class LoadingForm(QtWidgets.QDialog):
         for el in range(len(name)):
             self.data_out[name[el]].append(worker)
         self.threadpool.start(worker)
-        
+
     @Slot()
     def set_max(self, obj):
         name, max_size = obj
@@ -244,7 +239,7 @@ class LoadingForm(QtWidgets.QDialog):
         print(obj)
         self.data_out[obj[0]][1].setValue(150)
         print(self.data_out[obj[0]][1].value())
-        self.data_out[obj[0]][1].setValue(self.data_out[obj[0]][1].value() +obj[1])
+        self.data_out[obj[0]][1].setValue(self.data_out[obj[0]][1].value() + obj[1])
 
     def get_result(self, name):
         return self.data_out[name][0]
@@ -274,6 +269,7 @@ class CustomSignals(QObject):
     result = Signal(object)
     progress = Signal(tuple)
     maximum = Signal(tuple)
+
 
 class GuiUpdater(QRunnable):
     """
@@ -307,8 +303,9 @@ class GuiUpdater(QRunnable):
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
         finally:
-            self.signals.result.emit((self._name,result_val))  # Done
+            self.signals.result.emit((self._name, result_val))  # Done
             self.signals.finished.emit()  # Done
+
 
 class QIPythonWidget(RichIPythonWidget):
     """ Convenience class for a live IPython console widget."""

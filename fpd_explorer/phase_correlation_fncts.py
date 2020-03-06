@@ -1,12 +1,11 @@
-import fpd.fpd_processing as fpdp
 
 # FPD Explorer
 from . import logger
 from .logger import Flags
 from .gui_generator import UI_Generator
 from .custom_fpd_lib import phase_correlation as pc
-from .custom_widgets import Pop_Up_Widget, LoadingForm
-import threading
+from .custom_widgets import LoadingForm, Pop_Up_Widget
+
 
 def find_matching_images(ApplicationWindow):
     if logger.check_if_all_needed(Flags.files_loaded):
@@ -90,9 +89,9 @@ def phase_correlation(ApplicationWindow):
     if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Phase Corelation")
         ApplicationWindow.phase_input.update({"ds_sel": ApplicationWindow.ds_sel})
-        ref_image = {"None":None}
+        ref_image = {"None": None}
         try:
-            ref_image.update({"Ref_im":ApplicationWindow.ref_im})
+            ref_image.update({"Ref_im": ApplicationWindow.ref_im})
         except (AttributeError):
             pass
 
@@ -100,7 +99,7 @@ def phase_correlation(ApplicationWindow):
             "ref_im": ["multipleinput", list(ref_image.items()), """2-D image used as reference.\n
                 If None, the first probe position is used."""],
             "data": ["multipleinput", list(ApplicationWindow.phase_input.items()),
-                "Mutidimensional data of shape (scanY, scanX, ..., detY, detX)"]}
+                     "Mutidimensional data of shape (scanY, scanX, ..., detY, detX)"]}
 
         params = UI_Generator(ApplicationWindow, pc.phase_correlation, key_add=key_add)
 

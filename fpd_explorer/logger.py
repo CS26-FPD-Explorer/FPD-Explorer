@@ -18,6 +18,7 @@ class Flags(Enum):
     ransac_fit = auto()
     vadf_init = auto()
     phase_matching = auto()
+
     def __lt__(self, other):
         return self.value < other.value
 
