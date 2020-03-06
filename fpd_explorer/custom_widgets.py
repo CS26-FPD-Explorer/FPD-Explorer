@@ -218,6 +218,7 @@ class LoadingForm(QtWidgets.QDialog):
             name = [name]
         for el in range(len(name)):
             self.data_out[name[el]].append(worker)
+        print(self.data_out)
         self.threadpool.start(worker)
         
     @Slot()
@@ -245,6 +246,9 @@ class LoadingForm(QtWidgets.QDialog):
 
     @Slot(tuple)
     def progress_func(self, obj):
+        print(obj)
+        self.data_out[obj[0]][1].setValue(150)
+        print(self.data_out[obj[0]][1].value())
         self.data_out[obj[0]][1].setValue(self.data_out[obj[0]][1].value() +obj[1])
 
     def get_result(self, name):

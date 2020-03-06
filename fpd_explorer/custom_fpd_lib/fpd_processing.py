@@ -141,7 +141,7 @@ def sum_dif(data, nr, nc, mask=None, nrnc_are_chunks=False, callback=None):
     print('Calculating diffraction sum images.')
     total_ims = np.prod(nondet)
     if callback is not None:
-        callback.maximum.emit(("sum_im", total_ims))
+        callback.maximum.emit(("sum_dif", total_ims))
 
     with tqdm(total=total_ims, mininterval=0, leave=True, unit='images') as pbar:
         for i, (ri, rf) in enumerate(r_if):
