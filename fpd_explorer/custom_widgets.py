@@ -218,24 +218,19 @@ class LoadingForm(QtWidgets.QDialog):
             name = [name]
         for el in range(len(name)):
             self.data_out[name[el]].append(worker)
-        print(self.data_out)
         self.threadpool.start(worker)
         
     @Slot()
     def set_max(self, obj):
         name, max_size = obj
-        print("setting maxi ", obj)
         self.data_out[name][1].setMaximum(max_size)
 
     @Slot()
     def set_value(self, obj):
-        print("setting value ", obj)
         self.data_out[obj[0]][0] = obj[1]
 
     def setup_loading(self, name, max_size):
         self.set_max(name, max_size)
-        print(self.data_out)
-        print(name)
         return self.data_out[name][-1].signals.progress
 
     @Slot()

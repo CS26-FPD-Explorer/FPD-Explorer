@@ -147,7 +147,6 @@ class ApplicationWindow(QMainWindow):
             self._ui.tabWidget.removeTab(1)
         if self.data_browser:
             self.data_browser = None
-            self._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
         logger.clear()
 
     @Slot()

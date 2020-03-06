@@ -79,7 +79,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
             return self.data_browser.update_color_map(value)
         else:
             print("else=" + str(self.sender()))
-            self.sender().setCurrentIndex(-1)
+            self.sender().setCurrentIndex(0)
 
     @Slot()
     def recenter_dif_plot(self):
@@ -112,27 +112,24 @@ def start_dbrowser(ApplicationWindow):
     """
     if ApplicationWindow.data_browser:
         ApplicationWindow._ui.tabWidget.setCurrentWidget(
-            ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "Data Browser"))
+            ApplicationWindow._ui.tabWidget.findChild(QtWidgets.QWidget, "Data Browser"))
         return
     if logger.check_if_all_needed(Flags.files_loaded):
-        db_widget = DataBrowserWidget(ApplicationWindow)
+        ApplicationWindow.db_widget = DataBrowserWidget(ApplicationWindow)
         db_tab = Pop_Up_Widget(ApplicationWindow, "Data Browser")
-        db_tab.setup_docking_default(db_widget.get_nav())
-        db_tab.setup_docking_default(db_widget.get_diff())
+        db_tab.setup_docking_default(ApplicationWindow.db_widget.get_nav())
+        db_tab.setup_docking_default(ApplicationWindow.db_widget.get_diff())
         hdf5_usage = logger.check_if_all_needed(Flags.hdf5_usage, display=False)
         if hdf5_usage:
+            ApplicationWindow.db_widget.setup_ui(ApplicationWindow.ds.shape[:2])
             ApplicationWindow.data_browser = DataBrowser(
-                ApplicationWindow.hdf5_path, widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
+                ApplicationWindow.hdf5_path, widget_1=ApplicationWindow.db_widget._ui.navCanvas, widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
 
         else:
+            ApplicationWindow.db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
             ApplicationWindow.data_browser = DataBrowser(
                 ApplicationWindow.ds_sel, nav_im=ApplicationWindow.sum_im,
-                widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
+                widget_1=ApplicationWindow.db_widget._ui.navCanvas, widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
 
-        db_widget.set_data_browser(ApplicationWindow.data_browser)
-        if hdf5_usage:
-            db_widget.setup_ui(ApplicationWindow.ds.shape[:2])
-        else:
-            db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
-
+        ApplicationWindow.db_widget.set_data_browser(ApplicationWindow.data_browser)
         logger.log("Data Browser has been opened")
