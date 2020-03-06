@@ -50,4 +50,7 @@ def annular_slice(ApplicationWindow):
         results = params.get_result()
 
         vadf = VADF.annular_slice(**results)
-        imgplot = plt.matshow(vadf)
+        canvas = Pop_Up_Widget(ApplicationWindow, "Annular Slice")
+        fig = canvas.setup_docking("Annular Slice")
+        ax = fig.get_fig().subplots()
+        ax.matshow(vadf)
