@@ -76,6 +76,9 @@ class ApplicationWindow(QMainWindow):
         self._ui.actionRansac_Tool.triggered.connect(self.ransac_im_fit)
         self._ui.actionVADF_Explorer.triggered.connect(self.start_vadf)
         self._ui.action_navigating_loading.triggered.connect(lambda: self.guide_me("navigating_and_loading"))
+        self._ui.action_functions.triggered.connect(lambda: self.guide_me("functions"))
+        self._ui.action_about_us.triggered.connect(lambda: self.guide_me("about_us"))
+        self._ui.action_about_software.triggered.connect(lambda: self.guide_me("about_software"))
         self._ui.action_live_coding.triggered.connect(lambda: self.guide_me("live_coding"))
         self._ui.actionLive_Code.triggered.connect(self.start_live_coding)
 
