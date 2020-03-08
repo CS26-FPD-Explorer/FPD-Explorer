@@ -3,11 +3,13 @@
 import inspect
 from collections import OrderedDict
 
-import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QMainWindow
+
+# First Party
+import qdarkgraystyle
 
 # FPD Explorer
 from . import logger, fnct_slots, files_fncts, virtual_adf, dpc_explorer, fpd_functions
