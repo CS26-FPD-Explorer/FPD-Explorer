@@ -10,9 +10,8 @@ from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QMainWindow
 
 # FPD Explorer
-from . import logger, fnct_slots, files_fncts, virtual_adf, dpc_explorer, fpd_functions
+from . import logger, fnct_slots, files_fncts
 from . import config_handler as config
-from . import data_browser_explorer, phase_correlation_fncts
 from .guide import get_guide
 from .logger import Flags
 from .custom_fpd_lib import fpd_processing as fpdp_new

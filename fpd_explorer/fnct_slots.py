@@ -1,5 +1,5 @@
 # FPD Explorer
-from . import logger, virtual_adf, dpc_explorer, fpd_functions, data_browser_explorer, phase_correlation_fncts
+from . import virtual_adf, dpc_explorer, fpd_functions, data_browser_explorer, phase_correlation_fncts
 from .custom_widgets import Pop_Up_Widget, QIPythonWidget
 
 
