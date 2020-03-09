@@ -184,7 +184,7 @@ class ApplicationWindow(QMainWindow):
         x_value = None
         y_value = None
         if logger.check_if_all_needed(Flags.hdf5_usage, display=False):
-            logger.log("Files Loaded correctly", Flags.files_loaded)
+            logger.log("Files loaded correctly", Flags.files_loaded)
             return
         # Cherk if Mib exist
         try:
@@ -253,7 +253,7 @@ class ApplicationWindow(QMainWindow):
         self.sum_dif = loading_widget.get_result("sum_dif")
         self.sum_im = loading_widget.get_result("sum_im")
         self._files_loaded = True
-        logger.log("Files Loaded correctly", Flags.files_loaded)
+        logger.log("Files loaded correctly", Flags.files_loaded)
 
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
         """
