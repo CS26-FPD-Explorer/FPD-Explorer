@@ -6,7 +6,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
 from fpd_explorer.data_browser_explorer import DataBrowserWidget
 from fpd_explorer.home import *
-
+from fpd_explorer import config_handler as config
 from fpd_explorer.custom_widgets import CustomInputForm
 from pynput.keyboard import Key, Controller
 import time
@@ -22,7 +22,7 @@ def setup_tests(qtbot):
     aw = ApplicationWindow()
     qtbot.addWidget(aw)
     logger.setup(aw._ui.log_text, aw)
-
+    config.load_config()
     aw._dm3_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     aw._mib_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
     aw.mib_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
@@ -49,17 +49,6 @@ def test_synthetic_aperture_button(qtbot):
     #QTimer.singleShot(500, interact)
     try:
         fpd_functions.remove_aperture(aw)
-    except:
-        assert False
-    assert True
-
-
-def center_of_mass_button(qtbot):
-    aw = setup_tests(qtbot)
-    fpd_functions.find_circular_centre(aw)
-    fpd_functions.remove_aperture(aw)
-    try:
-        fpd_functions.centre_of_mass(aw)
     except:
         assert False
     assert True
