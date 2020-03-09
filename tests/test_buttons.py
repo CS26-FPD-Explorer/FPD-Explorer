@@ -95,3 +95,13 @@ def test_phase_correlation(qtbot):
     except:
         assert False
     assert True
+
+
+def test_disc_edge_sigma(qtbot):
+    aw = setup_tests(qtbot)
+    phase_correlation_fncts.find_matching_images(aw)
+    try:
+        phase_correlation_fncts.disc_edge_sigma(aw)
+    except:
+        assert False
+    assert True
