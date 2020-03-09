@@ -34,7 +34,7 @@ def setup_tests(qtbot):
 def test_circ_center_button(qtbot):
     aw = setup_tests(qtbot)
 
-    QTimer.singleShot(5000, interact)
+    #QTimer.singleShot(5000, interact)
     try:
         fpd_functions.find_circular_centre(aw)
     except:
@@ -42,5 +42,24 @@ def test_circ_center_button(qtbot):
     assert True
 
 
-# def test_synthetic_aperture_button(qtbot):
+def test_synthetic_aperture_button(qtbot):
     aw = setup_tests(qtbot)
+    #QTimer.singleShot(5000, interact)
+    fpd_functions.find_circular_centre(aw)
+    #QTimer.singleShot(500, interact)
+    try:
+        fpd_functions.remove_aperture(aw)
+    except:
+        assert False
+    assert True
+
+
+def center_of_mass_button(qtbot):
+    aw = setup_tests(qtbot)
+    fpd_functions.find_circular_centre(aw)
+    fpd_functions.remove_aperture(aw)
+    try:
+        fpd_functions.centre_of_mass(aw)
+    except:
+        assert False
+    assert True
