@@ -13,28 +13,34 @@ import time
 from fpd_explorer.fpd_functions import *
 
 
-def test_circ_center_button(qtbot):
+def interact():
+    keyboard = Controller()
+    keyboard.press(Key.enter)
+
+
+def setup_tests(qtbot):
     aw = ApplicationWindow()
     qtbot.addWidget(aw)
     logger.setup(aw._ui.log_text, aw)
-    keyboard = Controller()
 
-    # adding dm3 file
     aw._dm3_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     aw._mib_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
     aw.mib_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
-    #
-    # adding mib file
-
-    def interact():
-        keyboard.press(Key.enter)
-
     QTimer.singleShot(5000, interact)
     aw.load_files()
+    return aw
 
-    #QTimer.singleShot(5000, interact)
+
+def test_circ_center_button(qtbot):
+    aw = setup_tests(qtbot)
+
+    QTimer.singleShot(5000, interact)
     try:
         fpd_functions.find_circular_centre(aw)
     except:
         assert False
     assert True
+
+
+# def test_synthetic_aperture_button(qtbot):
+    aw = setup_tests(qtbot)
