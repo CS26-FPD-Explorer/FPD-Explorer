@@ -46,9 +46,12 @@ def function_hdf5(self):
     """
     Spawn a file dialog to open an hdf5 file
     """
-    fname, _ = QFileDialog.getOpenFileName(
-        self, 'Open file', self._last_path,
-        "MERLIN binary files (*.hdf5)")
+    try:
+        fname = self.hdf5_path
+    except AttributeError:
+        fname, _ = QFileDialog.getOpenFileName(
+            self, 'Open file', self._last_path,
+            "MERLIN binary files (*.hdf5)")
     if fname:
         if fname[-4:] == "hdf5":  # empty string means user cancelled
             self._update_last_path(fname)
