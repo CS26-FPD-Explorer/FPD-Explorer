@@ -1,10 +1,10 @@
 from PySide2 import QtWidgets
-from PySide2.QtCore import Qt, Slot
-from PySide2.QtWidgets import QDockWidget, QMainWindow
+from PySide2.QtCore import Slot
 
 # FPD Explorer
 from . import logger
 from .logger import Flags
+from .custom_widgets import Pop_Up_Widget
 from .res.ui_data_browser import Ui_DataBrowser
 from .custom_fpd_lib.data_browser import DataBrowser
 
@@ -19,7 +19,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
         self._ui = Ui_DataBrowser()
         self._ui.setupUi(self)
         self.application_window = ApplicationWindow
-        self._data_browser = None
+        self.data_browser = None
         self._init_color_map()
 
     def setup_ui(self, shape: tuple):
@@ -38,8 +38,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
         """
         Secure setter for the databrowser variable
         """
-        self._data_browser = data_browser
-        print("Data browser set up")
+        self.data_browser = data_browser
 
     def get_nav(self):
         """
@@ -72,11 +71,14 @@ class DataBrowserWidget(QtWidgets.QWidget):
         value : str name of the color map
 
         """
-        if self._data_browser:
-            return self._data_browser.update_color_map(value)
+        if self.data_browser:
+            return self.data_browser.update_color_map(value)
         else:
-            print("else=" + str(self.sender()))
-            self.sender().setCurrentIndex(-1)
+            self.sender().setCurrentIndex(0)
+
+    @Slot()
+    def recenter_dif_plot(self):
+        return self.data_browser.recenter_dif_plot()
 
     @Slot(int)
     def update_rect(self, value: int):
@@ -87,19 +89,10 @@ class DataBrowserWidget(QtWidgets.QWidget):
         value : int new value to set the rectangle to
 
         """
-        if self._data_browser:
-            return self._data_browser.update_rect(value, self.sender().objectName())
+        if self.data_browser:
+            return self.data_browser.update_rect(value, self.sender().objectName())
         else:
             self.sender().setValue(1)
-
-    def close_handler(self):
-        try:
-            self.get_nav().parentWidget().close()
-            self.get_diff().parentWidget().close()
-        except:
-            pass
-        self.application_window._data_browser = None
-        self.application_window._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab").deleteLater()
 
 
 def start_dbrowser(ApplicationWindow):
@@ -112,41 +105,30 @@ def start_dbrowser(ApplicationWindow):
     ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
 
     """
-    if ApplicationWindow._data_browser:
+    if ApplicationWindow.data_browser:
         ApplicationWindow._ui.tabWidget.setCurrentWidget(
-            ApplicationWindow._ui.tabWidget.findChild(QMainWindow, "DataBrowserTab"))
+            ApplicationWindow._ui.tabWidget.findChild(QtWidgets.QWidget, "Data Browser"))
         return
     if logger.check_if_all_needed(Flags.files_loaded):
-        mainwindow = QMainWindow()
-        mainwindow.setObjectName("DataBrowserTab")
-        db_widget = DataBrowserWidget(ApplicationWindow)
-
-        dock = QDockWidget("Navigation", ApplicationWindow)
-        dock.setWidget(db_widget.get_nav())
-        mainwindow.addDockWidget(Qt.TopDockWidgetArea, dock)
-
-        dock2 = QDockWidget("Diffraction", ApplicationWindow)
-        dock2.setWidget(db_widget.get_diff())
-        mainwindow.addDockWidget(Qt.TopDockWidgetArea, dock2)
-
-        tab_index = ApplicationWindow._ui.tabWidget.addTab(mainwindow, "DataBrowser")
-        ApplicationWindow._ui.tabWidget.setCurrentIndex(tab_index)
-        ApplicationWindow._ui.tabWidget.setTabToolTip(tab_index, ApplicationWindow._ui.mib_line.text())
+        ApplicationWindow.db_widget = DataBrowserWidget(ApplicationWindow)
+        db_tab = Pop_Up_Widget(ApplicationWindow, "Data Browser")
+        db_tab.setup_docking_default(ApplicationWindow.db_widget.get_nav())
+        db_tab.setup_docking_default(ApplicationWindow.db_widget.get_diff())
         hdf5_usage = logger.check_if_all_needed(Flags.hdf5_usage, display=False)
         if hdf5_usage:
-            ApplicationWindow._data_browser = DataBrowser(
-                ApplicationWindow.hdf5_path, widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
+            ApplicationWindow.db_widget.setup_ui(ApplicationWindow.ds.shape[:2])
+            ApplicationWindow.data_browser = DataBrowser(
+                ApplicationWindow.hdf5_path,
+                widget_1=ApplicationWindow.db_widget._ui.navCanvas,
+                widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
 
         else:
-            ApplicationWindow._data_browser = DataBrowser(
-                ApplicationWindow.ds_sel, nav_im=ApplicationWindow._sum_im,
-                widget_1=db_widget._ui.navCanvas, widget_2=db_widget._ui.diffCanvas)
+            ApplicationWindow.db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
+            ApplicationWindow.data_browser = DataBrowser(
+                ApplicationWindow.ds_sel,
+                nav_im=ApplicationWindow.sum_im,
+                widget_1=ApplicationWindow.db_widget._ui.navCanvas,
+                widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
 
-        ApplicationWindow._ui.tabWidget.tabCloseRequested.connect(db_widget.close_handler)
-        db_widget.set_data_browser(ApplicationWindow._data_browser)
-        if hdf5_usage:
-            db_widget.setup_ui(ApplicationWindow._ds.shape[:2])
-        else:
-            db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
-
+        ApplicationWindow.db_widget.set_data_browser(ApplicationWindow.data_browser)
         logger.log("Data Browser has been opened")

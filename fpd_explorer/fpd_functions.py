@@ -1,12 +1,11 @@
 # FPD Explorer
-import numpy as np
 
 from . import logger
 from .logger import Flags
 from .gui_generator import UI_Generator
 from .custom_fpd_lib import ransac_tools as rt
 from .custom_fpd_lib import fpd_processing as fpdp
-from .custom_widgets import Pop_Up_Widget, SingleLoadingForm
+from .custom_widgets import LoadingForm, Pop_Up_Widget
 
 # NEED TO GO THROUGH PRIVATE VARIABLES
 
@@ -26,12 +25,13 @@ def find_circular_centre(ApplicationWindow):
 
     if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Circular Center")
+        ApplicationWindow.circular_input.update({"Image": ApplicationWindow.sum_im,
+                                                 "Diffraction": ApplicationWindow.sum_dif})
         key_add = {
             "im": [
-                "multipleinput", [
-                    ("Image", ApplicationWindow._sum_im), ("Diffraction", ApplicationWindow._sum_dif)], "Test"]}
+                "multipleinput", list(ApplicationWindow.circular_input.items()), "Image data"]}
 
-        params = UI_Generator(ApplicationWindow, fpdp.find_circ_centre, key_ignore=["im"], key_add=key_add)
+        params = UI_Generator(ApplicationWindow, fpdp.find_circ_centre, key_add=key_add)
 
         if not params.exec():
             # Procedure was cancelled so just give up
@@ -66,13 +66,12 @@ def remove_aperture(ApplicationWindow):
             return
 
         ApplicationWindow.mm_sel = ApplicationWindow.ds_sel
-        ApplicationWindow._ap = fpdp.synthetic_aperture(
+        ApplicationWindow.ap = fpdp.synthetic_aperture(
             ApplicationWindow.mm_sel.shape[-2:], **params.get_result())[0]
-        print(ApplicationWindow._ap)
         canvas = Pop_Up_Widget(ApplicationWindow, "Aperture")
         fig = canvas.setup_docking("Aperture")
         ax = fig.get_fig().subplots()
-        ax.matshow(ApplicationWindow._ap)
+        ax.matshow(ApplicationWindow.ap)
         logger.log("Aperture has now been correctly initialized", Flags.aperture)
 
 
@@ -88,59 +87,38 @@ def centre_of_mass(ApplicationWindow):
         performs event handling
     """
     if logger.check_if_all_needed(Flags.aperture):
+        ApplicationWindow.mass_input.update({"mm_sel": ApplicationWindow.mm_sel})
+
         key_add = {
-            "aperture": ["bool", True, """Should an aperture be provided \n
-            If yes then the output of remove aperture shall be used"""]
-        }
-        params = UI_Generator(ApplicationWindow, fpdp.center_of_mass, key_ignore=["data", "aperture"], key_add=key_add)
+            "aperture": [
+                "bool",
+                True,
+                """Should an aperture be provided \n
+            If yes then the output of remove aperture shall be used"""],
+            "data": [
+                "multipleinput",
+                list(
+                    ApplicationWindow.mass_input.items()),
+                "Mutidimensional data of shape (scanY, scanX, ..., detY, detX)"]}
+
+        params = UI_Generator(ApplicationWindow, fpdp.center_of_mass, key_add=key_add)
         if not params.exec():
             # Procedure was cancelled so just give up
             return
         results = params.get_result()
         if results["aperture"] == True:
             # Replace the bool with the variable
-            results["aperture"] = ApplicationWindow._ap
+            results["aperture"] = ApplicationWindow.ap
         else:
             # Remove aperture in this case since its a bool and they expect an array
             results.pop("aperture")
-        loading_widget = SingleLoadingForm(fpdp.center_of_mass, ApplicationWindow.mm_sel, **results, thr='otsu')
+        loading_widget = LoadingForm(1, ["com_yx"])
+        loading_widget.setup_multi_loading("com_yx", fpdp.center_of_mass, **results)
         loading_widget.exec()
-        ApplicationWindow.com_yx = loading_widget.com_yx
-
-        # TODO: Fix the mess in another feature
-        # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
-        # com_yx_cor = com_yx - fit
-        # Convert to beta using the BF disc and calibration.
-        # The pixel value radius from before could be used for the calibration, or we can do a subpixel equivalent.
-        # You may see that the aperture is not a perfect circle - error bars
-        # cyx_sp, r_sp = fpdp.find_circ_centre(ApplicationWindow._sum_dif, sigma=2,
-        #                                     rmms=(ApplicationWindow.radius-8, ApplicationWindow.radius+8, 1), spf=4)
+        ApplicationWindow.com_yx = loading_widget.get_result("com_yx")
         logger.log("Center of mass has now been found", Flags.center_mass)
-        logger.log(print_shift_stats(ApplicationWindow.com_yx, to_str=True))
+        logger.log(fpdp.print_shift_stats(ApplicationWindow.com_yx, to_str=True))
         ApplicationWindow.com_yx_beta = ApplicationWindow.com_yx
-
-
-def print_shift_stats(shift_yx, to_str=False):
-    ''' Prints statistics of 'shift_yx' array'''
-    shift_yx_mag = (shift_yx**2).sum(0)**0.5
-    shift_yxm = np.concatenate((shift_yx, shift_yx_mag[None, ...]), axis=0)
-
-    non_yx_axes = tuple(range(1, len(shift_yxm.shape)))
-    yxm_mn, yxm_std = shift_yxm.mean(non_yx_axes), shift_yxm.std(non_yx_axes)
-    yxm_min, yxm_max = shift_yxm.min(non_yx_axes), shift_yxm.max(non_yx_axes)
-    yxm_ptp = yxm_max - yxm_min
-    out = ""
-    out += '{:10s}{:>8s}{:>11s}{:>11s}\n'.format('Statistics', 'y', 'x', 'm')
-    out += '{:s} \n'.format('-' * 40)
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Mean',) + tuple(yxm_mn)))
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Min',) + tuple(yxm_min)))
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Max',) + tuple(yxm_max)))
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Std',) + tuple(yxm_std)))
-    out += '{:6s}: {:10.3f} {:10.3f} {:10.3f}\n'.format(*(('Range',) + tuple(yxm_ptp)))
-    out += '\n'
-    if to_str:
-        return out
-    print(out)
 
 
 def ransac_im_fit(ApplicationWindow):
@@ -157,12 +135,13 @@ def ransac_im_fit(ApplicationWindow):
         intialises the application with the user's desktop settings,
         performs event handling
     """
-
     # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
     if logger.check_if_all_needed(Flags.center_mass):
-        # FIXME: Dirty fix to prevent float overloading the int and messing it up
-        # Will be fixed by next commit in another branch
+
+        ApplicationWindow.ransac_input.update({"com_yx": ApplicationWindow.com_yx})
         key_add = {
+            "im": [
+                "multipleinput", list(ApplicationWindow.ransac_input.items()), "ndarray with images to fit to."],
             "min_samples": ["int", 10, """
             The minimum number of data points to fit a model to.\n
             If an int, the value is the number of pixels.\n
@@ -172,12 +151,12 @@ def ransac_im_fit(ApplicationWindow):
         params = UI_Generator(
             ApplicationWindow,
             rt.ransac_im_fit,
-            key_ignore=["im", "plot", "min_samples", "p0"],
+            key_ignore=["plot", "min_samples", "p0"],
             key_add=key_add)
         if not params.exec():
             # Procedure was cancelled so just give up
             return
         results = params.get_result()
-        fit, inliers, _ = rt.ransac_im_fit(ApplicationWindow.com_yx, **results, plot=True, widget=canvas)
+        fit, inliers, _ = rt.ransac_im_fit(**results, plot=True, widget=canvas)
         ApplicationWindow.com_yx_cor = ApplicationWindow.com_yx - fit
         logger.log("Image has now been fitted using ransac")

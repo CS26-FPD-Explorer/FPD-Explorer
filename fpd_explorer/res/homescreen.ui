@@ -16,6 +16,11 @@
     <height>735</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>11</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>fpd gui</string>
   </property>
@@ -35,6 +40,11 @@
         <width>1050</width>
         <height>625</height>
        </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
       </property>
       <property name="currentIndex">
        <number>0</number>
@@ -176,7 +186,7 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="2">
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="virtual_adf_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -281,7 +291,7 @@
             </widget>
            </item>
            <item row="2" column="2">
-            <widget class="QPushButton" name="pushButton_3">
+            <widget class="QPushButton" name="annular_slice_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -323,7 +333,7 @@
             </widget>
            </item>
            <item row="1" column="2">
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="plot_vadf_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -386,7 +396,7 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QPushButton" name="pushButton_42">
+            <widget class="QPushButton" name="matching_im_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -396,7 +406,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Matching Images</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -407,7 +417,7 @@
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QPushButton" name="pushButton_41">
+            <widget class="QPushButton" name="disc_edge_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -417,7 +427,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Disc edge sigma</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -434,7 +444,7 @@
             </widget>
            </item>
            <item row="3" column="1">
-            <widget class="QPushButton" name="pushButton_6">
+            <widget class="QPushButton" name="make_ref_im_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -444,7 +454,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Make ref im</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -455,7 +465,7 @@
             </widget>
            </item>
            <item row="4" column="1">
-            <widget class="QPushButton" name="pushButton_7">
+            <widget class="QPushButton" name="phase_correlation_button">
              <property name="font">
               <font>
                <pointsize>11</pointsize>
@@ -465,7 +475,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Dummy</string>
+              <string>Phase correlation</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -531,59 +541,8 @@
            <string>Resource monitor</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
+           <item row="0" column="1">
             <widget class="CpuFreqGraph" name="resMonitor" native="true"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QGroupBox" name="workflow_groupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>500</width>
-            <height>300</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-            <underline>false</underline>
-           </font>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="title">
-           <string>Workflow help</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_5">
-           <item row="0" column="0">
-            <widget class="QPlainTextEdit" name="log_text">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="plainText">
-              <string>Start by loading files</string>
-             </property>
-            </widget>
            </item>
           </layout>
          </widget>
@@ -692,6 +651,7 @@
                  <pointsize>11</pointsize>
                  <weight>50</weight>
                  <bold>false</bold>
+                 <underline>false</underline>
                 </font>
                </property>
                <property name="text">
@@ -780,6 +740,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
                <property name="placeholderText">
                 <string>.npz filename</string>
                </property>
@@ -855,6 +818,45 @@
           </property>
          </spacer>
         </item>
+        <item row="3" column="1">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="title">
+           <string>Workflow Help</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPlainTextEdit" name="log_text">
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="plainText">
+              <string>Start by loading files</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -916,6 +918,7 @@
     <addaction name="actionData_Browser"/>
     <addaction name="actionDPC_Explorer"/>
     <addaction name="actionVADF_Explorer"/>
+    <addaction name="actionLive_Code"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuExplorer"/>
@@ -1028,9 +1031,17 @@
     <string>Ctrl+O</string>
    </property>
   </action>
+  <action name="actionLive_Code">
+   <property name="text">
+    <string>Live Coding</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
   <action name="action_live_coding">
    <property name="text">
-    <string>Live coding</string>
+    <string>Live Coding</string>
    </property>
   </action>
  </widget>
@@ -1055,21 +1066,19 @@
   <tabstop>centre_of_mass_button</tabstop>
   <tabstop>ransac_tools_button</tabstop>
   <tabstop>dpc_explorer_button</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>virtual_adf_button</tabstop>
   <tabstop>clear_button</tabstop>
   <tabstop>mib_line</tabstop>
   <tabstop>hdf5_line</tabstop>
-  <tabstop>pushButton_41</tabstop>
+  <tabstop>disc_edge_button</tabstop>
   <tabstop>dm3_line</tabstop>
-  <tabstop>dark_mode_button</tabstop>
-  <tabstop>log_text</tabstop>
-  <tabstop>pushButton_2</tabstop>
-  <tabstop>pushButton_3</tabstop>
+  <tabstop>plot_vadf_button</tabstop>
+  <tabstop>annular_slice_button</tabstop>
   <tabstop>pushButton_4</tabstop>
-  <tabstop>pushButton_42</tabstop>
+  <tabstop>matching_im_button</tabstop>
   <tabstop>npz_line</tabstop>
-  <tabstop>pushButton_6</tabstop>
-  <tabstop>pushButton_7</tabstop>
+  <tabstop>make_ref_im_button</tabstop>
+  <tabstop>phase_correlation_button</tabstop>
   <tabstop>pushButton_8</tabstop>
  </tabstops>
  <resources/>
@@ -1082,7 +1091,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>156</x>
-     <y>169</y>
+     <y>157</y>
     </hint>
     <hint type="destinationlabel">
      <x>202</x>
@@ -1097,7 +1106,7 @@
    <slot>start_dbrowser()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>689</x>
+     <x>697</x>
      <y>156</y>
     </hint>
     <hint type="destinationlabel">
@@ -1113,7 +1122,7 @@
    <slot>find_circular_centre()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>635</x>
+     <x>697</x>
      <y>197</y>
     </hint>
     <hint type="destinationlabel">
@@ -1129,8 +1138,8 @@
    <slot>load_files()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>239</x>
-     <y>351</y>
+     <x>277</x>
+     <y>355</y>
     </hint>
     <hint type="destinationlabel">
      <x>382</x>
@@ -1146,7 +1155,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>277</x>
-     <y>169</y>
+     <y>157</y>
     </hint>
     <hint type="destinationlabel">
      <x>312</x>
@@ -1162,27 +1171,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>517</x>
-     <y>351</y>
+     <y>355</y>
     </hint>
     <hint type="destinationlabel">
      <x>505</x>
      <y>74</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dark_mode_button</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>change_color_mode()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>52</x>
-     <y>684</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>103</x>
-     <y>720</y>
     </hint>
    </hints>
   </connection>
@@ -1193,8 +1186,8 @@
    <slot>remove_aperture()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>705</x>
-     <y>242</y>
+     <x>697</x>
+     <y>238</y>
     </hint>
     <hint type="destinationlabel">
      <x>788</x>
@@ -1209,8 +1202,8 @@
    <slot>centre_of_mass()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>710</x>
-     <y>302</y>
+     <x>697</x>
+     <y>277</y>
     </hint>
     <hint type="destinationlabel">
      <x>789</x>
@@ -1225,8 +1218,8 @@
    <slot>start_dpc_explorer()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>870</x>
-     <y>173</y>
+     <x>858</x>
+     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>1071</x>
@@ -1257,7 +1250,7 @@
    <slot>function_npz()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>456</x>
+     <x>481</x>
      <y>148</y>
     </hint>
     <hint type="destinationlabel">
@@ -1273,8 +1266,8 @@
    <slot>ransac_im_fit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>616</x>
-     <y>334</y>
+     <x>710</x>
+     <y>349</y>
     </hint>
     <hint type="destinationlabel">
      <x>652</x>
@@ -1283,13 +1276,13 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton</sender>
+   <sender>virtual_adf_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>start_vadf()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>997</x>
+     <x>1019</x>
      <y>159</y>
     </hint>
     <hint type="destinationlabel">
@@ -1299,34 +1292,114 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton_2</sender>
+   <sender>plot_vadf_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>plot_vadf()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>980</x>
+     <x>1019</x>
      <y>196</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1095</x>
+     <x>1071</x>
      <y>214</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>pushButton_3</sender>
+   <sender>annular_slice_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>annular_slice_vadf()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>959</x>
-     <y>241</y>
+     <x>1019</x>
+     <y>238</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1073</x>
+     <x>1071</x>
      <y>259</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dark_mode_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>change_color_mode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>63</x>
+     <y>698</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>720</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>matching_im_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>find_matching_images()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>858</x>
+     <y>199</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1018</x>
+     <y>28</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>disc_edge_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>disc_edge_sigma()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>858</x>
+     <y>238</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1067</x>
+     <y>383</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>make_ref_im_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>make_ref_im()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>858</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1061</x>
+     <y>40</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>phase_correlation_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>phase_correlation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>870</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1065</x>
+     <y>371</y>
     </hint>
    </hints>
   </connection>
@@ -1348,5 +1421,10 @@
   <slot>start_vadf()</slot>
   <slot>plot_vadf()</slot>
   <slot>annular_slice_vadf()</slot>
+  <slot>eval_code()</slot>
+  <slot>find_matching_images()</slot>
+  <slot>disc_edge_sigma()</slot>
+  <slot>make_ref_im()</slot>
+  <slot>phase_correlation()</slot>
  </slots>
 </ui>

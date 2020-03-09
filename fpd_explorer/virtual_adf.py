@@ -1,5 +1,4 @@
 # FPD Explorer
-import matplotlib.pyplot as plt
 
 from . import logger
 from .logger import Flags
@@ -38,7 +37,7 @@ def plot_vadf(ApplicationWindow):
         hdf5_usage = logger.check_if_all_needed(Flags.hdf5_usage, display=False)
         if hdf5_usage or logger.check_if_all_needed(Flags.files_loaded):
             vadf_explorer = Pop_Up_Widget(ApplicationWindow, "VADF_Explorer")
-            VADF.plot(nav_im=ApplicationWindow._sum_dif, widget=vadf_explorer)
+            VADF.plot(nav_im=ApplicationWindow.sum_dif, widget=vadf_explorer)
 
 
 def annular_slice(ApplicationWindow):
@@ -50,4 +49,7 @@ def annular_slice(ApplicationWindow):
         results = params.get_result()
 
         vadf = VADF.annular_slice(**results)
-        imgplot = plt.matshow(vadf)
+        canvas = Pop_Up_Widget(ApplicationWindow, "Annular Slice")
+        fig = canvas.setup_docking("Annular Slice")
+        ax = fig.get_fig().subplots()
+        ax.matshow(vadf)

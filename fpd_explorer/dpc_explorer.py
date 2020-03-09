@@ -19,28 +19,32 @@ def start_dpc(ApplicationWindow):
 
     """
     dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
-    avail_input = []
     try:
-        avail_input.append(("cyx", ApplicationWindow.cyx))
+        ApplicationWindow.dpc_input.update({"cyx": ApplicationWindow.cyx})
     except AttributeError:
         pass
     try:
-        avail_input.append(("com_yx_beta", ApplicationWindow.com_yx_beta))
-        avail_input.append(("beta2bt", fpd.mag_tools.beta2bt(
-            ApplicationWindow.com_yx_beta) * 1e9))
-    except AttributeError:
-        pass
-    try:
-        avail_input.append(("ransac", ApplicationWindow.com_yx_cor))
+        ApplicationWindow.dpc_input.update({"com_yx_beta": ApplicationWindow.com_yx_beta})
     except AttributeError:
         pass
 
-    if len(avail_input) == 0:
+    try:
+        ApplicationWindow.dpc_input.update({"ransac": ApplicationWindow.com_yx_cor})
+    except AttributeError:
+        pass
+    try:
+        ApplicationWindow.dpc_input.update({"beta2bt": fpd.mag_tools.beta2bt(
+            ApplicationWindow.com_yx_cor) * 1e9})
+
+    except AttributeError:
+        pass
+
+    if len(ApplicationWindow.dpc_input) == 0:
         raise Exception("""No data found that could be used with DPC Explorer.\n
         Please run some function before trying again""")
     key_add = {
         "d": [
-            "multipleinput", avail_input, """If array-like, yx data. If length 2 iterable or ndarray of \n
+            "multipleinput", list(ApplicationWindow.dpc_input.items()), """If array-like, yx data. If length 2 iterable or ndarray of \n
                     shape (2, M, N), data is single yx dataset. If shape is \n
                     (S, 2, M, N), a sequence yx data of length S can be plotted."""],
         "rotate": [
@@ -56,12 +60,12 @@ def start_dpc(ApplicationWindow):
             """Check if you want to manually set the descan"""
         ]}
 
-    params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=["r_min", "r_max"], key_add=key_add)
+    params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=[
+                          "r_min", "r_max", "median", "flip_y", "flip_x", "ransac"], key_add=key_add)
     if not params.exec():
         # Procedure was cancelled so just give up
         return
     results = params.get_result()
-    print(results)
     # bt = fpd.mag_tools.beta2bt(ApplicationWindow.com_yx_beta) * 1e9  # T*nm
 
     # rotate image if needed. This can make data interpretation easier.
@@ -71,5 +75,6 @@ def start_dpc(ApplicationWindow):
             # Procedure was cancelled so just give up
             return
         rot_results = rot_params.get_result()
+        rot_results["axes"] = (int(rot_results["axes"][0]), int(rot_results["axes"][1]))
         results["d"] = sp.ndimage.rotate(results["d"], **rot_results)
     DE = dpc.DPC_Explorer(**results, widget=dpc_explorer)

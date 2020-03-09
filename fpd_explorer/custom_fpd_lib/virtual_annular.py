@@ -33,6 +33,7 @@ import fpd
 from fpd import fpd_processing as fpdp
 from fpd import _p3
 
+from . import fpd_processing as fpdp_new
 
 class VirtualAnnularImages(object):
     '''
@@ -58,9 +59,9 @@ class VirtualAnnularImages(object):
         filename of a npz file with the parameters saved from the `save_data`
         method. If a dictionary, it must contain the same parameters.
     nr : integer or None
-        Number of rows to process at once (see Notes).
+        Number of rows to process at once.
     nc : integer or None
-        Number of columns to process at once (see Notes).
+        Number of columns to process at once.
     cyx : length 2 iterable or None
         The centre y and x coordinates of the direct beam in pixels.
         This value must be specified unless `data` is an object to be loaded. 
@@ -91,7 +92,7 @@ class VirtualAnnularImages(object):
         if _p3:
             s_obj = str
         else:
-            s_obj = basestring
+            s_obj = fpdp.basestring
 
         if isinstance(data, s_obj):
             # add data filename attribute and load data as dict
@@ -144,7 +145,7 @@ class VirtualAnnularImages(object):
 
     def _calc_rdf(self, data, nr, nc, cyx, mask, spf, parallel, ncores,
                   nrnc_are_chunks, print_stats):
-        rtn = fpdp.map_image_function(data, nr, nc,
+        rtn = fpdp_new.map_image_function(data, nr, nc,
                                  cyx=cyx,
                                  crop_r=None,
                                  func=fpdp.radial_average,

@@ -7,8 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>1087</width>
-    <height>636</height>
+    <height>663</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>11</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -117,7 +122,20 @@
      <layout class="QGridLayout" name="diffractionLayout">
       <item row="0" column="0">
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="0">
+        <item row="0" column="2">
+         <widget class="QComboBox" name="colorMap">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>4</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="currentText">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
          <widget class="QLineEdit" name="lineEdit_4">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -139,16 +157,16 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="colorMap">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="recenter_Button">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>4</horstretch>
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="currentText">
-           <string/>
+          <property name="text">
+           <string>Recenter</string>
           </property>
          </widget>
         </item>
@@ -232,9 +250,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>recenter_Button</sender>
+   <signal>clicked()</signal>
+   <receiver>DataBrowser</receiver>
+   <slot>recenter_dif_plot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>613</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>544</x>
+     <y>133</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>update_color_map(QString)</slot>
   <slot>update_rect(int)</slot>
+  <slot>recenter_dif_plot()</slot>
  </slots>
 </ui>

@@ -79,7 +79,7 @@ class UI_Generator(QtWidgets.QDialog):
         result = {}
         # result is a dict with the variable name as key and a list composed of type, default value, description
         param = doc.split('Parameters')[1].replace(',', '').replace(
-            '-', '').split("Return")[0].split("Attributes")[0].split('\n')
+            '-', '').split("Return")[0].split("Attributes")[0].split("Notes")[0].split('\n')
         current_name = ""
         global_space = -1
         for idx, el in enumerate(param):
@@ -107,7 +107,7 @@ class UI_Generator(QtWidgets.QDialog):
                 # Remove all key already present in the dict so no key gets processed twice
                 if result.get(key, None) is not None:
                     result.pop(key)
-        result.update(self.key_add)
+            result.update(self.key_add)
         return result
 
     def _setup_ui(self):
@@ -211,7 +211,7 @@ class UI_Generator(QtWidgets.QDialog):
             new_val = list(val)
             if unpack:
                 new_val[1] = val[1][el]
-            lay.addWidget(self._create_int_float(new_val, key=key + '_' + str(el)))
+            lay.addWidget(self._create_int_float(new_val, key=key + '_' + str(el), is_float=True))
         widget.setLayout(lay)
         param_type = "iterable_" + str(iter_ran)
         return param_type, widget
@@ -251,6 +251,7 @@ class UI_Generator(QtWidgets.QDialog):
                 widget.setValue(float(tmp_val))
         elif tmp_val is not None:
             widget.setValue(float(tmp_val))
+        widget.setToolTip(val[2])
         return widget
 
     @Slot(int)
@@ -267,7 +268,7 @@ class UI_Generator(QtWidgets.QDialog):
                     # Handle unpacking with variable amount
                     param_type = out[0]
                     sub_widget = out[1]
-                    self.layout_iterable(key, sub_widget, param_type, flatten_widget)
+                    self._layout_iterable(key, sub_widget, param_type, flatten_widget)
             self.toggle_widget[correct_key].append(list(flatten_widget))
             for name, widget, _ in flatten_widget[:self.number_space]:
                 self.last_colums[self.last_n].layout().addRow(name, widget)
@@ -295,7 +296,7 @@ class UI_Generator(QtWidgets.QDialog):
                     sub_sub_widget.parent().layout().labelForField(sub_sub_widget).deleteLater()
                     # sub_sub_widget.deleteLater()
                     lay.addWidget(sub_sub_widget)
-                    print(self.number_space, self.last_n, self.last_colums)
+                    # print(self.number_space, self.last_n, self.last_colums)
                     if self.number_space != 10:
                         self.number_space += 1
                     else:
@@ -304,6 +305,7 @@ class UI_Generator(QtWidgets.QDialog):
                         self.last_colums[self.last_n].deleteLater()
                         del self.last_colums[self.last_n]
                         self.last_n -= 1
+                self.setFixedSize(self.min_size[0], self.min_size[1])
                 del self.toggle_widget[key][2]
 
     def _save(self):
@@ -428,7 +430,7 @@ class UI_Generator(QtWidgets.QDialog):
                     widget.clear()
                     widget.setPlaceholderText(self.default[widget])
 
-    def layout_iterable(self, key, widget, param_type, append_ls):
+    def _layout_iterable(self, key, widget, param_type, append_ls):
         iter_ran = int(param_type.split("_")[1])
         for idx in range(iter_ran):
             sub_widget = widget.layout().itemAt(idx).widget()
@@ -453,7 +455,7 @@ class UI_Generator(QtWidgets.QDialog):
                 widget.setFixedHeight(30)
                 if "iterable" in param_type:
                     # Loop for all children and add them as single child
-                    self.layout_iterable(key, widget, param_type, all_widget)
+                    self._layout_iterable(key, widget, param_type, all_widget)
                 else:
                     all_widget.append((key.replace("_", " ").capitalize(), widget, param_type))
                 # self.layout.addRow(key.replace("_", " ").capitalize(), widget)
@@ -469,7 +471,8 @@ class UI_Generator(QtWidgets.QDialog):
         buttonBox.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self._restore_default)
         self.grid_layout.addWidget(buttonBox, 1, 0, 1, len(all_widget) // self.items_per_column + 1, Qt.AlignRight)
         self.setLayout(self.grid_layout)
-        self.setFixedSize(self.minimumWidth(), self.minimumHeight())
+        self.min_size = (self.minimumWidth(), self.minimumHeight())
+        self.setFixedSize(self.min_size[0], self.min_size[1])
 
     def _create_colums(self, widget_list: list, grid_layout: QtWidgets.QGridLayout, n=0):
         """

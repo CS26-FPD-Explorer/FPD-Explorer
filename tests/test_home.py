@@ -16,8 +16,8 @@ def test_clear_files(qtbot):
 
     aw.clear_files()
     assert aw._files_loaded == False
-    assert aw._cyx == None
-    assert aw._ap == None
+    assert aw.cyx == None
+    assert aw.ap == None
     with pytest.raises(AttributeError) as excinfo:
         aw._mib_path is None == True
         aw._dm3_path is None == True
