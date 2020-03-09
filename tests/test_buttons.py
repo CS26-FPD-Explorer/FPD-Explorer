@@ -29,10 +29,9 @@ def setup_tests(qtbot):
     qtbot.addWidget(aw)
     logger.setup(aw._ui.log_text, aw)
     config.load_config()
-    aw._dm3_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
-    aw._mib_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
-    aw.mib_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
-    #QTimer.singleShot(5000, interact)
+    aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
+    aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
+
     enter()
     aw.load_files()
     return aw
