@@ -1,4 +1,3 @@
-
 # Standard Library
 import inspect
 from collections import OrderedDict
@@ -226,7 +225,7 @@ class ApplicationWindow(QMainWindow):
         self.mb = MerlinBinary(mib, hdr, dm3, scanYalu=y_value,
                                scanXalu=x_value, row_end_skip=1)
 
-        self.ds = self.mb.get_memmap()
+        self.ds = self.mb.get_memmap(mode='r+')
         x, y = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
                                text_y="Amount to skip for Diffraction Image")  # Check what is the maximum value
         real_skip = x
