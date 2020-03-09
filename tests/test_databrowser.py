@@ -15,6 +15,7 @@ from fpd_explorer.files_fncts import *
 
 '''
 # omitted due to memory loading error on the vm
+# for local use only
 
 def test_load_files(qtbot):
     aw = ApplicationWindow()
@@ -23,13 +24,9 @@ def test_load_files(qtbot):
     keyboard = Controller()
 
     # adding dm3 file
-    #aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     aw._dm3_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
 
     # adding mib file
-    #aw.mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
-    #aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
-
     aw.mib_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
     aw._mib_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
 
@@ -50,11 +47,26 @@ def test_load_hdf5(qtbot):
     keyboard = Controller()
 
     aw.hdf5_path = "/home/ubuntu/example-data/4DSTEM_FeRh_element.hdf5"
+    #aw.hdf5_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\4DSTEM_FeRh_element.hdf5"
     aw._ui.action_hdf5.trigger()
 
     assert logger.check_if_all_needed(Flags.files_loaded)
     aw.start_dbrowser()
+
     assert aw._ui.tabWidget.widget(1).findChild(QtWidgets.QComboBox, "colorMap").currentIndex() == 0
+
+
+def test_load_npz(qtbot):
+    aw = ApplicationWindow()
+    qtbot.addWidget(aw)
+    logger.setup(aw._ui.log_text, aw)
+    keyboard = Controller()
+
+    aw.npz_path = "/home/ubuntu/example-data/VirtualAnnularImages_20200305_185503.npz"
+    #aw.npz_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\VirtualAnnularImages_20200305_185503.npz"
+    aw._ui.action_npz.trigger()
+
+    assert logger.check_if_all_needed(Flags.npz_loaded)
 
 
 def test_init_color_map(qtbot):

@@ -28,9 +28,12 @@ def function_npz(self):
     """
     Spawn a file dialog to open an npz file
     """
-    fname, _ = QFileDialog.getOpenFileName(
-        self, 'Open file', self._last_path,
-        "NPZ file (*.npz)")
+    try:
+        fname = self.npz_path
+    except AttributeError:
+        fname, _ = QFileDialog.getOpenFileName(
+            self, 'Open file', self._last_path,
+            "NPZ file (*.npz)")
     if fname:
         if fname[-3:] == "npz":  # empty string means user cancelled
             self._update_last_path(fname)
