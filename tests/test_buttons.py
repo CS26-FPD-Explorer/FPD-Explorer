@@ -35,7 +35,7 @@ def setup_tests(qtbot):
 def test_circ_center_button(qtbot):
     aw = setup_tests(qtbot)
 
-    #QTimer.singleShot(5000, interact)
+    # QTimer.singleShot(5000, interact)
     try:
         fpd_functions.find_circular_centre(aw)
     except:
@@ -45,9 +45,9 @@ def test_circ_center_button(qtbot):
 
 def test_synthetic_aperture_button(qtbot):
     aw = setup_tests(qtbot)
-    #QTimer.singleShot(5000, interact)
+    # QTimer.singleShot(5000, interact)
     fpd_functions.find_circular_centre(aw)
-    #QTimer.singleShot(500, interact)
+    # QTimer.singleShot(500, interact)
     try:
         fpd_functions.remove_aperture(aw)
     except:
@@ -82,6 +82,16 @@ def test_matching_images_button(qtbot):
     aw = setup_tests(qtbot)
     try:
         phase_correlation_fncts.find_matching_images(aw)
+    except:
+        assert False
+    assert True
+
+
+def test_phase_correlation(qtbot):
+    aw = setup_tests(qtbot)
+    phase_correlation_fncts.find_matching_images(aw)
+    try:
+        phase_correlation_fncts.phase_correlation(aw)
     except:
         assert False
     assert True
