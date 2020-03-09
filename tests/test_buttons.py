@@ -63,3 +63,15 @@ def test_center_of_mass_button(qtbot):
     except:
         assert False
     assert True
+
+
+def test_ransac_button(qtbot):
+    aw = setup_tests(qtbot)
+    fpd_functions.find_circular_centre(aw)
+    fpd_functions.remove_aperture(aw)
+    fpd_functions.centre_of_mass(aw)
+    try:
+        fpd_functions.ransac_im_fit(aw)
+    except:
+        assert False
+    assert True
