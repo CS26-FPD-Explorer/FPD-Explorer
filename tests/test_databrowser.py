@@ -13,6 +13,8 @@ import time
 
 from fpd_explorer.files_fncts import *
 
+'''
+# omitted due to memory loading error on the vm
 
 def test_load_files(qtbot):
     aw = ApplicationWindow()
@@ -36,8 +38,21 @@ def test_load_files(qtbot):
     QTimer.singleShot(5000, interact)
     aw.load_files()
     assert logger.check_if_all_needed(Flags.files_loaded)
+'''
 
-    aw.start_dbrowser()
+
+def test_load_hdf5(qtbot):
+    aw = ApplicationWindow()
+    qtbot.addWidget(aw)
+    logger.setup(aw._ui.log_text, aw)
+    keyboard = Controller()
+
+    aw.hdf5_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.hdr"
+    aw._ui.action_hdf5.trigger()
+
+    assert logger.check_if_all_needed(Flags.files_loaded)
+    
+    w.start_dbrowser()
     assert aw._ui.tabWidget.widget(1).findChild(QtWidgets.QComboBox, "colorMap").currentIndex() == 0
 
 
