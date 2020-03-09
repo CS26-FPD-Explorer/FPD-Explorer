@@ -12,6 +12,7 @@ from pynput.keyboard import Key, Controller
 import time
 from fpd_explorer.fpd_functions import *
 from fpd_explorer.phase_correlation_fncts import *
+from fpd_explorer.virtual_adf import *
 
 
 def interact():
@@ -102,6 +103,16 @@ def test_disc_edge_sigma(qtbot):
     phase_correlation_fncts.find_matching_images(aw)
     try:
         phase_correlation_fncts.disc_edge_sigma(aw)
+    except:
+        assert False
+    assert True
+
+
+def test_virtual_adf(qtbot):
+    aw = setup_tests(qtbot)
+    fpd_functions.find_circular_centre(aw)
+    try:
+        virtual_adf.start_vadf(aw)
     except:
         assert False
     assert True
