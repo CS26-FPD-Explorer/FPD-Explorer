@@ -11,6 +11,7 @@ from fpd_explorer.custom_widgets import CustomInputForm
 from pynput.keyboard import Key, Controller
 import time
 from fpd_explorer.fpd_functions import *
+from fpd_explorer.phase_correlation_fncts import *
 
 
 def interact():
@@ -72,6 +73,15 @@ def test_ransac_button(qtbot):
     fpd_functions.centre_of_mass(aw)
     try:
         fpd_functions.ransac_im_fit(aw)
+    except:
+        assert False
+    assert True
+
+
+def test_matching_images_button(qtbot):
+    aw = setup_tests(qtbot)
+    try:
+        phase_correlation_fncts.find_matching_images(aw)
     except:
         assert False
     assert True
