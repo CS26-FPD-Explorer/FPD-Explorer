@@ -52,3 +52,14 @@ def test_synthetic_aperture_button(qtbot):
     except:
         assert False
     assert True
+
+
+def test_center_of_mass_button(qtbot):
+    aw = setup_tests(qtbot)
+    fpd_functions.find_circular_centre(aw)
+    fpd_functions.remove_aperture(aw)
+    try:
+        fpd_functions.centre_of_mass(aw)
+    except:
+        assert False
+    assert True
