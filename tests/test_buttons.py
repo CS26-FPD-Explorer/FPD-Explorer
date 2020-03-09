@@ -20,6 +20,10 @@ def interact():
     keyboard.press(Key.enter)
 
 
+def enter():
+    QTimer.singleShot(250, interact)
+
+
 def setup_tests(qtbot):
     aw = ApplicationWindow()
     qtbot.addWidget(aw)
@@ -28,7 +32,8 @@ def setup_tests(qtbot):
     aw._dm3_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     aw._mib_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
     aw.mib_path = r"C:\Users\User\Documents\Physics Images\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
-    QTimer.singleShot(5000, interact)
+    #QTimer.singleShot(5000, interact)
+    enter()
     aw.load_files()
     return aw
 
@@ -36,9 +41,10 @@ def setup_tests(qtbot):
 def test_circ_center_button(qtbot):
     aw = setup_tests(qtbot)
 
-    # QTimer.singleShot(5000, interact)
     try:
+        enter()
         fpd_functions.find_circular_centre(aw)
+
     except:
         assert False
     assert True
@@ -46,10 +52,10 @@ def test_circ_center_button(qtbot):
 
 def test_synthetic_aperture_button(qtbot):
     aw = setup_tests(qtbot)
-    # QTimer.singleShot(5000, interact)
+    enter()
     fpd_functions.find_circular_centre(aw)
-    # QTimer.singleShot(500, interact)
     try:
+        enter()
         fpd_functions.remove_aperture(aw)
     except:
         assert False
@@ -58,9 +64,12 @@ def test_synthetic_aperture_button(qtbot):
 
 def test_center_of_mass_button(qtbot):
     aw = setup_tests(qtbot)
+    enter()
     fpd_functions.find_circular_centre(aw)
+    enter()
     fpd_functions.remove_aperture(aw)
     try:
+        enter()
         fpd_functions.centre_of_mass(aw)
     except:
         assert False
@@ -69,9 +78,13 @@ def test_center_of_mass_button(qtbot):
 
 def test_ransac_button(qtbot):
     aw = setup_tests(qtbot)
+    enter()
     fpd_functions.find_circular_centre(aw)
+    enter()
     fpd_functions.remove_aperture(aw)
+    enter()
     fpd_functions.centre_of_mass(aw)
+    enter()
     try:
         fpd_functions.ransac_im_fit(aw)
     except:
@@ -82,6 +95,7 @@ def test_ransac_button(qtbot):
 def test_matching_images_button(qtbot):
     aw = setup_tests(qtbot)
     try:
+        enter()
         phase_correlation_fncts.find_matching_images(aw)
     except:
         assert False
@@ -90,8 +104,10 @@ def test_matching_images_button(qtbot):
 
 def test_phase_correlation(qtbot):
     aw = setup_tests(qtbot)
+    enter()
     phase_correlation_fncts.find_matching_images(aw)
     try:
+        enter()
         phase_correlation_fncts.phase_correlation(aw)
     except:
         assert False
@@ -100,8 +116,10 @@ def test_phase_correlation(qtbot):
 
 def test_disc_edge_sigma(qtbot):
     aw = setup_tests(qtbot)
+    enter()
     phase_correlation_fncts.find_matching_images(aw)
     try:
+        enter()
         phase_correlation_fncts.disc_edge_sigma(aw)
     except:
         assert False
@@ -110,9 +128,38 @@ def test_disc_edge_sigma(qtbot):
 
 def test_virtual_adf(qtbot):
     aw = setup_tests(qtbot)
+    enter()
     fpd_functions.find_circular_centre(aw)
     try:
+        enter()
         virtual_adf.start_vadf(aw)
     except:
         assert False
     assert True
+
+
+def test_plot_vadf(qtbot):
+    aw = setup_tests(qtbot)
+    enter()
+    fpd_functions.find_circular_centre(aw)
+    enter()
+    virtual_adf.start_vadf(aw)
+    try:
+        enter()
+        virtual_adf.plot_vadf(aw)
+    except:
+        assert False
+    assert True
+
+
+def test_annular_slice(qtbot):
+    aw = setup_tests(qtbot)
+    enter()
+    fpd_functions.find_circular_centre(aw)
+    enter()
+    virtual_adf.start_vadf(aw)
+    try:
+        enter()
+        virtual_adf.annular_slice(aw)
+    except:
+        assert True
