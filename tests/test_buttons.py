@@ -13,6 +13,7 @@ import time
 from fpd_explorer.fpd_functions import *
 from fpd_explorer.phase_correlation_fncts import *
 from fpd_explorer.virtual_adf import *
+from fpd_explorer.dpc_explorer import start_dpc
 
 
 def interact():
@@ -21,7 +22,7 @@ def interact():
 
 
 def enter():
-    QTimer.singleShot(250, interact)
+    QTimer.singleShot(300, interact)
 
 
 def setup_tests(qtbot):
@@ -29,13 +30,16 @@ def setup_tests(qtbot):
     qtbot.addWidget(aw)
     logger.setup(aw._ui.log_text, aw)
     config.load_config()
-    #aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
-    #aw._dm3_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
-    #aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
-    #aw._mib_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
+    # aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
+    # aw._dm3_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
+    # aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
+    aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
+
     enter()
     aw._ui.action_hdf5.trigger()
+    enter()
+    aw.load_files()
     return aw
 
 
@@ -88,6 +92,24 @@ def test_ransac_button(qtbot):
     enter()
     try:
         fpd_functions.ransac_im_fit(aw)
+    except:
+        assert False
+    assert True
+
+
+def test_dpc_explorer(qtbot):
+    aw = setup_tests(qtbot)
+    enter()
+    fpd_functions.find_circular_centre(aw)
+    enter()
+    fpd_functions.remove_aperture(aw)
+    enter()
+    fpd_functions.centre_of_mass(aw)
+    enter()
+    fpd_functions.ransac_im_fit(aw)
+    try:
+        enter()
+        start_dpc(aw)
     except:
         assert False
     assert True
