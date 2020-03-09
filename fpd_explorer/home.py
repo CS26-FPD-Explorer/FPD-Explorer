@@ -182,7 +182,7 @@ class ApplicationWindow(QMainWindow):
             return
         # Cherk if Mib exist
         try:
-            mib = self.mib_path
+            mib = self._mib_path
         except AttributeError:
             response = QtWidgets.QMessageBox.warning(
                 self, "Warning",
