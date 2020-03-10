@@ -21,8 +21,16 @@ def interact():
     keyboard.press(Key.enter)
 
 
-def enter():
-    QTimer.singleShot(300, interact)
+def enter(time_before_executing=300):
+    """
+    automates running functions on the UI
+
+    Parameters
+    ----------
+    time_before_executing: time in milliseconds to wait before
+    execution of interact
+    """
+    QTimer.singleShot(time_before_executing, interact)
 
 
 def setup_tests(qtbot):
@@ -32,7 +40,7 @@ def setup_tests(qtbot):
     config.load_config()
     # aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     # aw._dm3_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
-    # aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
+
     aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
 
@@ -109,6 +117,8 @@ def test_dpc_explorer(qtbot):
     fpd_functions.ransac_im_fit(aw)
     try:
         enter()
+        # dpc brings up two input UIs when rotate is true
+        enter(1000)
         start_dpc(aw)
     except:
         assert False
