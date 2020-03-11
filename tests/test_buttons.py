@@ -48,8 +48,8 @@ def setup_tests(qtbot):
     #aw._dm3_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     #aw._mib_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
 
-    #aw.hdf5_path = "/home/ubuntu/example-data/4DSTEM_FeRh_element.hdf5"
-    aw.hdf5_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\4DSTEM_FeRh_element.hdf5"
+    aw.hdf5_path = "/home/ubuntu/example-data/4DSTEM_FeRh_element.hdf5"
+    #aw.hdf5_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\4DSTEM_FeRh_element.hdf5"
     enter()
     aw._ui.action_hdf5.trigger()
     return aw
