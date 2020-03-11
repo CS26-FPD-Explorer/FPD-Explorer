@@ -19,7 +19,7 @@ from PySide2.QtWidgets import (
 )
 
 # FPD Explorer
-from . import config_handler as config
+from .. import config_handler as config
 
 
 class UI_Generator(QtWidgets.QDialog):

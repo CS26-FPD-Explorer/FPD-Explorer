@@ -1,10 +1,10 @@
 
 # FPD Explorer
-from . import logger
-from .logger import Flags
-from .gui_generator import UI_Generator
+from .. import logger
+from ..logger import Flags
 from .custom_fpd_lib import phase_correlation as pc
-from .custom_widgets import LoadingForm, Pop_Up_Widget
+from ..frontend.gui_generator import UI_Generator
+from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
 
 def find_matching_images(ApplicationWindow):

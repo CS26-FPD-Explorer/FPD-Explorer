@@ -3,20 +3,23 @@
 import inspect
 from collections import OrderedDict
 
-import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QMainWindow
 
+# First Party
+import qdarkgraystyle
+
 # FPD Explorer
-from . import logger, fnct_slots, files_fncts
-from . import config_handler as config
+from . import fnct_slots, files_fncts
+from .. import logger
+from .. import config_handler as config
 from .guide import get_guide
-from .logger import Flags
-from .custom_fpd_lib import fpd_processing as fpdp_new
+from ..logger import Flags
 from .custom_widgets import LoadingForm, CustomInputForm
 from .res.ui_homescreen import Ui_MainWindow
+from ..backend.custom_fpd_lib import fpd_processing as fpdp_new
 
 
 class ApplicationWindow(QMainWindow):

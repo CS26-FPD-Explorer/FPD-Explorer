@@ -2,9 +2,9 @@ import fpd
 import scipy as sp
 
 # FPD Explorer
-from .gui_generator import UI_Generator
 from .custom_fpd_lib import dpc_explorer_class as dpc
-from .custom_widgets import Pop_Up_Widget
+from ..frontend.gui_generator import UI_Generator
+from ..frontend.custom_widgets import Pop_Up_Widget
 
 
 def start_dpc(ApplicationWindow):

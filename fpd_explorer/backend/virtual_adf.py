@@ -1,10 +1,10 @@
 # FPD Explorer
 
-from . import logger
-from .logger import Flags
-from .gui_generator import UI_Generator
+from .. import logger
+from ..logger import Flags
 from .custom_fpd_lib import virtual_annular as va
-from .custom_widgets import Pop_Up_Widget
+from ..frontend.gui_generator import UI_Generator
+from ..frontend.custom_widgets import Pop_Up_Widget
 
 VADF = None
 
