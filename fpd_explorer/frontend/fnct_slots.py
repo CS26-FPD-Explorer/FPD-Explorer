@@ -83,3 +83,5 @@ def add_data(self, location, name, data):
         self.ref_input.update({name: data})
     elif "phase" in location:
         self.phase_input.update({name: data})
+    elif "vadf" in location:
+        self.vadf_input.update({name:data})
