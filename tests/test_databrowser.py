@@ -36,19 +36,19 @@ def load_hdf5():
 
 
 def test_load_files(qtbot):
-    aw = load_hdf5(qtbot)
+    aw = load_hdf5()
     assert logger.check_if_all_needed(Flags.files_loaded)
 
 
 def test_load_hdf5(qtbot):
-    aw = load_hdf5(qtbot)
+    aw = load_hdf5()
     assert logger.check_if_all_needed(Flags.files_loaded)
     aw.start_dbrowser()
     assert aw._ui.tabWidget.widget(1).findChild(QtWidgets.QComboBox, "colorMap").currentIndex() == 0
 
 
 def test_load_npz(qtbot):
-    aw = load_hdf5(qtbot)
+    aw = load_hdf5()
 
     aw.npz_path = "/home/ubuntu/example-data/VirtualAnnularImages_20200305_185503.npz"
     #aw.npz_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\VirtualAnnularImages_20200305_185503.npz"
@@ -58,15 +58,15 @@ def test_load_npz(qtbot):
 
 
 def test_init_color_map(qtbot):
-    db = load_hdf5(qtbot)
+    db = load_hdf5()
     assert db._ui.colorMap.count() == 54
 
 
 def test_get_diff(qtbot):
-    db = load_hdf5(qtbot)
+    db = load_hdf5()
     assert db.get_diff() == db._ui.diffractionWidget
 
 
 def test_get_nav(qtbot):
-    db = load_hdf5(qtbot)
+    db = load_hdf5()
     assert db.get_nav() == db._ui.navigationWidget
