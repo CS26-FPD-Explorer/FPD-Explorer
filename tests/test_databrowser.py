@@ -29,7 +29,14 @@ def test_load_files(qtbot):
 
 
 def test_load_hdf5(qtbot):
-    aw = setup_tests(qtbot)
+    aw = ApplicationWindow()
+    qtbot.addWidget(aw)
+    logger.setup(aw._ui.log_text, aw)
+    config.load_config()
+
+    aw.hdf5_path = "/home/ubuntu/example-data/4DSTEM_FeRh_element.hdf5"
+    enter()
+    aw._ui.action_hdf5.trigger()
     assert logger.check_if_all_needed(Flags.files_loaded)
     aw.start_dbrowser()
     assert aw._ui.tabWidget.widget(1).findChild(QtWidgets.QComboBox, "colorMap").currentIndex() == 0
@@ -39,7 +46,7 @@ def test_load_npz(qtbot):
     aw = setup_tests(qtbot)
 
     aw.npz_path = "/home/ubuntu/example-data/VirtualAnnularImages_20200305_185503.npz"
-    #aw.npz_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\VirtualAnnularImages_20200305_185503.npz"
+    # aw.npz_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\VirtualAnnularImages_20200305_185503.npz"
     aw._ui.action_npz.trigger()
 
     assert logger.check_if_all_needed(Flags.npz_loaded)
