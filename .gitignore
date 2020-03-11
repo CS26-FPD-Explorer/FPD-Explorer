@@ -15,7 +15,14 @@ __pycache__/
 # Compiled Documents
 *.pdf
 *.ps
-*ui_*
+ui_*
 
+# Config files
 *.ini
 !default.ini
+
+#Log files
+.log
+
+# Jupyter notebooks
+*.ipynb*

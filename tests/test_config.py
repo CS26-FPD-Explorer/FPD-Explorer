@@ -1,22 +1,14 @@
-import pytest
-import config_handler as config
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+from fpd_explorer import config_handler as config
 import configparser
-import os
-import sys
+
 
 test_file = "test.ini"
 
 
 def test_if_default_exist():
     if os.path.isfile(config.DEFAULT_NAME):
-        assert 1
-    else:
-        assert 0
-
-
-def test_if_normal_exist():
-    config.load_config()
-    if os.path.isfile(config.CONFIGFILE_NAME):
         assert 1
     else:
         assert 0
