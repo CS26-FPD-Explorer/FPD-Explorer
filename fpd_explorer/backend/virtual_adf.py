@@ -38,6 +38,12 @@ def start_vadf(ApplicationWindow):
                     "data": [
                         "multipleinput", list(ApplicationWindow.vadf_input.items()), """`data` 
                         is the data to be processed, as defined in the fpd.fpd_processing.map_image_function"""]}
+                try:
+                    key_add.update({"cyx": ["length 2 iterable", tuple(ApplicationWindow.cyx),
+                                     "Centre y, x pixel cooridinates"]
+                                    })
+                except AttributeError:
+                    pass
                 params = UI_Generator(ApplicationWindow, va.VirtualAnnularImages, key_ignore=["data"], key_add=key_add)
 
                 VADF = va.VirtualAnnularImages(ds, **params.get_result())
