@@ -38,12 +38,13 @@ def setup_tests(qtbot):
     qtbot.addWidget(aw)
     logger.setup(aw._ui.log_text, aw)
     config.load_config()
-    aw.hdf5_path = "/home/ubuntu/example-data/4DSTEM_FeRh_element.hdf5"
+
     aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
 
-    enter()
-    aw._ui.action_hdf5.trigger()
+    #aw._dm3_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
+    #aw._mib_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
+
     enter()
     aw.load_files()
     return aw
