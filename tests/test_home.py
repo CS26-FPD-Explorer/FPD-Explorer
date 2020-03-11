@@ -4,8 +4,8 @@ from PySide2 import QtCore
 from PySide2.QtCore import QTimer, QCoreApplication
 import sys
 import os
-from fpd_explorer.data_browser_explorer import DataBrowserWidget
-from fpd_explorer.home import *
+from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
+from fpd_explorer.frontend.home import *
 sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/../")
 
 
