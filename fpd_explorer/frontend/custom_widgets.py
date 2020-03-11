@@ -4,9 +4,9 @@ import traceback
 from collections import defaultdict
 
 from PySide2 import QtWidgets
-from PySide2.QtCore import Qt, Slot, Signal, QObject, QRunnable, QThreadPool
+from PySide2.QtCore import Qt, Slot, Signal, QObject, QThread, QThreadPool,QObject
 from matplotlib.figure import Figure
-from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout
+from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout, QProgressDialog
 from qtconsole.inprocess import QtInProcessKernelManager
 from qtconsole.rich_ipython_widget import RichIPythonWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -185,12 +185,17 @@ class LoadingForm(QtWidgets.QDialog):
         super(LoadingForm, self).__init__()
         self.v_layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.v_layout)
+        cancel_button = QtWidgets.QPushButton("Cancel")
+        cancel_button.clicked.connect(self.cancel)
+
         self.data_out = defaultdict(list)
         self.threadpool = QThreadPool()
         # self._ui.centerProgress.setMaximum(np.prod(data.shape[:-2]))
         self.nb_threads = nb_bar
         for el in range(nb_bar):
             self.setup_ui(name[el])
+        self.v_layout.addWidget(cancel_button)
+        self.resize(self.width(), self.minimumHeight())
 
     def setup_ui(self, name):
         widget = QtWidgets.QWidget()
@@ -202,6 +207,7 @@ class LoadingForm(QtWidgets.QDialog):
         form.addRow(name, bar)
         widget.setLayout(form)
         self.v_layout.addWidget(widget)
+        
 
     def setup_multi_loading(self, name, fnct, *args, **kwargs):
         worker = GuiUpdater(fnct, name, *args, **kwargs)
@@ -213,7 +219,7 @@ class LoadingForm(QtWidgets.QDialog):
             name = [name]
         for el in range(len(name)):
             self.data_out[name[el]].append(worker)
-        self.threadpool.start(worker)
+        worker.start()
 
     @Slot()
     def set_max(self, obj):
@@ -229,6 +235,11 @@ class LoadingForm(QtWidgets.QDialog):
         return self.data_out[name][-1].signals.progress
 
     @Slot()
+    def cancel(self):
+        return super().done(False)
+
+
+    @Slot()
     def completed(self):
         self.nb_threads -= 1
         if self.nb_threads == 0:
@@ -236,9 +247,6 @@ class LoadingForm(QtWidgets.QDialog):
 
     @Slot(tuple)
     def progress_func(self, obj):
-        print(obj)
-        self.data_out[obj[0]][1].setValue(150)
-        print(self.data_out[obj[0]][1].value())
         self.data_out[obj[0]][1].setValue(self.data_out[obj[0]][1].value() + obj[1])
 
     def get_result(self, name):
@@ -271,7 +279,7 @@ class CustomSignals(QObject):
     maximum = Signal(tuple)
 
 
-class GuiUpdater(QRunnable):
+class GuiUpdater(QThread):
     """
     Worker thread
     """
@@ -294,6 +302,7 @@ class GuiUpdater(QRunnable):
         run the function and return different signals based on the success or failure of the function
         """
         # Retrieve args/kwargs here; and fire processing using them
+        result_val = None
         try:
             result_val = self._fn(
                 *self._args, **self._kwargs
