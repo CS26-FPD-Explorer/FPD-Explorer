@@ -50,4 +50,4 @@ test:
   - source ~/venv/bin/activate
   - cp -v /home/ubuntu/example-data/config.ini .
   - python3 compile_ui.py
-  - xvfb-run pytest
+  - xvfb-run pytest -x
