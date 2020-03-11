@@ -1049,7 +1049,7 @@
   <customwidget>
    <class>CpuFreqGraph</class>
    <extends>QWidget</extends>
-   <header>fpd_explorer.resource_monitor</header>
+   <header>fpd_explorer.frontend.resource_monitor</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

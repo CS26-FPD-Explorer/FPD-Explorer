@@ -2,8 +2,8 @@ import h5py
 from PySide2.QtWidgets import QFileDialog
 
 # FPD Explorer
-from . import logger
-from .logger import Flags
+from .. import logger
+from ..logger import Flags
 
 
 def function_mib(self):
