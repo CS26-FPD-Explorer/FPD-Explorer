@@ -41,15 +41,7 @@ def setup_tests(qtbot):
     logger.setup(aw._ui.log_text, aw)
     config.load_config()
 
-    # pytest.fail()
-    #aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
-    #aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
-
-    #aw._dm3_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.dm3"
-    #aw._mib_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\13_FeRh-Alisa_DW_diff_20um_115C.mib"
-
     aw.hdf5_path = "/home/ubuntu/example-data/4DSTEM_FeRh_element.hdf5"
-    #aw.hdf5_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\4DSTEM_FeRh_element.hdf5"
     enter()
     aw._ui.action_hdf5.trigger()
     return aw
@@ -165,7 +157,7 @@ def test_disc_edge_sigma(qtbot):
     assert True
 
 # requires dm3 and mib (does not run on hf5)
-@pytest.mark.skip()
+@pytest.mark.skip
 def test_virtual_adf(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -178,7 +170,7 @@ def test_virtual_adf(qtbot):
     assert True
 
 # requires dm3 and mib (does not run on hf5)
-@pytest.mark.skip()
+@pytest.mark.skip
 def test_plot_vadf(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -194,7 +186,7 @@ def test_plot_vadf(qtbot):
 
 
 # requires dm3 and mib (does not run on hf5)
-@pytest.mark.skip()
+@pytest.mark.skip
 def test_annular_slice(qtbot):
     aw = setup_tests(qtbot)
     enter()
