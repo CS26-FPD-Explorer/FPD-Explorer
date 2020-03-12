@@ -115,6 +115,9 @@ class ApplicationWindow(QMainWindow):
             Key to look up in the dictionary of guide topics.
         """
         message = QtWidgets.QMessageBox()
+        message.setStyleSheet("Qlabel{font-family:Helvetica;font-size:14px;}")
+        if topic == 'functions':
+            message.setStyleSheet("QLabel{min-width:610px;max-height:690px;}")
         message.setText(get_guide(topic))
         message.setWindowTitle(topic.replace("_", " ").capitalize())
         message.exec()
@@ -247,7 +250,7 @@ class ApplicationWindow(QMainWindow):
         # Obvious values are 1 (no down-sample), 2, 4
         # Assign the down-sampled dataset
         self.ds_sel = self.ds[::real_skip,
-                                ::real_skip, ::recip_skip, ::recip_skip]
+                              ::real_skip, ::recip_skip, ::recip_skip]
 
         loading_widget = LoadingForm(2, ["sum_im", "sum_dif"])
         loading_widget.setup_multi_loading("sum_im", fpdp_new.sum_im, self.ds_sel, 16, 16)
