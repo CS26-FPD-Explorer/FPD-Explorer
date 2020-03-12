@@ -20,10 +20,6 @@ def start_dpc(ApplicationWindow):
     """
     dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
     try:
-        ApplicationWindow.dpc_input.update({"cyx": ApplicationWindow.cyx})
-    except AttributeError:
-        pass
-    try:
         ApplicationWindow.dpc_input.update({"com_yx_beta": ApplicationWindow.com_yx_beta})
     except AttributeError:
         pass
@@ -59,6 +55,12 @@ def start_dpc(ApplicationWindow):
                             [Yy, Yx, Xy, Xx] entered in 1/1000 for for convenience."""],
             """Check if you want to manually set the descan"""
         ]}
+    try:
+        key_add.update({"cyx": ["length 2 iterable", tuple(ApplicationWindow.cyx),
+                                "Centre y, x pixel cooridinates"]
+                        })
+    except AttributeError:
+        pass
 
     params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=[
                           "r_min", "r_max", "median", "flip_y", "flip_x", "ransac"], key_add=key_add)
