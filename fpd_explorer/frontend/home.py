@@ -115,9 +115,9 @@ class ApplicationWindow(QMainWindow):
             Key to look up in the dictionary of guide topics.
         """
         message = QtWidgets.QMessageBox()
-        message.setStyleSheet("Qlabel{font-family:Helvetica;font-size:14px;}")
         if topic == 'functions':
-            message.setStyleSheet("QLabel{min-width:610px;max-height:690px;}")
+            message.setStyleSheet(
+                "QLabel{min-width:610px;max-height:690px;font-size: 12.5px;}")
         message.setText(get_guide(topic))
         message.setWindowTitle(topic.replace("_", " ").capitalize())
         message.exec()
