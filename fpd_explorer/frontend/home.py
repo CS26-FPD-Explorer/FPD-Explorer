@@ -115,7 +115,7 @@ class ApplicationWindow(QMainWindow):
             Key to look up in the dictionary of guide topics.
         """
         message = QtWidgets.QDialog()
-        message.setFixedSize(self.minimumWidth()//2, self.minimumHeight()//1.75)
+        message.setFixedSize(self.minimumWidth()//1.5, self.minimumHeight()//1.25)
         message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint)
                                & ~Qt.WindowContextHelpButtonHint)
         widget = QtWidgets.QTextBrowser()
