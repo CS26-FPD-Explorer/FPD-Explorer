@@ -248,27 +248,6 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
-            <widget class="QPushButton" name="pushButton_4">
-             <property name="font">
-              <font>
-               <pointsize>11</pointsize>
-               <weight>50</weight>
-               <bold>false</bold>
-               <underline>false</underline>
-              </font>
-             </property>
-             <property name="text">
-              <string>Dummy</string>
-             </property>
-             <property name="checkable">
-              <bool>false</bool>
-             </property>
-             <property name="flat">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="0">
             <widget class="QPushButton" name="dbrowser_button">
              <property name="font">
@@ -476,27 +455,6 @@
              </property>
              <property name="text">
               <string>Phase correlation</string>
-             </property>
-             <property name="checkable">
-              <bool>false</bool>
-             </property>
-             <property name="flat">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="2">
-            <widget class="QPushButton" name="pushButton_8">
-             <property name="font">
-              <font>
-               <pointsize>11</pointsize>
-               <weight>50</weight>
-               <bold>false</bold>
-               <underline>false</underline>
-              </font>
-             </property>
-             <property name="text">
-              <string>Dummy</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -878,7 +836,7 @@
      <x>0</x>
      <y>0</y>
      <width>1072</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1083,12 +1041,10 @@
   <tabstop>dm3_line</tabstop>
   <tabstop>plot_vadf_button</tabstop>
   <tabstop>annular_slice_button</tabstop>
-  <tabstop>pushButton_4</tabstop>
   <tabstop>matching_im_button</tabstop>
   <tabstop>npz_line</tabstop>
   <tabstop>make_ref_im_button</tabstop>
   <tabstop>phase_correlation_button</tabstop>
-  <tabstop>pushButton_8</tabstop>
  </tabstops>
  <resources/>
  <connections>
