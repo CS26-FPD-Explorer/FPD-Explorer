@@ -4,9 +4,9 @@ import inspect
 from collections import OrderedDict
 
 import qdarkgraystyle
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtGui
 from fpd.fpd_file import MerlinBinary
-from PySide2.QtCore import Slot
+from PySide2.QtCore import Slot, Qt
 from PySide2.QtWidgets import QMainWindow
 
 # FPD Explorer
@@ -114,11 +114,19 @@ class ApplicationWindow(QMainWindow):
         topic : str
             Key to look up in the dictionary of guide topics.
         """
-        message = QtWidgets.QMessageBox()
-        if topic == 'functions':
-            message.setStyleSheet(
-                "QLabel{min-width:610px;max-height:690px;font-size: 12.5px;}")
-        message.setText(get_guide(topic))
+        message = QtWidgets.QDialog()
+        message.setFixedSize(self.minimumWidth()//2, self.minimumHeight()//1.75)
+        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint)
+                               & ~Qt.WindowContextHelpButtonHint)
+        widget = QtWidgets.QTextBrowser()
+        widget.setOpenExternalLinks(True)
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(widget)
+        message.setLayout(layout)
+        widget.setHtml(get_guide(topic))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        widget.setFont(font)
         message.setWindowTitle(topic.replace("_", " ").capitalize())
         message.exec()
 
