@@ -472,7 +472,7 @@ class UI_Generator(QtWidgets.QDialog):
         all_widget.sort(key=lambda x: x[2], reverse=True)
         self.last_colums = []
         self.number_space, self.last_n = self._create_colums(all_widget, self.grid_layout)
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Save |
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok |
                                      QDialogButtonBox.Cancel |
                                      QDialogButtonBox.RestoreDefaults)
         buttonBox.accepted.connect(self._save)

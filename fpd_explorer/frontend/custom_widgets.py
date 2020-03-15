@@ -54,10 +54,10 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self.main_widget = QtWidgets.QWidget()
         # self.main_window.setCentralWidget(self.main_widget)
 
-        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
-        buttonBox.accepted.connect(lambda: self.application_window._ui.tabWidget.tabCloseRequested.emit(
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Close)
+        buttonBox.rejected.connect(lambda: self.application_window._ui.tabWidget.tabCloseRequested.emit(
             self.application_window._ui.tabWidget.currentIndex()))
-        buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setDefault(True)
+        buttonBox.button(QtWidgets.QDialogButtonBox.Close).setDefault(True)
 
         self.gridLayout = QVBoxLayout()
         self.gridLayout.addWidget(self.main_window)
