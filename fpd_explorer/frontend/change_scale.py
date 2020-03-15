@@ -18,6 +18,7 @@
 
 import numpy as np
 
+
 class change_scale(object):
     def __init__(self, cbar, mappable):
         self.cbar = cbar

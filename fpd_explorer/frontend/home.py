@@ -50,12 +50,11 @@ class ApplicationWindow(QMainWindow):
         self._setup_actions()
         self.app = app
         self.dark_mode_config = dark_mode_config
-        try:
-            import qdarkgraystyle
+        if dark_mode_config is not None:
             self._ui.dark_mode_button.setChecked(dark_mode_config)
-        except ImportError:
+        else:
             self._ui.dark_mode_button.deleteLater()
-        
+
         self._last_path = config.get_config("file_path")
         self._files_loaded = False
         self.data_browser = None
@@ -157,6 +156,7 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def change_color_mode(self):
+        import qdarkgraystyle
         dark_mode_config = self._ui.dark_mode_button.isChecked()
         if self.app is not None:
             print(f"Changing theme to {dark_mode_config}")

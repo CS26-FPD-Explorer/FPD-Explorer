@@ -85,7 +85,7 @@ if __name__ == "__main__":
             plt.style.use('dark_background')
             fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
     except ImportError:
-        pass
+        dark_mode_config = None
     window = ApplicationWindow(fpd_app, dark_mode_config)
     logger.setup(window._ui.log_text, window)
     window.show()

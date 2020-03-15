@@ -17,7 +17,6 @@
 # along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
 
 # FPD Explorer
-
 from .. import logger
 from ..logger import Flags
 from .custom_fpd_lib import ransac_tools as rt
