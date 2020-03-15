@@ -9,7 +9,7 @@ if os.path.isfile("requirements.txt"):
         install_requires = f.read().splitlines()
 
 setuptools.setup(
-    name="fpd-explorer",
+    name="FPD-explorer",
     version="1.0",
     author="Bruce Kerr,Ewan Pandelus,Florent Audonnet, Michal Broos,Ruize Shen ",
     author_email="author@example.com",
