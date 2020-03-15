@@ -118,31 +118,31 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
     different effect on the output.
     <br><br> A standard work flow would look like this - <b>Find
     circular center->Synthetic aperture->Center of mass->Ransac tools -> DPC Explorer</b></p>
-    
+
     <p><strong><u>Matching Images</u></strong></p>
-    
+
     <p><b>Matching Images</b> requires only the files to be loaded to run this function.</p>
 
     <p><strong><u>Disc Edge Sigma</u></strong></p>
-    
-    <p><b>Disc Edge Sigma</b> requires <b>Matching Images</b> to have been run before 
+
+    <p><b>Disc Edge Sigma</b> requires <b>Matching Images</b> to have been run before
     this function can be used.</p>
 
     <p><strong><u>Make Ref Im</u></strong></p>
-     
-     <p>The <b>Make Ref Im</b> function requires <b>Disc Edge Sigma</b> to have been run before 
+
+     <p>The <b>Make Ref Im</b> function requires <b>Disc Edge Sigma</b> to have been run before
     it can be run.</p>
 
     <p><strong><u>Phase Correlation</u></strong></p>
-    
+
     <p><b>Phase Correlation</b> requires only the files to be loaded to run this function.
-    <br>This function is also requires a lot of computational power, 
+    <br>This function is also requires a lot of computational power,
     so the software may appear slow
     when this function is run.</p>
 
     <p><strong><u>Virtual ADF</u></strong></p>
 
-    <p> The <b>Virtual ADF</b> function requires only <b>Find circular center</b> 
+    <p> The <b>Virtual ADF</b> function requires only <b>Find circular center</b>
     to be run before it can be run.
     <br>It can also be used when loading a <b>npz file/configuration.</b>
 
@@ -151,9 +151,9 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
     <p><b>Plotting VADF</b> requires  <b>Virtual ADF</b> to be initialised before it can be run.
 
     <p><strong><u>Annular Slice</u></strong></p>
-    
-    <p>The <b>Annular Slice</b> function requires  <b>Virtual ADF</b> 
-    to be initalised before it can be run.
+
+    <p>The <b>Annular Slice</b> function requires  <b>Virtual ADF</b>
+    to be initialised before it can be run.
      """
 
 navigating_and_loading = """
