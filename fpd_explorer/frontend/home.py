@@ -25,9 +25,6 @@ from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QMainWindow
 
-# First Party
-import qdarkgraystyle
-
 # FPD Explorer
 from . import fnct_slots, files_fncts
 from .. import logger
@@ -53,7 +50,12 @@ class ApplicationWindow(QMainWindow):
         self._setup_actions()
         self.app = app
         self.dark_mode_config = dark_mode_config
-        self._ui.dark_mode_button.setChecked(dark_mode_config)
+        try:
+            import qdarkgraystyle
+            self._ui.dark_mode_button.setChecked(dark_mode_config)
+        except ImportError:
+            self._ui.dark_mode_button.deleteLater()
+        
         self._last_path = config.get_config("file_path")
         self._files_loaded = False
         self.data_browser = None

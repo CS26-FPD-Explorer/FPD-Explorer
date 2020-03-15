@@ -28,7 +28,6 @@ import matplotlib.style
 from PySide2 import QtWidgets
 
 # First Party
-import qdarkgraystyle
 import fpd_explorer.config_handler as config
 from fpd_explorer import logger
 from fpd_explorer.frontend.home import ApplicationWindow
@@ -80,9 +79,13 @@ if __name__ == "__main__":
     config.load_config()
     fpd_app = QtWidgets.QApplication()
     dark_mode_config = config.get_config("dark_mode")
-    if dark_mode_config:
-        plt.style.use('dark_background')
-        fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+    try:
+        import qdarkgraystyle
+        if dark_mode_config:
+            plt.style.use('dark_background')
+            fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+    except ImportError:
+        pass
     window = ApplicationWindow(fpd_app, dark_mode_config)
     logger.setup(window._ui.log_text, window)
     window.show()
