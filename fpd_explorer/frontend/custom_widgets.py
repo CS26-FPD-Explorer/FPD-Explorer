@@ -4,9 +4,9 @@ import traceback
 from collections import defaultdict
 
 from PySide2 import QtWidgets
-from PySide2.QtCore import Qt, Slot, Signal, QObject, QThread, QThreadPool,QObject
+from PySide2.QtCore import Qt, Slot, Signal, QObject, QThread, QThreadPool
 from matplotlib.figure import Figure
-from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout, QProgressDialog
+from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout
 from qtconsole.inprocess import QtInProcessKernelManager
 from qtconsole.rich_ipython_widget import RichIPythonWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -207,7 +207,6 @@ class LoadingForm(QtWidgets.QDialog):
         form.addRow(name, bar)
         widget.setLayout(form)
         self.v_layout.addWidget(widget)
-        
 
     def setup_multi_loading(self, name, fnct, *args, **kwargs):
         worker = GuiUpdater(fnct, name, *args, **kwargs)
@@ -237,7 +236,6 @@ class LoadingForm(QtWidgets.QDialog):
     @Slot()
     def cancel(self):
         return super().done(False)
-
 
     @Slot()
     def completed(self):

@@ -113,7 +113,6 @@ def phase_correlation(ApplicationWindow):
         except AttributeError:
             pass
 
-
         params = UI_Generator(ApplicationWindow, pc.phase_correlation, key_add=key_add)
 
         if not params.exec():

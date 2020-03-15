@@ -29,18 +29,18 @@ def start_vadf(ApplicationWindow):
                 if not params.exec():
                     # Procedure was cancelled so just give up
                     return
-                ApplicationWindow.vadf_input.update({"ds":ds})
+                ApplicationWindow.vadf_input.update({"ds": ds})
                 try:
                     ApplicationWindow.vadf_input.update({"com_yx": ApplicationWindow.com_yx})
                 except AttributeError:
                     pass
                 key_add = {
                     "data": [
-                        "multipleinput", list(ApplicationWindow.vadf_input.items()), """`data` 
+                        "multipleinput", list(ApplicationWindow.vadf_input.items()), """`data`
                         is the data to be processed, as defined in the fpd.fpd_processing.map_image_function"""]}
                 try:
                     key_add.update({"cyx": ["length 2 iterable", tuple(ApplicationWindow.cyx),
-                                     "Centre y, x pixel cooridinates"]
+                                            "Centre y, x pixel cooridinates"]
                                     })
                 except AttributeError:
                     pass
@@ -60,6 +60,7 @@ def plot_vadf(ApplicationWindow):
             VADF.plot(nav_im=ApplicationWindow.sum_dif, widget=vadf_explorer)
         else:
             VADF.plot(widget=vadf_explorer)
+
 
 def annular_slice(ApplicationWindow):
     if logger.check_if_all_needed(Flags.vadf_init):

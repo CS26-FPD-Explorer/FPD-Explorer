@@ -30,7 +30,7 @@ def find_circular_centre(ApplicationWindow):
         key_add = {
             "im": [
                 "multipleinput", list(ApplicationWindow.circular_input.items()), "Image data"]
-            }
+        }
 
         params = UI_Generator(ApplicationWindow, fpdp.find_circ_centre, key_add=key_add)
 
@@ -59,9 +59,16 @@ def remove_aperture(ApplicationWindow):
 
     if logger.check_if_all_needed(Flags.circular_center):
         key_add = {
-            "rio": ["length2iterable", (0, ApplicationWindow.radius+8), "Inner and outer radii [ri,ro) in a number of forms"],
-            "cyx": ["length 2 iterable", tuple(ApplicationWindow.cyx), "Centre y, x pixel cooridinates"]
-        }
+            "rio": [
+                "length2iterable",
+                (0,
+                 ApplicationWindow.radius + 8),
+                "Inner and outer radii [ri,ro) in a number of forms"],
+            "cyx": [
+                "length 2 iterable",
+                tuple(
+                    ApplicationWindow.cyx),
+                "Centre y, x pixel cooridinates"]}
         params = UI_Generator(ApplicationWindow, fpdp.synthetic_aperture, key_ignore=["shape"], key_add=key_add)
         if not params.exec():
             # Procedure was cancelled so just give up

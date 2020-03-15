@@ -4,9 +4,9 @@ import inspect
 from collections import OrderedDict
 
 import qdarkgraystyle
-from PySide2 import QtWidgets, QtGui
+from PySide2 import QtGui, QtWidgets
 from fpd.fpd_file import MerlinBinary
-from PySide2.QtCore import Slot, Qt
+from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QMainWindow
 
 # FPD Explorer
@@ -115,9 +115,8 @@ class ApplicationWindow(QMainWindow):
             Key to look up in the dictionary of guide topics.
         """
         message = QtWidgets.QDialog()
-        message.setFixedSize(self.minimumWidth()//1.5, self.minimumHeight()//1.25)
-        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint)
-                               & ~Qt.WindowContextHelpButtonHint)
+        message.setFixedSize(self.minimumWidth() // 1.5, self.minimumHeight() // 1.25)
+        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint)& ~Qt.WindowContextHelpButtonHint)
         widget = QtWidgets.QTextBrowser()
         widget.setOpenExternalLinks(True)
         layout = QtWidgets.QVBoxLayout()
@@ -257,10 +256,8 @@ class ApplicationWindow(QMainWindow):
 
         self.ds = self.mb.get_memmap()
         real_skip, recip_skip = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
-                                                text_y="Amount to skip for Diffraction Image")  # Check what is the maximum value
-        # real_skip, an integer, real_skip=1 loads all pixels, real_skip=n an even integer downsamples
-        # Obvious values are 1 (no down-sample), 2, 4
-        # Assign the down-sampled dataset
+                                                text_y="Amount to skip for Diffraction Image")  
+        
         self.ds_sel = self.ds[::real_skip,
                               ::real_skip, ::recip_skip, ::recip_skip]
 

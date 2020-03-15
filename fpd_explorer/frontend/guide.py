@@ -21,7 +21,7 @@ live_coding = """<p><strong><u>Information</u></strong></p>
     <li>%/save [filename] [startLine]-[endLine]</li>
     <li>%/load [filename]</li>
     <li>SHIFT-ENTER to run cell</li>
-    <li>More commands can be found at : 
+    <li>More commands can be found at :
     <a href="https://ipython.readthedocs.io/en/stable/interactive/magics.html"> Line magic</a></li>
     </ul>
     <p><strong><u>Important FPD-Explorer commands</u></strong></p>
@@ -64,7 +64,7 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
 
     <p>To use Data Browser, look for the <b>DataBrowser</b>
     button underneath the <b>Functions</b> heading in the top
-    right of the user interface. 
+    right of the user interface.
     <br>Click this button and the DataBrowser
     tab will open.
     <br>On the left hand side will be the Navigation image and on
@@ -84,7 +84,7 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
 
     <p>To use the <b>Find circular center</b> function, navigate to the
     <b>Find circular center button</b> under the <b>functions</b> heading,
-    and click on it. 
+    and click on it.
     <br>This will bring up a form with all of the available parameters,
     change them to your liking, these will save for future use and if you want it to
     return to the default values, click <b>restore defaults</b>.
@@ -126,13 +126,13 @@ navigating_and_loading = """
     You can also use the buttons in the main window.<br>
     A file browser will pop-up,
     click on the file you want to load and click
-    <b>Open</b>. 
+    <b>Open</b>.
     <br>Once all desired files have been opened,
     click on the <b>Load</b> button.</p>
     <p>A window will pop up asking you for the down sampling rate for
     <b>Diffraction Image</b> and <b>Navigation Image</b>.
     <br>Increasing this value will allow for faster load speeds but lower
-    quality of data to work with. 
+    quality of data to work with.
     <br>Increase or decrease this value by using the
     up and down buttons to the right of the box which holds the value 2^3.</p>
 
@@ -147,7 +147,7 @@ navigating_and_loading = """
     to remain but you want the tab to be removed, either click the red cross on the
     tab or click the <b>OK</b>.</p>
     <p>If you wish to navigate through the tabs the left and right arrow keys can be used.</p>
-    
+
     <p><strong><u>Workflow help</u></strong></p>
 
     <p>The workflow help subsection is used to help the user.
