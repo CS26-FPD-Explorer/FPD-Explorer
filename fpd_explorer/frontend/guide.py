@@ -13,7 +13,7 @@ def get_guide(topic):
 
 live_coding = """<p><strong><u>Information</u></strong></p>
     <p>Live Coding can be accessed through <b>Explorer</b>, <b>Live Coding</b> or using CTRL-I
-    <br>It consist of a ipython shell that behave like any other python shell
+    <br>It consists of a ipython shell that behaves like any other python shell
     <br>However it also has access to the application data using <b>fpd_app</b>.
     <br>With this you can use this shell as a jupyter notebook.</p>
     <p><strong><u>Important Ipython commands</u></strong></p>
@@ -25,9 +25,9 @@ live_coding = """<p><strong><u>Information</u></strong></p>
     <a href="https://ipython.readthedocs.io/en/stable/interactive/magics.html"> Line magic</a></li>
     </ul>
     <p><strong><u>Important FPD-Explorer commands</u></strong></p>
-    <p>This command allow the user to add some dataset to a specific button to use it with the GUI
+    <p>This command allows the user to add some dataset to a specific button to use it with the GUI
     <br><b>fpd_app.add_data([location], [name], [data])</b><br>
-    <br><b>[location]</b> correspond to which button you want to add an option. It can be:
+    <br><b>[location]</b> corresponds to which button you want to add an option. It can be:
     <ul>
     <li>dpc : for adding to DPC Explorer</li>
     <li>circular : for adding to Find Circular Center</li>
@@ -39,8 +39,8 @@ live_coding = """<p><strong><u>Information</u></strong></p>
     <li>phase : for adding to Phase Correlation</li>
     <li>vadf : for adding to Virtual ADF</li>
     </ul>
-    <p><b>[name]</b> correspond to the name you want the dataset to appear
-    <br><b>[data]</b> correspond to the variable name under which the dataset is loaded</p>
+    <p><b>[name]</b> corresponds to the name you want the dataset to appear
+    <br><b>[data]</b> corresponds to the variable name under which the dataset is loaded</p>
     <br>"""
 
 about_software = """<p><strong><u>About the software</u></strong></p>
@@ -77,7 +77,7 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
     to the right of <b>XSize</b> and <b>YSize</b> located above navigation image.</p>
     <p>If you wish to change the colour map of the Diffraction image,
     above the image there is a drop
-    down menu with all of the different colour patterns, click on the one you want of to
+    down menu with all of the different colour patterns, click on the one you want to
     change the colour pattern.</p>
 
     <p><strong><u>Circular Center</u></strong></p>
@@ -100,7 +100,7 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
     <p><strong><u>Center of Mass</u></strong></p>
 
     <p>The <b>Center of Mass</b> function requires the
-    <b>Remove Aperture</b> functions to have
+    <b>Synthetic Aperture</b> function to have
     been calculated before using this function. </p>
     <p> Once clicked, input the specific parameters you want and click <b>OK</b>,
     this will calculate the center of mass based on the previous data and the files provided
@@ -108,14 +108,53 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
 
     <p><strong><u>Ransac Tools</u></strong></p>
 
-    <p>The <b>Ransac Tools</b> function must have center
-    of mass ran before it can output data.</p>
+    <p>The <b>Ransac Tools</b> function must have <b>Center
+    of mass</b> run, before it can output data.</p>
 
     <p><strong><u>DPC Explorer</u></strong></p>
 
-    <p>DPC Explorer will output different data depending
+    <p><b>DPC</b> Explorer will output different data depending
     on what is run before, as certain parameters will have a
-    different effect on the output.</p>"""
+    different effect on the output.
+    <br><br> A standard work flow would look like this - <b>Find
+    circular center->Synthetic aperture->Center of mass->Ransac tools -> DPC Explorer</b></p>
+    
+    <p><strong><u>Matching Images</u></strong></p>
+    
+    <p><b>Matching Images</b> requires only the files to be loaded to run this function.</p>
+
+    <p><strong><u>Disc Edge Sigma</u></strong></p>
+    
+    <p><b>Disc Edge Sigma</b> requires <b>Matching Images</b> to have been run before 
+    this function can be used.</p>
+
+    <p><strong><u>Make Ref Im</u></strong></p>
+     
+     <p>The <b>Make Ref Im</b> function requires <b>Disc Edge Sigma</b> to have been run before 
+    it can be run.</p>
+
+    <p><strong><u>Phase Correlation</u></strong></p>
+    
+    <p><b>Phase Correlation</b> requires only the files to be loaded to run this function.
+    <br>This function is also requires a lot of computational power, 
+    so the software may appear slow
+    when this function is run.</p>
+
+    <p><strong><u>Virtual ADF</u></strong></p>
+
+    <p> The <b>Virtual ADF</b> function requires only <b>Find circular center</b> 
+    to be run before it can be run.
+    <br>It can also be used when loading a <b>npz file/configuration.</b>
+
+    <p><strong><u>Plot VADF</u></strong></p>
+
+    <p><b>Plotting VADF</b> requires  <b>Virtual ADF</b> to be initialised before it can be run.
+
+    <p><strong><u>Annular Slice</u></strong></p>
+    
+    <p>The <b>Annular Slice</b> function requires  <b>Virtual ADF</b> 
+    to be initalised before it can be run.
+     """
 
 navigating_and_loading = """
     <p><strong><u>Loading files</u></strong></p>
