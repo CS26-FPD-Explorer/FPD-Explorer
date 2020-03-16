@@ -116,7 +116,8 @@ class ApplicationWindow(QMainWindow):
         """
         message = QtWidgets.QDialog()
         message.setFixedSize(self.minimumWidth() // 1.5, self.minimumHeight() // 1.25)
-        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint)& ~Qt.WindowContextHelpButtonHint)
+        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint)
+                               & ~Qt.WindowContextHelpButtonHint)
         widget = QtWidgets.QTextBrowser()
         widget.setOpenExternalLinks(True)
         layout = QtWidgets.QVBoxLayout()
@@ -256,8 +257,8 @@ class ApplicationWindow(QMainWindow):
 
         self.ds = self.mb.get_memmap()
         real_skip, recip_skip = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
-                                                text_y="Amount to skip for Diffraction Image")  
-        
+                                                text_y="Amount to skip for Diffraction Image")
+
         self.ds_sel = self.ds[::real_skip,
                               ::real_skip, ::recip_skip, ::recip_skip]
 
