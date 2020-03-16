@@ -5,7 +5,7 @@ A GUI visualizer for the FPD library
 ## Getting started
 
 A Python 3 installation is needed to run this program  
-Data from a [STEM](https://en.wikipedia.org/wiki/Scanning_transmission_electron_microscopy) microscope is needed to use the full capabilities of this program
+Data from a [STEM](https://en.wikipedia.org/wiki/Scanning_transmission_electron_microscopy) microscope is needed to make full use of the program's capabilities
 
 ### Installing
 
@@ -57,6 +57,6 @@ This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.
 ## Acknowledgments
 
 * [FPD library](https://gitlab.com/fpdpy/fpd) and its developer for providing the code needed to analyse the data
-* University of Glasgow School of Physics for giving us this project to develop especially [Dr Damien McGrouther](mailto:Damien.McGrouther@glasgow.ac.uk) and [Dr Trevor Almeida](mailto:Trevor.Almeida@glasgow.ac.uk)
-* University of Glasgow School of Computer Science for providing the course without which such a project would not have been doable 
-* [Justyna Toporkiewicz](mailto:2270645t@student.gla.ac.uk) for being our coach and helping us during this project
+* University of Glasgow School of Physics & Astronomy for giving us this project to develop, especially [Dr Damien McGrouther](mailto:Damien.McGrouther@glasgow.ac.uk) and [Dr Trevor Almeida](mailto:Trevor.Almeida@glasgow.ac.uk)
+* University of Glasgow School of Computing Science for providing the courses without which this project would not have been possible
+* [Justyna Toporkiewicz](mailto:2270645t@student.gla.ac.uk) for being our coach and helping us during the development
