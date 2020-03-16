@@ -116,8 +116,8 @@ class ApplicationWindow(QMainWindow):
         """
         message = QtWidgets.QDialog()
         message.setFixedSize(self.minimumWidth() // 1.5, self.minimumHeight() // 1.25)
-        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint)
-                               & ~Qt.WindowContextHelpButtonHint)
+        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint) &
+                               ~Qt.WindowContextHelpButtonHint)
         widget = QtWidgets.QTextBrowser()
         widget.setOpenExternalLinks(True)
         layout = QtWidgets.QVBoxLayout()
