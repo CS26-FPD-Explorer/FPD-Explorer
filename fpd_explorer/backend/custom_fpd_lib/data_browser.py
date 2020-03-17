@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 from distutils.version import LooseVersion
-from fpd_explorer.change_scale import change_scale
+from ...frontend.change_scale import change_scale
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np

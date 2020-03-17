@@ -6,14 +6,14 @@ import traceback
 from datetime import datetime
 
 import matplotlib as plt
-import qdarkgraystyle
 import matplotlib.style
 from PySide2 import QtWidgets
 
 # First Party
+import qdarkgraystyle
 import fpd_explorer.config_handler as config
 from fpd_explorer import logger
-from fpd_explorer.home import ApplicationWindow
+from fpd_explorer.frontend.home import ApplicationWindow
 
 plt.use('Qt5Agg')
 

@@ -6,7 +6,7 @@ import subprocess
 from os import walk
 
 f = []
-for (dirpath, dirnames, filenames) in walk("./fpd_explorer/res/"):
+for (dirpath, dirnames, filenames) in walk("./fpd_explorer/frontend/res/"):
     f.extend([os.path.join(*dirpath.split("/"), s) for s in filenames])
 tmp = [el for el in f if el[-3:] == ".ui"]
 print(f"Found {len(tmp)} files: Compiling.....")

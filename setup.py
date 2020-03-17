@@ -3,13 +3,13 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-install_requires = [] 
+install_requires = []
 if os.path.isfile("requirements.txt"):
     with open(requirementPath) as f:
         install_requires = f.read().splitlines()
 
 setuptools.setup(
-    name="fpd-explorer",  
+    name="fpd-explorer",
     version="1.0",
     author="Bruce Kerr,Ewan Pandelus,Florent Audonnet, Michal Broos,Ruize Shen ",
     author_email="author@example.com",

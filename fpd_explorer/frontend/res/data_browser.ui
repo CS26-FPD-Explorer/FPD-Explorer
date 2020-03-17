@@ -196,7 +196,7 @@
   <customwidget>
    <class>MyMplCanvas</class>
    <extends>QWidget</extends>
-   <header>fpd_explorer.custom_widgets</header>
+   <header>fpd_explorer.frontend.custom_widgets</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

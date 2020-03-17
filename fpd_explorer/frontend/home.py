@@ -2,21 +2,23 @@
 import inspect
 from collections import OrderedDict
 
-import qdarkgraystyle
 from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QMainWindow
 
+# First Party
+import qdarkgraystyle
+
 # FPD Explorer
-from . import logger, fnct_slots, files_fncts, virtual_adf, dpc_explorer, fpd_functions
-from . import config_handler as config
-from . import data_browser_explorer, phase_correlation_fncts
+from . import fnct_slots, files_fncts
+from .. import logger
+from .. import config_handler as config
 from .guide import get_guide
-from .logger import Flags
-from .custom_fpd_lib import fpd_processing as fpdp_new
+from ..logger import Flags
 from .custom_widgets import LoadingForm, CustomInputForm
 from .res.ui_homescreen import Ui_MainWindow
+from ..backend.custom_fpd_lib import fpd_processing as fpdp_new
 
 
 class ApplicationWindow(QMainWindow):
@@ -97,6 +99,12 @@ class ApplicationWindow(QMainWindow):
             'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
             'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
         self.cmaps['Cyclic'] = ['twilight', 'twilight_shifted', 'hsv']
+        self.cmaps['Qualitative'] = ['Pastel1', 'Pastel2', 'Paired', 'Accent',
+                                     'Dark2', 'Set1', 'Set2', 'Set3',
+                                     'tab10', 'tab20', 'tab20b', 'tab20c']
+        self.cmaps['Miscellaneous'] = ['flag', 'prism', 'ocean', 'gist_earth', 'terrain', 'gist_stern',
+                                       'gnuplot', 'gnuplot2', 'CMRmap', 'cubehelix', 'brg',
+                                       'gist_rainbow', 'rainbow', 'jet', 'nipy_spectral', 'gist_ncar']
 
     @Slot()
     def guide_me(self, topic):
@@ -178,7 +186,7 @@ class ApplicationWindow(QMainWindow):
         x_value = None
         y_value = None
         if logger.check_if_all_needed(Flags.hdf5_usage, display=False):
-            logger.log("Files Loaded correctly", Flags.files_loaded)
+            logger.log("Files loaded correctly", Flags.files_loaded)
             return
         # Cherk if Mib exist
         try:
@@ -247,7 +255,7 @@ class ApplicationWindow(QMainWindow):
         self.sum_dif = loading_widget.get_result("sum_dif")
         self.sum_im = loading_widget.get_result("sum_im")
         self._files_loaded = True
-        logger.log("Files Loaded correctly", Flags.files_loaded)
+        logger.log("Files loaded correctly", Flags.files_loaded)
 
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
         """

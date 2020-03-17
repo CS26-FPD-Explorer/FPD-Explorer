@@ -23,3 +23,6 @@ ui_*
 
 #Log files
 .log
+
+# Jupyter notebooks
+*.ipynb*
