@@ -1,3 +1,20 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
 
 # Standard Library
 import inspect
@@ -7,9 +24,6 @@ from PySide2 import QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QMainWindow
-
-# First Party
-import qdarkgraystyle
 
 # FPD Explorer
 from . import fnct_slots, files_fncts
@@ -36,7 +50,11 @@ class ApplicationWindow(QMainWindow):
         self._setup_actions()
         self.app = app
         self.dark_mode_config = dark_mode_config
-        self._ui.dark_mode_button.setChecked(dark_mode_config)
+        if dark_mode_config is not None:
+            self._ui.dark_mode_button.setChecked(dark_mode_config)
+        else:
+            self._ui.dark_mode_button.deleteLater()
+
         self._last_path = config.get_config("file_path")
         self._files_loaded = False
         self.data_browser = None
@@ -138,6 +156,7 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def change_color_mode(self):
+        import qdarkgraystyle
         dark_mode_config = self._ui.dark_mode_button.isChecked()
         if self.app is not None:
             print(f"Changing theme to {dark_mode_config}")
