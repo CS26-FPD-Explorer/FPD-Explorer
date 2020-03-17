@@ -117,8 +117,6 @@ def test_dpc_explorer(qtbot):
     fpd_functions.remove_aperture(aw)
     enter()
     fpd_functions.centre_of_mass(aw)
-    enter()
-    fpd_functions.ransac_im_fit(aw)
     try:
         enter()
         # dpc brings up two input UIs when rotate is true
