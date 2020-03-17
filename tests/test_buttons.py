@@ -21,6 +21,7 @@ import pytest
 def interact():
     keyboard = Controller()
     keyboard.press(Key.enter)
+    keyboard.release(Key.enter)
 
 
 def enter(time_before_executing=300):
@@ -41,9 +42,10 @@ def setup_tests(qtbot):
     logger.setup(aw._ui.log_text, aw)
     config.load_config()
 
-    aw.hdf5_path = "/home/ubuntu/example-data/4DSTEM_FeRh_element.hdf5"
+    aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
+    aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"
     enter()
-    aw._ui.action_hdf5.trigger()
+    aw.load_files()
     return aw
 
 
