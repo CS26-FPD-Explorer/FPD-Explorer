@@ -92,7 +92,7 @@ def test_center_of_mass_button(qtbot):
         assert False
     assert True
 
-
+@pytest.mark.skip
 def test_ransac_button(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -140,7 +140,6 @@ def test_matching_images_button(qtbot):
 
 
 # test passes locally, runner does not have enough ram to run on hdf5 (no skipping)
-@pytest.mark.skip
 def test_phase_correlation(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -165,7 +164,6 @@ def test_disc_edge_sigma(qtbot):
     assert True
 
 # requires dm3 and mib (does not run on hf5)
-@pytest.mark.skip
 def test_virtual_adf(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -178,7 +176,6 @@ def test_virtual_adf(qtbot):
     assert True
 
 # requires dm3 and mib (does not run on hf5)
-@pytest.mark.skip
 def test_plot_vadf(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -194,7 +191,6 @@ def test_plot_vadf(qtbot):
 
 
 # requires dm3 and mib (does not run on hf5)
-@pytest.mark.skip
 def test_annular_slice(qtbot):
     aw = setup_tests(qtbot)
     enter()
