@@ -1,10 +1,28 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 # Standard Library
 import sys
 import traceback
 from collections import defaultdict
 
 from PySide2 import QtWidgets
-from PySide2.QtCore import Qt, Slot, Signal, QObject, QRunnable, QThreadPool
+from PySide2.QtCore import Qt, Slot, Signal, QObject, QThread, QThreadPool
 from matplotlib.figure import Figure
 from PySide2.QtWidgets import QDockWidget, QMainWindow, QVBoxLayout
 from qtconsole.inprocess import QtInProcessKernelManager
@@ -54,10 +72,10 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self.main_widget = QtWidgets.QWidget()
         # self.main_window.setCentralWidget(self.main_widget)
 
-        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
-        buttonBox.accepted.connect(lambda: self.application_window._ui.tabWidget.tabCloseRequested.emit(
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Close)
+        buttonBox.rejected.connect(lambda: self.application_window._ui.tabWidget.tabCloseRequested.emit(
             self.application_window._ui.tabWidget.currentIndex()))
-        buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setDefault(True)
+        buttonBox.button(QtWidgets.QDialogButtonBox.Close).setDefault(True)
 
         self.gridLayout = QVBoxLayout()
         self.gridLayout.addWidget(self.main_window)
@@ -185,12 +203,17 @@ class LoadingForm(QtWidgets.QDialog):
         super(LoadingForm, self).__init__()
         self.v_layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.v_layout)
+        cancel_button = QtWidgets.QPushButton("Cancel")
+        cancel_button.clicked.connect(self.cancel)
+
         self.data_out = defaultdict(list)
         self.threadpool = QThreadPool()
         # self._ui.centerProgress.setMaximum(np.prod(data.shape[:-2]))
         self.nb_threads = nb_bar
         for el in range(nb_bar):
             self.setup_ui(name[el])
+        self.v_layout.addWidget(cancel_button)
+        self.resize(self.width(), self.minimumHeight())
 
     def setup_ui(self, name):
         widget = QtWidgets.QWidget()
@@ -213,7 +236,7 @@ class LoadingForm(QtWidgets.QDialog):
             name = [name]
         for el in range(len(name)):
             self.data_out[name[el]].append(worker)
-        self.threadpool.start(worker)
+        worker.start()
 
     @Slot()
     def set_max(self, obj):
@@ -229,6 +252,10 @@ class LoadingForm(QtWidgets.QDialog):
         return self.data_out[name][-1].signals.progress
 
     @Slot()
+    def cancel(self):
+        return super().done(False)
+
+    @Slot()
     def completed(self):
         self.nb_threads -= 1
         if self.nb_threads == 0:
@@ -236,9 +263,6 @@ class LoadingForm(QtWidgets.QDialog):
 
     @Slot(tuple)
     def progress_func(self, obj):
-        print(obj)
-        self.data_out[obj[0]][1].setValue(150)
-        print(self.data_out[obj[0]][1].value())
         self.data_out[obj[0]][1].setValue(self.data_out[obj[0]][1].value() + obj[1])
 
     def get_result(self, name):
@@ -271,7 +295,7 @@ class CustomSignals(QObject):
     maximum = Signal(tuple)
 
 
-class GuiUpdater(QRunnable):
+class GuiUpdater(QThread):
     """
     Worker thread
     """
@@ -294,6 +318,7 @@ class GuiUpdater(QRunnable):
         run the function and return different signals based on the success or failure of the function
         """
         # Retrieve args/kwargs here; and fire processing using them
+        result_val = None
         try:
             result_val = self._fn(
                 *self._args, **self._kwargs

@@ -1,3 +1,21 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 import fpd
 import scipy as sp
 
@@ -19,10 +37,6 @@ def start_dpc(ApplicationWindow):
 
     """
     dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
-    try:
-        ApplicationWindow.dpc_input.update({"cyx": ApplicationWindow.cyx})
-    except AttributeError:
-        pass
     try:
         ApplicationWindow.dpc_input.update({"com_yx_beta": ApplicationWindow.com_yx_beta})
     except AttributeError:
@@ -59,6 +73,12 @@ def start_dpc(ApplicationWindow):
                             [Yy, Yx, Xy, Xx] entered in 1/1000 for for convenience."""],
             """Check if you want to manually set the descan"""
         ]}
+    try:
+        key_add.update({"cyx": ["length 2 iterable", tuple(ApplicationWindow.cyx),
+                                "Centre y, x pixel cooridinates"]
+                        })
+    except AttributeError:
+        pass
 
     params = UI_Generator(ApplicationWindow, dpc.DPC_Explorer, key_ignore=[
                           "r_min", "r_max", "median", "flip_y", "flip_x", "ransac"], key_add=key_add)

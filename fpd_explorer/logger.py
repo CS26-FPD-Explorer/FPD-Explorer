@@ -1,8 +1,26 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 # Standard Library
 import operator
 from enum import Enum, auto
 
-from PySide2 import QtWidgets
+from PySide2 import QtGui, QtWidgets
 
 
 class Flags(Enum):
@@ -25,6 +43,7 @@ class Flags(Enum):
 
 text_input = None
 app = None
+start_text = "Start by loading files"
 
 global_flags = {
     Flags.files_loaded: {
@@ -97,7 +116,10 @@ def log(in_str: str, flag: Flags = None):
             raise TypeError
         if flag:
             add_flag(flag)
+        if start_text in text_input.toPlainText():
+            text_input.clear()
         text_input.appendPlainText(in_str)
+        text_input.moveCursor(QtGui.QTextCursor.End)
     else:
         raise RuntimeError("Text Input is not Defined")
 
@@ -132,7 +154,7 @@ def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=Tr
 
 def clear():
     if text_input:
-        text_input.setPlainText("Start by loading files")
+        text_input.setPlainText(start_text)
         for key in global_flags.keys():
             global_flags[key]["bool"] = False
     else:

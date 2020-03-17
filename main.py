@@ -1,3 +1,21 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 # Standard Library
 import os
 import sys
@@ -6,11 +24,11 @@ import traceback
 from datetime import datetime
 
 import matplotlib as plt
+import qdarkgraystyle
 import matplotlib.style
 from PySide2 import QtWidgets
 
 # First Party
-import qdarkgraystyle
 import fpd_explorer.config_handler as config
 from fpd_explorer import logger
 from fpd_explorer.frontend.home import ApplicationWindow
@@ -62,9 +80,13 @@ if __name__ == "__main__":
     config.load_config()
     fpd_app = QtWidgets.QApplication()
     dark_mode_config = config.get_config("dark_mode")
-    if dark_mode_config:
-        plt.style.use('dark_background')
-        fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+    try:
+        import qdarkgraystyle
+        if dark_mode_config:
+            plt.style.use('dark_background')
+            fpd_app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+    except ImportError:
+        dark_mode_config = None
     window = ApplicationWindow(fpd_app, dark_mode_config)
     logger.setup(window._ui.log_text, window)
     window.show()

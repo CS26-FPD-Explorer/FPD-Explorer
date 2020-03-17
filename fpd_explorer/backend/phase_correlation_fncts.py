@@ -1,3 +1,20 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
 
 # FPD Explorer
 from .. import logger
@@ -52,6 +69,12 @@ def disc_edge_sigma(ApplicationWindow):
             pass
         key_add = {
             "im": ["multipleinput", list(ApplicationWindow.edge_input.items()), "Image of disc"]}
+        try:
+            key_add.update({"cyx": ["length 2 iterable", tuple(ApplicationWindow.cyx),
+                                    "Centre y, x pixel cooridinates"]
+                            })
+        except AttributeError:
+            pass
 
         params = UI_Generator(ApplicationWindow, pc.disc_edge_sigma, key_add=key_add)
 
@@ -100,6 +123,12 @@ def phase_correlation(ApplicationWindow):
                 If None, the first probe position is used."""],
             "data": ["multipleinput", list(ApplicationWindow.phase_input.items()),
                      "Mutidimensional data of shape (scanY, scanX, ..., detY, detX)"]}
+        try:
+            key_add.update({"cyx": ["length 2 iterable", tuple(ApplicationWindow.cyx),
+                                    "Centre y, x pixel cooridinates"]
+                            })
+        except AttributeError:
+            pass
 
         params = UI_Generator(ApplicationWindow, pc.phase_correlation, key_add=key_add)
 
