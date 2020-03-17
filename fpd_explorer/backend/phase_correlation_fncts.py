@@ -69,6 +69,12 @@ def disc_edge_sigma(ApplicationWindow):
             pass
         key_add = {
             "im": ["multipleinput", list(ApplicationWindow.edge_input.items()), "Image of disc"]}
+        try:
+            key_add.update({"cyx": ["length 2 iterable", tuple(ApplicationWindow.cyx),
+                                    "Centre y, x pixel cooridinates"]
+                            })
+        except AttributeError:
+            pass
 
         params = UI_Generator(ApplicationWindow, pc.disc_edge_sigma, key_add=key_add)
 
@@ -117,6 +123,12 @@ def phase_correlation(ApplicationWindow):
                 If None, the first probe position is used."""],
             "data": ["multipleinput", list(ApplicationWindow.phase_input.items()),
                      "Mutidimensional data of shape (scanY, scanX, ..., detY, detX)"]}
+        try:
+            key_add.update({"cyx": ["length 2 iterable", tuple(ApplicationWindow.cyx),
+                                    "Centre y, x pixel cooridinates"]
+                            })
+        except AttributeError:
+            pass
 
         params = UI_Generator(ApplicationWindow, pc.phase_correlation, key_add=key_add)
 

@@ -69,9 +69,14 @@ class UI_Generator(QtWidgets.QDialog):
         self.items_per_column = items_per_column
         self.default = {}
         # This must always be last and in that order
-        self.fnct = fnct.__name__
-        self.config_val = config.get_dict(self.fnct)
-        self.param = self._get_param(fnct)
+        if fnct is not None:
+            self.fnct = fnct.__name__
+            self.config_val = config.get_dict(self.fnct)
+            self.param = self._get_param(fnct)
+        else:
+            self.fnct = None
+            self.config_val = {}
+            self.param = self.handle_key_edits({})
         self._setup_ui()
         self.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint) & ~Qt.WindowContextHelpButtonHint)
 
@@ -118,6 +123,9 @@ class UI_Generator(QtWidgets.QDialog):
                     if len(result[current_name]) > 2:
                         result[current_name][2] = " ".join(result[current_name][2:])
                         del result[current_name][3:]
+        return self.handle_key_edits(result)
+
+    def handle_key_edits(self, result):
         if self.key_ignore is not None:
             [result.pop(x, None) for x in self.key_ignore]
         if self.key_add is not None:
@@ -390,7 +398,8 @@ class UI_Generator(QtWidgets.QDialog):
                     if param_type != "bool":
                         val = str(val)
                     saved_result[key] = val
-        config.add_config({self.fnct: saved_result})
+        if self.fnct is not None:
+            config.add_config({self.fnct: saved_result})
         self.accept()
 
     def get_result(self) -> dict:
@@ -481,7 +490,7 @@ class UI_Generator(QtWidgets.QDialog):
         all_widget.sort(key=lambda x: x[2], reverse=True)
         self.last_colums = []
         self.number_space, self.last_n = self._create_colums(all_widget, self.grid_layout)
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Save |
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok |
                                      QDialogButtonBox.Cancel |
                                      QDialogButtonBox.RestoreDefaults)
         buttonBox.accepted.connect(self._save)

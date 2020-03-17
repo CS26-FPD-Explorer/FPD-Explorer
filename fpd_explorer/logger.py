@@ -20,7 +20,7 @@
 import operator
 from enum import Enum, auto
 
-from PySide2 import QtWidgets
+from PySide2 import QtGui, QtWidgets
 
 
 class Flags(Enum):
@@ -43,6 +43,7 @@ class Flags(Enum):
 
 text_input = None
 app = None
+start_text = "Start by loading files"
 
 global_flags = {
     Flags.files_loaded: {
@@ -115,7 +116,10 @@ def log(in_str: str, flag: Flags = None):
             raise TypeError
         if flag:
             add_flag(flag)
+        if start_text in text_input.toPlainText():
+            text_input.clear()
         text_input.appendPlainText(in_str)
+        text_input.moveCursor(QtGui.QTextCursor.End)
     else:
         raise RuntimeError("Text Input is not Defined")
 
@@ -150,7 +154,7 @@ def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=Tr
 
 def clear():
     if text_input:
-        text_input.setPlainText("Start by loading files")
+        text_input.setPlainText(start_text)
         for key in global_flags.keys():
             global_flags[key]["bool"] = False
     else:

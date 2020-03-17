@@ -20,9 +20,10 @@
 import inspect
 from collections import OrderedDict
 
-from PySide2 import QtWidgets
+import qdarkgraystyle
+from PySide2 import QtGui, QtWidgets
 from fpd.fpd_file import MerlinBinary
-from PySide2.QtCore import Slot
+from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QMainWindow
 
 # FPD Explorer
@@ -31,6 +32,7 @@ from .. import logger
 from .. import config_handler as config
 from .guide import get_guide
 from ..logger import Flags
+from .gui_generator import UI_Generator
 from .custom_widgets import LoadingForm, CustomInputForm
 from .res.ui_homescreen import Ui_MainWindow
 from ..backend.custom_fpd_lib import fpd_processing as fpdp_new
@@ -58,8 +60,6 @@ class ApplicationWindow(QMainWindow):
         self._last_path = config.get_config("file_path")
         self._files_loaded = False
         self.data_browser = None
-        self.cyx = None
-        self.ap = None
         self._setup_cmaps()
         # makes all tabs except Home closable
         self._ui.tabWidget.tabCloseRequested.connect(self._handle_tab_close)
@@ -135,8 +135,19 @@ class ApplicationWindow(QMainWindow):
         topic : str
             Key to look up in the dictionary of guide topics.
         """
-        message = QtWidgets.QMessageBox()
-        message.setText(get_guide(topic))
+        message = QtWidgets.QDialog()
+        message.setFixedSize(self.minimumWidth() // 1.5, self.minimumHeight() // 1.25)
+        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint) &
+                               ~Qt.WindowContextHelpButtonHint)
+        widget = QtWidgets.QTextBrowser()
+        widget.setOpenExternalLinks(True)
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(widget)
+        message.setLayout(layout)
+        widget.setHtml(get_guide(topic))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        widget.setFont(font)
         message.setWindowTitle(topic.replace("_", " ").capitalize())
         message.exec()
 
@@ -153,6 +164,7 @@ class ApplicationWindow(QMainWindow):
         self.edge_input = {}
         self.ref_input = {}
         self.phase_input = {}
+        self.vadf_input = {}
 
     @Slot()
     def change_color_mode(self):
@@ -189,8 +201,11 @@ class ApplicationWindow(QMainWindow):
             del self.npz_path
             self._ui.npz_line.clear()
         self._files_loaded = False
-        self.cyx = None
-        self.ap = None
+        try:
+            del self.cyx
+            del self.ap
+        except Exception:
+            pass
         for _ in range(self._ui.tabWidget.count() - 1):
             # 1 because every time a tab is removed, indices are reassigned
             self._ui.tabWidget.removeTab(1)
@@ -238,14 +253,23 @@ class ApplicationWindow(QMainWindow):
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Yes:
-                valid = self.function_dm3()  # load a .DM3 file and use it
-                if not valid:  # user canceled
+                if not self.function_dm3():  # user canceled
                     return
                 dm3 = self._dm3_path
             if response == QtWidgets.QMessageBox.No:
                 logger.log("Working without a DM3 file")
-                x_value = (256, 'x', 'na')
-                y_value = (256, 'y', 'na')
+                key_add = {
+                    "scanXalu": ["int", 256, "Determines scan size if no `dmfns` are specified"],
+                    "scanYalu": ["int", 256, "Determines scan size if no `dmfns` are specified"]
+                }
+                params = UI_Generator(self, None, key_add=key_add)
+                if not params.exec():
+                    # Procedure was cancelled so just give up
+                    return
+                results = params.get_result()
+                x_value = (results["scanXalu"], 'x', 'na')
+                y_value = (results["scanYalu"], 'y', 'na')
+
             if response == QtWidgets.QMessageBox.Cancel:
                 return
 
@@ -254,19 +278,11 @@ class ApplicationWindow(QMainWindow):
                                scanXalu=x_value, row_end_skip=1)
 
         self.ds = self.mb.get_memmap()
-        x, y = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
-                               text_y="Amount to skip for Diffraction Image")  # Check what is the maximum value
-        real_skip = x
-        recip_skip = y
-        print("skipping : " + str(x) + " " + str(y))
-        # real_skip, an integer, real_skip=1 loads all pixels, real_skip=n an even integer downsamples
-        # Obvious values are 1 (no down-sample), 2, 4
-        # Assign the down-sampled dataset
+        real_skip, recip_skip = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
+                                                text_y="Amount to skip for Diffraction Image")
+
         self.ds_sel = self.ds[::real_skip,
                               ::real_skip, ::recip_skip, ::recip_skip]
-        # remove # above to reduce total file loading - last indice is amount to skip by
-        # Coordinate order is y,x,ky,kx
-        # i.e. reduce real and recip space pixel count in memory
 
         loading_widget = LoadingForm(2, ["sum_im", "sum_dif"])
         loading_widget.setup_multi_loading("sum_im", fpdp_new.sum_im, self.ds_sel, 16, 16)
