@@ -1,21 +1,26 @@
-from pytestqt import qtbot
-from PySide2 import QtCore
-from PySide2.QtCore import QTimer, QCoreApplication
-import sys
+# Standard Library
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
-from fpd_explorer.data_browser_explorer import DataBrowserWidget
-from fpd_explorer.home import *
-from fpd_explorer import config_handler as config
-from fpd_explorer.custom_widgets import CustomInputForm
-from pynput.keyboard import Key, Controller
+import sys
 import time
-from fpd_explorer.fpd_functions import *
-from fpd_explorer.phase_correlation_fncts import *
-from fpd_explorer.virtual_adf import *
-from fpd_explorer.dpc_explorer import start_dpc
 
 import pytest
+from PySide2 import QtCore
+from pytestqt import qtbot
+from PySide2.QtCore import QTimer, QCoreApplication
+from pynput.keyboard import Key, Controller
+from fpd.fpd_file import MerlinBinary
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+
+# First Party
+from fpd_explorer import config_handler as config
+from fpd_explorer.frontend.home import *
+from fpd_explorer.backend import virtual_adf
+from fpd_explorer.backend.dpc_explorer import start_dpc
+from fpd_explorer.backend import fpd_functions 
+from fpd_explorer.backend.custom_fpd_lib.fpd_file import get_memmap
+from fpd_explorer.frontend.custom_widgets import CustomInputForm
+from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
+from fpd_explorer.backend import phase_correlation_fncts 
 
 
 def interact():
@@ -41,6 +46,7 @@ def setup_tests(qtbot):
     qtbot.addWidget(aw)
     logger.setup(aw._ui.log_text, aw)
     config.load_config()
+    setattr(MerlinBinary, get_memmap.__name__, get_memmap)
 
     aw._mib_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.mib"
     aw._dm3_path = "/home/ubuntu/example-data/13_FeRh-Alisa_DW_diff_20um_115C.dm3"

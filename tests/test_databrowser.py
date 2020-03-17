@@ -1,17 +1,23 @@
-from pytestqt import qtbot
-from PySide2 import QtCore
-from PySide2.QtCore import QTimer, QCoreApplication
-import sys
+# Standard Library
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
-from fpd_explorer.data_browser_explorer import DataBrowserWidget
-from fpd_explorer.home import *
-from test_buttons import setup_tests, enter, interact
-from fpd_explorer.custom_widgets import CustomInputForm
-from pynput.keyboard import Key, Controller
+import sys
 import time
 
-from fpd_explorer.files_fncts import *
+from PySide2 import QtCore
+from pytestqt import qtbot
+from PySide2.QtCore import QTimer, QCoreApplication
+from pynput.keyboard import Key, Controller
+from test_buttons import enter, interact, setup_tests
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+
+# First Party
+from fpd_explorer.frontend.home import *
+from fpd_explorer.frontend.files_fncts import *
+from fpd_explorer.frontend.custom_widgets import CustomInputForm
+from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
+
+
 
 
 # omitted due to memory loading error on the vm

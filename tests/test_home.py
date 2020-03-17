@@ -1,12 +1,17 @@
-import pytest
-from pytestqt import qtbot
-from PySide2 import QtCore
-from PySide2.QtCore import QTimer, QCoreApplication
-import sys
+# Standard Library
 import os
-from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
+import sys
+
+import pytest
+from PySide2 import QtCore
+from pytestqt import qtbot
+from PySide2.QtCore import QTimer, QCoreApplication
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+
+# First Party
 from fpd_explorer.frontend.home import *
-sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/../")
+from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
+
 
 
 def test_clear_files(qtbot):

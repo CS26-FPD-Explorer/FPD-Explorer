@@ -1,7 +1,12 @@
-import sys, os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
-from fpd_explorer import config_handler as config
+# Standard Library
+import os
+import sys
 import configparser
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+
+# First Party
+from fpd_explorer import config_handler as config
+
 
 
 test_file = "test.ini"
