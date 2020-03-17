@@ -12,7 +12,7 @@ def function_mib(self):
     """
     fname, _ = QFileDialog.getOpenFileName(
         self, 'Open file', self._last_path,
-        "MERLIN binary files (*.mib)")
+        "Merlin Binary files (*.mib)")
     if fname:
         if fname[-3:] == "mib":  # empty string means user cancelled
             self._update_last_path(fname)
@@ -33,7 +33,7 @@ def function_npz(self):
     except AttributeError:
         fname, _ = QFileDialog.getOpenFileName(
             self, 'Open file', self._last_path,
-            "NPZ file (*.npz)")
+            "NPZ files (*.npz)")
     if fname:
         if fname[-3:] == "npz":  # empty string means user cancelled
             self._update_last_path(fname)
@@ -54,7 +54,7 @@ def function_hdf5(self):
     except AttributeError:
         fname, _ = QFileDialog.getOpenFileName(
             self, 'Open file', self._last_path,
-            "MERLIN binary files (*.hdf5)")
+            "Hierarchical Data files (*.hdf5)")
     if fname:
         if fname[-4:] == "hdf5":  # empty string means user cancelled
             self._update_last_path(fname)
