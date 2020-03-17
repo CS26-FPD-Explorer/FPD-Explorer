@@ -120,7 +120,6 @@ def test_dpc_explorer(qtbot):
     try:
         enter()
         # dpc brings up two input UIs when rotate is true
-        enter(1000)
         start_dpc(aw)
     except:
         assert False
