@@ -143,6 +143,7 @@ def test_phase_correlation(qtbot):
     phase_correlation_fncts.find_matching_images(aw)
     try:
         enter()
+        enter()
         phase_correlation_fncts.phase_correlation(aw)
     except:
         assert False
