@@ -51,6 +51,7 @@ class ApplicationWindow(QMainWindow):
         self._setup_actions()
         self.app = app
         self.dark_mode_config = dark_mode_config
+        self.tabs_variables = ["data_browser", "dpc_explorer", "vadf_explorer"]
         if dark_mode_config is not None:
             self._ui.dark_mode_button.setChecked(dark_mode_config)
         else:
@@ -58,7 +59,8 @@ class ApplicationWindow(QMainWindow):
 
         self._last_path = config.get_config("file_path")
         self._files_loaded = False
-        self.data_browser = None
+        for name in self.tabs_variables:
+            self.__dict__[name] = None
         self._setup_cmaps()
         # makes all tabs except Home closable
         self._ui.tabWidget.tabCloseRequested.connect(self._handle_tab_close)
@@ -73,9 +75,10 @@ class ApplicationWindow(QMainWindow):
 
     @Slot(int)
     def _handle_tab_close(self, idx):
-        name = self._ui.tabWidget.tabBar().tabText(idx)
-        if name == "Data Browser":
-            self.data_browser = None
+        name = self._ui.tabWidget.tabBar().tabText(idx).lower().replace(" ", "_")
+        #set the variable to none
+        if name in self.tabs_variables:
+            self.__dict__[name] = None
         while self._ui.tabWidget.widget(idx).layout().count():
             self._ui.tabWidget.widget(idx).layout().takeAt(0).widget().deleteLater()
         self._ui.tabWidget.removeTab(idx)
@@ -217,8 +220,8 @@ class ApplicationWindow(QMainWindow):
         for _ in range(self._ui.tabWidget.count() - 1):
             # 1 because every time a tab is removed, indices are reassigned
             self._ui.tabWidget.removeTab(1)
-        if self.data_browser:
-            self.data_browser = None
+        for name in self.tabs_variables:
+            self.__dict__[name] = None
         logger.clear()
 
     @Slot()
