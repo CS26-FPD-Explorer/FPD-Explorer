@@ -30,7 +30,7 @@ def test_add_correct_flag():
         assert 0
 
 
-def test_log_no_text_input():
-    with pytest.raises(RuntimeError) as excinfo:
+def test_log_in_str():
+    with pytest.raises(TypeError) as excinfo:
         logger.log(5)
-        assert "no text input" in str(excinfo.value)
+        assert "wrong type in string " in str(excinfo.value)
