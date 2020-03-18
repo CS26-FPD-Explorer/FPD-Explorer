@@ -60,7 +60,7 @@ def test_load_npz(qtbot):
 
 def test_init_color_map(qtbot):
     db = setup_databrowser_tests(qtbot)
-    assert db._ui.colorMap.count() == 54
+    assert db._ui.colorMap.count() == 82
 
 
 def test_get_diff(qtbot):

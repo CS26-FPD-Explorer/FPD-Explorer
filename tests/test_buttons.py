@@ -92,7 +92,6 @@ def test_center_of_mass_button(qtbot):
         assert False
     assert True
 
-@pytest.mark.skip
 def test_ransac_button(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -108,7 +107,6 @@ def test_ransac_button(qtbot):
         assert False
     assert True
 
-@pytest.mark.skip
 def test_dpc_explorer(qtbot):
     aw = setup_tests(qtbot)
     enter()
