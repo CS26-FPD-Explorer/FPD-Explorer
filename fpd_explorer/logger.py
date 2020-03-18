@@ -25,7 +25,7 @@ from PySide2 import QtGui, QtWidgets
 
 class Flags(Enum):
     """
-    Order of the lines matter. It should match the order of the flow decided
+    Order of the lines matter. It should match the order of the flow decided.
     """
     files_loaded = auto()
     hdf5_usage = auto()
@@ -129,7 +129,7 @@ def log(in_str: str, flag: Flags = None):
         text_input.appendPlainText(in_str)
         text_input.moveCursor(QtGui.QTextCursor.End)
     else:
-        raise RuntimeError("Text Input is not Defined")
+        raise RuntimeError("Text input is not defined")
 
 
 def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=True) -> bool:
@@ -169,7 +169,7 @@ def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=Tr
                 print(err)
         return False
     else:
-        raise RuntimeError("An unknow error has happened. Did you modified the structure of globals_flags")
+        raise RuntimeError("An unknow error has happened. Have you modified the structure of global_flags?")
 
 
 def clear():
@@ -182,4 +182,4 @@ def clear():
         for key in global_flags.keys():
             global_flags[key]["bool"] = False
     else:
-        raise RuntimeError("Text Input is not Defined")
+        raise RuntimeError("Text input is not defined")
