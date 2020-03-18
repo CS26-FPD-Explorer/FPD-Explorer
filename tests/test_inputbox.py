@@ -15,10 +15,13 @@
 
 # You should have received a copy of the GNU General Public License
 # along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
-
-from fpd_explorer.frontend.custom_widgets import CustomInputForm
-import sys, os
+# Standard Library
+import os
+import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+
+# First Party
+from fpd_explorer.frontend.custom_widgets import CustomInputForm
 
 
 def init_inputbox():

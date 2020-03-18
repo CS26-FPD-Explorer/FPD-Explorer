@@ -15,11 +15,16 @@
 
 # You should have received a copy of the GNU General Public License
 # along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
-
-import sys, os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
-from fpd_explorer import config_handler as config
+# Standard Library
 import configparser
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+# First Party
+from fpd_explorer import config_handler as config
+
+
 
 
 test_file = "test.ini"

@@ -43,9 +43,6 @@ def start_vadf(ApplicationWindow):
                     ds = ApplicationWindow.ds
                 else:
                     ds = ApplicationWindow.ds_sel
-                if not params.exec():
-                    # Procedure was cancelled so just give up
-                    return
                 ApplicationWindow.vadf_input.update({"ds": ds})
                 try:
                     ApplicationWindow.vadf_input.update({"com_yx": ApplicationWindow.com_yx})
@@ -62,8 +59,11 @@ def start_vadf(ApplicationWindow):
                 except AttributeError:
                     pass
                 params = UI_Generator(ApplicationWindow, va.VirtualAnnularImages, key_ignore=["data"], key_add=key_add)
+                if not params.exec():
+                    # Procedure was cancelled so just give up
+                    return
 
-                VADF = va.VirtualAnnularImages(ds, **params.get_result())
+                VADF = va.VirtualAnnularImages(**params.get_result())
         else:
             return
     logger.log("VADF initialized correctly", Flags.vadf_init)

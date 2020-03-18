@@ -24,7 +24,6 @@ import traceback
 from datetime import datetime
 
 import matplotlib as plt
-import qdarkgraystyle
 import matplotlib.style
 from PySide2 import QtWidgets
 

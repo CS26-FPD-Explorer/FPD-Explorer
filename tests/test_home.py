@@ -15,16 +15,20 @@
 
 # You should have received a copy of the GNU General Public License
 # along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+# Standard Library
+import os
+import sys
 
 import pytest
-from pytestqt import qtbot
 from PySide2 import QtCore
+from pytestqt import qtbot
 from PySide2.QtCore import QTimer, QCoreApplication
-import sys
-import os
-from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+
+# First Party
 from fpd_explorer.frontend.home import *
-sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/../")
+from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
+
 
 
 def test_clear_files(qtbot):
