@@ -109,7 +109,7 @@ def make_ref_im(ApplicationWindow):
         logger.log("Reference image created successfully")
 
 
-def phase_correlation(ApplicationWindow):
+def phase_correlation(ApplicationWindow, pop_up=True):
     if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Phase Corelation")
         ApplicationWindow.phase_input.update({"ds_sel": ApplicationWindow.ds_sel})
@@ -136,7 +136,8 @@ def phase_correlation(ApplicationWindow):
         if not params.exec():
             # Procedure was cancelled so just give up
             return
-        QtWidgets.QMessageBox.information(ApplicationWindow,"Information","This might take a while")
+        if pop_up:
+            QtWidgets.QMessageBox.information(ApplicationWindow,"Information","This might take a while")
         out = pc.phase_correlation(**params.get_result(), logger=logger)
         ApplicationWindow.shift_yx, ApplicationWindow.shift_err = out[:2]
         ApplicationWindow.shift_difp, ApplicationWindow.ref = out[2:]
