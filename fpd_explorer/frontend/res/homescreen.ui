@@ -22,7 +22,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>fpd gui</string>
+   <string>FPD-Explorer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
