@@ -58,3 +58,20 @@ def test_if_all_needed_prerequisite(qtbot):
     setup_tests(qtbot)
     enter()
     assert logger.check_if_all_needed(Flags.center_mass) == False
+
+
+def test_if_all_needed_correct_print_aperture(qtbot, capsys):
+    setup_tests(qtbot)
+    logger.check_if_all_needed(Flags.aperture, display=False)
+    capture = capsys.readouterr()
+    string_out = capture.out
+    assert "The circular centre must be calculated" in string_out
+
+
+def test_if_all_needed_correct_print_centre_of_mass(qtbot, capsys):
+    setup_tests(qtbot)
+    logger.check_if_all_needed(Flags.aperture, display=False)
+    capture = capsys.readouterr()
+    string_out = capture.out
+    assert "The circular centre must be calculated" in string_out \
+        and "The aperture must be calculated" in string_out
