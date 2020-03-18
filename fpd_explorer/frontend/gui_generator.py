@@ -157,7 +157,7 @@ class UI_Generator(QtWidgets.QDialog):
             param_type = None
             if "array" in val[0] or "QtWidget" in val[0]:
                 # skip input that could be an array because its too hard to find a way to handle them
-                print("skipping : ", val[0])
+                # print("skipping : ", val[0])
                 continue
             if "cmap" in val[0] or "colormap" in val[0].lower():
                 param_type = "multipleinput"
@@ -217,7 +217,7 @@ class UI_Generator(QtWidgets.QDialog):
                 if val[1][1] is None:
                     val[0] += "None"
             else:
-                print("TODO : Implement : ", val[0])
+                # print("TODO : Implement : ", val[0])
                 continue
             none_possible = False
             if "None" in val[0]:
@@ -303,7 +303,6 @@ class UI_Generator(QtWidgets.QDialog):
             self.number_space -= already_placed
             del flatten_widget[:already_placed]
             while len(flatten_widget) > 0:
-                print("Adding new el", self.last_n)
                 self.last_n += 1
                 self.last_colums.append(self.add_forms(flatten_widget, self.grid_layout,
                                                        0, self.items_per_column, self.last_n))
@@ -311,7 +310,6 @@ class UI_Generator(QtWidgets.QDialog):
                 del flatten_widget[:self.items_per_column]
 
         else:
-            print("deleting")
             self._delete_toggle_value(caller)
 
     def _delete_toggle_value(self, caller):

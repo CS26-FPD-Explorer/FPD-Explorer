@@ -74,7 +74,6 @@ class ApplicationWindow(QMainWindow):
     @Slot(int)
     def _handle_tab_close(self, idx):
         name = self._ui.tabWidget.tabBar().tabText(idx)
-        print(f"Tab {name} at {idx} has been closed")
         if name == "Data Browser":
             self.data_browser = None
         while self._ui.tabWidget.widget(idx).layout().count():
@@ -171,7 +170,6 @@ class ApplicationWindow(QMainWindow):
     def change_color_mode(self):
         dark_mode_config = self._ui.dark_mode_button.isChecked()
         if self.app is not None:
-            print(f"Changing theme to {dark_mode_config}")
             if dark_mode_config:
                 try:
                     import qdarkgraystyle

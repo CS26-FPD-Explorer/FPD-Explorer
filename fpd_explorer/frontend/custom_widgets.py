@@ -180,7 +180,6 @@ class CustomInputForm(QtWidgets.QDialog):
         """
         Restore X and Y to their default value
         """
-        print("restoring to default")
         self._ui.Xsize.setValue(self._default_x)
         self._ui.Ysize.setValue(self._default_y)
 
@@ -353,7 +352,6 @@ class QIPythonWidget(RichIPythonWidget):
 
     def pushVariables(self, variableDict):
         """ Given a dictionary containing name / value pairs, push those variables to the IPython console widget """
-        print(variableDict)
         self.kernel_manager.kernel.shell.push(variableDict)
 
     def clearTerminal(self):
