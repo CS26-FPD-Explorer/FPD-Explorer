@@ -89,6 +89,7 @@ class ApplicationWindow(QMainWindow):
         self._ui.actionCenter_of_Mass.triggered.connect(self.centre_of_mass)
         self._ui.actionCircular_center.triggered.connect(self.find_circular_centre)
         self._ui.actionDPC_Explorer.triggered.connect(self.start_dpc_explorer)
+        self._ui.actionSynthetic_Aperture.triggered.connect(self.synthetic_aperture)
         self._ui.actionData_Browser.triggered.connect(self.start_dbrowser)
         self._ui.actionLoad.triggered.connect(self.load_files)
         self._ui.actionRansac_Tool.triggered.connect(self.ransac_im_fit)
@@ -133,21 +134,27 @@ class ApplicationWindow(QMainWindow):
         topic : str
             Key to look up in the dictionary of guide topics.
         """
-        message = QtWidgets.QDialog()
-        message.setFixedSize(self.minimumWidth() // 1.5, self.minimumHeight() // 1.25)
-        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint) &
-                               ~Qt.WindowContextHelpButtonHint)
+        message = QtWidgets.QDialog(self)
+
+        message.setMinimumSize(self.minimumWidth()//3, self.minimumHeight()//2)
+        message.resize(self.minimumWidth()//2, self.minimumHeight()//1.5)
+
+        message.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        message.setSizeGripEnabled(True);
         widget = QtWidgets.QTextBrowser()
         widget.setOpenExternalLinks(True)
+        buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
+        buttons.accepted.connect(message.accept)
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(widget)
+        layout.addWidget(buttons)
         message.setLayout(layout)
         widget.setHtml(get_guide(topic))
         font = QtGui.QFont()
         font.setPointSize(11)
         widget.setFont(font)
         message.setWindowTitle(topic.replace("_", " ").capitalize())
-        message.exec()
+        message.show()
 
     def _update_last_path(self, new_path):
         self._last_path = "/".join(new_path.split("/")[:-1]) + "/"

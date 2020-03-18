@@ -56,6 +56,9 @@ def centre_of_mass(self):
 def ransac_im_fit(self):
     fpd_functions.ransac_im_fit(self)
 
+def synthetic_aperture(self):
+    fpd_functions.remove_aperture(self)
+
 
 def find_matching_images(self):
     phase_correlation_fncts.find_matching_images(self)
