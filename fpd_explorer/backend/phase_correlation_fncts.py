@@ -135,7 +135,6 @@ def phase_correlation(ApplicationWindow):
         if not params.exec():
             # Procedure was cancelled so just give up
             return
-        print(params.get_result())
         out = pc.phase_correlation(**params.get_result(), logger=logger)
         ApplicationWindow.shift_yx, ApplicationWindow.shift_err = out[:2]
         ApplicationWindow.shift_difp, ApplicationWindow.ref = out[2:]

@@ -77,7 +77,6 @@ def add_config(config: dict):
             }
         }
     """
-    print("Saving new value")
     if isinstance(config, dict):
         if isinstance(list(config.values())[0], dict):
             # already have a section so we can just update
@@ -123,7 +122,6 @@ def load_config():
 
     config = configparser.ConfigParser()
     config.read(path_to_read)
-    print("Loading configs")
     _data_to_save.update(as_dict(config))
 
 
@@ -135,7 +133,6 @@ def save_config():
     if os.path.isfile(CONFIGFILE_NAME):
         with open(CONFIGFILE_NAME, "r") as f:
             prev_config = f.read()
-    print("Saving....")
     # Create the configuration file as it doesn't exist yet
     with open(CONFIGFILE_NAME, "w") as f:
         try:
@@ -154,4 +151,3 @@ def save_config():
         except BaseException:
             if prev_config:
                 f.write(prev_config)
-                print("Unexpected error:", sys.exc_info())
