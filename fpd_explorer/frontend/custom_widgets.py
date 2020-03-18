@@ -81,7 +81,7 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self.gridLayout.addWidget(self.main_window)
         self.gridLayout.addWidget(buttonBox)
         self.main_widget.setLayout(self.gridLayout)
-
+        self.main_widget.setObjectName(tab_name)
         self._docked_widgets = []
         # self.application_window._ui.tabWidget.tabCloseRequested.connect(self.close_handler)
 
