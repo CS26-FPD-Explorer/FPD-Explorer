@@ -60,7 +60,7 @@ def test_if_all_needed_prerequisite(qtbot):
     assert logger.check_if_all_needed(Flags.center_mass) == False
 
 
-def test_if_all_needed_correct_print_aperture(qtbot, capsys):
+def test_if_all_needed_correct_output_aperture(qtbot, capsys):
     setup_tests(qtbot)
     logger.check_if_all_needed(Flags.aperture, display=False)
     capture = capsys.readouterr()
@@ -68,10 +68,18 @@ def test_if_all_needed_correct_print_aperture(qtbot, capsys):
     assert "The circular centre must be calculated" in string_out
 
 
-def test_if_all_needed_correct_print_centre_of_mass(qtbot, capsys):
+def test_if_all_needed_correct_output_center_mass(qtbot, capsys):
     setup_tests(qtbot)
-    logger.check_if_all_needed(Flags.aperture, display=False)
+    logger.check_if_all_needed(Flags.center_mass, display=False)
     capture = capsys.readouterr()
     string_out = capture.out
     assert "The circular centre must be calculated" in string_out \
         and "The aperture must be calculated" in string_out
+
+
+def test_if_all_needed_correct_output_init_vadf(qtbot, capsys):
+    setup_tests(qtbot)
+    logger.check_if_all_needed(Flags.vadf_init, display=False)
+    capture = capsys.readouterr()
+    string_out = capture.out
+    assert "The Virtual Annular Dark Field must be initialised" in string_out \
