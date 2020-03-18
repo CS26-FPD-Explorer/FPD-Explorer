@@ -28,3 +28,9 @@ def test_add_correct_flag():
         assert 1
     except:
         assert 0
+
+
+def test_log_no_text_input():
+    with pytest.raises(RuntimeError) as excinfo:
+        logger.log(5)
+        assert "no text input" in str(excinfo.value)
