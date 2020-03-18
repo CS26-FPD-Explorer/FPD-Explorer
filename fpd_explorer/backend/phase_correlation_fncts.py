@@ -148,9 +148,9 @@ def make_ref_im(ApplicationWindow):
 def phase_correlation(ApplicationWindow, pop_up=True):
     """
     Once function runs with user input, calculates the phase correlation
-    for the data. As it is a time consuming function(requires a lot of computational power
-    ), a pop up is also shown to let users
-    know that it will most likely take a while.
+    for the data. As it is a time consuming function (requires a lot of 
+    computational power), a pop up is also shown to let users  know that
+    it will most likely take a while.
 
 
     Parameters
