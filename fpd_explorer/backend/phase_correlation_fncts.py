@@ -26,6 +26,18 @@ from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
 
 def find_matching_images(ApplicationWindow):
+    """
+    once function runs with user input, and brings up 3 figure on
+    based on that input on the UI, switches to tab
+    showing the figures.
+
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+        intialises the application with the user's desktop settings,
+        performs event handling
+    """
     if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Find Matching Images")
         avail_input = [("None", None)]
@@ -59,6 +71,18 @@ def find_matching_images(ApplicationWindow):
 
 
 def disc_edge_sigma(ApplicationWindow):
+    """
+    once function runs with user input, and brings up 4 figures on
+    based on that input on the UI, switches to tab
+    showing the figures.
+
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+        intialises the application with the user's desktop settings,
+        performs event handling
+    """
     if logger.check_if_all_needed(Flags.phase_matching):
         canvas = Pop_Up_Widget(ApplicationWindow, "Disc Edge Sigma")
         ApplicationWindow.edge_input.update({"meaned_image": ApplicationWindow.matching.ims_common.mean(0)})
@@ -137,7 +161,7 @@ def phase_correlation(ApplicationWindow, pop_up=True):
             # Procedure was cancelled so just give up
             return
         if pop_up:
-            QtWidgets.QMessageBox.information(ApplicationWindow,"Information","This might take a while")
+            QtWidgets.QMessageBox.information(ApplicationWindow, "Information", "This might take a while")
         out = pc.phase_correlation(**params.get_result(), logger=logger)
         ApplicationWindow.shift_yx, ApplicationWindow.shift_err = out[:2]
         ApplicationWindow.shift_difp, ApplicationWindow.ref = out[2:]
