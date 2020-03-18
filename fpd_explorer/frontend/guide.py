@@ -47,10 +47,12 @@ live_coding = """<p><strong><u>Information</u></strong></p>
     <br><b>fpd_app.add_data([location], [name], [data])</b><br>
     <br><b>[location]</b> corresponds to the button to add an option to. It can be:
     <ul>
-    <li>dpc : for adding to DPC Explorer</li>
+    <li>data : for adding to fpgn of Data Browser</li>
+    <li>nav: for adding to nav_im of Data Browser</li>
     <li>circular : for adding to Find Circular Center</li>
     <li>mass : for adding to Center of Mass</li>
     <li>ransac : for adding to Ransac Tools</li>
+    <li>dpc : for adding to DPC Explorer</li>
     <li>matching : for adding to Matching Images</li>
     <li>edge : for adding to Disc Edge Sigma</li>
     <li>ref : for adding to Make Ref Im</li>

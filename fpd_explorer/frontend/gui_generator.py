@@ -100,29 +100,30 @@ class UI_Generator(QtWidgets.QDialog):
         sig = signature(fnct)
         doc = fnct.__doc__
         result = {}
-        # result is a dict with the variable name as key and a list composed of type, default value, description
-        param = doc.split('Parameters')[1].replace(',', '').replace(
-            '-', '').split("Return")[0].split("Attributes")[0].split("Notes")[0].split('\n')
-        current_name = ""
-        global_space = -1
-        for idx, el in enumerate(param):
-            if not el.isspace() and el:
-                nb_space = len(el) - len(el.lstrip())
-                if global_space == -1 and el.find(':') != -1:
-                    global_space = nb_space
-                if nb_space == global_space:
-                    current_name, type = el.replace(' ', '').split(':')
-                    default = sig.parameters[current_name]
-                    if default is not None:
-                        default = default.default
-                        if default is inspect.Parameter.empty:
-                            default = None
-                    result[current_name] = [type, default]
-                else:
-                    result[current_name].append(param[idx].strip())
-                    if len(result[current_name]) > 2:
-                        result[current_name][2] = " ".join(result[current_name][2:])
-                        del result[current_name][3:]
+        if doc:
+            # result is a dict with the variable name as key and a list composed of type, default value, description
+            param = doc.split('Parameters')[1].replace(',', '').replace(
+                '-', '').split("Return")[0].split("Attributes")[0].split("Notes")[0].split('\n')
+            current_name = ""
+            global_space = -1
+            for idx, el in enumerate(param):
+                if not el.isspace() and el:
+                    nb_space = len(el) - len(el.lstrip())
+                    if global_space == -1 and el.find(':') != -1:
+                        global_space = nb_space
+                    if nb_space == global_space:
+                        current_name, type = el.replace(' ', '').split(':')
+                        default = sig.parameters[current_name]
+                        if default is not None:
+                            default = default.default
+                            if default is inspect.Parameter.empty:
+                                default = None
+                        result[current_name] = [type, default]
+                    else:
+                        result[current_name].append(param[idx].strip())
+                        if len(result[current_name]) > 2:
+                            result[current_name][2] = " ".join(result[current_name][2:])
+                            del result[current_name][3:]
         return self.handle_key_edits(result)
 
     def handle_key_edits(self, result):

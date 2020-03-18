@@ -89,6 +89,10 @@ def add_data(self, location, name, data):
         self.dpc_input.update({name: data})
     elif "circular" in location:
         self.circular_input.update({name: data})
+    elif "data" in location:
+        self.data_input.update({name: data})
+    elif "nav" in location:
+        self.nav_data_input.update({name: data})
     elif "mass" in location:
         self.mass_input.update({name: data})
     elif "ransac" in location:

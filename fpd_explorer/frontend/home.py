@@ -164,6 +164,8 @@ class ApplicationWindow(QMainWindow):
         self.ref_input = {}
         self.phase_input = {}
         self.vadf_input = {}
+        self.data_input = {}
+        self.nav_data_input = {}
 
     @Slot()
     def change_color_mode(self):
