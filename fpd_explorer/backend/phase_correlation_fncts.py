@@ -27,7 +27,7 @@ from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
 def find_matching_images(ApplicationWindow):
     """
-    once function runs with user input, brings up 3 figures
+    Once function runs with user input, brings up 3 figures
     based on that input on the UI, switches to tab
     showing the figures.
 
@@ -72,7 +72,7 @@ def find_matching_images(ApplicationWindow):
 
 def disc_edge_sigma(ApplicationWindow):
     """
-    once function runs with user input, brings up 4 figures
+    Once function runs with user input, brings up 4 figures
     based on that input on the UI, switches to tab
     showing the figures.
 
@@ -113,7 +113,7 @@ def disc_edge_sigma(ApplicationWindow):
 
 def make_ref_im(ApplicationWindow):
      """
-    once function runs with user input, brings up a figure
+    Once function runs with user input, brings up a figure
     based on that input on the UI, switches to tab
     showing the reference image output.
 
@@ -146,7 +146,7 @@ def make_ref_im(ApplicationWindow):
 
 
 def phase_correlation(ApplicationWindow, pop_up=True):
-       """
+    """
     once function runs with user input, calculates the phase correlation 
     for the data. As it is a time consuming function(requires a lot of computational power
     ), a pop up is also shown to let users 
@@ -160,7 +160,7 @@ def phase_correlation(ApplicationWindow, pop_up=True):
         performs event handling
     pop_up : Boolean
     """
-    if logger.check_if_all_needed(Flags.files_loaded):
+   if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Phase Corelation")
         ApplicationWindow.phase_input.update({"ds_sel": ApplicationWindow.ds_sel})
         ref_image = {"None": None}

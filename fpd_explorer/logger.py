@@ -101,6 +101,7 @@ def setup(widget, application):
 
 
 def add_flag(flag: Flags):
+
     if not isinstance(flag, Flags):
         raise TypeError
     val = global_flags.get(flag, None)
