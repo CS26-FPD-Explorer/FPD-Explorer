@@ -160,7 +160,7 @@ def phase_correlation(ApplicationWindow, pop_up=True):
         performs event handling
     pop_up : Boolean
     """
-   if logger.check_if_all_needed(Flags.files_loaded):
+    if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Phase Corelation")
         ApplicationWindow.phase_input.update({"ds_sel": ApplicationWindow.ds_sel})
         ref_image = {"None": None}
