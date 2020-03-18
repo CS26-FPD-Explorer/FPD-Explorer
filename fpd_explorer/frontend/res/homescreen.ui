@@ -217,7 +217,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Synthetic aperture</string>
+              <string>Synthetic Aperture</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -238,7 +238,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Find circular center</string>
+              <string>Find Circular Center</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -343,7 +343,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Center of mass</string>
+              <string>Center of Mass</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -406,7 +406,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Disc edge sigma</string>
+              <string>Disc Edge Sigma</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -433,7 +433,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Make ref im</string>
+              <string>Make Ref Im</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -454,7 +454,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Phase correlation</string>
+              <string>Phase Correlation</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
