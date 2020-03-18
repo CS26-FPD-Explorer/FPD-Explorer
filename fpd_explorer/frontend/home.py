@@ -83,10 +83,10 @@ class ApplicationWindow(QMainWindow):
         self._ui.tabWidget.setCurrentIndex(0)
 
     def _setup_actions(self):
-        self._ui.action_mib.triggered.connect(self.function_mib)
-        self._ui.action_dm3.triggered.connect(self.function_dm3)
-        self._ui.action_hdf5.triggered.connect(self.function_hdf5)
-        self._ui.action_npz.triggered.connect(self.function_npz)
+        self._ui.action_mib.triggered.connect(self.open_mib)
+        self._ui.action_dm3.triggered.connect(self.open_dm3)
+        self._ui.action_hdf5.triggered.connect(self.open_hdf5)
+        self._ui.action_npz.triggered.connect(self.open_npz)
         self._ui.actionCenter_of_Mass.triggered.connect(self.centre_of_mass)
         self._ui.actionCircular_center.triggered.connect(self.find_circular_centre)
         self._ui.actionDPC_Explorer.triggered.connect(self.start_dpc_explorer)
@@ -236,8 +236,8 @@ class ApplicationWindow(QMainWindow):
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Yes:
-                valid = self.function_mib()  # load a .mib file and use it
-                if not valid:  # user canceled
+                valid = self.open_mib()  # load a .mib file and use it
+                if not valid:  # user cancelled
                     return
             else:
                 return
@@ -255,7 +255,7 @@ class ApplicationWindow(QMainWindow):
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Yes:
-                if not self.function_dm3():  # user canceled
+                if not self.open_dm3():  # user cancelled
                     return
                 dm3 = self._dm3_path
             if response == QtWidgets.QMessageBox.No:

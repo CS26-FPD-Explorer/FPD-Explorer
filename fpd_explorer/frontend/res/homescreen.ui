@@ -1052,7 +1052,7 @@
    <sender>mib_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>function_mib()</slot>
+   <slot>open_mib()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>156</x>
@@ -1116,7 +1116,7 @@
    <sender>dm3_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>function_dm3()</slot>
+   <slot>open_dm3()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>277</x>
@@ -1196,7 +1196,7 @@
    <sender>hdf5_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>function_hdf5()</slot>
+   <slot>open_hdf5()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>369</x>
@@ -1212,7 +1212,7 @@
    <sender>npz_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>function_npz()</slot>
+   <slot>open_npz()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>481</x>
@@ -1371,8 +1371,8 @@
  </connections>
  <slots>
   <slot>load_files()</slot>
-  <slot>function_mib()</slot>
-  <slot>function_dm3()</slot>
+  <slot>open_mib()</slot>
+  <slot>open_dm3()</slot>
   <slot>start_dbrowser()</slot>
   <slot>find_circular_centre()</slot>
   <slot>clear_files()</slot>
@@ -1380,8 +1380,8 @@
   <slot>remove_aperture()</slot>
   <slot>centre_of_mass()</slot>
   <slot>start_dpc_explorer()</slot>
-  <slot>function_hdf5()</slot>
-  <slot>function_npz()</slot>
+  <slot>open_hdf5()</slot>
+  <slot>open_npz()</slot>
   <slot>ransac_im_fit()</slot>
   <slot>start_vadf()</slot>
   <slot>plot_vadf()</slot>

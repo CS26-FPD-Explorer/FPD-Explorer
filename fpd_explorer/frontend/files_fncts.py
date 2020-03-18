@@ -24,7 +24,7 @@ from .. import logger
 from ..logger import Flags
 
 
-def function_mib(self):
+def open_mib(self):
     """
     Spawn a file dialog to open an mib file
     """
@@ -42,7 +42,7 @@ def function_mib(self):
     return False
 
 
-def function_npz(self):
+def open_npz(self):
     """
     Spawn a file dialog to open an npz file
     """
@@ -63,7 +63,7 @@ def function_npz(self):
     return False
 
 
-def function_hdf5(self):
+def open_hdf5(self):
     """
     Spawn a file dialog to open an hdf5 file
     """
@@ -90,7 +90,7 @@ def function_hdf5(self):
     return False
 
 
-def function_dm3(self):
+def open_dm3(self):
     """
     Spawn a file dialog to open a dm3 file
     """
