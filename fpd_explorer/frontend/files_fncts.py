@@ -65,7 +65,7 @@ def open_npz(self):
 
 def open_hdf5(self):
     """
-    Spawn a file dialog to open an hdf5 file
+    Spawn a file dialog to open a hdf5 file
     """
     try:
         fname = self.hdf5_path
