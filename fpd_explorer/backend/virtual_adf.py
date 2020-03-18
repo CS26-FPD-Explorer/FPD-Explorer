@@ -26,6 +26,15 @@ from ..frontend.custom_widgets import Pop_Up_Widget
 
 
 def start_vadf(ApplicationWindow):
+    """
+    Initializes VADF so that it can be plotted later.
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+    intialises the application with the user's desktop settings,
+    performs event handling
+    """
 
     if logger.check_if_all_needed(Flags.npz_loaded, display=False):
         params = UI_Generator(ApplicationWindow, va.VirtualAnnularImages, key_ignore=["data"])
