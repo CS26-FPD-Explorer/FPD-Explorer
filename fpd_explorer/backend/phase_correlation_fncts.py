@@ -25,6 +25,18 @@ from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
 
 def find_matching_images(ApplicationWindow):
+    """
+    once function runs with user input, and brings up 3 figure on
+    based on that input on the UI, switches to tab
+    showing the data.
+
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+        intialises the application with the user's desktop settings,
+        performs event handling
+    """
     if logger.check_if_all_needed(Flags.files_loaded):
         canvas = Pop_Up_Widget(ApplicationWindow, "Find Matching Images")
         avail_input = [("None", None)]
