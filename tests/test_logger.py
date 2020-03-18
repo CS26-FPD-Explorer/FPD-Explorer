@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
-from test_buttons import setup_tests
+from test_buttons import setup_tests, enter
 from fpd_explorer import logger
 from fpd_explorer.logger import Flags
 from fpd_explorer.frontend.home import ApplicationWindow
@@ -47,8 +47,14 @@ def test_log_in_str(qtbot):
         assert "wrong type in string " in str(excinfo.value)
 
 
-def test_if_all_needed(qtbot):
+def test_if_all_needed_flag_type(qtbot):
     setup_tests(qtbot)
     with pytest.raises(AttributeError) as excinfo:
         logger.check_if_all_needed(Flags.wrongtype)
         assert "wrong type" in str(excinfo.value)
+
+
+def test_if_all_needed_prerequisite(qtbot):
+    setup_tests(qtbot)
+    enter()
+    assert logger.check_if_all_needed(Flags.center_mass) == False
