@@ -15,7 +15,6 @@
 
 # You should have received a copy of the GNU General Public License
 # along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
-from PySide2 import QtWidgets
 
 # FPD Explorer
 from .. import logger
@@ -184,10 +183,10 @@ def phase_correlation(ApplicationWindow):
 
         if not params.exec():
             # Procedure was cancelled so just give up
-            return        
-        
+            return
+
         loading_widget = LoadingForm(1, ["phase_cor"])
-        loading_widget.setup_multi_loading("phase_cor", pc.phase_correlation, **params.get_result(),logger=logger)
+        loading_widget.setup_multi_loading("phase_cor", pc.phase_correlation, **params.get_result(), logger=logger)
         loading_widget.exec()
         out = loading_widget.get_result("phase_cor")
         ApplicationWindow.shift_yx, ApplicationWindow.shift_err = out[:2]

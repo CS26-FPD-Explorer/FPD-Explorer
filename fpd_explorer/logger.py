@@ -106,7 +106,7 @@ def add_flag(flag: Flags):
 
     Parameters
     ----------
-    flag: Flags : Enum 
+    flag: Flags : Enum
     """
 
     if not isinstance(flag, Flags):
