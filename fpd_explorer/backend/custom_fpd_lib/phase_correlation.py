@@ -49,7 +49,7 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
                       ref_im=None, rebin=None, der_clip_fraction=0.0,
                       der_clip_max_pct=99.9, truncate=4.0, parallel=True,
                       ncores=None, print_stats=True, nrnc_are_chunks=False, origin='top', 
-                      logger=None):
+                      logger=None, callback=None):
     '''
     Perform phase correlation on 4-D data using efficient upscaling to
     achieve sub-pixel resolution.
@@ -227,6 +227,9 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
     else:
         tqdm_file = fpdp.DummyFile()
     total_nims = np.prod(nondet)
+    if callback is not None:
+        callback.maximum.emit(("phase_cor", total_nims))
+
     with tqdm(total=total_nims, file=tqdm_file, mininterval=0, leave=True, unit='images') as pbar:
         for i, (ri, rf) in enumerate(r_if):
             for j, (ci, cf) in enumerate(c_if):               
@@ -268,7 +271,11 @@ def phase_correlation(data, nr, nc, cyx=None, crop_r=None, sigma=2.0,
                 shift_err[ri:rf, ci:cf].flat = error
                 shift_difp[ri:rf, ci:cf].flat = phasediff
                 
-                pbar.update(np.prod(d.shape[:-2]))
+                if callback:
+                    callback.progress.emit(("phase_cor", np.prod(d.shape[:-2])))
+                else:
+                    pbar.update(np.prod(d.shape[:-2]))
+
     if print_stats:
         print('')
         sys.stdout.flush()    

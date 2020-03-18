@@ -18,7 +18,7 @@
 
 import fpd
 import scipy as sp
-
+from PySide2 import QtWidgets
 # FPD Explorer
 from .custom_fpd_lib import dpc_explorer_class as dpc
 from ..frontend.gui_generator import UI_Generator
@@ -36,7 +36,12 @@ def start_dpc(ApplicationWindow):
         Parent in which the tab should be rendered
 
     """
-    dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
+    if ApplicationWindow.dpc_explorer is not None:
+        ApplicationWindow._ui.tabWidget.setCurrentWidget(
+            ApplicationWindow._ui.tabWidget.findChild(QtWidgets.QWidget, "DPC Explorer"))
+        return
+    ApplicationWindow.dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
+
     try:
         ApplicationWindow.dpc_input.update({"com_yx_beta": ApplicationWindow.com_yx_beta})
     except AttributeError:
@@ -54,6 +59,7 @@ def start_dpc(ApplicationWindow):
         pass
 
     if len(ApplicationWindow.dpc_input) == 0:
+        ApplicationWindow.dpc_explorer = None
         raise Exception("""No data found that could be used with DPC Explorer.\n
         Please run some function before trying again""")
     key_add = {
@@ -97,4 +103,4 @@ def start_dpc(ApplicationWindow):
         rot_results = rot_params.get_result()
         rot_results["axes"] = (int(rot_results["axes"][0]), int(rot_results["axes"][1]))
         results["d"] = sp.ndimage.rotate(results["d"], **rot_results)
-    DE = dpc.DPC_Explorer(**results, widget=dpc_explorer)
+    DE = dpc.DPC_Explorer(**results, widget=ApplicationWindow.dpc_explorer)
