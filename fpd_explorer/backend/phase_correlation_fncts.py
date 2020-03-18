@@ -112,7 +112,7 @@ def disc_edge_sigma(ApplicationWindow):
 
 
 def make_ref_im(ApplicationWindow):
-     """
+    """
     Once function runs with user input, brings up a figure
     based on that input on the UI, switches to tab
     showing the reference image output.
@@ -147,9 +147,9 @@ def make_ref_im(ApplicationWindow):
 
 def phase_correlation(ApplicationWindow, pop_up=True):
     """
-    once function runs with user input, calculates the phase correlation 
+    Once function runs with user input, calculates the phase correlation
     for the data. As it is a time consuming function(requires a lot of computational power
-    ), a pop up is also shown to let users 
+    ), a pop up is also shown to let users
     know that it will most likely take a while.
 
 
