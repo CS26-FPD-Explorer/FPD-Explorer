@@ -9,11 +9,11 @@ if os.path.isfile("requirements.txt"):
         install_requires = f.read().splitlines()
 
 setuptools.setup(
-    name="FPD-explorer",
+    name="FPD-Explorer",
     version="1.0",
-    author="Bruce Kerr,Ewan Pandelus,Florent Audonnet, Michal Broos,Ruize Shen ",
+    author="Bruce Kerr, Ewan Pandelus, Florent Audonnet, Michal Broos, Ruize Shen",
     author_email="author@example.com",
-    description="An explorer ui for the fpd library",
+    description="A GUI visualizer for the FPD library",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://stgit.dcs.gla.ac.uk./tp3-2019-cs26/cs26-main",
