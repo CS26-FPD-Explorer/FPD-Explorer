@@ -20,7 +20,6 @@
 import inspect
 from collections import OrderedDict
 
-import qdarkgraystyle
 from PySide2 import QtGui, QtWidgets
 from fpd.fpd_file import MerlinBinary
 from PySide2.QtCore import Qt, Slot
@@ -168,12 +167,15 @@ class ApplicationWindow(QMainWindow):
 
     @Slot()
     def change_color_mode(self):
-        import qdarkgraystyle
         dark_mode_config = self._ui.dark_mode_button.isChecked()
         if self.app is not None:
             print(f"Changing theme to {dark_mode_config}")
             if dark_mode_config:
-                self.app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+                try:
+                    import qdarkgraystyle
+                    self.app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+                except:
+                    pass
             else:
                 self.app.setStyleSheet("")
 
