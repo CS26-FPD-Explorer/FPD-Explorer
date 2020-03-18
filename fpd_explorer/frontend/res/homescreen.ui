@@ -426,14 +426,14 @@
              <property name="plainText">
               <string>Start by loading files</string>
              </property>
-             <property name="tabStopDistance">
-              <double>80.000000000000000</double>
-             </property>
              <property name="textInteractionFlags">
               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
              </property>
              <property name="placeholderText">
               <string/>
+             </property>
+             <property name="tabStopDistance" stdset="0">
+              <double>80.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -814,7 +814,7 @@
      <x>0</x>
      <y>0</y>
      <width>1072</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -855,6 +855,12 @@
     <addaction name="actionSynthetic_Aperture"/>
     <addaction name="actionCenter_of_Mass"/>
     <addaction name="actionRansac_Tool"/>
+    <addaction name="actionPhase_Correlation"/>
+    <addaction name="actionDisc_Edge_Sigma"/>
+    <addaction name="actionMatching_Images"/>
+    <addaction name="actionMake_Ref_Im"/>
+    <addaction name="actionVirtual_adf"/>
+    <addaction name="actionAnnular_Slice"/>
    </widget>
    <widget class="QMenu" name="menuExplorer">
     <property name="title">
@@ -964,7 +970,7 @@
   </action>
   <action name="actionVADF_Explorer">
    <property name="text">
-    <string>VADF Explorer</string>
+    <string>Plot VADF</string>
    </property>
   </action>
   <action name="actionLoad">
@@ -986,6 +992,36 @@
   <action name="action_live_coding">
    <property name="text">
     <string>Live Coding</string>
+   </property>
+  </action>
+  <action name="actionPhase_Correlation">
+   <property name="text">
+    <string>Phase Correlation</string>
+   </property>
+  </action>
+  <action name="actionDisc_Edge_Sigma">
+   <property name="text">
+    <string>Disc Edge Sigma</string>
+   </property>
+  </action>
+  <action name="actionMatching_Images">
+   <property name="text">
+    <string>Matching Images</string>
+   </property>
+  </action>
+  <action name="actionMake_Ref_Im">
+   <property name="text">
+    <string>Make Ref Im</string>
+   </property>
+  </action>
+  <action name="actionVirtual_adf">
+   <property name="text">
+    <string>Virtual ADF</string>
+   </property>
+  </action>
+  <action name="actionAnnular_Slice">
+   <property name="text">
+    <string>Annular Slice</string>
    </property>
   </action>
  </widget>
