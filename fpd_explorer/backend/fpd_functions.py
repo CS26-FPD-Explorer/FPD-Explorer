@@ -24,8 +24,6 @@ from .custom_fpd_lib import fpd_processing as fpdp
 from ..frontend.gui_generator import UI_Generator
 from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
-# NEED TO GO THROUGH PRIVATE VARIABLES
-
 
 def find_circular_centre(ApplicationWindow):
     """ Calculate the circular centre for the users input

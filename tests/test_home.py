@@ -30,7 +30,6 @@ from fpd_explorer.frontend.home import *
 from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
 
 
-
 def test_clear_files(qtbot):
     aw = ApplicationWindow()
     qtbot.addWidget(aw)

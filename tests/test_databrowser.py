@@ -18,8 +18,6 @@ from fpd_explorer.frontend.custom_widgets import CustomInputForm
 from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
 
 
-
-
 # omitted due to memory loading error on the vm
 # for local use only
 def setup_databrowser_tests(qtbot):

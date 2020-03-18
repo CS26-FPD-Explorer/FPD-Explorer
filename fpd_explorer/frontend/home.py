@@ -190,7 +190,6 @@ class ApplicationWindow(QMainWindow):
         Clears all provided files and resets the file_loaded flag
         """
         if self._ui.mib_line.text():
-            print("mibline=" + str(self._ui.mib_line.text()))
             del self._mib_path
             self._ui.mib_line.clear()
         if self._ui.dm3_line.text():
