@@ -133,6 +133,18 @@ def log(in_str: str, flag: Flags = None):
 
 
 def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=True) -> bool:
+    """
+    Checks recursively all the flags necessary to run a function, so that if a function has
+    prerequisites which has prerequites too, then they are found. If display is set to False,
+    there is no pop up, which makes it easier/ faster to test.
+
+    Parameters
+    ----------
+    current_flag: Flags : Enum
+    recursion : bool
+    display: bool
+    """
+
     if app is None:
         raise RuntimeError("No app has been provided")
     if not isinstance(current_flag, Flags):
@@ -161,6 +173,10 @@ def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=Tr
 
 
 def clear():
+    """
+    Clears the log and writes the text 'Start by loading
+    files' to the workflow section of the UI
+    """
     if text_input:
         text_input.setPlainText(start_text)
         for key in global_flags.keys():

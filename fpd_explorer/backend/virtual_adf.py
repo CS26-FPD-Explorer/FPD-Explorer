@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
 from PySide2 import QtWidgets
+
 # FPD Explorer
 from .. import logger
 from ..logger import Flags

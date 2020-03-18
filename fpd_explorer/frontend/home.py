@@ -76,7 +76,7 @@ class ApplicationWindow(QMainWindow):
     @Slot(int)
     def _handle_tab_close(self, idx):
         name = self._ui.tabWidget.tabBar().tabText(idx).lower().replace(" ", "_")
-        #set the variable to none
+        # set the variable to none
         if name in self.tabs_variables:
             self.__dict__[name] = None
         while self._ui.tabWidget.widget(idx).layout().count():
