@@ -1,5 +1,7 @@
-import setuptools
+# Standard Library
 import os
+
+import setuptools
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -13,7 +15,7 @@ setuptools.setup(
     name="FPD-Explorer",
     version="1.0",
     author="Bruce Kerr, Ewan Pandelus, Florent Audonnet, Michal Broos, Ruize Shen",
-    author_email="""2316957k@student.gla.ac.uk, 2319069p@student.gla.ac.uk, 
+    author_email="""2316957k@student.gla.ac.uk, 2319069p@student.gla.ac.uk,
     2330834a@student.gla.ac.uk, 2330994b@student.gla.ac.uk, 2361590s@student.gla.ac.uk""",
     description="A GUI visualizer for the FPD library",
     long_description=long_description,

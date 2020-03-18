@@ -139,11 +139,11 @@ class ApplicationWindow(QMainWindow):
         """
         message = QtWidgets.QDialog(self)
 
-        message.setMinimumSize(self.minimumWidth()//3, self.minimumHeight()//2)
-        message.resize(self.minimumWidth()//2, self.minimumHeight()//1.5)
+        message.setMinimumSize(self.minimumWidth() // 3, self.minimumHeight() // 2)
+        message.resize(self.minimumWidth() // 2, self.minimumHeight() // 1.5)
 
         message.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        message.setSizeGripEnabled(True);
+        message.setSizeGripEnabled(True)
         widget = QtWidgets.QTextBrowser()
         widget.setOpenExternalLinks(True)
         buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)

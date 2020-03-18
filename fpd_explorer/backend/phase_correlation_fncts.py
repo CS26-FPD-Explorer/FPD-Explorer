@@ -27,7 +27,7 @@ from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
 def find_matching_images(ApplicationWindow):
     """
-    once function runs with user input, and brings up 3 figure on
+    Once function runs with user input, brings up 3 figures
     based on that input on the UI, switches to tab
     showing the figures.
 
@@ -72,7 +72,7 @@ def find_matching_images(ApplicationWindow):
 
 def disc_edge_sigma(ApplicationWindow):
     """
-    once function runs with user input, and brings up 4 figures on
+    Once function runs with user input, brings up 4 figures
     based on that input on the UI, switches to tab
     showing the figures.
 
@@ -112,6 +112,18 @@ def disc_edge_sigma(ApplicationWindow):
 
 
 def make_ref_im(ApplicationWindow):
+    """
+    Once function runs with user input, brings up a figure
+    based on that input on the UI, switches to tab
+    showing the reference image output.
+
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+        intialises the application with the user's desktop settings,
+        performs event handling
+    """
     if logger.check_if_all_needed(Flags.phase_matching):
         canvas = Pop_Up_Widget(ApplicationWindow, "Make Reference Image")
         ApplicationWindow.ref_input.update({"meaned_image": ApplicationWindow.matching.ims_common.mean(0)})
@@ -134,6 +146,20 @@ def make_ref_im(ApplicationWindow):
 
 
 def phase_correlation(ApplicationWindow):
+    """
+    Once function runs with user input, calculates the phase correlation
+    for the data. As it is a time consuming function (requires a lot of
+    computational power), a pop up is also shown to let users  know that
+    it will most likely take a while.
+
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+        intialises the application with the user's desktop settings,
+        performs event handling
+    pop_up : Boolean
+    """
     if logger.check_if_all_needed(Flags.files_loaded):
         ApplicationWindow.phase_input.update({"ds_sel": ApplicationWindow.ds_sel})
         ref_image = {"None": None}

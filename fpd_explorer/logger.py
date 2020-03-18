@@ -101,6 +101,14 @@ def setup(widget, application):
 
 
 def add_flag(flag: Flags):
+    """
+    Sets a flag to true for a given Flag type
+
+    Parameters
+    ----------
+    flag: Flags : Enum 
+    """
+
     if not isinstance(flag, Flags):
         raise TypeError
     val = global_flags.get(flag, None)

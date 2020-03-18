@@ -71,7 +71,7 @@ class UI_Generator(QtWidgets.QDialog):
         # This must always be last and in that order
         if fnct is not None:
             self.fnct = fnct.__name__
-            self.setWindowTitle("FPD-Explorer : "+ self.fnct)
+            self.setWindowTitle("FPD-Explorer : " + self.fnct)
             self.config_val = config.get_dict(self.fnct)
             self.param = self._get_param(fnct)
         else:
@@ -287,7 +287,7 @@ class UI_Generator(QtWidgets.QDialog):
     def _handle_togglevalue(self, state: int):
         """
         Handles adding new items to the layout when a togle value is clicked
-        
+
         Parameters
         ----------
         state : int
@@ -327,7 +327,7 @@ class UI_Generator(QtWidgets.QDialog):
     def _delete_toggle_value(self, caller):
         """
         Handles removing items from layout when the toggle value is off
-        
+
         Parameters
         ----------
         caller : AtWidgets
@@ -561,7 +561,7 @@ class UI_Generator(QtWidgets.QDialog):
         """
         Add widgets from a list to a form and add that form to a layout
         Can be called recursively when multiple form needs to be created
-        
+
         Parameters
         ----------
         widget_list : list
@@ -574,7 +574,7 @@ class UI_Generator(QtWidgets.QDialog):
             end index for slicing
         n : int, optional
             index to which column the form should be added in the grid layout
-        
+
         Returns
         -------
         QWidget
