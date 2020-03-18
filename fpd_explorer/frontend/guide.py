@@ -82,11 +82,10 @@ about_us = """<p><strong><u>About us</u></strong></p>
 
 functions = """<p><strong><u>Data Browser</u></strong></p>
 
-    <p>To use Data Browser, look for the <b>DataBrowser</b>
+    <p>To use Data Browser, look for the <b>Data Browser</b>
     button underneath the <b>Functions</b> heading in the top
     right of the user interface.
-    <br>Click this button and the DataBrowser
-    tab will open.
+    <br>Click this button and the Data Browser tab will open.
     <br>The Navigation image will be on the left and the Diffraction image on the right.</p>
     <p>To navigate through the Diffraction
     image, click on the desired position in the Navigation image, and the Diffraction
@@ -100,8 +99,8 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
 
     <p><strong><u>Circular Center</u></strong></p>
 
-    <p>To use the <b>Find circular center</b> function, navigate to the
-    <b>Find circular center button</b> under the <b>functions</b> heading,
+    <p>To use the <b>Find Circular Center</b> function, navigate to the
+    <b>Find Circular Center button</b> under the <b>functions</b> heading,
     and click on it.
     <br>This will bring up a form with all of the available parameters,
     change them to your liking. The parameters will save for future use and if you want it to
@@ -112,12 +111,12 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
     <p><strong><u>Synthetic Aperture</u></strong></p>
 
     <p>The <b>Synthetic Aperture</b> function works in the exact same way as the
-    <b>Find circular center function</b>. However, the circular center
-    must be calculated before using Synthetic Aperture.</p>
+    <b>Find Circular Center</b> function. However, the circular center
+    must be calculated before using <b>Synthetic Aperture</b>.</p>
 
-    <p><strong><u>Center of mass</u></strong></p>
+    <p><strong><u>Center of Mass</u></strong></p>
 
-    <p>The <b>Center of mass</b> function requires the
+    <p>The <b>Center of Mass</b> function requires the
     <b>Synthetic Aperture</b> to have been calculated.</p>
     <p> Once clicked, input the specific parameters you want and click <b>OK</b>.
     This will calculate the center of mass based on the previous data and the files provided
@@ -125,16 +124,16 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
 
     <p><strong><u>Ransac Tools</u></strong></p>
 
-    <p>The <b>Ransac Tools</b> function requires <b>Center of mass</b>
+    <p>The <b>Ransac Tools</b> function requires <b>Center of Mass</b>
     to have been run before it can output data.</p>
 
     <p><strong><u>DPC Explorer</u></strong></p>
 
-    <p><b>DPC</b> Explorer will output different data depending
-    on what is run before, as certain parameters will have a
+    <p><b>DPC Explorer</b> will output different data depending
+    on what is run beforehand. Certain parameters will have a
     different effect on the output.
     <br><br> A standard work flow would look like this: <b>Find
-    circular center->Synthetic Aperture->Center of mass->Ransac Tools->DPC Explorer</b></p>
+    Circular Center->Synthetic Aperture->Center of Mass->Ransac Tools->DPC Explorer</b></p>
 
     <p><strong><u>Matching Images</u></strong></p>
 
@@ -151,12 +150,12 @@ functions = """<p><strong><u>Data Browser</u></strong></p>
     <p><strong><u>Phase Correlation</u></strong></p>
 
     <p><b>Phase Correlation</b> requires only the files to be loaded to run.
-    <br>This function also requires a lot of computational power. The software may appear slow
-    while running this function.</p>
+    <br>This function also requires a lot of computational power.
+    <br>The software may appear slow while running this function.</p>
 
     <p><strong><u>Virtual ADF</u></strong></p>
 
-    <p> The <b>Virtual ADF</b> function requires only <b>Find circular center</b>
+    <p> The <b>Virtual ADF</b> function requires only <b>Find Circular Center</b>
     to be run.
     <br>It can also be used when loading an <b>npz file/configuration.</b>
 

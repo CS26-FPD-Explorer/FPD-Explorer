@@ -784,6 +784,12 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>300</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>11</pointsize>
@@ -893,7 +899,6 @@
    <addaction name="menuHelp"/>
    <addaction name="menuAbout"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="action_dm3">
    <property name="text">
     <string>.dm3</string>
