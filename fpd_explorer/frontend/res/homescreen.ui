@@ -24,6 +24,10 @@
   <property name="windowTitle">
    <string>FPD-Explorer</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>./fpd_explorer/frontend/res/icon.png</normaloff>./fpd_explorer/frontend/res/icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="1" column="0">
