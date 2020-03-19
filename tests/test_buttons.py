@@ -16,11 +16,11 @@ from fpd_explorer import config_handler as config
 from fpd_explorer.frontend.home import *
 from fpd_explorer.backend import virtual_adf
 from fpd_explorer.backend.dpc_explorer import start_dpc
-from fpd_explorer.backend import fpd_functions 
+from fpd_explorer.backend import fpd_functions
 from fpd_explorer.backend.custom_fpd_lib.fpd_file import get_memmap
 from fpd_explorer.frontend.custom_widgets import CustomInputForm
 from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
-from fpd_explorer.backend import phase_correlation_fncts 
+from fpd_explorer.backend import phase_correlation_fncts
 
 
 def interact():
@@ -31,11 +31,12 @@ def interact():
 
 def enter(time_before_executing=300):
     """
-    automates running functions on the UI
+    Automates running functions on the UI
 
     Parameters
     ----------
-    time_before_executing: time in milliseconds to wait before
+    time_before_executing: int
+    time in milliseconds to wait before
     execution of interact
     """
     QTimer.singleShot(time_before_executing, interact)
@@ -92,6 +93,7 @@ def test_center_of_mass_button(qtbot):
         assert False
     assert True
 
+
 @pytest.mark.skip
 def test_ransac_button(qtbot):
     aw = setup_tests(qtbot)
@@ -107,6 +109,7 @@ def test_ransac_button(qtbot):
     except:
         assert False
     assert True
+
 
 @pytest.mark.skip
 def test_dpc_explorer(qtbot):
@@ -161,6 +164,8 @@ def test_disc_edge_sigma(qtbot):
     assert True
 
 # requires dm3 and mib (does not run on hf5)
+
+
 def test_virtual_adf(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -173,6 +178,8 @@ def test_virtual_adf(qtbot):
     assert True
 
 # requires dm3 and mib (does not run on hf5)
+
+
 def test_plot_vadf(qtbot):
     aw = setup_tests(qtbot)
     enter()
