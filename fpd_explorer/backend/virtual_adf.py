@@ -32,8 +32,8 @@ def start_vadf(ApplicationWindow):
     Parameters
     ----------
     ApplicationWindow : QApplication
-    intialises the application with the user's desktop settings,
-    performs event handling
+        intialises the application with the user's desktop settings,
+        performs event handling
     """
 
     if logger.check_if_all_needed(Flags.npz_loaded, display=False):
@@ -84,8 +84,8 @@ def plot_vadf(ApplicationWindow):
     Parameters
     ----------
     ApplicationWindow : QApplication
-    intialises the application with the user's desktop settings,
-    performs event handling
+        intialises the application with the user's desktop settings,
+        performs event handling
     """
     if ApplicationWindow.vadf_explorer is not None:
         ApplicationWindow._ui.tabWidget.setCurrentWidget(
@@ -110,8 +110,8 @@ def annular_slice(ApplicationWindow):
     Parameters
     ----------
     ApplicationWindow : QApplication
-    intialises the application with the user's desktop settings,
-    performs event handling
+        intialises the application with the user's desktop settings,
+        performs event handling
     """
     if logger.check_if_all_needed(Flags.vadf_init):
         params = UI_Generator(ApplicationWindow, ApplicationWindow.vadf_explorer.annular_slice)

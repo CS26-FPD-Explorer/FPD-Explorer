@@ -26,7 +26,8 @@ from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
 
 def find_circular_centre(ApplicationWindow):
-    """ Calculate the circular centre for the users input
+    """
+    Calculate the circular centre for the users input
     parameters, when function is used it will
     bring up a figure on a new tab, and switch to this
     tab.
@@ -101,7 +102,7 @@ def remove_aperture(ApplicationWindow):
 
 def centre_of_mass(ApplicationWindow):
     """
-    calculates center of mass statistics based on the
+    Calculates center of mass statistics based on the
     data set provided and the previous functions run.
 
     Parameters
@@ -147,7 +148,7 @@ def centre_of_mass(ApplicationWindow):
 
 def ransac_im_fit(ApplicationWindow):
     """
-    once center of mass has been run, function runs
+    Once center of mass has been run, function runs
     with the users input, and brings up a figure on
     based on that input on the UI, switches to tab
     showing the data.

@@ -233,7 +233,7 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def load_files(self):
         """
-        setp up the databrowser and open the file if not present
+        Setup the data browser and open the file if not present
         """
         x_value = None
         y_value = None
@@ -312,7 +312,7 @@ class ApplicationWindow(QMainWindow):
 
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
         """
-        create an input form with the given value
+        Create an input form with the given value
 
         Parameters
         ----------
