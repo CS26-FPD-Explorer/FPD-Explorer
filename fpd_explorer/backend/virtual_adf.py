@@ -103,6 +103,16 @@ def plot_vadf(ApplicationWindow):
 
 
 def annular_slice(ApplicationWindow):
+    """
+    Creates a figure based on the user input and switches
+    to the tab showing the figure
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+    intialises the application with the user's desktop settings,
+    performs event handling
+    """
     if logger.check_if_all_needed(Flags.vadf_init):
         params = UI_Generator(ApplicationWindow, ApplicationWindow.vadf_explorer.annular_slice)
         if not params.exec():
