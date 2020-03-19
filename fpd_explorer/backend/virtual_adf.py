@@ -77,6 +77,16 @@ def start_vadf(ApplicationWindow):
 
 
 def plot_vadf(ApplicationWindow):
+    """
+    Forms VADF images(2 figures) based on user input and
+    switches to a tab showing this.
+
+    Parameters
+    ----------
+    ApplicationWindow : QApplication
+    intialises the application with the user's desktop settings,
+    performs event handling
+    """
     if ApplicationWindow.vadf_explorer is not None:
         ApplicationWindow._ui.tabWidget.setCurrentWidget(
             ApplicationWindow._ui.tabWidget.findChild(QtWidgets.QWidget, "VADF Explorer"))
