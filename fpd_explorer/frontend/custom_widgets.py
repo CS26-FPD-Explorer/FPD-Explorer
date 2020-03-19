@@ -254,8 +254,9 @@ class LoadingForm(QtWidgets.QDialog):
     def cancel(self):
         return super().done(False)
 
-    @Slot()
-    def completed(self):
+    @Slot(object)
+    def completed(self, name):
+        self.data_out[name][-1].exit()
         self.nb_threads -= 1
         if self.nb_threads == 0:
             return super().done(True)
@@ -287,7 +288,7 @@ class CustomSignals(QObject):
         `tuple` (int : indicating % progress, caller)
 
     """
-    finished = Signal()
+    finished = Signal(object)
     error = Signal(tuple)
     result = Signal(object)
     progress = Signal(tuple)
@@ -328,7 +329,7 @@ class GuiUpdater(QThread):
             self.signals.error.emit((exctype, value, traceback.format_exc()))
         finally:
             self.signals.result.emit((self._name, result_val))  # Done
-            self.signals.finished.emit()  # Done
+            self.signals.finished.emit(self._name)  # Done
 
 
 class QIPythonWidget(RichIPythonWidget):
