@@ -152,7 +152,7 @@ def test_matching_images_button(qtbot):
     aw = setup_tests(qtbot)
     try:
         enter()
-        phase_correlation_fncts.find_matching_images(aw)
+        phase_correlation_fncts.find_matching_images(aw, pop_up=False)
     except:
         assert False
     assert True
@@ -162,7 +162,7 @@ def test_matching_images_button(qtbot):
 def test_phase_correlation(qtbot):
     aw = setup_tests(qtbot)
     enter()
-    phase_correlation_fncts.find_matching_images(aw)
+    phase_correlation_fncts.find_matching_images(aw, pop_up=False)
     try:
         enter()
         phase_correlation_fncts.phase_correlation(aw, pop_up=False)
@@ -174,7 +174,7 @@ def test_phase_correlation(qtbot):
 def test_disc_edge_sigma(qtbot):
     aw = setup_tests(qtbot)
     enter()
-    phase_correlation_fncts.find_matching_images(aw)
+    phase_correlation_fncts.find_matching_images(aw, pop_up=False)
     try:
         enter()
         phase_correlation_fncts.disc_edge_sigma(aw)

@@ -17,15 +17,16 @@
 # along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
 
 from PySide2 import QtWidgets
+
 # FPD Explorer
 from .. import logger
 from ..logger import Flags
 from .custom_fpd_lib import phase_correlation as pc
 from ..frontend.gui_generator import UI_Generator
-from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
+from ..frontend.custom_widgets import Pop_Up_Widget
 
 
-def find_matching_images(ApplicationWindow):
+def find_matching_images(ApplicationWindow, pop_up=True):
     """
     Once function runs with the user input, brings up 3 figures
     based on that input and switches to the tab showing the figures.
@@ -60,16 +61,9 @@ def find_matching_images(ApplicationWindow):
         results = params.get_result()
         results["widget"] = canvas
 
-        if not results["plot"]:
-            loading_widget = LoadingForm(2, ["NRSME", "NRSME-all"])
-            loading_widget.setup_multi_loading(["NRSME", "NRSME-all"], pc.find_matching_images, **results)
-            if not loading_widget.exec():
-                return
-            ApplicationWindow.matching = loading_widget.get_result("NRSME")
-        else:
-            QtWidgets.QMessageBox.information(ApplicationWindow, "Information", 
-            """This could take a while\nDisable plot to get a loading bar""")
-            ApplicationWindow.matching = pc.find_matching_images(**results)
+        if pop_up:
+            QtWidgets.QMessageBox.information(ApplicationWindow, "Information", "This could take a while")
+        ApplicationWindow.matching = pc.find_matching_images(**results)
         logger.log("Found Matching images", Flags.phase_matching)
 
 
@@ -188,7 +182,7 @@ def phase_correlation(ApplicationWindow, pop_up=True):
         if pop_up:
             QtWidgets.QMessageBox.information(ApplicationWindow, "Information", "This could take a while")
 
-        out =  pc.phase_correlation(**params.get_result(), logger=logger)
+        out = pc.phase_correlation(**params.get_result(), logger=logger)
         ApplicationWindow.shift_yx, ApplicationWindow.shift_err = out[:2]
         ApplicationWindow.shift_difp, ApplicationWindow.ref = out[2:]
         logger.log("Phase Correlation finished sucessfully")

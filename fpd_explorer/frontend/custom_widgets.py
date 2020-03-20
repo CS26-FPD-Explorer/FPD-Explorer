@@ -237,7 +237,6 @@ class LoadingForm(QtWidgets.QDialog):
         for el in range(len(name)):
             self.data_out[name[el]].append(worker)
         worker.start()
-        print(worker.currentThread())
 
     @Slot()
     def set_max(self, obj):
@@ -332,13 +331,11 @@ class GuiUpdater(QThread):
                 *self._args, **self._kwargs
             )
         except BaseException:
-            print("exeption")
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
         finally:
             # Done
-            print("Done")
             for el in self._name:
                 self.signals.result.emit((el, result_val))
                 self.signals.finished.emit(el)
