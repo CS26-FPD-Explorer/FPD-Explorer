@@ -206,6 +206,8 @@ class LoadingForm(QtWidgets.QDialog):
         self.data_out = defaultdict(list)
         self.threadpool = QThreadPool()
         self.nb_threads = nb_bar
+        if isinstance(name, str):
+            name = [name]
         for el in range(nb_bar):
             self.setup_ui(name[el])
         self.v_layout.addWidget(cancel_button)
@@ -223,16 +225,19 @@ class LoadingForm(QtWidgets.QDialog):
         self.v_layout.addWidget(widget)
 
     def setup_multi_loading(self, name, fnct, *args, **kwargs):
+        if isinstance(name, str):
+            name = [name]
+        if kwargs.get("app", None):
+            kwargs["app"] = kwargs.get("app", None)
         worker = GuiUpdater(fnct, name, *args, **kwargs)
         worker.signals.finished.connect(self.completed)
         worker.signals.progress.connect(self.progress_func)
         worker.signals.result.connect(self.set_value)
         worker.signals.maximum.connect(self.set_max)
-        if isinstance(name, str):
-            name = [name]
         for el in range(len(name)):
             self.data_out[name[el]].append(worker)
         worker.start()
+        print(worker.currentThread())
 
     @Slot()
     def set_max(self, obj):
@@ -241,7 +246,8 @@ class LoadingForm(QtWidgets.QDialog):
 
     @Slot()
     def set_value(self, obj):
-        self.data_out[obj[0]][0] = obj[1]
+        name, result = obj
+        self.data_out[name][0] = result
 
     def setup_loading(self, name, max_size):
         self.set_max(name, max_size)
@@ -249,18 +255,21 @@ class LoadingForm(QtWidgets.QDialog):
 
     @Slot()
     def cancel(self):
+        for el in self.data_out.values():
+            el[-1].exit(0)
         return super().done(False)
 
     @Slot(object)
     def completed(self, name):
-        self.data_out[name][-1].exit()
         self.nb_threads -= 1
         if self.nb_threads == 0:
             return super().done(True)
 
     @Slot(tuple)
     def progress_func(self, obj):
-        self.data_out[obj[0]][1].setValue(self.data_out[obj[0]][1].value() + obj[1])
+        value = self.data_out[obj[0]][1].value() + obj[1]
+        if value <= self.data_out[obj[0]][1].maximum():
+            self.data_out[obj[0]][1].setValue(value)
 
     def get_result(self, name):
         return self.data_out[name][0]
@@ -298,10 +307,12 @@ class GuiUpdater(QThread):
     """
 
     def __init__(self, fn, name, *args, **kwargs):
-        super(GuiUpdater, self).__init__()
+        super(GuiUpdater, self).__init__(QApplication.instance())
         # Store constructor arguments (re-used for processing)
         self._fn = fn
         self._name = name
+        if kwargs.get("app", None):
+            kwargs["app"] = self
         self._args = args
         self._kwargs = kwargs
         self.signals = CustomSignals()
@@ -321,13 +332,16 @@ class GuiUpdater(QThread):
                 *self._args, **self._kwargs
             )
         except BaseException:
+            print("exeption")
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
         finally:
             # Done
-            self.signals.result.emit((self._name, result_val))
-            self.signals.finished.emit(self._name)
+            print("Done")
+            for el in self._name:
+                self.signals.result.emit((el, result_val))
+                self.signals.finished.emit(el)
 
 
 class QIPythonWidget(RichIPythonWidget):

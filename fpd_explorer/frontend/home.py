@@ -304,7 +304,9 @@ class ApplicationWindow(QMainWindow):
         loading_widget = LoadingForm(2, ["sum_im", "sum_dif"])
         loading_widget.setup_multi_loading("sum_im", fpdp_new.sum_im, self.ds_sel, 16, 16)
         loading_widget.setup_multi_loading("sum_dif", fpdp_new.sum_dif, self.ds_sel, 16, 16)
-        loading_widget.exec()
+        if not loading_widget.exec():
+            # loading was canceled so just return
+            return
         self.sum_dif = loading_widget.get_result("sum_dif")
         self.sum_im = loading_widget.get_result("sum_im")
         self._files_loaded = True

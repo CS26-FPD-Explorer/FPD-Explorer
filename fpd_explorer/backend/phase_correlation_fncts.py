@@ -59,13 +59,16 @@ def find_matching_images(ApplicationWindow):
             return
         results = params.get_result()
         results["widget"] = canvas
+
         if not results["plot"]:
             loading_widget = LoadingForm(2, ["NRSME", "NRSME-all"])
             loading_widget.setup_multi_loading(["NRSME", "NRSME-all"], pc.find_matching_images, **results)
-            loading_widget.exec()
-            ApplicationWindow.matching = loading_widget.get_result("matching")
+            if not loading_widget.exec():
+                return
+            ApplicationWindow.matching = loading_widget.get_result("NRSME")
         else:
-            QtWidgets.QMessageBox.information(ApplicationWindow, "Information", "This could take a while")
+            QtWidgets.QMessageBox.information(ApplicationWindow, "Information", """This could take a while \n 
+            Disable plot to get a loading bar""")
             ApplicationWindow.matching = pc.find_matching_images(**results)
         logger.log("Found Matching images", Flags.phase_matching)
 
@@ -143,7 +146,7 @@ def make_ref_im(ApplicationWindow):
         logger.log("Reference image created successfully")
 
 
-def phase_correlation(ApplicationWindow):
+def phase_correlation(ApplicationWindow, pop_up=True):
     """
     Once function runs with the user input, calculates the phase correlation
     for the data. As it is a time consuming function (requires a lot of computational power),
@@ -182,11 +185,10 @@ def phase_correlation(ApplicationWindow):
         if not params.exec():
             # Procedure was cancelled so just give up
             return
+        if pop_up:
+            QtWidgets.QMessageBox.information(ApplicationWindow, "Information", "This could take a while")
 
-        loading_widget = LoadingForm(1, ["phase_cor"])
-        loading_widget.setup_multi_loading("phase_cor", pc.phase_correlation, **params.get_result(), logger=logger)
-        loading_widget.exec()
-        out = loading_widget.get_result("phase_cor")
+        out =  pc.phase_correlation(**params.get_result(), logger=logger)
         ApplicationWindow.shift_yx, ApplicationWindow.shift_err = out[:2]
         ApplicationWindow.shift_difp, ApplicationWindow.ref = out[2:]
         logger.log("Phase Correlation finished sucessfully")

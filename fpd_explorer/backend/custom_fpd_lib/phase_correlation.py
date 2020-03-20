@@ -432,8 +432,8 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
         ind_perms = np.array(list(combinations(inds, 2))).T
         intercept_vals = err[ind_perms[0], ind_perms[1]]
         comb_vals[i] = np.nansum(intercept_vals**2).sum()**0.5
-        if callback is not None:
-            callback.progress.emit(("NRSME", 1))
+        if callback is not None :
+            callback.progress.emit(("NRSME", 5))
         comb_inds[i] = inds
 
 
@@ -541,8 +541,6 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
     ims_orig.shape = ims_orig_shape
 
     rtn = namedtuple('matching', ['yxi_combos', 'yxi_common', 'ims_common', 'ims_best'])
-    if callback is not None:
-        callback.progress.emit("matching", (rtn(yxi_combos, yxi_common, ims_common, ims_best)))
 
     return rtn(yxi_combos, yxi_common, ims_common, ims_best)
 
