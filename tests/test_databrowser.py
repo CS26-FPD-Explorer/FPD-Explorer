@@ -1,3 +1,21 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 # Standard Library
 import os
 import sys
@@ -7,7 +25,6 @@ from PySide2 import QtCore
 from pytestqt import qtbot
 from PySide2.QtCore import QTimer, QCoreApplication
 from pynput.keyboard import Key, Controller
-from test_buttons import enter, interact, setup_tests
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
 
@@ -16,10 +33,10 @@ from fpd_explorer.frontend.home import *
 from fpd_explorer.frontend.files_fncts import *
 from fpd_explorer.frontend.custom_widgets import CustomInputForm
 from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
+from test_buttons import enter, interact, setup_tests
 
 
-# omitted due to memory loading error on the vm
-# for local use only
+# omitted due to memory loading error on the vm, for local use only
 def setup_databrowser_tests(qtbot):
     aw = ApplicationWindow()
     db = DataBrowserWidget(aw)
@@ -50,7 +67,6 @@ def test_load_npz(qtbot):
     aw = setup_tests(qtbot)
 
     aw.npz_path = "/home/ubuntu/example-data/VirtualAnnularImages_20200305_185503.npz"
-    # aw.npz_path = "C:\cs26\example-data\Transfer-wbJpeYPVBcfcov9N\\VirtualAnnularImages_20200305_185503.npz"
     aw._ui.action_npz.trigger()
 
     assert logger.check_if_all_needed(Flags.npz_loaded)

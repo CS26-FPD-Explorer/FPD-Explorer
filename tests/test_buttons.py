@@ -1,3 +1,21 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 # Standard Library
 import os
 import sys
@@ -9,6 +27,7 @@ from pytestqt import qtbot
 from PySide2.QtCore import QTimer, QCoreApplication
 from pynput.keyboard import Key, Controller
 from fpd.fpd_file import MerlinBinary
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
 
 # First Party
@@ -122,7 +141,7 @@ def test_dpc_explorer(qtbot):
     fpd_functions.centre_of_mass(aw)
     try:
         enter()
-        # dpc brings up two input UIs when rotate is true
+        # DPC brings up two input UIs when rotate is true
         start_dpc(aw)
     except:
         assert False
@@ -163,9 +182,8 @@ def test_disc_edge_sigma(qtbot):
         assert False
     assert True
 
-# requires dm3 and mib (does not run on hf5)
 
-
+# requires dm3 and mib (does not run on hdf5)
 def test_virtual_adf(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -177,9 +195,8 @@ def test_virtual_adf(qtbot):
         assert False
     assert True
 
-# requires dm3 and mib (does not run on hf5)
 
-
+# requires dm3 and mib (does not run on hdf5)
 def test_plot_vadf(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -194,7 +211,7 @@ def test_plot_vadf(qtbot):
     assert True
 
 
-# requires dm3 and mib (does not run on hf5)
+# requires dm3 and mib (does not run on hdf5)
 def test_annular_slice(qtbot):
     aw = setup_tests(qtbot)
     enter()

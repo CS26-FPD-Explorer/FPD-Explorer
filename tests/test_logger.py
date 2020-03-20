@@ -1,14 +1,37 @@
-import sys
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
+# Standard Library
 import os
+import sys
+
+import pytest
+from PySide2 import QtWidgets
+from pytestqt import qtbot
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
-from test_buttons import setup_tests, enter
+
+# First Party
+import fpd_explorer.config_handler as config
 from fpd_explorer import logger
 from fpd_explorer.logger import Flags
 from fpd_explorer.frontend.home import ApplicationWindow
-from PySide2 import QtWidgets
-import fpd_explorer.config_handler as config
-import pytest
-from pytestqt import qtbot
+from test_buttons import setup_tests, enter
 
 
 def setup_logger_tests(qtbot):

@@ -15,6 +15,7 @@
 
 # You should have received a copy of the GNU General Public License
 # along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 # Standard Library
 import os
 import sys
@@ -23,6 +24,7 @@ import pytest
 from PySide2 import QtCore
 from pytestqt import qtbot
 from PySide2.QtCore import QTimer, QCoreApplication
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
 
 # First Party
