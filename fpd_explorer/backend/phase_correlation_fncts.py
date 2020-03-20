@@ -110,7 +110,7 @@ def disc_edge_sigma(ApplicationWindow):
 
 def make_ref_im(ApplicationWindow):
     """
-    Once function runs with the user input, brings up 1 figure based on 
+    Once function runs with the user input, brings up 1 figure based on
     that input and switches to the tab showing the reference image output.
 
 

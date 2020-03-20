@@ -43,59 +43,59 @@ If you wish to change the colour map of the Diffraction image, there is a drop d
 
 **_<ins>Circular Center</ins>_**
 
-To use the **Find Circular Center** function, navigate to the **Find Circular Center button** under the **functions** heading, and click on it.  
+To use the Find Circular Center function, navigate to the Find Circular Center button under the **functions** heading, and click on it.  
 This will bring up a form with all of the available parameters, change them to your liking. The parameters will save for future use and if you want it to return to the default values, click **Restore defaults**. Once you are happy with your input parameters click **OK** and the circular center tab will pop up showing the relevant images.
 
 **_<ins>Synthetic Aperture</ins>_**
 
-The **Synthetic Aperture** function works in the exact same way as the **Find Circular Center** function. However, the circular center must be calculated before using **Synthetic Aperture**.
+The Synthetic Aperture function works in the exact same way as the **Find Circular Center** function. However, the circular center must be calculated before using **Synthetic Aperture**.
 
 **_<ins>Center of Mass</ins>_**
 
-The **Center of Mass** function requires the **Synthetic Aperture** to have been calculated.
+The Center of Mass function requires the **Synthetic Aperture** to have been calculated.
 
 Once clicked, input the specific parameters you want and click **OK**. This will calculate the center of mass based on the previous data and the files provided and generate the statistics in the **Workflow help** section.
 
 **_<ins>Ransac Tools</ins>_**
 
-The **Ransac Tools** function requires **Center of Mass** to have been run before it can output data.
+The Ransac Tools function requires **Center of Mass** to have been run before it can output data.
 
 **_<ins>DPC Explorer</ins>_**
 
-**DPC Explorer** will output different data depending on what is run beforehand. Certain parameters will have a different effect on the output.  
+DPC Explorer will output different data depending on what is run beforehand. Certain parameters will have a different effect on the output.  
 
 A standard work flow would look like this: **Find Circular Center->Synthetic Aperture->Center of Mass->Ransac Tools->DPC Explorer**
 
 **_<ins>Matching Images</ins>_**
 
-**Matching Images** requires only the files to be loaded to run.
+Requires only the files to be loaded to run.
 
 **_<ins>Disc Edge Sigma</ins>_**
 
-**Disc Edge Sigma** requires **Matching Images** to have been run.
+Requires **Matching Images** to have been run.
 
 **_<ins>Make Ref Im</ins>_**
 
-**Make Ref Im** requires **Disc Edge Sigma** to have been run.
+Requires **Disc Edge Sigma** to have been run.
 
 **_<ins>Phase Correlation</ins>_**
 
-**Phase Correlation** requires only the files to be loaded to run.  
+Requires only the files to be loaded to run.  
 This function also requires a lot of computational power.  
 The software may appear slow while running this function.
 
 **_<ins>Virtual ADF</ins>_**
 
-The **Virtual ADF** function requires only **Find Circular Center** to be run.  
+Requires only **Find Circular Center** to be run.  
 It can also be used when loading an **npz file/configuration.**
 
 **_<ins>Plot VADF</ins>_**
 
-**Plotting VADF** requires **Virtual ADF** to be initialised.
+Requires only **Virtual ADF** to be initialised.
 
 **_<ins>Annular Slice</ins>_**
 
-**Annular Slice** requires **Virtual ADF** to be initialised.
+Requires only **Virtual ADF** to be initialised.
 
 # Live coding
 
