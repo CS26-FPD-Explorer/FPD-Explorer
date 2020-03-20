@@ -39,7 +39,7 @@ from ..backend.custom_fpd_lib import fpd_processing as fpdp_new
 
 class ApplicationWindow(QMainWindow):
     """
-    Create the main window and connect the menu bar slots
+    Create the main window and connect the menu bar slots.
     """
 
     def __init__(self, app=None, dark_mode_config=False):
@@ -51,6 +51,7 @@ class ApplicationWindow(QMainWindow):
         self._setup_actions()
         self.app = app
         self.dark_mode_config = dark_mode_config
+        self.tabs_variables = ["data_browser", "dpc_explorer", "vadf_explorer"]
         if dark_mode_config is not None:
             self._ui.dark_mode_button.setChecked(dark_mode_config)
         else:
@@ -58,7 +59,8 @@ class ApplicationWindow(QMainWindow):
 
         self._last_path = config.get_config("file_path")
         self._files_loaded = False
-        self.data_browser = None
+        for name in self.tabs_variables:
+            self.__dict__[name] = None
         self._setup_cmaps()
         # makes all tabs except Home closable
         self._ui.tabWidget.tabCloseRequested.connect(self._handle_tab_close)
@@ -73,27 +75,34 @@ class ApplicationWindow(QMainWindow):
 
     @Slot(int)
     def _handle_tab_close(self, idx):
-        name = self._ui.tabWidget.tabBar().tabText(idx)
-        print(f"Tab {name} at {idx} has been closed")
-        if name == "Data Browser":
-            self.data_browser = None
+        name = self._ui.tabWidget.tabBar().tabText(idx).lower().replace(" ", "_")
+        # set the variable to None
+        if name in self.tabs_variables:
+            self.__dict__[name] = None
         while self._ui.tabWidget.widget(idx).layout().count():
             self._ui.tabWidget.widget(idx).layout().takeAt(0).widget().deleteLater()
         self._ui.tabWidget.removeTab(idx)
         self._ui.tabWidget.setCurrentIndex(0)
 
     def _setup_actions(self):
-        self._ui.action_mib.triggered.connect(self.function_mib)
-        self._ui.action_dm3.triggered.connect(self.function_dm3)
-        self._ui.action_hdf5.triggered.connect(self.function_hdf5)
-        self._ui.action_npz.triggered.connect(self.function_npz)
+        self._ui.action_mib.triggered.connect(self.open_mib)
+        self._ui.action_dm3.triggered.connect(self.open_dm3)
+        self._ui.action_hdf5.triggered.connect(self.open_hdf5)
+        self._ui.action_npz.triggered.connect(self.open_npz)
         self._ui.actionCenter_of_Mass.triggered.connect(self.centre_of_mass)
         self._ui.actionCircular_center.triggered.connect(self.find_circular_centre)
         self._ui.actionDPC_Explorer.triggered.connect(self.start_dpc_explorer)
+        self._ui.actionSynthetic_Aperture.triggered.connect(self.synthetic_aperture)
         self._ui.actionData_Browser.triggered.connect(self.start_dbrowser)
         self._ui.actionLoad.triggered.connect(self.load_files)
         self._ui.actionRansac_Tool.triggered.connect(self.ransac_im_fit)
-        self._ui.actionVADF_Explorer.triggered.connect(self.start_vadf)
+        self._ui.actionVADF_Explorer.triggered.connect(self.plot_vadf)
+        self._ui.actionPhase_Correlation.triggered.connect(self.phase_correlation)
+        self._ui.actionDisc_Edge_Sigma.triggered.connect(self.disc_edge_sigma)
+        self._ui.actionMatching_Images.triggered.connect(self.find_matching_images)
+        self._ui.actionMake_Ref_Im.triggered.connect(self.make_ref_im)
+        self._ui.actionVirtual_adf.triggered.connect(self.start_vadf)
+        self._ui.actionAnnular_Slice.triggered.connect(self.annular_slice_vadf)
         self._ui.action_navigating_loading.triggered.connect(lambda: self.guide_me("navigating_and_loading"))
         self._ui.action_functions.triggered.connect(lambda: self.guide_me("functions"))
         self._ui.action_about_us.triggered.connect(lambda: self.guide_me("about_us"))
@@ -134,21 +143,27 @@ class ApplicationWindow(QMainWindow):
         topic : str
             Key to look up in the dictionary of guide topics.
         """
-        message = QtWidgets.QDialog()
-        message.setFixedSize(self.minimumWidth() // 1.5, self.minimumHeight() // 1.25)
-        message.setWindowFlags((self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint) &
-                               ~Qt.WindowContextHelpButtonHint)
+        message = QtWidgets.QDialog(self)
+
+        message.setMinimumSize(self.minimumWidth() // 3, self.minimumHeight() // 2)
+        message.resize(self.minimumWidth() // 2, self.minimumHeight() // 1.5)
+
+        message.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        message.setSizeGripEnabled(True)
         widget = QtWidgets.QTextBrowser()
         widget.setOpenExternalLinks(True)
+        buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
+        buttons.accepted.connect(message.accept)
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(widget)
+        layout.addWidget(buttons)
         message.setLayout(layout)
         widget.setHtml(get_guide(topic))
         font = QtGui.QFont()
         font.setPointSize(11)
         widget.setFont(font)
         message.setWindowTitle(topic.replace("_", " ").capitalize())
-        message.exec()
+        message.show()
 
     def _update_last_path(self, new_path):
         self._last_path = "/".join(new_path.split("/")[:-1]) + "/"
@@ -164,12 +179,13 @@ class ApplicationWindow(QMainWindow):
         self.ref_input = {}
         self.phase_input = {}
         self.vadf_input = {}
+        self.data_input = {}
+        self.nav_data_input = {}
 
     @Slot()
     def change_color_mode(self):
         dark_mode_config = self._ui.dark_mode_button.isChecked()
         if self.app is not None:
-            print(f"Changing theme to {dark_mode_config}")
             if dark_mode_config:
                 try:
                     import qdarkgraystyle
@@ -187,10 +203,9 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def clear_files(self):
         """
-        Clears all provided files and resets the file_loaded flag
+        Clears all provided files and resets the file_loaded flag.
         """
         if self._ui.mib_line.text():
-            print("mibline=" + str(self._ui.mib_line.text()))
             del self._mib_path
             self._ui.mib_line.clear()
         if self._ui.dm3_line.text():
@@ -211,21 +226,21 @@ class ApplicationWindow(QMainWindow):
         for _ in range(self._ui.tabWidget.count() - 1):
             # 1 because every time a tab is removed, indices are reassigned
             self._ui.tabWidget.removeTab(1)
-        if self.data_browser:
-            self.data_browser = None
+        for name in self.tabs_variables:
+            self.__dict__[name] = None
         logger.clear()
 
     @Slot()
     def load_files(self):
         """
-        setp up the databrowser and open the file if not present
+        Set up the Data Browser and open the file if not present.
         """
         x_value = None
         y_value = None
         if logger.check_if_all_needed(Flags.hdf5_usage, display=False):
             logger.log("Files loaded correctly", Flags.files_loaded)
             return
-        # Cherk if Mib exist
+        # Check if .mib file exists
         try:
             mib = self._mib_path
         except AttributeError:
@@ -236,14 +251,14 @@ class ApplicationWindow(QMainWindow):
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Yes:
-                valid = self.function_mib()  # load a .mib file and use it
-                if not valid:  # user canceled
+                valid = self.open_mib()  # load an .mib file and use it
+                if not valid:  # user cancelled
                     return
             else:
                 return
 
         mib = self._mib_path
-        # Check if dm3 exist
+        # Check if .dm3 file exists
         try:
             dm3 = self._dm3_path
         except AttributeError:
@@ -255,7 +270,7 @@ class ApplicationWindow(QMainWindow):
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Yes:
-                if not self.function_dm3():  # user canceled
+                if not self.open_dm3():  # user cancelled
                     return
                 dm3 = self._dm3_path
             if response == QtWidgets.QMessageBox.No:
@@ -280,8 +295,8 @@ class ApplicationWindow(QMainWindow):
                                scanXalu=x_value, row_end_skip=1)
 
         self.ds = self.mb.get_memmap()
-        real_skip, recip_skip = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
-                                                text_y="Amount to skip for Diffraction Image")
+        real_skip, recip_skip = self.input_form(initial_x=3, initial_y=3, text_x="Skip for Navigation Image",
+                                                text_y="Skip for Diffraction Image")
 
         self.ds_sel = self.ds[::real_skip,
                               ::real_skip, ::recip_skip, ::recip_skip]
@@ -289,7 +304,9 @@ class ApplicationWindow(QMainWindow):
         loading_widget = LoadingForm(2, ["sum_im", "sum_dif"])
         loading_widget.setup_multi_loading("sum_im", fpdp_new.sum_im, self.ds_sel, 16, 16)
         loading_widget.setup_multi_loading("sum_dif", fpdp_new.sum_dif, self.ds_sel, 16, 16)
-        loading_widget.exec()
+        if not loading_widget.exec():
+            # loading was canceled so just return
+            return
         self.sum_dif = loading_widget.get_result("sum_dif")
         self.sum_im = loading_widget.get_result("sum_im")
         self._files_loaded = True
@@ -297,7 +314,7 @@ class ApplicationWindow(QMainWindow):
 
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
         """
-        create an input form with the given value
+        Create an input form with the given value.
 
         Parameters
         ----------

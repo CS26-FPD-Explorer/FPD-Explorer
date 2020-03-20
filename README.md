@@ -57,6 +57,6 @@ This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.
 ## Acknowledgments
 
 * [FPD library](https://gitlab.com/fpdpy/fpd) and its developer for providing the code needed to analyse the data
-* University of Glasgow School of Physics & Astronomy for giving us this project to develop, especially [Dr Damien McGrouther](mailto:Damien.McGrouther@glasgow.ac.uk) and [Dr Trevor Almeida](mailto:Trevor.Almeida@glasgow.ac.uk)
+* University of Glasgow School of Physics & Astronomy for giving us this project, especially [Dr Damien McGrouther](mailto:Damien.McGrouther@glasgow.ac.uk) and [Dr Trevor Almeida](mailto:Trevor.Almeida@glasgow.ac.uk)
 * University of Glasgow School of Computing Science for providing the courses without which this project would not have been possible
 * [Justyna Toporkiewicz](mailto:2270645t@student.gla.ac.uk) for being our coach and helping us during the development

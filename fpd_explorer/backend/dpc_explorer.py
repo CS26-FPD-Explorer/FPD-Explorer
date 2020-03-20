@@ -18,6 +18,7 @@
 
 import fpd
 import scipy as sp
+from PySide2 import QtWidgets
 
 # FPD Explorer
 from .custom_fpd_lib import dpc_explorer_class as dpc
@@ -28,7 +29,7 @@ from ..frontend.custom_widgets import Pop_Up_Widget
 def start_dpc(ApplicationWindow):
     """
     Start the DPC Explorer and switch to that tab if the files are loaded.
-    Otherwise display an error
+    Otherwise display an error.
 
     Parameters
     ----------
@@ -36,7 +37,12 @@ def start_dpc(ApplicationWindow):
         Parent in which the tab should be rendered
 
     """
-    dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
+    if ApplicationWindow.dpc_explorer is not None:
+        ApplicationWindow._ui.tabWidget.setCurrentWidget(
+            ApplicationWindow._ui.tabWidget.findChild(QtWidgets.QWidget, "DPC Explorer"))
+        return
+    ApplicationWindow.dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
+
     try:
         ApplicationWindow.dpc_input.update({"com_yx_beta": ApplicationWindow.com_yx_beta})
     except AttributeError:
@@ -54,8 +60,9 @@ def start_dpc(ApplicationWindow):
         pass
 
     if len(ApplicationWindow.dpc_input) == 0:
+        ApplicationWindow.dpc_explorer = None
         raise Exception("""No data found that could be used with DPC Explorer.\n
-        Please run some function before trying again""")
+        Please run some functions before trying again.""")
     key_add = {
         "d": [
             "multipleinput", list(ApplicationWindow.dpc_input.items()), """If array-like, yx data. If length 2 iterable or ndarray of \n
@@ -86,9 +93,8 @@ def start_dpc(ApplicationWindow):
         # Procedure was cancelled so just give up
         return
     results = params.get_result()
-    # bt = fpd.mag_tools.beta2bt(ApplicationWindow.com_yx_beta) * 1e9  # T*nm
 
-    # rotate image if needed. This can make data interpretation easier.
+    # rotate image if needed, his can make data interpretation easier
     if results.pop("rotate"):
         rot_params = UI_Generator(ApplicationWindow, sp.ndimage.rotate, key_ignore=["input"])
         if not rot_params.exec():
@@ -97,4 +103,4 @@ def start_dpc(ApplicationWindow):
         rot_results = rot_params.get_result()
         rot_results["axes"] = (int(rot_results["axes"][0]), int(rot_results["axes"][1]))
         results["d"] = sp.ndimage.rotate(results["d"], **rot_results)
-    DE = dpc.DPC_Explorer(**results, widget=dpc_explorer)
+    DE = dpc.DPC_Explorer(**results, widget=ApplicationWindow.dpc_explorer)

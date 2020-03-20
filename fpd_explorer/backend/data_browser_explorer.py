@@ -22,6 +22,7 @@ from PySide2.QtCore import Slot
 # FPD Explorer
 from .. import logger
 from ..logger import Flags
+from ..frontend.gui_generator import UI_Generator
 from ..frontend.custom_widgets import Pop_Up_Widget
 from .custom_fpd_lib.data_browser import DataBrowser
 from ..frontend.res.ui_data_browser import Ui_DataBrowser
@@ -29,7 +30,7 @@ from ..frontend.res.ui_data_browser import Ui_DataBrowser
 
 class DataBrowserWidget(QtWidgets.QWidget):
     """
-    Initialize the required widget needed by Data Browser tab
+    Initialize the required widget needed by Data Browser tab.
     """
 
     def __init__(self, ApplicationWindow):
@@ -42,7 +43,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
     def setup_ui(self, shape: tuple):
         """
-        Setup of all default values for the DataBrowser
+        Set up all default values for Data Browser.
         """
         # Set the value to default
         scanY, scanX = shape
@@ -54,26 +55,26 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
     def set_data_browser(self, data_browser):
         """
-        Secure setter for the databrowser variable
+        Secure setter for the Data Browser variable.
         """
         self.data_browser = data_browser
 
     def get_nav(self):
         """
-        Returns the navigation widget of DataBrowser
+        Returns the navigation widget of Data Browser.
         """
         return self._ui.navigationWidget
 
     def get_diff(self):
         """
-        Returns the diffraction widget of DataBrowser
+        Returns the diffraction widget of Data Browser.
         """
         return self._ui.diffractionWidget
 
     def _init_color_map(self):
         """
-        Create the dictionnary to fill the color map index
-        Values given by matplotlib wiki
+        Create the dictionnary to fill the color map index.
+        Values given by matplotlib wiki.
         """
 
         for el in self.application_window.cmaps.values():
@@ -83,7 +84,8 @@ class DataBrowserWidget(QtWidgets.QWidget):
     @Slot(str)
     def update_color_map(self, value: str):
         """
-        Update the rectangle based on the value selected by the user
+        Update the rectangle based on the value selected by the user.
+
         Parameters
         ----------
         value : str name of the color map
@@ -101,7 +103,8 @@ class DataBrowserWidget(QtWidgets.QWidget):
     @Slot(int)
     def update_rect(self, value: int):
         """
-        Update the rectangle based on the value selected by the SpinBox
+        Update the rectangle based on the value selected by the QSpinBox.
+
         Parameters
         ----------
         value : int new value to set the rectangle to
@@ -115,38 +118,63 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
 def start_dbrowser(ApplicationWindow):
     """
-    Start the data browser and switch to that tab if the files are loaded.
-    Otherwise display an error
+    Start Data Browser and switch to its tab if the files are loaded.
+    Otherwise display an error.
 
     Parameters
     ----------
     ApplicationWindow : QtWidgets.QApplication() the parent in which the tab should be rendered
 
     """
-    if ApplicationWindow.data_browser:
+    if ApplicationWindow.data_browser is not None:
         ApplicationWindow._ui.tabWidget.setCurrentWidget(
             ApplicationWindow._ui.tabWidget.findChild(QtWidgets.QWidget, "Data Browser"))
         return
     if logger.check_if_all_needed(Flags.files_loaded):
         ApplicationWindow.db_widget = DataBrowserWidget(ApplicationWindow)
+
+        hdf5_usage = logger.check_if_all_needed(Flags.hdf5_usage, display=False)
+        ApplicationWindow.nav_data_input.update({"None": None})
+        ApplicationWindow.nav_data_input.update({"sum_im": ApplicationWindow.sum_im})
+        try:
+            ApplicationWindow.data_input.update({"hdf5": ApplicationWindow.hdf5_path})
+        except AttributeError:
+            ApplicationWindow.data_input.update({"ds_sel": ApplicationWindow.ds_sel})
+
+        key_add = {
+            "fpgn": [
+                "multipleinput", list(ApplicationWindow.data_input.items()),
+                """Navigation image. If None, this is taken as the sum image.
+                For numpy arrays, it is calculated directly."""],
+            "nav_im": [
+                "multipleinput", list(ApplicationWindow.nav_data_input.items()),
+                """hdf5 str, file, group, dataset, ndarray, or dask array.
+                hdf5 filename, file, group or dataset, or numpy array,
+                `MerlinBinary` object, or dask array."""],
+        }
+        # Only used to save data
+
+        def DummyDataBrowser():
+            pass
+        params = UI_Generator(ApplicationWindow, DummyDataBrowser, key_add=key_add)
+        if not params.exec():
+            # Procedure was cancelled so just give up
+            return
+        results = params.get_result()
+        data = results.get("fpgn")
+        new_data = data
+        try:
+            if data == ApplicationWindow.hdf5_path:
+                new_data = ApplicationWindow.ds_sel
+        except AttributeError:
+            pass
+        ApplicationWindow.db_widget.setup_ui(new_data.shape[:2])
+        ApplicationWindow.data_browser = DataBrowser(**results,
+                                                     widget_1=ApplicationWindow.db_widget._ui.navCanvas,
+                                                     widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
         db_tab = Pop_Up_Widget(ApplicationWindow, "Data Browser")
         db_tab.setup_docking_default(ApplicationWindow.db_widget.get_nav())
         db_tab.setup_docking_default(ApplicationWindow.db_widget.get_diff())
-        hdf5_usage = logger.check_if_all_needed(Flags.hdf5_usage, display=False)
-        if hdf5_usage:
-            ApplicationWindow.db_widget.setup_ui(ApplicationWindow.ds.shape[:2])
-            ApplicationWindow.data_browser = DataBrowser(
-                ApplicationWindow.hdf5_path,
-                widget_1=ApplicationWindow.db_widget._ui.navCanvas,
-                widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
-
-        else:
-            ApplicationWindow.db_widget.setup_ui(ApplicationWindow.ds_sel.shape[:2])
-            ApplicationWindow.data_browser = DataBrowser(
-                ApplicationWindow.ds_sel,
-                nav_im=ApplicationWindow.sum_im,
-                widget_1=ApplicationWindow.db_widget._ui.navCanvas,
-                widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
 
         ApplicationWindow.db_widget.set_data_browser(ApplicationWindow.data_browser)
         logger.log("Data Browser has been opened")

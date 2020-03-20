@@ -24,9 +24,9 @@ from .. import logger
 from ..logger import Flags
 
 
-def function_mib(self):
+def open_mib(self):
     """
-    Spawn a file dialog to open an mib file
+    Spawn a file dialog to open an mib file.
     """
     fname, _ = QFileDialog.getOpenFileName(
         self, 'Open file', self._last_path,
@@ -37,14 +37,14 @@ def function_mib(self):
             self._mib_path = fname
             self._ui.mib_line.clear()
             self._ui.mib_line.insert(fname[fname.rfind('/') + 1:])
-            logger.log("MIB file correctly loaded")
+            logger.log("MIB file loaded correctly")
             return True
     return False
 
 
-def function_npz(self):
+def open_npz(self):
     """
-    Spawn a file dialog to open an npz file
+    Spawn a file dialog to open an npz file.
     """
     try:
         fname = self.npz_path
@@ -58,14 +58,14 @@ def function_npz(self):
             self.npz_path = fname
             self._ui.npz_line.clear()
             self._ui.npz_line.insert(fname[fname.rfind('/') + 1:])
-            logger.log("NPZ file correctly loaded", Flags.npz_loaded)
+            logger.log("NPZ file loaded correctly", Flags.npz_loaded)
             return True
     return False
 
 
-def function_hdf5(self):
+def open_hdf5(self):
     """
-    Spawn a file dialog to open an hdf5 file
+    Spawn a file dialog to open an hdf5 file.
     """
     try:
         fname = self.hdf5_path
@@ -84,15 +84,15 @@ def function_hdf5(self):
             self.ds_sel = self.ds
             self.sum_im = f['fpd_expt/fpd_sum_im/data'].value
             self.sum_dif = f['fpd_expt/fpd_sum_dif/data'].value
-            logger.log("HDF5 file correctly loaded", Flags.hdf5_usage)
+            logger.log("HDF5 file loaded correctly", Flags.hdf5_usage)
             logger.add_flag(Flags.files_loaded)
             return True
     return False
 
 
-def function_dm3(self):
+def open_dm3(self):
     """
-    Spawn a file dialog to open a dm3 file
+    Spawn a file dialog to open a dm3 file.
     """
     fname, _ = QFileDialog.getOpenFileName(
         self, 'Open file', self._last_path,
@@ -103,6 +103,6 @@ def function_dm3(self):
             self._dm3_path = fname
             self._ui.dm3_line.clear()
             self._ui.dm3_line.insert(fname[fname.rfind('/') + 1:])
-            logger.log("DM3 file correctly loaded")
+            logger.log("DM3 file loaded correctly")
             return True
     return False

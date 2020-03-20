@@ -1,3 +1,21 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 # Standard Library
 import os
 import sys
@@ -9,6 +27,7 @@ from pytestqt import qtbot
 from PySide2.QtCore import QTimer, QCoreApplication
 from pynput.keyboard import Key, Controller
 from fpd.fpd_file import MerlinBinary
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
 
 # First Party
@@ -16,11 +35,11 @@ from fpd_explorer import config_handler as config
 from fpd_explorer.frontend.home import *
 from fpd_explorer.backend import virtual_adf
 from fpd_explorer.backend.dpc_explorer import start_dpc
-from fpd_explorer.backend import fpd_functions 
+from fpd_explorer.backend import fpd_functions
 from fpd_explorer.backend.custom_fpd_lib.fpd_file import get_memmap
 from fpd_explorer.frontend.custom_widgets import CustomInputForm
 from fpd_explorer.backend.data_browser_explorer import DataBrowserWidget
-from fpd_explorer.backend import phase_correlation_fncts 
+from fpd_explorer.backend import phase_correlation_fncts
 
 
 def interact():
@@ -31,11 +50,12 @@ def interact():
 
 def enter(time_before_executing=300):
     """
-    automates running functions on the UI
+    Automates running functions on the UI
 
     Parameters
     ----------
-    time_before_executing: time in milliseconds to wait before
+    time_before_executing: int
+    time in milliseconds to wait before
     execution of interact
     """
     QTimer.singleShot(time_before_executing, interact)
@@ -92,6 +112,7 @@ def test_center_of_mass_button(qtbot):
         assert False
     assert True
 
+
 @pytest.mark.skip
 def test_ransac_button(qtbot):
     aw = setup_tests(qtbot)
@@ -108,6 +129,7 @@ def test_ransac_button(qtbot):
         assert False
     assert True
 
+
 @pytest.mark.skip
 def test_dpc_explorer(qtbot):
     aw = setup_tests(qtbot)
@@ -119,7 +141,7 @@ def test_dpc_explorer(qtbot):
     fpd_functions.centre_of_mass(aw)
     try:
         enter()
-        # dpc brings up two input UIs when rotate is true
+        # DPC brings up two input UIs when rotate is true
         start_dpc(aw)
     except:
         assert False
@@ -130,7 +152,7 @@ def test_matching_images_button(qtbot):
     aw = setup_tests(qtbot)
     try:
         enter()
-        phase_correlation_fncts.find_matching_images(aw)
+        phase_correlation_fncts.find_matching_images(aw, pop_up=False)
     except:
         assert False
     assert True
@@ -140,10 +162,10 @@ def test_matching_images_button(qtbot):
 def test_phase_correlation(qtbot):
     aw = setup_tests(qtbot)
     enter()
-    phase_correlation_fncts.find_matching_images(aw)
+    phase_correlation_fncts.find_matching_images(aw, pop_up=False)
     try:
         enter()
-        phase_correlation_fncts.phase_correlation(aw)
+        phase_correlation_fncts.phase_correlation(aw, pop_up=False)
     except:
         assert False
     assert True
@@ -152,7 +174,7 @@ def test_phase_correlation(qtbot):
 def test_disc_edge_sigma(qtbot):
     aw = setup_tests(qtbot)
     enter()
-    phase_correlation_fncts.find_matching_images(aw)
+    phase_correlation_fncts.find_matching_images(aw, pop_up=False)
     try:
         enter()
         phase_correlation_fncts.disc_edge_sigma(aw)
@@ -160,7 +182,8 @@ def test_disc_edge_sigma(qtbot):
         assert False
     assert True
 
-# requires dm3 and mib (does not run on hf5)
+
+# requires dm3 and mib (does not run on hdf5)
 def test_virtual_adf(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -172,7 +195,8 @@ def test_virtual_adf(qtbot):
         assert False
     assert True
 
-# requires dm3 and mib (does not run on hf5)
+
+# requires dm3 and mib (does not run on hdf5)
 def test_plot_vadf(qtbot):
     aw = setup_tests(qtbot)
     enter()
@@ -187,7 +211,7 @@ def test_plot_vadf(qtbot):
     assert True
 
 
-# requires dm3 and mib (does not run on hf5)
+# requires dm3 and mib (does not run on hdf5)
 def test_annular_slice(qtbot):
     aw = setup_tests(qtbot)
     enter()

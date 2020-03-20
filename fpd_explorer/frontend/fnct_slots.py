@@ -57,6 +57,10 @@ def ransac_im_fit(self):
     fpd_functions.ransac_im_fit(self)
 
 
+def synthetic_aperture(self):
+    fpd_functions.remove_aperture(self)
+
+
 def find_matching_images(self):
     phase_correlation_fncts.find_matching_images(self)
 
@@ -89,6 +93,10 @@ def add_data(self, location, name, data):
         self.dpc_input.update({name: data})
     elif "circular" in location:
         self.circular_input.update({name: data})
+    elif "data" in location:
+        self.data_input.update({name: data})
+    elif "nav" in location:
+        self.nav_data_input.update({name: data})
     elif "mass" in location:
         self.mass_input.update({name: data})
     elif "ransac" in location:
