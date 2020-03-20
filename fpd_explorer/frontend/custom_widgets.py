@@ -307,7 +307,7 @@ class GuiUpdater(QThread):
     """
 
     def __init__(self, fn, name, *args, **kwargs):
-        super(GuiUpdater, self).__init__(QApplication.instance())
+        super(GuiUpdater, self).__init__()
         # Store constructor arguments (re-used for processing)
         self._fn = fn
         self._name = name

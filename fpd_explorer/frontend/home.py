@@ -295,8 +295,8 @@ class ApplicationWindow(QMainWindow):
                                scanXalu=x_value, row_end_skip=1)
 
         self.ds = self.mb.get_memmap()
-        real_skip, recip_skip = self.input_form(initial_x=3, initial_y=3, text_x="Amount to skip for Navigation Image",
-                                                text_y="Amount to skip for Diffraction Image")
+        real_skip, recip_skip = self.input_form(initial_x=3, initial_y=3, text_x="Skip for Navigation Image",
+                                                text_y="Skip for Diffraction Image")
 
         self.ds_sel = self.ds[::real_skip,
                               ::real_skip, ::recip_skip, ::recip_skip]
