@@ -112,13 +112,13 @@ def annular_slice(ApplicationWindow):
         performs event handling
     """
     if logger.check_if_all_needed(Flags.vadf_init):
-        params = UI_Generator(ApplicationWindow, ApplicationWindow.vadf_explorer.annular_slice)
+        params = UI_Generator(ApplicationWindow, ApplicationWindow.vadf.annular_slice)
         if not params.exec():
             # Procedure was cancelled so just give up
             return
         results = params.get_result()
 
-        vadf = ApplicationWindow.vadf_explorer.annular_slice(**results)
+        vadf = ApplicationWindow.vadf.annular_slice(**results)
         canvas = Pop_Up_Widget(ApplicationWindow, "Annular Slice")
         fig = canvas.setup_docking("Annular Slice")
         ax = fig.get_fig().subplots()

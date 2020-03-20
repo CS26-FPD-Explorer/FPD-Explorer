@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
 
+from PySide2 import QtWidgets
 # FPD Explorer
 from .. import logger
 from ..logger import Flags
@@ -64,6 +65,7 @@ def find_matching_images(ApplicationWindow):
             loading_widget.exec()
             ApplicationWindow.matching = loading_widget.get_result("matching")
         else:
+            QtWidgets.QMessageBox.information(ApplicationWindow, "Information", "This could take a while")
             ApplicationWindow.matching = pc.find_matching_images(**results)
         logger.log("Found Matching images", Flags.phase_matching)
 
