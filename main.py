@@ -35,7 +35,6 @@ from fpd_explorer.frontend.home import ApplicationWindow
 plt.use('Qt5Agg')
 
 error_logger = logging.getLogger('fpd_logger')
-# Configure logger to write to a file...
 
 
 def fpd_except_handler(type, value, tb):
@@ -67,9 +66,7 @@ def remove_old_log():
     tmp = [el for el in f if el[-4:] == ".txt"]
     len_tmp = len(tmp)
     if len_tmp >= 10:
-        # print(sorted(tmp))
         for el in sorted(tmp, reverse=True)[9:]:
-            # print("removing", el)
             os.remove(el)
 
 
@@ -90,4 +87,3 @@ if __name__ == "__main__":
     logger.setup(window._ui.log_text, window)
     window.show()
     sys.exit(fpd_app.exec_())
-    # qApp.exec_()
