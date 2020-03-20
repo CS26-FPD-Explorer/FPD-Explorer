@@ -27,10 +27,8 @@ from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
 def find_circular_centre(ApplicationWindow):
     """
-    Calculate the circular centre for the users input
-    parameters, when function is used it will
-    bring up a figure on a new tab, and switch to this
-    tab.
+    Calculate the circular centre from the user input parameters,
+    create a figure in a new tab and switch to the tab.
 
     Parameters
     ----------
@@ -61,10 +59,8 @@ def find_circular_centre(ApplicationWindow):
 
 def remove_aperture(ApplicationWindow):
     """
-    Generates a synthetic aperture for the users input
-    parameters, when function is used it will
-    bring up a figure on the UI in a new tab, and switch
-    to this tab.
+    Generate a synthetic aperture from the user input parameters,
+    create a figure in a new tab and switch to the tab.
 
     Parameters
     ----------
@@ -102,8 +98,8 @@ def remove_aperture(ApplicationWindow):
 
 def centre_of_mass(ApplicationWindow):
     """
-    Calculates center of mass statistics based on the
-    data set provided and the previous functions run.
+    Calculate center of mass statistics based on the
+    dataset provided and the previous functions run.
 
     Parameters
     ----------
@@ -148,10 +144,9 @@ def centre_of_mass(ApplicationWindow):
 
 def ransac_im_fit(ApplicationWindow):
     """
-    Once center of mass has been run, function runs
-    with the users input, and brings up a figure on
-    based on that input on the UI, switches to tab
-    showing the data.
+    Check if center of mass has been calculated. If True,
+    fit an image using ransac from the user input parameters,
+    create a figure in a new tab and switch to the tab.
 
 
     Parameters
@@ -160,7 +155,6 @@ def ransac_im_fit(ApplicationWindow):
         intialises the application with the user's desktop settings,
         performs event handling
     """
-    # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
     if logger.check_if_all_needed(Flags.center_mass):
 
         ApplicationWindow.ransac_input.update({"com_yx": ApplicationWindow.com_yx})

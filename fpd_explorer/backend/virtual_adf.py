@@ -43,7 +43,7 @@ def start_vadf(ApplicationWindow):
             # Procedure was cancelled so just give up
             return
         ApplicationWindow.vadf = va.VirtualAnnularImages(ApplicationWindow.npz_path, **params.get_result())
-    else:  # No need for an elif because we want to handle all the case if the next if is false
+    else:  # No need for an elif because we want to handle all the cases if the next if is false
         if logger.check_if_all_needed(Flags.circular_center):
             if logger.check_if_all_needed(Flags.files_loaded):
                 if logger.check_if_all_needed(Flags.hdf5_usage, display=False):
@@ -78,8 +78,7 @@ def start_vadf(ApplicationWindow):
 
 def plot_vadf(ApplicationWindow):
     """
-    Forms VADF images(2 figures) based on user input and
-    switches to a tab showing this.
+    Forms VADF images (2 figures) based on user input and switches to a tab showing this.
 
     Parameters
     ----------
@@ -104,8 +103,7 @@ def plot_vadf(ApplicationWindow):
 
 def annular_slice(ApplicationWindow):
     """
-    Creates a figure based on the user input and switches
-    to the tab showing the figure
+    Creates a figure based on the user input and switches to the tab showing the figure.
 
     Parameters
     ----------

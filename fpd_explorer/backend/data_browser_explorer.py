@@ -30,7 +30,7 @@ from ..frontend.res.ui_data_browser import Ui_DataBrowser
 
 class DataBrowserWidget(QtWidgets.QWidget):
     """
-    Initialize the required widget needed by Data Browser tab
+    Initialize the required widget needed by Data Browser tab.
     """
 
     def __init__(self, ApplicationWindow):
@@ -43,7 +43,7 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
     def setup_ui(self, shape: tuple):
         """
-        Setup of all default values for the DataBrowser
+        Set up all default values for Data Browser.
         """
         # Set the value to default
         scanY, scanX = shape
@@ -55,26 +55,26 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
     def set_data_browser(self, data_browser):
         """
-        Secure setter for the databrowser variable
+        Secure setter for the Data Browser variable.
         """
         self.data_browser = data_browser
 
     def get_nav(self):
         """
-        Returns the navigation widget of DataBrowser
+        Returns the navigation widget of Data Browser.
         """
         return self._ui.navigationWidget
 
     def get_diff(self):
         """
-        Returns the diffraction widget of DataBrowser
+        Returns the diffraction widget of Data Browser.
         """
         return self._ui.diffractionWidget
 
     def _init_color_map(self):
         """
-        Create the dictionnary to fill the color map index
-        Values given by matplotlib wiki
+        Create the dictionnary to fill the color map index.
+        Values given by matplotlib wiki.
         """
 
         for el in self.application_window.cmaps.values():
@@ -84,7 +84,8 @@ class DataBrowserWidget(QtWidgets.QWidget):
     @Slot(str)
     def update_color_map(self, value: str):
         """
-        Update the rectangle based on the value selected by the user
+        Update the rectangle based on the value selected by the user.
+
         Parameters
         ----------
         value : str name of the color map
@@ -102,7 +103,8 @@ class DataBrowserWidget(QtWidgets.QWidget):
     @Slot(int)
     def update_rect(self, value: int):
         """
-        Update the rectangle based on the value selected by the SpinBox
+        Update the rectangle based on the value selected by the QSpinBox.
+
         Parameters
         ----------
         value : int new value to set the rectangle to
@@ -116,8 +118,8 @@ class DataBrowserWidget(QtWidgets.QWidget):
 
 def start_dbrowser(ApplicationWindow):
     """
-    Start the data browser and switch to that tab if the files are loaded.
-    Otherwise display an error
+    Start Data Browser and switch to its tab if the files are loaded.
+    Otherwise display an error.
 
     Parameters
     ----------

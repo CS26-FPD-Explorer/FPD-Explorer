@@ -26,9 +26,8 @@ from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
 def find_matching_images(ApplicationWindow):
     """
-    Once function runs with user input, brings up 3 figures
-    based on that input on the UI, switches to tab
-    showing the figures.
+    Once function runs with the user input, brings up 3 figures
+    based on that input and switches to the tab showing the figures.
 
 
     Parameters
@@ -71,9 +70,8 @@ def find_matching_images(ApplicationWindow):
 
 def disc_edge_sigma(ApplicationWindow):
     """
-    Once function runs with user input, brings up 4 figures
-    based on that input on the UI, switches to tab
-    showing the figures.
+    Once function runs with the user input, brings up 4 figures
+    based on that input and switches to the tab showing the figures.
 
 
     Parameters
@@ -112,9 +110,8 @@ def disc_edge_sigma(ApplicationWindow):
 
 def make_ref_im(ApplicationWindow):
     """
-    Once function runs with user input, brings up a figure
-    based on that input on the UI, switches to tab
-    showing the reference image output.
+    Once function runs with the user input, brings up 1 figure based on 
+    that input and switches to the tab showing the reference image output.
 
 
     Parameters
@@ -146,10 +143,9 @@ def make_ref_im(ApplicationWindow):
 
 def phase_correlation(ApplicationWindow):
     """
-    Once function runs with user input, calculates the phase correlation
-    for the data. As it is a time consuming function (requires a lot of
-    computational power), a pop up is also shown to let users  know that
-    it will most likely take a while.
+    Once function runs with the user input, calculates the phase correlation
+    for the data. As it is a time consuming function (requires a lot of computational power),
+    a pop-up is also shown to inform the user that it will most likely take a while.
 
 
     Parameters

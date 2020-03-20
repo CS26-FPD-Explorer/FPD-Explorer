@@ -29,7 +29,7 @@ from ..frontend.custom_widgets import Pop_Up_Widget
 def start_dpc(ApplicationWindow):
     """
     Start the DPC Explorer and switch to that tab if the files are loaded.
-    Otherwise display an error
+    Otherwise display an error.
 
     Parameters
     ----------
@@ -62,7 +62,7 @@ def start_dpc(ApplicationWindow):
     if len(ApplicationWindow.dpc_input) == 0:
         ApplicationWindow.dpc_explorer = None
         raise Exception("""No data found that could be used with DPC Explorer.\n
-        Please run some function before trying again""")
+        Please run some functions before trying again.""")
     key_add = {
         "d": [
             "multipleinput", list(ApplicationWindow.dpc_input.items()), """If array-like, yx data. If length 2 iterable or ndarray of \n
@@ -93,9 +93,8 @@ def start_dpc(ApplicationWindow):
         # Procedure was cancelled so just give up
         return
     results = params.get_result()
-    # bt = fpd.mag_tools.beta2bt(ApplicationWindow.com_yx_beta) * 1e9  # T*nm
 
-    # rotate image if needed. This can make data interpretation easier.
+    # rotate image if needed, his can make data interpretation easier
     if results.pop("rotate"):
         rot_params = UI_Generator(ApplicationWindow, sp.ndimage.rotate, key_ignore=["input"])
         if not rot_params.exec():
