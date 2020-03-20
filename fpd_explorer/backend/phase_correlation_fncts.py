@@ -67,8 +67,8 @@ def find_matching_images(ApplicationWindow):
                 return
             ApplicationWindow.matching = loading_widget.get_result("NRSME")
         else:
-            QtWidgets.QMessageBox.information(ApplicationWindow, "Information", """This could take a while \n 
-            Disable plot to get a loading bar""")
+            QtWidgets.QMessageBox.information(ApplicationWindow, "Information", 
+            """This could take a while\nDisable plot to get a loading bar""")
             ApplicationWindow.matching = pc.find_matching_images(**results)
         logger.log("Found Matching images", Flags.phase_matching)
 

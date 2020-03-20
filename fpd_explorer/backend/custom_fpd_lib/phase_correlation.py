@@ -433,7 +433,7 @@ def find_matching_images(images, aperture=None, avg_nims=3, cut_len=20, plot=Tru
         intercept_vals = err[ind_perms[0], ind_perms[1]]
         comb_vals[i] = np.nansum(intercept_vals**2).sum()**0.5
         if callback is not None :
-            callback.progress.emit(("NRSME", 5))
+            callback.progress.emit(("NRSME", 1))
         comb_inds[i] = inds
 
 
