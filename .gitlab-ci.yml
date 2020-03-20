@@ -33,7 +33,6 @@ setup:
   - source ~/venv/bin/activate
   - pip3 install --upgrade pip
   - pip3 install -r requirements.txt
-  - pip3 install git+git://github.com/09ubberboy90/qdarkgraystyle.git
 
 flake8:
  cache: {}
@@ -48,5 +47,6 @@ test:
  stage: test
  script:
   - source ~/venv/bin/activate
+  - cp -v /home/ubuntu/example-data/config.ini .
   - python3 compile_ui.py
-  - xvfb-run pytest
+  - xvfb-run pytest -x

@@ -1,5 +1,22 @@
-# FPD Explorer
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
 
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
+# FPD Explorer
 from .. import logger
 from ..logger import Flags
 from .custom_fpd_lib import ransac_tools as rt
@@ -7,14 +24,11 @@ from .custom_fpd_lib import fpd_processing as fpdp
 from ..frontend.gui_generator import UI_Generator
 from ..frontend.custom_widgets import LoadingForm, Pop_Up_Widget
 
-# NEED TO GO THROUGH PRIVATE VARIABLES
-
 
 def find_circular_centre(ApplicationWindow):
-    """ Calculate the circular centre for the users input
-    parameters, when function is used it will
-    bring up a figure on a new tab, and switch to this
-    tab.
+    """
+    Calculate the circular centre from the user input parameters,
+    create a figure in a new tab and switch to the tab.
 
     Parameters
     ----------
@@ -29,7 +43,8 @@ def find_circular_centre(ApplicationWindow):
                                                  "Diffraction": ApplicationWindow.sum_dif})
         key_add = {
             "im": [
-                "multipleinput", list(ApplicationWindow.circular_input.items()), "Image data"]}
+                "multipleinput", list(ApplicationWindow.circular_input.items()), "Image data"]
+        }
 
         params = UI_Generator(ApplicationWindow, fpdp.find_circ_centre, key_add=key_add)
 
@@ -44,10 +59,8 @@ def find_circular_centre(ApplicationWindow):
 
 def remove_aperture(ApplicationWindow):
     """
-    Generates a synthetic aperture for the users input
-    parameters, when function is used it will
-    bring up a figure on the UI in a new tab, and switch
-    to this tab.
+    Generate a synthetic aperture from the user input parameters,
+    create a figure in a new tab and switch to the tab.
 
     Parameters
     ----------
@@ -58,8 +71,16 @@ def remove_aperture(ApplicationWindow):
 
     if logger.check_if_all_needed(Flags.circular_center):
         key_add = {
-            "rio": ["length2iterable", None, "Inner and outer radii [ri,ro) in a number of forms"]
-        }
+            "rio": [
+                "length2iterable",
+                (0,
+                 ApplicationWindow.radius + 8),
+                "Inner and outer radii [ri,ro) in a number of forms"],
+            "cyx": [
+                "length 2 iterable",
+                tuple(
+                    ApplicationWindow.cyx),
+                "Centre y, x pixel cooridinates"]}
         params = UI_Generator(ApplicationWindow, fpdp.synthetic_aperture, key_ignore=["shape"], key_add=key_add)
         if not params.exec():
             # Procedure was cancelled so just give up
@@ -77,8 +98,8 @@ def remove_aperture(ApplicationWindow):
 
 def centre_of_mass(ApplicationWindow):
     """
-    calculates center of mass statistics based on the
-    data set provided and the previous functions run.
+    Calculate center of mass statistics based on the
+    dataset provided and the previous functions run.
 
     Parameters
     ----------
@@ -123,10 +144,9 @@ def centre_of_mass(ApplicationWindow):
 
 def ransac_im_fit(ApplicationWindow):
     """
-    once center of mass has been run, function runs
-    with the users input, and brings up a figure on
-    based on that input on the UI, switches to tab
-    showing the data.
+    Check if center of mass has been calculated. If True,
+    fit an image using ransac from the user input parameters,
+    create a figure in a new tab and switch to the tab.
 
 
     Parameters
@@ -135,7 +155,6 @@ def ransac_im_fit(ApplicationWindow):
         intialises the application with the user's desktop settings,
         performs event handling
     """
-    # fit, inliers, _ = fpd.ransac_tools.ransac_im_fit(com_yx, residual_threshold=0.01, plot=True)
     if logger.check_if_all_needed(Flags.center_mass):
 
         ApplicationWindow.ransac_input.update({"com_yx": ApplicationWindow.com_yx})

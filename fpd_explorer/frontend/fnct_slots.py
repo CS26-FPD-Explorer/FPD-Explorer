@@ -1,3 +1,21 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 # FPD Explorer
 from ..backend import virtual_adf, dpc_explorer, fpd_functions, data_browser_explorer, phase_correlation_fncts
 from .custom_widgets import Pop_Up_Widget, QIPythonWidget
@@ -39,6 +57,10 @@ def ransac_im_fit(self):
     fpd_functions.ransac_im_fit(self)
 
 
+def synthetic_aperture(self):
+    fpd_functions.remove_aperture(self)
+
+
 def find_matching_images(self):
     phase_correlation_fncts.find_matching_images(self)
 
@@ -71,6 +93,10 @@ def add_data(self, location, name, data):
         self.dpc_input.update({name: data})
     elif "circular" in location:
         self.circular_input.update({name: data})
+    elif "data" in location:
+        self.data_input.update({name: data})
+    elif "nav" in location:
+        self.nav_data_input.update({name: data})
     elif "mass" in location:
         self.mass_input.update({name: data})
     elif "ransac" in location:
@@ -83,3 +109,5 @@ def add_data(self, location, name, data):
         self.ref_input.update({name: data})
     elif "phase" in location:
         self.phase_input.update({name: data})
+    elif "vadf" in location:
+        self.vadf_input.update({name: data})

@@ -1,13 +1,31 @@
+# Copyright 2019-2020 Florent AUDONNET, Michal BROOS, Bruce KERR, Ewan PANDELUS, Ruize SHEN
+
+# This file is part of FPD-Explorer.
+
+# FPD-Explorer is free software: you can redistribute it and / or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# FPD-Explorer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with FPD-Explorer.  If not, see < https: // www.gnu.org / licenses / >.
+
 # Standard Library
 import operator
 from enum import Enum, auto
 
-from PySide2 import QtWidgets
+from PySide2 import QtGui, QtWidgets
 
 
 class Flags(Enum):
     """
-    Order of the lines matter. It should match the order of the flow decided
+    Order of the lines matter. It should match the order of the flow decided.
     """
     files_loaded = auto()
     hdf5_usage = auto()
@@ -25,6 +43,7 @@ class Flags(Enum):
 
 text_input = None
 app = None
+start_text = "Start by loading files"
 
 global_flags = {
     Flags.files_loaded: {
@@ -82,6 +101,14 @@ def setup(widget, application):
 
 
 def add_flag(flag: Flags):
+    """
+    Sets a flag to true for a given Flag type.
+
+    Parameters
+    ----------
+    flag: Flags : Enum
+    """
+
     if not isinstance(flag, Flags):
         raise TypeError
     val = global_flags.get(flag, None)
@@ -97,12 +124,27 @@ def log(in_str: str, flag: Flags = None):
             raise TypeError
         if flag:
             add_flag(flag)
+        if start_text in text_input.toPlainText():
+            text_input.clear()
         text_input.appendPlainText(in_str)
+        text_input.moveCursor(QtGui.QTextCursor.End)
     else:
-        raise RuntimeError("Text Input is not Defined")
+        raise RuntimeError("Text input is not defined")
 
 
 def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=True) -> bool:
+    """
+    Checks recursively all the flags necessary to run a function.
+    If a function has prerequisites which has prerequites too, then they are found.
+    If display is set to False, there is no pop-up which makes it easier/faster to test.
+
+    Parameters
+    ----------
+    current_flag: Flags : Enum
+    recursion : bool
+    display: bool
+    """
+
     if app is None:
         raise RuntimeError("No app has been provided")
     if not isinstance(current_flag, Flags):
@@ -127,13 +169,17 @@ def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=Tr
                 print(err)
         return False
     else:
-        raise RuntimeError("An unknow error has happened. Did you modified the structure of globals_flags")
+        raise RuntimeError("An unknow error has happened. Have you modified the structure of global_flags?")
 
 
 def clear():
+    """
+    Clears the log and writes the text 'Start by loading files'
+    to the workflow section of the UI.
+    """
     if text_input:
-        text_input.setPlainText("Start by loading files")
+        text_input.setPlainText(start_text)
         for key in global_flags.keys():
             global_flags[key]["bool"] = False
     else:
-        raise RuntimeError("Text Input is not Defined")
+        raise RuntimeError("Text input is not defined")
