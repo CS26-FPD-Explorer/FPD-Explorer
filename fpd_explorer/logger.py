@@ -102,7 +102,7 @@ def setup(widget, application):
 
 def add_flag(flag: Flags):
     """
-    Sets a flag to true for a given Flag type
+    Sets a flag to true for a given Flag type.
 
     Parameters
     ----------
@@ -134,9 +134,9 @@ def log(in_str: str, flag: Flags = None):
 
 def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=True) -> bool:
     """
-    Checks recursively all the flags necessary to run a function, so that if a function has
-    prerequisites which has prerequites too, then they are found. If display is set to False,
-    there is no pop up, which makes it easier/ faster to test.
+    Checks recursively all the flags necessary to run a function.
+    If a function has prerequisites which has prerequites too, then they are found.
+    If display is set to False, there is no pop-up which makes it easier/faster to test.
 
     Parameters
     ----------
@@ -174,8 +174,8 @@ def check_if_all_needed(current_flag: Flags, recursion: bool = False, display=Tr
 
 def clear():
     """
-    Clears the log and writes the text 'Start by loading
-    files' to the workflow section of the UI
+    Clears the log and writes the text 'Start by loading files'
+    to the workflow section of the UI.
     """
     if text_input:
         text_input.setPlainText(start_text)

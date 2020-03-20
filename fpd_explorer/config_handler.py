@@ -28,7 +28,7 @@ _data_to_save = {'Default': {}}
 
 def get_config(key_to_get: str):
     """
-    Get a config setting with the given key
+    Get a config setting with the given key.
 
     Parameters
     ----------
@@ -37,8 +37,7 @@ def get_config(key_to_get: str):
     """
     def _finditem(key, obj=_data_to_save):
         """
-        Return the item for a given key
-        else none
+        Return the item for a given key, else None.
         """
         if key in obj:
             return obj[key]
@@ -52,14 +51,14 @@ def get_config(key_to_get: str):
 
 def get_dict(key_to_get: str) -> dict:
     """
-    Return either the dict for the given key or an empty dict
+    Return either the dict for the given key or an empty dict.
     """
     return _data_to_save.get(key_to_get, {})
 
 
 def add_config(config: dict):
     """
-    Add some config to the save file
+    Add the config dict to the save file.
 
     Parameters
     ----------
@@ -89,13 +88,13 @@ def add_config(config: dict):
 
 def load_config():
     """
-    Load the configuration file
+    Load the configuration file.
     """
     global _data_to_save
 
     def as_dict(config):
         """
-        Converts a ConfigParser object into a dictionary.
+        Convert a ConfigParser object into a dictionary.
 
         The resulting dictionary has sections as keys which point to a dict of the
         sections options as key => value pairs.
@@ -126,7 +125,7 @@ def load_config():
 
 def save_config():
     """
-    Save all the config to file
+    Save the full config to a file.
     """
     prev_config = None
     if os.path.isfile(CONFIGFILE_NAME):

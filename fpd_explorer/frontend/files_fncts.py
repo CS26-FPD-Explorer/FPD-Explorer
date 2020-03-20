@@ -26,7 +26,7 @@ from ..logger import Flags
 
 def open_mib(self):
     """
-    Spawn a file dialog to open an mib file
+    Spawn a file dialog to open an mib file.
     """
     fname, _ = QFileDialog.getOpenFileName(
         self, 'Open file', self._last_path,
@@ -44,7 +44,7 @@ def open_mib(self):
 
 def open_npz(self):
     """
-    Spawn a file dialog to open an npz file
+    Spawn a file dialog to open an npz file.
     """
     try:
         fname = self.npz_path
@@ -65,7 +65,7 @@ def open_npz(self):
 
 def open_hdf5(self):
     """
-    Spawn a file dialog to open a hdf5 file
+    Spawn a file dialog to open an hdf5 file.
     """
     try:
         fname = self.hdf5_path
@@ -92,7 +92,7 @@ def open_hdf5(self):
 
 def open_dm3(self):
     """
-    Spawn a file dialog to open a dm3 file
+    Spawn a file dialog to open a dm3 file.
     """
     fname, _ = QFileDialog.getOpenFileName(
         self, 'Open file', self._last_path,

@@ -39,7 +39,7 @@ from ..backend.custom_fpd_lib import fpd_processing as fpdp_new
 
 class ApplicationWindow(QMainWindow):
     """
-    Create the main window and connect the menu bar slots
+    Create the main window and connect the menu bar slots.
     """
 
     def __init__(self, app=None, dark_mode_config=False):
@@ -76,7 +76,7 @@ class ApplicationWindow(QMainWindow):
     @Slot(int)
     def _handle_tab_close(self, idx):
         name = self._ui.tabWidget.tabBar().tabText(idx).lower().replace(" ", "_")
-        # set the variable to none
+        # set the variable to None
         if name in self.tabs_variables:
             self.__dict__[name] = None
         while self._ui.tabWidget.widget(idx).layout().count():
@@ -203,7 +203,7 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def clear_files(self):
         """
-        Clears all provided files and resets the file_loaded flag
+        Clears all provided files and resets the file_loaded flag.
         """
         if self._ui.mib_line.text():
             del self._mib_path
@@ -233,14 +233,14 @@ class ApplicationWindow(QMainWindow):
     @Slot()
     def load_files(self):
         """
-        Setup the data browser and open the file if not present
+        Set up the Data Browser and open the file if not present.
         """
         x_value = None
         y_value = None
         if logger.check_if_all_needed(Flags.hdf5_usage, display=False):
             logger.log("Files loaded correctly", Flags.files_loaded)
             return
-        # Cherk if Mib exist
+        # Check if .mib file exists
         try:
             mib = self._mib_path
         except AttributeError:
@@ -251,14 +251,14 @@ class ApplicationWindow(QMainWindow):
                 QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.Yes)
             if response == QtWidgets.QMessageBox.Yes:
-                valid = self.open_mib()  # load a .mib file and use it
+                valid = self.open_mib()  # load an .mib file and use it
                 if not valid:  # user cancelled
                     return
             else:
                 return
 
         mib = self._mib_path
-        # Check if dm3 exist
+        # Check if .dm3 file exists
         try:
             dm3 = self._dm3_path
         except AttributeError:
@@ -312,7 +312,7 @@ class ApplicationWindow(QMainWindow):
 
     def input_form(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x=None, text_y=None):
         """
-        Create an input form with the given value
+        Create an input form with the given value.
 
         Parameters
         ----------

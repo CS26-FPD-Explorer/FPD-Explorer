@@ -34,7 +34,7 @@ from .res.ui_inputbox import Ui_InputBox
 
 
 class MyMplCanvas(FigureCanvas):
-    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
+    """Ultimately, this is a QWidget, as well as a FigureCanvasAgg."""
 
     def __init__(self, parent=None, figsize=None):
         self._fig = Figure(figsize=figsize)
@@ -56,7 +56,7 @@ class MyMplCanvas(FigureCanvas):
 
 class Pop_Up_Widget(QtWidgets.QWidget):
     """
-    Initialize the required widget needed by DPC explorer tab
+    Initialize the required widget needed by DPC Explorer tab.
 
     Parameters
     ----------
@@ -70,7 +70,6 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self.tab_name = tab_name
         self.main_window = QMainWindow()
         self.main_widget = QtWidgets.QWidget()
-        # self.main_window.setCentralWidget(self.main_widget)
 
         buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Close)
         buttonBox.rejected.connect(lambda: self.application_window._ui.tabWidget.tabCloseRequested.emit(
@@ -83,11 +82,10 @@ class Pop_Up_Widget(QtWidgets.QWidget):
         self.main_widget.setLayout(self.gridLayout)
         self.main_widget.setObjectName(tab_name)
         self._docked_widgets = []
-        # self.application_window._ui.tabWidget.tabCloseRequested.connect(self.close_handler)
 
     def setup_docking(self, name, location="Top", figsize=None):
         """
-        Initialize a dock widget with the given name
+        Initialize a dock widget with the given name.
         Parameters
         ----------
         name : str the name of the dock widget window
@@ -128,7 +126,7 @@ class Pop_Up_Widget(QtWidgets.QWidget):
 class CustomInputForm(QtWidgets.QDialog):
     def __init__(self, initial_x=2, initial_y=2, minimum=0, maximum=13, text_x: str = None, text_y: str = None):
         """
-        Create a new form with 2 input value x and Y and their output as power of 2
+        Create a new form with 2 input values x and Y and their output as a  power of 2.
 
         Parameters
         ----------
@@ -168,7 +166,7 @@ class CustomInputForm(QtWidgets.QDialog):
     @Slot(int)
     def update_value(self):
         """
-        Update the text box showing the 2^(input value) computed
+        Update the text box showing the 2^(input value) computed.
         """
         self._ui.Xvalue.clear()
         self._ui.Yvalue.clear()
@@ -178,7 +176,7 @@ class CustomInputForm(QtWidgets.QDialog):
     @Slot()
     def restore_default(self):
         """
-        Restore X and Y to their default value
+        Restore X and Y to their default value.
         """
         self._ui.Xsize.setValue(self._default_x)
         self._ui.Ysize.setValue(self._default_y)
@@ -186,8 +184,8 @@ class CustomInputForm(QtWidgets.QDialog):
     @Slot()
     def reject(self):
         """
-        Overload of the reject function
-        Reset the value to its default to not mess up the loading
+        Overload of the reject function.
+        Reset the value to its default to not mess up the loading.
         DO NOT RENAME: Overloading function
         """
         self.restore_default()
@@ -197,7 +195,7 @@ class CustomInputForm(QtWidgets.QDialog):
 class LoadingForm(QtWidgets.QDialog):
     def __init__(self, nb_bar, name, *args, **kwargs):
         """
-        Set up a loading form with 1 progress bar parameters
+        Set up a loading form with 1 progress bar parameter.
         """
         super(LoadingForm, self).__init__()
         self.v_layout = QtWidgets.QVBoxLayout()
@@ -207,7 +205,6 @@ class LoadingForm(QtWidgets.QDialog):
 
         self.data_out = defaultdict(list)
         self.threadpool = QThreadPool()
-        # self._ui.centerProgress.setMaximum(np.prod(data.shape[:-2]))
         self.nb_threads = nb_bar
         for el in range(nb_bar):
             self.setup_ui(name[el])
@@ -297,7 +294,7 @@ class CustomSignals(QObject):
 
 class GuiUpdater(QThread):
     """
-    Worker thread
+    Worker thread.
     """
 
     def __init__(self, fn, name, *args, **kwargs):
@@ -315,9 +312,9 @@ class GuiUpdater(QThread):
     @Slot()  # QtCore.Slot
     def run(self):
         """
-        run the function and return different signals based on the success or failure of the function
+        Run the function and return different signals based on the success or failure of the function.
         """
-        # Retrieve args/kwargs here; and fire processing using them
+        # Retrieve args/kwargs here and fire processing using them
         result_val = None
         try:
             result_val = self._fn(
@@ -328,12 +325,15 @@ class GuiUpdater(QThread):
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
         finally:
-            self.signals.result.emit((self._name, result_val))  # Done
-            self.signals.finished.emit(self._name)  # Done
+            # Done
+            self.signals.result.emit((self._name, result_val))
+            self.signals.finished.emit(self._name)
 
 
 class QIPythonWidget(RichIPythonWidget):
-    """ Convenience class for a live IPython console widget."""
+    """
+    Convenience class for a live IPython console widget.
+    """
 
     def __init__(self, ApplicationWindow=None, customBanner=None, *args, **kwargs):
         super(QIPythonWidget, self).__init__(*args, **kwargs)
@@ -352,17 +352,25 @@ class QIPythonWidget(RichIPythonWidget):
         self.exit_requested.connect(stop)
 
     def pushVariables(self, variableDict):
-        """ Given a dictionary containing name / value pairs, push those variables to the IPython console widget """
+        """
+        Given a dictionary containing name/value pairs, push those variables to the IPython console widget.
+        """
         self.kernel_manager.kernel.shell.push(variableDict)
 
     def clearTerminal(self):
-        """ Clears the terminal """
+        """
+        Clears the terminal.
+        """
         self._control.clear()
 
     def printText(self, text):
-        """ Prints some plain text to the console """
+        """
+        Prints some plain text to the console.
+        """
         self._append_plain_text(text)
 
     def executeCommand(self, command):
-        """ Execute a command in the frame of the console widget """
+        """
+        Execute a command in the frame of the console widget.
+        """
         self._execute(command, True)
