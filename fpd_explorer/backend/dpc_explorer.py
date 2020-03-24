@@ -91,6 +91,7 @@ def start_dpc(ApplicationWindow):
                           "r_min", "r_max", "median", "flip_y", "flip_x", "ransac"], key_add=key_add)
     if not params.exec():
         # Procedure was cancelled so just give up
+        ApplicationWindow.dpc_explorer = None
         return
     results = params.get_result()
 

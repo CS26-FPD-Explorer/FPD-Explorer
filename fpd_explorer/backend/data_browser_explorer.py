@@ -159,6 +159,7 @@ def start_dbrowser(ApplicationWindow):
         params = UI_Generator(ApplicationWindow, DummyDataBrowser, key_add=key_add)
         if not params.exec():
             # Procedure was cancelled so just give up
+            ApplicationWindow.data_browser = None
             return
         results = params.get_result()
         data = results.get("fpgn")
@@ -173,8 +174,8 @@ def start_dbrowser(ApplicationWindow):
                                                      widget_1=ApplicationWindow.db_widget._ui.navCanvas,
                                                      widget_2=ApplicationWindow.db_widget._ui.diffCanvas)
         db_tab = Pop_Up_Widget(ApplicationWindow, "Data Browser")
-        db_tab.setup_docking_default(ApplicationWindow.db_widget.get_nav())
-        db_tab.setup_docking_default(ApplicationWindow.db_widget.get_diff())
+        db_tab.setup_docking_default(ApplicationWindow.db_widget.get_nav(), name="Nav Im")
+        db_tab.setup_docking_default(ApplicationWindow.db_widget.get_diff(), name="Diff Im")
 
         ApplicationWindow.db_widget.set_data_browser(ApplicationWindow.data_browser)
         logger.log("Data Browser has been opened")
