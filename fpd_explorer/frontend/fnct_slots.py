@@ -87,6 +87,11 @@ def start_live_coding(self):
     console_tab.setup_docking_default(ipy_console)
 
 
+def find_index_name(self, name: str) -> int:
+    for idx in range(self._ui.tabWidget.count()):
+        if self._ui.tabWidget.tabBar().tabText(idx) == name:
+            return idx
+
 def add_data(self, location, name, data):
     location = location.lower()
     if "dpc" in location:

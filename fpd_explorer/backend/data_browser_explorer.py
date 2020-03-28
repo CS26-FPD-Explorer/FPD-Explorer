@@ -127,8 +127,7 @@ def start_dbrowser(ApplicationWindow):
 
     """
     if ApplicationWindow.data_browser is not None:
-        ApplicationWindow._ui.tabWidget.setCurrentWidget(
-            ApplicationWindow._ui.tabWidget.findChild(QtWidgets.QWidget, "Data Browser"))
+        ApplicationWindow._ui.tabWidget.setCurrentIndex(ApplicationWindow.find_index_name("Data Browser"))
         return
     if logger.check_if_all_needed(Flags.files_loaded):
         ApplicationWindow.db_widget = DataBrowserWidget(ApplicationWindow)

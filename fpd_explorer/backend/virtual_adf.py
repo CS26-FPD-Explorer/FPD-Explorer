@@ -87,8 +87,7 @@ def plot_vadf(ApplicationWindow):
         performs event handling
     """
     if ApplicationWindow.vadf_explorer is not None:
-        ApplicationWindow._ui.tabWidget.setCurrentWidget(
-            ApplicationWindow._ui.tabWidget.findChild(QtWidgets.QWidget, "VADF Explorer"))
+        ApplicationWindow._ui.tabWidget.setCurrentIndex(ApplicationWindow.find_index_name("VADF Explorer"))
         return
 
     if logger.check_if_all_needed(Flags.vadf_init):

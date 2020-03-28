@@ -38,8 +38,7 @@ def start_dpc(ApplicationWindow):
 
     """
     if ApplicationWindow.dpc_explorer is not None:
-        ApplicationWindow._ui.tabWidget.setCurrentWidget(
-            ApplicationWindow._ui.tabWidget.findChild(QtWidgets.QWidget, "DPC Explorer"))
+        ApplicationWindow._ui.tabWidget.setCurrentIndex(ApplicationWindow.find_index_name("DPC Explorer"))
         return
     ApplicationWindow.dpc_explorer = Pop_Up_Widget(ApplicationWindow, "DPC Explorer")
 
