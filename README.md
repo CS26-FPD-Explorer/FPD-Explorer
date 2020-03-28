@@ -9,13 +9,13 @@ Data from a [STEM](https://en.wikipedia.org/wiki/Scanning_transmission_electron_
 
 ### Installing
 
-Install **FPD-Explorer** package using the *setup* script:
+Install **FPD-Explorer** package using the *setup* script from the project root:
 
 ```shell
 python setup.py install
 ```
 #### Dark style
-A dark style is available for this program. It can be installed with either pip :
+A dark style is available for this program. It can be installed with either pip:
 
 ```shell
 pip3 install git+git://github.com/09ubberboy90/qdarkgraystyle.git
@@ -28,9 +28,23 @@ cd qdarkgraystyle
 python setup.py install
 ```
 
+### Interface compilation
+Run this command from the project root before starting for the first time:
+```shell
+python compile_ui.py
+```
+
+## Running
+
+Run this command from the project root:
+
+```shell
+python main.py
+```
+
 ## Running the tests
 
-Run this command at the root of the project:
+Run this command from the project root:
 
 ```shell
 pytest
