@@ -21,7 +21,6 @@ import os
 import configparser
 
 CONFIGFILE_NAME = "config.ini"
-DEFAULT_NAME = "default.ini"
 
 _data_to_save = {'Default': {}}
 
@@ -112,15 +111,13 @@ def load_config():
                 the_dict[section][key] = val
         return the_dict
 
-    path_to_read = ""
     if os.path.isfile(CONFIGFILE_NAME):
-        path_to_read = CONFIGFILE_NAME
+        config = configparser.ConfigParser()
+        config.read(CONFIGFILE_NAME)
+        _data_to_save.update(as_dict(config))
     else:
-        path_to_read = DEFAULT_NAME
+        _data_to_save.update({"Appearence": {"dark_mode":  False}})
 
-    config = configparser.ConfigParser()
-    config.read(path_to_read)
-    _data_to_save.update(as_dict(config))
 
 
 def save_config():

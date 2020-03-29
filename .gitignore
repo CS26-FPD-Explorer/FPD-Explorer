@@ -19,7 +19,6 @@ ui_*
 
 # Config files
 *.ini
-!default.ini
 
 #Log files
 .log
